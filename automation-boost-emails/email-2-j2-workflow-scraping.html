@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le workflow n8n Google Maps + email recap</title>
+</head>
+<body style="margin:0;padding:0;background-color:#000000;font-family:Arial,Helvetica,sans-serif;" bgcolor="#000000">
+
+  <!-- Preheader -->
+  <div style="display:none;font-size:1px;color:#000000;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
+    Scraper Google Maps + recap email auto → le workflow n8n en 6 nodes — Automation Boost
+  </div>
+
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" style="background-color:#000000;">
+    <tr>
+      <td align="center" style="padding:40px 20px;">
+
+        <!-- Container -->
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td bgcolor="#000000" style="background-color:#000000;padding:0 0 32px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td>
+                    <span style="font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:700;color:#FCB617;letter-spacing:2px;text-transform:uppercase;">AUTOMATION BOOST</span>
+                  </td>
+                  <td style="text-align:right;vertical-align:middle;">
+                    <span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#555555;letter-spacing:1px;text-transform:uppercase;">automatisationboost.com</span>
+                  </td>
+                </tr>
+              </table>
+              <div style="height:2px;background-color:#FCB617;width:48px;margin-top:12px;"></div>
+            </td>
+          </tr>
+
+          <!-- Hero block -->
+          <tr>
+            <td bgcolor="#0A0A0A" style="background-color:#0A0A0A;border:1px solid #1A1A1A;padding:40px 36px 36px 36px;border-radius:4px;">
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-bottom:20px;">
+                    <span style="font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#FCB617;letter-spacing:3px;text-transform:uppercase;background-color:#1A1100;padding:4px 10px;border-radius:2px;">WORKFLOW n8n — JOUR 2</span>
+                  </td>
+                </tr>
+              </table>
+
+              <h1 style="margin:0 0 16px 0;font-family:Arial,Helvetica,sans-serif;font-size:30px;font-weight:700;color:#FFFFFF;line-height:1.2;">
+                Scraper Google Maps<br><span style="color:#FCB617;">+ recap email automatique</span>
+              </h1>
+
+              <p style="margin:0 0 28px 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#AAAAAA;line-height:1.7;">
+                Salut {{contact.FIRSTNAME}},<br><br>
+                Ce workflow tourne chez plusieurs de mes clients. Setup une fois, résultats chaque semaine dans ta boîte mail. Voilà exactement comment ça marche.
+              </p>
+
+              <!-- Separator -->
+              <div style="height:1px;background-color:#1E1E1E;margin-bottom:28px;"></div>
+
+              <!-- Section title -->
+              <p style="margin:0 0 20px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#FCB617;letter-spacing:2px;text-transform:uppercase;">Le workflow en 6 nodes</p>
+
+              <!-- Step 1 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+                <tr>
+                  <td width="40" valign="top" style="padding-top:1px;">
+                    <div style="width:28px;height:28px;background-color:#FCB617;border-radius:2px;text-align:center;line-height:28px;">
+                      <span style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#000000;">01</span>
+                    </div>
+                  </td>
+                  <td valign="top">
+                    <p style="margin:0 0 2px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">Schedule Trigger</p>
+                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#777777;line-height:1.5;">Lundi 8h00 — cron <code style="background-color:#1A1A1A;color:#FCB617;padding:1px 6px;border-radius:2px;font-size:12px;">0 8 * * 1</code>. Aucune intervention manuelle.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Step 2 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+                <tr>
+                  <td width="40" valign="top" style="padding-top:1px;">
+                    <div style="width:28px;height:28px;background-color:#1A1A1A;border:1px solid #333333;border-radius:2px;text-align:center;line-height:28px;">
+                      <span style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#FCB617;">02</span>
+                    </div>
+                  </td>
+                  <td valign="top">
+                    <p style="margin:0 0 2px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">HTTP Request → Google Maps API</p>
+                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#777777;line-height:1.5;">Places API — textsearch ou nearbysearch. Query paramétrable : type de business + rayon + ville. Retourne nom, adresse, note, nb avis, téléphone, site web.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Step 3 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+                <tr>
+                  <td width="40" valign="top" style="padding-top:1px;">
+                    <div style="width:28px;height:28px;background-color:#1A1A1A;border:1px solid #333333;border-radius:2px;text-align:center;line-height:28px;">
+                      <span style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#FCB617;">03</span>
+                    </div>
+                  </td>
+                  <td valign="top">
+                    <p style="margin:0 0 2px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">Code Node — Filtrage & déduplication</p>
+                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#777777;line-height:1.5;">JS vanilla. Filtre les entrées déjà connues via Google Sheets (place_id unique). Ne garde que les nouveaux leads.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Step 4 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+                <tr>
+                  <td width="40" valign="top" style="padding-top:1px;">
+                    <div style="width:28px;height:28px;background-color:#1A1A1A;border:1px solid #333333;border-radius:2px;text-align:center;line-height:28px;">
+                      <span style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#FCB617;">04</span>
+                    </div>
+                  </td>
+                  <td valign="top">
+                    <p style="margin:0 0 2px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">Google Sheets — Append rows</p>
+                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#777777;line-height:1.5;">Stocke chaque nouveau prospect : nom, contact, note, statut = "À contacter". Base de données persistante, zéro coût.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Step 5 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+                <tr>
+                  <td width="40" valign="top" style="padding-top:1px;">
+                    <div style="width:28px;height:28px;background-color:#1A1A1A;border:1px solid #333333;border-radius:2px;text-align:center;line-height:28px;">
+                      <span style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#FCB617;">05</span>
+                    </div>
+                  </td>
+                  <td valign="top">
+                    <p style="margin:0 0 2px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">Aggregate Node — Résumé hebdo</p>
+                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#777777;line-height:1.5;">Consolide tous les nouveaux prospects de la semaine en un seul objet JSON structuré.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Step 6 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+                <tr>
+                  <td width="40" valign="top" style="padding-top:1px;">
+                    <div style="width:28px;height:28px;background-color:#FCB617;border-radius:2px;text-align:center;line-height:28px;">
+                      <span style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#000000;">06</span>
+                    </div>
+                  </td>
+                  <td valign="top">
+                    <p style="margin:0 0 2px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">Send Email — Recap HTML</p>
+                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#777777;line-height:1.5;">Email auto chaque lundi avec : nb nouveaux prospects, top 3 par note, lien vers le Google Sheet. Tu ouvres, tu prospectes.</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Separator -->
+              <div style="height:1px;background-color:#1E1E1E;margin-bottom:24px;"></div>
+
+              <!-- Result highlight -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td bgcolor="#111111" style="background-color:#111111;border-left:3px solid #FCB617;padding:20px 24px;border-radius:0 3px 3px 0;">
+                    <p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#FCB617;text-transform:uppercase;letter-spacing:1px;">Ce que ça donne en pratique</p>
+                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#CCCCCC;line-height:1.7;">
+                      Setup : 47 min une seule fois.<br>
+                      Coût récurrent : quasiment 0 (Google Maps API gratuit jusqu'à 200$/mois de requêtes).<br>
+                      Résultat : 15 à 40 nouveaux leads qualifiés chaque lundi, sans rien faire.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
+                <tr>
+                  <td>
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td bgcolor="#FCB617" style="background-color:#FCB617;border-radius:3px;">
+                          <a href="{{WORKFLOW_JSON_URL}}" style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#000000;text-decoration:none;padding:16px 36px;letter-spacing:1px;text-transform:uppercase;">
+                            ↓ Télécharger le JSON n8n
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="margin:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#444444;">Importe directement dans ton instance n8n — prêt à configurer</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Teaser next -->
+              <div style="height:1px;background-color:#1E1E1E;margin:32px 0 24px 0;"></div>
+              <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#555555;line-height:1.6;">
+                <strong style="color:#AAAAAA;">Dans 3 jours →</strong> Cas client réel. Un restaurant qui publie 22 posts/mois sur Instagram et LinkedIn sans jamais ouvrir les réseaux sociaux. Stack : n8n + Gemini + Blotato.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Signature -->
+          <tr>
+            <td bgcolor="#000000" style="background-color:#000000;padding:32px 0 0 0;">
+              <p style="margin:0 0 4px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">Tony Payet</p>
+              <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#555555;">Automation Boost — automatisationboost.com</p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td bgcolor="#000000" style="background-color:#000000;padding:24px 0 0 0;">
+              <div style="height:1px;background-color:#111111;margin-bottom:20px;"></div>
+              <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#333333;line-height:1.6;">
+                Tu reçois cet email car tu as téléchargé le guide Claude Cowork sur <a href="https://automatisationboost.com" style="color:#555555;text-decoration:none;">automatisationboost.com</a>.<br>
+                <a href="{{unsubscribe}}" style="color:#444444;text-decoration:underline;">Me désinscrire</a> · <a href="https://automatisationboost.com" style="color:#444444;text-decoration:none;">automatisationboost.com</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

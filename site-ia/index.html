@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligence Artificielle - Comprendre l'IA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">&#x1F9E0;</span> IA<span class="logo-accent">Future</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#definition">Qu'est-ce que l'IA</a></li>
+                <li><a href="#domaines">Domaines</a></li>
+                <li><a href="#timeline">Histoire</a></li>
+                <li><a href="#applications">Applications</a></li>
+                <li><a href="#ethique">Enjeux</a></li>
+            </ul>
+            <button class="menu-toggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="accueil" class="hero">
+        <div class="hero-bg"></div>
+        <div class="container hero-content">
+            <p class="hero-tag">Bienvenue dans le futur</p>
+            <h1>L'Intelligence<br><span class="gradient-text">Artificielle</span></h1>
+            <p class="hero-desc">Explorez le monde fascinant de l'IA : de ses origines aux technologies qui transforment notre quotidien et dessinent le futur de l'humanit&eacute;.</p>
+            <div class="hero-buttons">
+                <a href="#definition" class="btn btn-primary">D&eacute;couvrir</a>
+                <a href="#applications" class="btn btn-outline">Voir les applications</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" data-target="190">0</span><span class="stat-suffix">Mds $</span>
+                    <span class="stat-label">March&eacute; mondial de l'IA en 2025</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="97">0</span><span class="stat-suffix">%</span>
+                    <span class="stat-label">des entreprises utilisent l'IA</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="2">0</span><span class="stat-suffix">M+</span>
+                    <span class="stat-label">emplois cr&eacute;&eacute;s gr&acirc;ce &agrave; l'IA</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Definition Section -->
+    <section id="definition" class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Comprendre</span>
+                <h2>Qu'est-ce que l'Intelligence Artificielle ?</h2>
+                <p class="section-subtitle">L'IA est un domaine de l'informatique qui vise &agrave; cr&eacute;er des syst&egrave;mes capables de simuler l'intelligence humaine.</p>
+            </div>
+            <div class="definition-grid">
+                <div class="def-card">
+                    <div class="def-icon">&#x1F916;</div>
+                    <h3>IA Faible (Narrow AI)</h3>
+                    <p>Syst&egrave;mes sp&eacute;cialis&eacute;s dans une t&acirc;che pr&eacute;cise : reconnaissance vocale, recommandations, traduction automatique. C'est l'IA que nous utilisons aujourd'hui.</p>
+                </div>
+                <div class="def-card">
+                    <div class="def-icon">&#x1F9E0;</div>
+                    <h3>IA G&eacute;n&eacute;rale (AGI)</h3>
+                    <p>Une intelligence capable de comprendre, apprendre et appliquer ses connaissances &agrave; n'importe quelle t&acirc;che intellectuelle, comme un &ecirc;tre humain. Encore th&eacute;orique.</p>
+                </div>
+                <div class="def-card">
+                    <div class="def-icon">&#x1F52E;</div>
+                    <h3>Super Intelligence (ASI)</h3>
+                    <p>Une intelligence surpassant les capacit&eacute;s cognitives humaines dans tous les domaines. Un concept futuriste qui soul&egrave;ve de nombreuses questions &eacute;thiques.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Domaines Section -->
+    <section id="domaines" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Technologies</span>
+                <h2>Les grands domaines de l'IA</h2>
+                <p class="section-subtitle">L'intelligence artificielle englobe de nombreuses disciplines et technologies cl&eacute;s.</p>
+            </div>
+            <div class="domains-grid">
+                <div class="domain-card" style="--accent: #6366f1;">
+                    <div class="domain-number">01</div>
+                    <h3>Machine Learning</h3>
+                    <p>Les algorithmes apprennent automatiquement &agrave; partir de donn&eacute;es sans &ecirc;tre explicitement programm&eacute;s. Ils identifient des patterns et am&eacute;liorent leurs performances avec l'exp&eacute;rience.</p>
+                    <div class="domain-tags">
+                        <span>R&eacute;gression</span><span>Classification</span><span>Clustering</span>
+                    </div>
+                </div>
+                <div class="domain-card" style="--accent: #ec4899;">
+                    <div class="domain-number">02</div>
+                    <h3>Deep Learning</h3>
+                    <p>Sous-domaine du ML utilisant des r&eacute;seaux de neurones artificiels profonds, inspir&eacute;s du cerveau humain, pour traiter des donn&eacute;es complexes.</p>
+                    <div class="domain-tags">
+                        <span>CNN</span><span>RNN</span><span>Transformers</span>
+                    </div>
+                </div>
+                <div class="domain-card" style="--accent: #14b8a6;">
+                    <div class="domain-number">03</div>
+                    <h3>Traitement du Langage Naturel</h3>
+                    <p>Permet aux machines de comprendre, interpr&eacute;ter et g&eacute;n&eacute;rer le langage humain. GPT, Claude et Gemini en sont des exemples phares.</p>
+                    <div class="domain-tags">
+                        <span>ChatBots</span><span>Traduction</span><span>G&eacute;n&eacute;ration</span>
+                    </div>
+                </div>
+                <div class="domain-card" style="--accent: #f59e0b;">
+                    <div class="domain-number">04</div>
+                    <h3>Vision par Ordinateur</h3>
+                    <p>Donne aux machines la capacit&eacute; d'interpr&eacute;ter et de comprendre le contenu visuel : images, vid&eacute;os, flux en temps r&eacute;el.</p>
+                    <div class="domain-tags">
+                        <span>D&eacute;tection</span><span>Segmentation</span><span>OCR</span>
+                    </div>
+                </div>
+                <div class="domain-card" style="--accent: #8b5cf6;">
+                    <div class="domain-number">05</div>
+                    <h3>IA G&eacute;n&eacute;rative</h3>
+                    <p>Cr&eacute;ation de contenus originaux : textes, images, musique, code, vid&eacute;os. La r&eacute;volution cr&eacute;ative de l'IA qui transforme les industries.</p>
+                    <div class="domain-tags">
+                        <span>DALL-E</span><span>Midjourney</span><span>Sora</span>
+                    </div>
+                </div>
+                <div class="domain-card" style="--accent: #06b6d4;">
+                    <div class="domain-number">06</div>
+                    <h3>Robotique Intelligente</h3>
+                    <p>Combinaison de l'IA et de la robotique pour cr&eacute;er des machines autonomes capables d'interagir avec le monde physique.</p>
+                    <div class="domain-tags">
+                        <span>Drones</span><span>Cobots</span><span>Autonomie</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section id="timeline" class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Chronologie</span>
+                <h2>L'histoire de l'Intelligence Artificielle</h2>
+                <p class="section-subtitle">De la th&eacute;orie &agrave; la r&eacute;volution : les &eacute;tapes cl&eacute;s qui ont faonn&eacute; l'IA.</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">1950</span>
+                        <h3>Le Test de Turing</h3>
+                        <p>Alan Turing publie "Computing Machinery and Intelligence" et propose un test pour d&eacute;terminer si une machine peut penser.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">1956</span>
+                        <h3>Naissance de l'IA</h3>
+                        <p>La conf&eacute;rence de Dartmouth marque la naissance officielle de l'intelligence artificielle en tant que discipline scientifique.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">1997</span>
+                        <h3>Deep Blue vs Kasparov</h3>
+                        <p>Le superordinateur d'IBM bat le champion du monde d'&eacute;checs Garry Kasparov, marquant un tournant historique.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">2012</span>
+                        <h3>R&eacute;volution Deep Learning</h3>
+                        <p>AlexNet remporte ImageNet et lance la r&eacute;volution du deep learning. Les r&eacute;seaux de neurones profonds deviennent dominants.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">2017</span>
+                        <h3>L'architecture Transformer</h3>
+                        <p>Google publie "Attention is All You Need", introduisant les Transformers qui r&eacute;volutionneront le NLP et bien au-del&agrave;.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">2022-2025</span>
+                        <h3>&Egrave;re de l'IA G&eacute;n&eacute;rative</h3>
+                        <p>ChatGPT, Claude, Gemini, DALL-E, Midjourney... L'IA g&eacute;n&eacute;rative explose et transforme tous les secteurs d'activit&eacute;.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Applications Section -->
+    <section id="applications" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Cas d'usage</span>
+                <h2>L'IA dans notre quotidien</h2>
+                <p class="section-subtitle">L'intelligence artificielle est d&eacute;j&agrave; partout autour de nous, transformant chaque secteur.</p>
+            </div>
+            <div class="apps-grid">
+                <div class="app-card">
+                    <div class="app-icon">&#x1FA7A;</div>
+                    <h3>Sant&eacute;</h3>
+                    <p>Diagnostic m&eacute;dical assist&eacute;, d&eacute;couverte de m&eacute;dicaments, imagerie m&eacute;dicale, pr&eacute;diction de maladies et m&eacute;decine personnalis&eacute;e.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">&#x1F697;</div>
+                    <h3>Transport</h3>
+                    <p>V&eacute;hicules autonomes, optimisation du trafic, logistique intelligente et maintenance pr&eacute;dictive des flottes.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">&#x1F3A8;</div>
+                    <h3>Cr&eacute;ation</h3>
+                    <p>G&eacute;n&eacute;ration d'images, de musique, de textes, assistance &agrave; la cr&eacute;ation de contenu et design automatis&eacute;.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">&#x1F3E6;</div>
+                    <h3>Finance</h3>
+                    <p>Trading algorithmique, d&eacute;tection de fraude, &eacute;valuation des risques et conseil financier personnalis&eacute;.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">&#x1F393;</div>
+                    <h3>&Eacute;ducation</h3>
+                    <p>Tutorat personnalis&eacute;, correction automatique, parcours d'apprentissage adaptatifs et traduction en temps r&eacute;el.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">&#x1F30D;</div>
+                    <h3>Environnement</h3>
+                    <p>Mod&eacute;lisation climatique, optimisation &eacute;nerg&eacute;tique, agriculture de pr&eacute;cision et surveillance de la biodiversit&eacute;.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ethics Section -->
+    <section id="ethique" class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">R&eacute;flexion</span>
+                <h2>Les enjeux &eacute;thiques de l'IA</h2>
+                <p class="section-subtitle">Le d&eacute;veloppement de l'IA soul&egrave;ve des questions fondamentales pour notre soci&eacute;t&eacute;.</p>
+            </div>
+            <div class="ethics-grid">
+                <div class="ethics-card">
+                    <div class="ethics-icon">&#x1F6E1;</div>
+                    <div class="ethics-content">
+                        <h3>Vie priv&eacute;e & Donn&eacute;es</h3>
+                        <p>L'IA n&eacute;cessite des quantit&eacute;s massives de donn&eacute;es. La protection de la vie priv&eacute;e et le consentement des utilisateurs sont des enjeux cruciaux.</p>
+                    </div>
+                </div>
+                <div class="ethics-card">
+                    <div class="ethics-icon">&#x2696;</div>
+                    <div class="ethics-content">
+                        <h3>Biais & &Eacute;quit&eacute;</h3>
+                        <p>Les algorithmes peuvent reproduire et amplifier les biais pr&eacute;sents dans les donn&eacute;es d'entra&icirc;nement, menant &agrave; des discriminations.</p>
+                    </div>
+                </div>
+                <div class="ethics-card">
+                    <div class="ethics-icon">&#x1F4BC;</div>
+                    <div class="ethics-content">
+                        <h3>Emploi & Transformation</h3>
+                        <p>L'automatisation transforme le march&eacute; du travail. Certains emplois disparaissent tandis que de nouveaux m&eacute;tiers &eacute;mergent.</p>
+                    </div>
+                </div>
+                <div class="ethics-card">
+                    <div class="ethics-icon">&#x1F50D;</div>
+                    <div class="ethics-content">
+                        <h3>Transparence & Explicabilit&eacute;</h3>
+                        <p>Comprendre comment une IA prend ses d&eacute;cisions est essentiel pour la confiance et la responsabilit&eacute; des syst&egrave;mes d&eacute;ploy&eacute;s.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>L'IA fa&ccedil;onne le monde de demain</h2>
+                <p>Restez inform&eacute; des derni&egrave;res avanc&eacute;es en intelligence artificielle et participez &agrave; cette r&eacute;volution technologique.</p>
+                <div class="cta-form">
+                    <input type="email" placeholder="Votre adresse email" class="cta-input">
+                    <button class="btn btn-primary">S'inscrire</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <span class="logo-icon">&#x1F9E0;</span> IA<span class="logo-accent">Future</span>
+                    </a>
+                    <p>Votre portail vers le monde de l'intelligence artificielle. Comprendre, explorer et imaginer le futur.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="#accueil">Accueil</a></li>
+                        <li><a href="#definition">Qu'est-ce que l'IA</a></li>
+                        <li><a href="#domaines">Domaines</a></li>
+                        <li><a href="#applications">Applications</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Ressources</h4>
+                    <ul>
+                        <li><a href="#">Articles</a></li>
+                        <li><a href="#">Tutoriels</a></li>
+                        <li><a href="#">Actualit&eacute;s</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 IAFuture. Tous droits r&eacute;serv&eacute;s. Cr&eacute;&eacute; avec &#x2764; et de l'IA.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

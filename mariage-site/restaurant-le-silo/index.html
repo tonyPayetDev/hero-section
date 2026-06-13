@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Découvrez le Restaurant Le Silo, une cuisine saine et inventive au cœur de l'Éperon. Réservez votre table dès maintenant !" />
+  <title>Restaurant Le Silo - Une expérience culinaire unique à l'Éperon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#7b2d03',
+            'primary-dark': '#5a2002',
+            'primary-light': '#9c3a04',
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+
+    .hero-bg {
+      background-image:
+        linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(123,45,3,0.75) 100%),
+        url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .nav-scrolled {
+      background: rgba(123,45,3,0.97) !important;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .card-hover {
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 48px rgba(123,45,3,0.18);
+    }
+
+    .btn-primary {
+      background-color: #7b2d03;
+      color: #fff;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover { background-color: #5a2002; transform: scale(1.03); }
+
+    .btn-outline {
+      border: 2px solid #7b2d03;
+      color: #7b2d03;
+      transition: all 0.3s;
+    }
+    .btn-outline:hover { background-color: #7b2d03; color: #fff; }
+
+    .btn-white {
+      background-color: #fff;
+      color: #7b2d03;
+      transition: all 0.3s;
+    }
+    .btn-white:hover { background-color: #f5f5f5; transform: scale(1.03); }
+
+    .star { color: #f59e0b; }
+
+    /* Scroll-reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hero animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-anim-1 { animation: fadeInUp 0.9s ease 0.1s both; }
+    .hero-anim-2 { animation: fadeInUp 0.9s ease 0.35s both; }
+    .hero-anim-3 { animation: fadeInUp 0.9s ease 0.55s both; }
+    .hero-anim-4 { animation: fadeInUp 0.9s ease 0.75s both; }
+
+    /* Image zoom on hover */
+    .img-zoom { overflow: hidden; }
+    .img-zoom img { transition: transform 0.5s ease; }
+    .img-zoom:hover img { transform: scale(1.07); }
+  </style>
+</head>
+<body class="bg-white text-gray-800 antialiased">
+
+  <!-- ════════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════════ -->
+  <nav id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300 py-5 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="#" class="font-playfair text-2xl font-bold text-white tracking-wide">
+        Le <span class="text-amber-300">Silo</span>
+      </a>
+
+      <!-- Desktop links -->
+      <ul class="hidden md:flex items-center gap-8 text-white font-medium text-sm">
+        <li><a href="#concept"     class="hover:text-amber-300 transition-colors">Notre Concept</a></li>
+        <li><a href="#emporter"    class="hover:text-amber-300 transition-colors">À Emporter</a></li>
+        <li><a href="#evenements"  class="hover:text-amber-300 transition-colors">Événements</a></li>
+        <li><a href="#temoignages" class="hover:text-amber-300 transition-colors">Avis</a></li>
+        <li>
+          <a href="#reservation" class="btn-white px-6 py-2.5 rounded-full font-semibold">
+            Réserver
+          </a>
+        </li>
+      </ul>
+
+      <!-- Mobile hamburger -->
+      <button id="menu-toggle" class="md:hidden text-white" aria-label="Menu">
+        <svg id="icon-menu" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden mt-4 bg-primary rounded-2xl px-6 py-5 mx-2 shadow-2xl">
+      <ul class="flex flex-col gap-4 text-white font-medium">
+        <li><a href="#concept"     onclick="closeMobileMenu()" class="block hover:text-amber-300 transition-colors">Notre Concept</a></li>
+        <li><a href="#emporter"    onclick="closeMobileMenu()" class="block hover:text-amber-300 transition-colors">À Emporter</a></li>
+        <li><a href="#evenements"  onclick="closeMobileMenu()" class="block hover:text-amber-300 transition-colors">Événements</a></li>
+        <li><a href="#temoignages" onclick="closeMobileMenu()" class="block hover:text-amber-300 transition-colors">Avis</a></li>
+        <li>
+          <a href="#reservation" onclick="closeMobileMenu()"
+             class="block text-center bg-white text-primary font-bold py-3 rounded-xl">
+            Réserver ma table
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════ -->
+  <header class="hero-bg min-h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <p class="hero-anim-1 text-amber-300 text-xs md:text-sm font-semibold uppercase tracking-[0.25em] mb-5">
+        L'Éperon · Cuisine Locale &amp; Créative
+      </p>
+      <h1 class="hero-anim-2 font-playfair text-5xl md:text-7xl font-bold text-white leading-tight mb-4">
+        Restaurant Le Silo
+      </h1>
+      <p class="hero-anim-3 font-playfair text-2xl md:text-3xl italic text-amber-300 mb-8">
+        Une expérience culinaire unique à l'Éperon
+      </p>
+      <p class="hero-anim-4 text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+        Une cuisine saine, inventive et généreuse, au cœur de l'Éperon. Des produits frais, une carte qui évolue chaque mois, une ambiance chaleureuse.
+      </p>
+      <div class="hero-anim-4 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#reservation" class="btn-white px-10 py-4 rounded-full font-bold text-lg shadow-2xl">
+          Réserver ma table
+        </a>
+        <a href="#concept"
+           class="border-2 border-white/70 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-all">
+          Découvrir le restaurant
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll caret -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════
+       1. NOTRE CONCEPT
+  ════════════════════════════════════════ -->
+  <section id="concept" class="py-28 px-6 md:px-12 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+
+        <!-- Text -->
+        <div class="reveal">
+          <span class="text-primary text-xs font-bold uppercase tracking-widest">Notre Concept</span>
+          <h2 class="font-playfair text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6 leading-tight">
+            La fraîcheur locale,<br/>
+            <em class="text-primary not-italic">sublimée avec art</em>
+          </h2>
+          <p class="text-gray-600 text-lg leading-relaxed mb-4">
+            Au Silo, nous célébrons la fraîcheur des produits locaux dans un cadre enchanteur. Notre carte évolue chaque mois pour vous offrir des plats raffinés qui reflètent les saisons et l'inventivité de notre chef.
+          </p>
+          <p class="text-gray-500 leading-relaxed mb-8">
+            Chaque assiette est une invitation au voyage : des saveurs authentiques, des techniques modernes et une passion sincère pour bien vous nourrir.
+          </p>
+
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-3 mb-10">
+            <span class="flex items-center gap-2 bg-amber-50 border border-amber-100 text-amber-700 rounded-full px-4 py-2 text-sm font-medium">🌿 Produits locaux</span>
+            <span class="flex items-center gap-2 bg-red-50 border border-red-100 text-primary rounded-full px-4 py-2 text-sm font-medium">🍽️ Carte mensuelle</span>
+            <span class="flex items-center gap-2 bg-amber-50 border border-amber-100 text-amber-700 rounded-full px-4 py-2 text-sm font-medium">👨‍🍳 Cuisine créative</span>
+          </div>
+
+          <a href="#reservation" class="btn-primary inline-block px-9 py-4 rounded-full font-semibold text-base shadow-lg">
+            En savoir plus sur notre menu →
+          </a>
+        </div>
+
+        <!-- Images -->
+        <div class="relative reveal">
+          <div class="img-zoom rounded-3xl overflow-hidden shadow-2xl">
+            <img
+              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80"
+              alt="Intérieur chaleureux du Silo"
+              class="w-full h-96 md:h-[480px] object-cover"
+            />
+          </div>
+          <!-- floating thumbnail -->
+          <div class="img-zoom absolute -bottom-8 -left-8 w-44 h-44 rounded-2xl overflow-hidden border-4 border-white shadow-2xl hidden md:block">
+            <img
+              src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=400&q=80"
+              alt="Plat raffiné du chef"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <!-- badge -->
+          <div class="absolute -top-5 -right-5 bg-primary text-white rounded-2xl px-5 py-4 shadow-xl hidden md:block">
+            <p class="font-playfair text-3xl font-bold leading-none">5+</p>
+            <p class="text-xs text-white/70 mt-1">ans d'excellence</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CITATION ─── -->
+  <div class="bg-primary py-16 px-6 text-center">
+    <div class="max-w-3xl mx-auto reveal">
+      <p class="font-playfair text-3xl md:text-4xl italic text-white/90 leading-relaxed">
+        "La cuisine, c'est l'art de transformer des produits frais en émotions inoubliables."
+      </p>
+      <p class="text-amber-300 mt-5 font-medium tracking-wide">— Le Chef du Silo</p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       2. À EMPORTER
+  ════════════════════════════════════════ -->
+  <section id="emporter" class="py-28 px-6 md:px-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+
+        <!-- Photo grid -->
+        <div class="grid grid-cols-2 gap-4 reveal order-2 md:order-1">
+          <div class="img-zoom rounded-2xl overflow-hidden shadow-lg">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" alt="Plat à emporter" class="w-full h-52 object-cover"/>
+          </div>
+          <div class="img-zoom rounded-2xl overflow-hidden shadow-lg mt-8">
+            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80" alt="Salade fraîche" class="w-full h-52 object-cover"/>
+          </div>
+          <div class="img-zoom rounded-2xl overflow-hidden shadow-lg">
+            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500&q=80" alt="Cuisine fraîche" class="w-full h-52 object-cover"/>
+          </div>
+          <div class="img-zoom rounded-2xl overflow-hidden shadow-lg mt-8">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=500&q=80" alt="Dessert" class="w-full h-52 object-cover"/>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="reveal order-1 md:order-2">
+          <span class="text-primary text-xs font-bold uppercase tracking-widest">À Emporter</span>
+          <h2 class="font-playfair text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6 leading-tight">
+            L'expérience Silo,<br/>
+            <em class="text-primary not-italic">où vous voulez</em>
+          </h2>
+          <p class="text-gray-600 text-lg leading-relaxed mb-4">
+            Emportez un peu de l'expérience du Silo chez vous avec notre service à emporter, préparé avec des ingrédients frais et de saison.
+          </p>
+          <p class="text-gray-500 leading-relaxed mb-8">
+            De l'entrée au dessert, chaque plat est soigneusement préparé et conditionné pour conserver toute sa saveur jusqu'à votre table.
+          </p>
+
+          <!-- Hours -->
+          <div class="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-gray-100">
+            <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span class="text-primary">🕐</span> Horaires click &amp; collect
+            </h3>
+            <div class="space-y-2 text-sm text-gray-600">
+              <div class="flex justify-between border-b border-gray-50 pb-2">
+                <span>Mardi – Vendredi</span>
+                <span class="font-semibold text-gray-800">11h30 – 14h00</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Samedi – Dimanche</span>
+                <span class="font-semibold text-gray-800">11h30 – 15h00</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="#reservation" class="btn-primary inline-block px-9 py-4 rounded-full font-semibold text-base shadow-lg">
+            Découvrez notre carte à emporter →
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       3. ÉVÉNEMENTS & PRIVATISATION
+  ════════════════════════════════════════ -->
+  <section id="evenements" class="py-28 px-6 md:px-12 bg-white">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Header -->
+      <div class="text-center mb-16 reveal">
+        <span class="text-primary text-xs font-bold uppercase tracking-widest">Événements &amp; Privatisation</span>
+        <h2 class="font-playfair text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-4 leading-tight">
+          Vos moments les plus précieux,<br/>
+          <em class="text-primary not-italic">au Silo</em>
+        </h2>
+        <p class="text-gray-500 text-lg max-w-2xl mx-auto">
+          Organisez vos événements au Silo. Nous offrons des options de privatisation pour des occasions spéciales, avec un service entièrement sur mesure.
+        </p>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid md:grid-cols-3 gap-8 mb-14">
+
+        <div class="card-hover reveal bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100">
+          <div class="img-zoom h-56">
+            <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80"
+                 alt="Anniversaire" class="w-full h-full object-cover"/>
+          </div>
+          <div class="p-7">
+            <h3 class="font-playfair text-xl font-bold text-gray-900 mb-2">🎂 Anniversaires</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Célébrez vos anniversaires dans une atmosphère chaleureuse avec un menu personnalisé et une décoration soignée.
+            </p>
+          </div>
+        </div>
+
+        <div class="card-hover reveal bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100">
+          <div class="img-zoom h-56">
+            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=600&q=80"
+                 alt="Réunion professionnelle" class="w-full h-full object-cover"/>
+          </div>
+          <div class="p-7">
+            <h3 class="font-playfair text-xl font-bold text-gray-900 mb-2">💼 Repas professionnels</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Impressionnez vos partenaires et clients lors de déjeuners ou dîners d'affaires dans un cadre élégant.
+            </p>
+          </div>
+        </div>
+
+        <div class="card-hover reveal bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100">
+          <div class="img-zoom h-56">
+            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&q=80"
+                 alt="Mariage" class="w-full h-full object-cover"/>
+          </div>
+          <div class="p-7">
+            <h3 class="font-playfair text-xl font-bold text-gray-900 mb-2">💍 Mariages &amp; Soirées</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Pour vos plus belles soirées, le Silo met à disposition son espace privatisé avec un service d'exception.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center reveal">
+        <a href="#reservation" class="btn-outline inline-block px-10 py-4 rounded-full font-semibold text-base">
+          Contactez-nous pour plus d'informations →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       4. TÉMOIGNAGES
+  ════════════════════════════════════════ -->
+  <section id="temoignages" class="py-28 px-6 md:px-12 bg-primary">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Header -->
+      <div class="text-center mb-16 reveal">
+        <span class="text-amber-300 text-xs font-bold uppercase tracking-widest">Témoignages</span>
+        <h2 class="font-playfair text-4xl md:text-5xl font-bold text-white mt-3 mb-4 leading-tight">
+          Ce que disent<br/>
+          <em class="text-amber-300 not-italic">nos clients</em>
+        </h2>
+        <p class="text-white/70 text-lg max-w-xl mx-auto">
+          Nos clients adorent notre ambiance chaleureuse et nos plats savoureux. Découvrez ce qu'ils disent de nous !
+        </p>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid md:grid-cols-3 gap-8 mb-14">
+
+        <div class="card-hover reveal bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+          <div class="flex gap-0.5 mb-5">
+            <span class="star text-xl">★</span><span class="star text-xl">★</span>
+            <span class="star text-xl">★</span><span class="star text-xl">★</span>
+            <span class="star text-xl">★</span>
+          </div>
+          <p class="text-white/90 leading-relaxed mb-6 italic text-sm">
+            "Une expérience culinaire absolument magnifique. Les produits sont d'une fraîcheur incomparable et le service est irréprochable. Je recommande vivement !"
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-amber-300 flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">M</div>
+            <div>
+              <p class="text-white font-semibold text-sm">Marie T.</p>
+              <p class="text-white/50 text-xs">Saint-Denis</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-hover reveal bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+          <div class="flex gap-0.5 mb-5">
+            <span class="star text-xl">★</span><span class="star text-xl">★</span>
+            <span class="star text-xl">★</span><span class="star text-xl">★</span>
+            <span class="star text-xl">★</span>
+          </div>
+          <p class="text-white/90 leading-relaxed mb-6 italic text-sm">
+            "Le Silo, c'est notre restaurant favori depuis l'ouverture. La carte qui change chaque mois, c'est une belle surprise à chaque visite. Bravo au chef !"
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-amber-300 flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">J</div>
+            <div>
+              <p class="text-white font-semibold text-sm">Jean-Pierre L.</p>
+              <p class="text-white/50 text-xs">L'Éperon</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-hover reveal bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+          <div class="flex gap-0.5 mb-5">
+            <span class="star text-xl">★</span><span class="star text-xl">★</span>
+            <span class="star text-xl">★</span><span class="star text-xl">★</span>
+            <span class="star text-xl">★</span>
+          </div>
+          <p class="text-white/90 leading-relaxed mb-6 italic text-sm">
+            "Nous avons privatisé le Silo pour notre mariage et tout était parfait. L'équipe est aux petits soins, le repas était délicieux. Un souvenir inoubliable !"
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-amber-300 flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">S</div>
+            <div>
+              <p class="text-white font-semibold text-sm">Sophie &amp; Marc R.</p>
+              <p class="text-white/50 text-xs">Saint-Paul</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center reveal">
+        <a href="#"
+           class="border-2 border-amber-300 text-amber-300 px-10 py-4 rounded-full font-semibold text-base hover:bg-amber-300 hover:text-primary transition-all inline-block">
+          Lire tous les avis →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       5. RÉSERVATION
+  ════════════════════════════════════════ -->
+  <section id="reservation" class="py-28 px-6 md:px-12 bg-gray-50">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-16 items-start">
+
+        <!-- Info -->
+        <div class="reveal">
+          <span class="text-primary text-xs font-bold uppercase tracking-widest">Réservation</span>
+          <h2 class="font-playfair text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6 leading-tight">
+            Réservez votre<br/>
+            <em class="text-primary not-italic">table en ligne</em>
+          </h2>
+          <p class="text-gray-600 text-lg leading-relaxed mb-10">
+            Réservez votre table en ligne et profitez d'une expérience culinaire inoubliable au Silo. Nous vous confirmons votre réservation dans les meilleurs délais.
+          </p>
+
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-xl">📍</div>
+              <div>
+                <p class="font-semibold text-gray-900">Adresse</p>
+                <p class="text-gray-500 text-sm mt-0.5">L'Éperon, La Réunion (974)</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-xl">🕐</div>
+              <div>
+                <p class="font-semibold text-gray-900">Horaires</p>
+                <p class="text-gray-500 text-sm mt-0.5">Mardi – Dimanche</p>
+                <p class="text-gray-500 text-sm">Déjeuner : 12h00 – 14h30</p>
+                <p class="text-gray-500 text-sm">Dîner : 19h00 – 22h30</p>
+                <p class="text-gray-400 text-xs mt-1">Fermé le lundi</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-xl">📞</div>
+              <div>
+                <p class="font-semibold text-gray-900">Téléphone</p>
+                <a href="tel:+262000000000" class="text-primary hover:underline font-medium text-sm mt-0.5 block">+262 00 00 00 00</a>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-xl">✉️</div>
+              <div>
+                <p class="font-semibold text-gray-900">Email</p>
+                <a href="mailto:contact@le-silo.re" class="text-primary hover:underline font-medium text-sm mt-0.5 block">contact@le-silo.re</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="reveal bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-100">
+          <h3 class="font-playfair text-2xl font-bold text-gray-900 mb-7">Réservez maintenant</h3>
+
+          <form id="resa-form" class="space-y-5" onsubmit="handleReservation(event)">
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Prénom *</label>
+                <input type="text" placeholder="Marie" required
+                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"/>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nom *</label>
+                <input type="text" placeholder="Dupont" required
+                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"/>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Email *</label>
+              <input type="email" placeholder="marie.dupont@email.com" required
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"/>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Téléphone</label>
+              <input type="tel" placeholder="+262 00 00 00 00"
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"/>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Date *</label>
+                <input type="date" required
+                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"/>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Couverts *</label>
+                <select required
+                  class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white">
+                  <option value="">Choisir</option>
+                  <option>1 personne</option>
+                  <option>2 personnes</option>
+                  <option>3 personnes</option>
+                  <option>4 personnes</option>
+                  <option>5 personnes</option>
+                  <option>6 personnes</option>
+                  <option>7+ personnes</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Service *</label>
+              <select required
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white">
+                <option value="">Choisir un service</option>
+                <option>Déjeuner (12h00 – 14h30)</option>
+                <option>Dîner (19h00 – 22h30)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Message (optionnel)</label>
+              <textarea rows="3" placeholder="Allergie, anniversaire, occasion spéciale..."
+                class="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none"></textarea>
+            </div>
+
+            <button type="submit"
+              class="w-full btn-primary py-4 rounded-xl font-bold text-base shadow-lg">
+              Réservez maintenant
+            </button>
+
+          </form>
+
+          <!-- Success message -->
+          <div id="success-msg"
+               class="hidden mt-5 bg-green-50 border border-green-200 text-green-700 rounded-xl px-5 py-4 text-center font-medium text-sm">
+            ✅ Merci ! Votre demande de réservation a bien été reçue. Nous vous confirmerons sous peu.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════ -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+
+        <!-- Brand -->
+        <div class="md:col-span-2">
+          <p class="font-playfair text-3xl font-bold mb-3">Le <span class="text-amber-300">Silo</span></p>
+          <p class="text-gray-400 leading-relaxed max-w-sm text-sm">
+            Une cuisine saine, inventive et généreuse au cœur de l'Éperon. Nous célébrons les produits locaux dans un cadre enchanteur depuis plus de 5 ans.
+          </p>
+          <div class="flex gap-3 mt-6">
+            <a href="#" aria-label="Facebook"
+               class="w-10 h-10 rounded-full bg-white/10 hover:bg-primary transition-colors flex items-center justify-center">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+              </svg>
+            </a>
+            <a href="#" aria-label="Instagram"
+               class="w-10 h-10 rounded-full bg-white/10 hover:bg-primary transition-colors flex items-center justify-center">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <div>
+          <h4 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Navigation</h4>
+          <ul class="space-y-2.5 text-gray-400 text-sm">
+            <li><a href="#concept"     class="hover:text-amber-300 transition-colors">Notre Concept</a></li>
+            <li><a href="#emporter"    class="hover:text-amber-300 transition-colors">À Emporter</a></li>
+            <li><a href="#evenements"  class="hover:text-amber-300 transition-colors">Événements</a></li>
+            <li><a href="#temoignages" class="hover:text-amber-300 transition-colors">Témoignages</a></li>
+            <li><a href="#reservation" class="hover:text-amber-300 transition-colors">Réservation</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Contact</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li class="flex items-start gap-2"><span>📍</span><span>L'Éperon, La Réunion (974)</span></li>
+            <li class="flex items-start gap-2">
+              <span>📞</span>
+              <a href="tel:+262000000000" class="hover:text-amber-300 transition-colors">+262 00 00 00 00</a>
+            </li>
+            <li class="flex items-start gap-2">
+              <span>✉️</span>
+              <a href="mailto:contact@le-silo.re" class="hover:text-amber-300 transition-colors">contact@le-silo.re</a>
+            </li>
+            <li class="flex items-start gap-2"><span>🕐</span><span>Mar – Dim, 12h – 22h30</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+        <p>© 2024 Restaurant Le Silo. Tous droits réservés.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-gray-300 transition-colors">Mentions légales</a>
+          <a href="#" class="hover:text-gray-300 transition-colors">Politique de confidentialité</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════
+       JAVASCRIPT
+  ════════════════════════════════════════ -->
+  <script>
+    // ── Navbar scroll ──────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('nav-scrolled', window.scrollY > 60);
+    });
+
+    // ── Mobile menu ────────────────────────────
+    const menuToggle  = document.getElementById('menu-toggle');
+    const mobileMenu  = document.getElementById('mobile-menu');
+    const iconMenu    = document.getElementById('icon-menu');
+    const iconClose   = document.getElementById('icon-close');
+
+    menuToggle.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      iconMenu.classList.toggle('hidden', !isOpen);
+      iconClose.classList.toggle('hidden', isOpen);
+    });
+
+    function closeMobileMenu() {
+      mobileMenu.classList.add('hidden');
+      iconMenu.classList.remove('hidden');
+      iconClose.classList.add('hidden');
+    }
+
+    // ── Reservation form ───────────────────────
+    function handleReservation(e) {
+      e.preventDefault();
+      const msg = document.getElementById('success-msg');
+      msg.classList.remove('hidden');
+      e.target.reset();
+      msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ── Scroll-reveal ──────────────────────────
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  </script>
+
+</body>
+</html>

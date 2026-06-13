@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explorez Le Mauricien, un restaurant offrant une expérience culinaire unique avec des plats raffinés et un service exceptionnel." />
+  <title>Découvrez Le Mauricien - Votre Destination Culinaire</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FF5733',
+            secondary: '#C70039',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+
+    .hero-bg {
+      background-image:
+        linear-gradient(135deg, rgba(199,0,57,0.88) 0%, rgba(255,87,51,0.78) 100%),
+        url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(199,0,57,0.18);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: #FF5733;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link { position: relative; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in          { animation: fadeInUp 0.8s ease forwards; }
+    .fade-in-delay-1  { animation: fadeInUp 0.8s ease 0.2s forwards; opacity: 0; }
+    .fade-in-delay-2  { animation: fadeInUp 0.8s ease 0.4s forwards; opacity: 0; }
+    .fade-in-delay-3  { animation: fadeInUp 0.8s ease 0.6s forwards; opacity: 0; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #FF5733, #C70039);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-divider {
+      width: 60px; height: 4px;
+      background: linear-gradient(90deg, #FF5733, #C70039);
+      border-radius: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #FF5733, #C70039);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255,87,51,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,87,51,0.55);
+    }
+
+    .btn-outline {
+      border: 2px solid #FF5733;
+      color: #FF5733;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      background: linear-gradient(135deg, #FF5733, #C70039);
+      color: white;
+      border-color: transparent;
+    }
+
+    .mobile-menu {
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 0; opacity: 0; overflow: hidden;
+    }
+    .mobile-menu.open { max-height: 320px; opacity: 1; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body class="font-sans text-gray-800 antialiased">
+
+  <!-- ════════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════════ -->
+  <nav class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-full btn-primary flex items-center justify-center shadow">
+            <span class="text-white font-bold text-lg leading-none">M</span>
+          </div>
+          <span class="font-serif text-xl font-bold gradient-text tracking-wide">Le Mauricien</span>
+        </a>
+
+        <!-- Desktop links -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#about"       class="nav-link text-gray-600 hover:text-primary font-medium transition-colors text-sm">À Propos</a>
+          <a href="#specialties" class="nav-link text-gray-600 hover:text-primary font-medium transition-colors text-sm">Spécialités</a>
+          <a href="#events"      class="nav-link text-gray-600 hover:text-primary font-medium transition-colors text-sm">Événements</a>
+          <a href="#contact"     class="btn-primary text-white px-5 py-2 rounded-full font-semibold text-sm">Réserver</a>
+        </div>
+
+        <!-- Burger -->
+        <button id="burger" class="md:hidden p-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors">
+          <svg id="icon-open"  class="w-6 h-6"        fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="mobile-menu md:hidden pb-4">
+        <div class="flex flex-col space-y-3 pt-2">
+          <a href="#about"       class="text-gray-600 hover:text-primary font-medium px-2 py-1 transition-colors">À Propos</a>
+          <a href="#specialties" class="text-gray-600 hover:text-primary font-medium px-2 py-1 transition-colors">Spécialités</a>
+          <a href="#events"      class="text-gray-600 hover:text-primary font-medium px-2 py-1 transition-colors">Événements</a>
+          <a href="#contact"     class="btn-primary text-white px-5 py-2.5 rounded-full font-semibold text-sm text-center">Réserver une table</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════ -->
+  <section class="hero-bg min-h-screen flex items-center justify-center text-white pt-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+
+      <div class="fade-in">
+        <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-5 py-2 rounded-full mb-6 border border-white/30 tracking-wider">
+          ✦ Restaurant Gastronomique
+        </span>
+      </div>
+
+      <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 fade-in-delay-1">
+        Découvrez<br/>
+        <span class="text-yellow-300">Le Mauricien</span>
+      </h1>
+
+      <p class="text-lg sm:text-xl text-white/90 mb-10 max-w-2xl mx-auto fade-in-delay-2 leading-relaxed">
+        Votre Destination Culinaire — saveurs authentiques, ambiance chaleureuse et service d'exception au cœur de la ville.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center fade-in-delay-3">
+        <a href="#contact"
+           class="bg-white text-primary font-bold px-9 py-4 rounded-full hover:bg-yellow-300 hover:text-secondary transition-all duration-300 shadow-xl hover:shadow-2xl">
+          Réservez votre table dès maintenant
+        </a>
+        <a href="#specialties"
+           class="border-2 border-white text-white font-bold px-9 py-4 rounded-full hover:bg-white hover:text-primary transition-all duration-300">
+          Voir le menu
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-20 grid grid-cols-3 gap-6 max-w-sm mx-auto fade-in-delay-3">
+        <div class="text-center">
+          <div class="text-3xl font-bold text-yellow-300">15+</div>
+          <div class="text-white/80 text-xs mt-1">Ans d'expérience</div>
+        </div>
+        <div class="text-center border-x border-white/30">
+          <div class="text-3xl font-bold text-yellow-300">200+</div>
+          <div class="text-white/80 text-xs mt-1">Plats au menu</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-yellow-300">4.9★</div>
+          <div class="text-white/80 text-xs mt-1">Note clients</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 1 — À PROPOS
+  ════════════════════════════════════════ -->
+  <section id="about" class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Image grid -->
+        <div class="relative reveal">
+          <div class="grid grid-cols-2 gap-4">
+            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=700&q=80"
+                 alt="Salle du restaurant Le Mauricien"
+                 class="rounded-2xl object-cover w-full h-60 shadow-lg col-span-2 hover:scale-[1.02] transition-transform duration-500" />
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80"
+                 alt="Plat gastronomique"
+                 class="rounded-2xl object-cover w-full h-48 shadow-lg hover:scale-[1.02] transition-transform duration-500" />
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80"
+                 alt="Ambiance chaleureuse"
+                 class="rounded-2xl object-cover w-full h-48 shadow-lg hover:scale-[1.02] transition-transform duration-500" />
+          </div>
+          <!-- Floating badge -->
+          <div class="absolute -bottom-5 -right-4 bg-white rounded-2xl p-4 shadow-xl border border-gray-100 flex items-center space-x-3">
+            <div class="w-11 h-11 btn-primary rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            </div>
+            <div>
+              <div class="font-bold text-gray-800 text-sm">Depuis 2008</div>
+              <div class="text-gray-400 text-xs">Au cœur de la ville</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="reveal">
+          <span class="text-primary font-semibold text-sm uppercase tracking-widest">À Propos de Le Mauricien</span>
+          <div class="section-divider mt-3 mb-7"></div>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-6 leading-tight">
+            Cuisine délicieuse,<br/>
+            <span class="gradient-text">ambiance chaleureuse</span>
+          </h2>
+          <p class="text-gray-600 text-lg leading-relaxed mb-5">
+            Le Mauricien est un restaurant réputé pour sa cuisine délicieuse et son ambiance chaleureuse.
+            Situé au cœur de la ville, il propose une variété de plats inspirés des traditions culinaires locales.
+          </p>
+          <p class="text-gray-500 leading-relaxed mb-9">
+            Notre chef sélectionne chaque matin les meilleurs produits frais pour vous offrir
+            une expérience gustative inoubliable. Chaque repas est un voyage au cœur des saveurs authentiques.
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-3 mb-10">
+            <span class="bg-orange-50 text-primary font-medium px-4 py-2 rounded-full text-sm border border-orange-100">🌿 Produits frais</span>
+            <span class="bg-orange-50 text-primary font-medium px-4 py-2 rounded-full text-sm border border-orange-100">👨‍🍳 Chef passionné</span>
+            <span class="bg-orange-50 text-primary font-medium px-4 py-2 rounded-full text-sm border border-orange-100">🍷 Cave à vins</span>
+            <span class="bg-orange-50 text-primary font-medium px-4 py-2 rounded-full text-sm border border-orange-100">🎵 Ambiance live</span>
+          </div>
+
+          <a href="#contact"
+             class="btn-primary inline-block text-white font-bold px-9 py-4 rounded-full text-sm">
+            Réservez votre table dès maintenant →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 2 — NOS SPÉCIALITÉS
+  ════════════════════════════════════════ -->
+  <section id="specialties" class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="text-center mb-16 reveal">
+        <span class="text-primary font-semibold text-sm uppercase tracking-widest">Nos Spécialités</span>
+        <div class="section-divider mt-3 mb-7 mx-auto"></div>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Une cuisine d'exception</h2>
+        <p class="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+          Découvrez notre menu varié comprenant des fruits de mer frais, des viandes grillées et des plats végétariens.
+          Chaque plat est préparé avec des ingrédients de la plus haute qualité.
+        </p>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="flex flex-wrap justify-center gap-3 mb-12">
+        <button class="tab-btn btn-primary text-white px-6 py-2.5 rounded-full font-semibold text-sm" data-tab="all">Tout voir</button>
+        <button class="tab-btn bg-white text-gray-600 border border-gray-200 px-6 py-2.5 rounded-full font-semibold text-sm hover:border-primary hover:text-primary transition-all" data-tab="seafood">🦞 Fruits de mer</button>
+        <button class="tab-btn bg-white text-gray-600 border border-gray-200 px-6 py-2.5 rounded-full font-semibold text-sm hover:border-primary hover:text-primary transition-all" data-tab="meat">🥩 Viandes</button>
+        <button class="tab-btn bg-white text-gray-600 border border-gray-200 px-6 py-2.5 rounded-full font-semibold text-sm hover:border-primary hover:text-primary transition-all" data-tab="veg">🌿 Végétarien</button>
+      </div>
+
+      <!-- Cards -->
+      <div id="cards-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-md reveal" data-category="seafood">
+          <div class="overflow-hidden h-52">
+            <img src="https://images.unsplash.com/photo-1559742811-822873691df8?w=600&q=80" alt="Plateau de fruits de mer" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+          </div>
+          <div class="p-6">
+            <span class="bg-orange-50 text-primary text-xs font-bold px-3 py-1 rounded-full">🦞 Fruits de mer</span>
+            <h3 class="font-serif text-xl font-bold text-gray-900 mt-3 mb-2">Plateau Royal de la Mer</h3>
+            <p class="text-gray-500 text-sm mb-4 leading-relaxed">Homard, langoustines, huîtres et crevettes géantes, accompagnés de nos sauces maison.</p>
+            <div class="flex items-center justify-between">
+              <span class="gradient-text font-bold text-xl">€65</span>
+              <span class="text-yellow-400 text-sm">★★★★★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-md reveal" data-category="meat">
+          <div class="overflow-hidden h-52">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="Côte de bœuf grillée" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+          </div>
+          <div class="p-6">
+            <span class="bg-orange-50 text-primary text-xs font-bold px-3 py-1 rounded-full">🥩 Viandes</span>
+            <h3 class="font-serif text-xl font-bold text-gray-900 mt-3 mb-2">Côte de Bœuf Mauricienne</h3>
+            <p class="text-gray-500 text-sm mb-4 leading-relaxed">Côte de bœuf grillée au feu de bois, épices créoles, légumes de saison et jus corsé.</p>
+            <div class="flex items-center justify-between">
+              <span class="gradient-text font-bold text-xl">€48</span>
+              <span class="text-yellow-400 text-sm">★★★★★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-md reveal" data-category="veg">
+          <div class="overflow-hidden h-52">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="Bowl végétarien" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+          </div>
+          <div class="p-6">
+            <span class="bg-orange-50 text-primary text-xs font-bold px-3 py-1 rounded-full">🌿 Végétarien</span>
+            <h3 class="font-serif text-xl font-bold text-gray-900 mt-3 mb-2">Bowl Jardin Créole</h3>
+            <p class="text-gray-500 text-sm mb-4 leading-relaxed">Légumes grillés, quinoa, avocat, pois chiches et vinaigrette aux herbes fraîches du jardin.</p>
+            <div class="flex items-center justify-between">
+              <span class="gradient-text font-bold text-xl">€28</span>
+              <span class="text-yellow-400 text-sm">★★★★☆</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-md reveal" data-category="seafood">
+          <div class="overflow-hidden h-52">
+            <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&q=80" alt="Tartare de thon" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+          </div>
+          <div class="p-6">
+            <span class="bg-orange-50 text-primary text-xs font-bold px-3 py-1 rounded-full">🐟 Fruits de mer</span>
+            <h3 class="font-serif text-xl font-bold text-gray-900 mt-3 mb-2">Tartare de Thon Épicé</h3>
+            <p class="text-gray-500 text-sm mb-4 leading-relaxed">Thon rouge, mangue fraîche, gingembre, coriandre et huile de sésame grillé.</p>
+            <div class="flex items-center justify-between">
+              <span class="gradient-text font-bold text-xl">€34</span>
+              <span class="text-yellow-400 text-sm">★★★★★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-md reveal" data-category="meat">
+          <div class="overflow-hidden h-52">
+            <img src="https://images.unsplash.com/photo-1546833998-877b37c2e5c6?w=600&q=80" alt="Gigot d'agneau" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+          </div>
+          <div class="p-6">
+            <span class="bg-orange-50 text-primary text-xs font-bold px-3 py-1 rounded-full">🥩 Viandes</span>
+            <h3 class="font-serif text-xl font-bold text-gray-900 mt-3 mb-2">Gigot d'Agneau aux Épices</h3>
+            <p class="text-gray-500 text-sm mb-4 leading-relaxed">Agneau rôti lentement aux épices mauriciennes, servi avec purée de patate douce.</p>
+            <div class="flex items-center justify-between">
+              <span class="gradient-text font-bold text-xl">€42</span>
+              <span class="text-yellow-400 text-sm">★★★★★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-md reveal" data-category="veg">
+          <div class="overflow-hidden h-52">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80" alt="Curry végétal" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"/>
+          </div>
+          <div class="p-6">
+            <span class="bg-orange-50 text-primary text-xs font-bold px-3 py-1 rounded-full">🌿 Végétarien</span>
+            <h3 class="font-serif text-xl font-bold text-gray-900 mt-3 mb-2">Curry Végétal de l'Île</h3>
+            <p class="text-gray-500 text-sm mb-4 leading-relaxed">Curry crémeux à la noix de coco, légumes du marché, riz basmati et pain naan maison.</p>
+            <div class="flex items-center justify-between">
+              <span class="gradient-text font-bold text-xl">€26</span>
+              <span class="text-yellow-400 text-sm">★★★★☆</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-12 reveal">
+        <a href="#contact" class="btn-outline inline-block font-bold px-10 py-4 rounded-full text-sm">
+          Consultez notre menu complet →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 3 — ÉVÉNEMENTS & OFFRES
+  ════════════════════════════════════════ -->
+  <section id="events" class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="text-center mb-16 reveal">
+        <span class="text-primary font-semibold text-sm uppercase tracking-widest">Événements & Offres</span>
+        <div class="section-divider mt-3 mb-7 mx-auto"></div>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Vivez des moments inoubliables</h2>
+        <p class="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+          Le Mauricien organise régulièrement des événements spéciaux et propose des offres exclusives pour nos clients.
+          Restez à l'écoute pour ne rien manquer.
+        </p>
+      </div>
+
+      <!-- Event cards -->
+      <div class="grid md:grid-cols-3 gap-8 mb-16">
+
+        <div class="card-hover group relative rounded-3xl overflow-hidden shadow-md reveal">
+          <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80" alt="Soirée Jazz" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">Chaque vendredi</span>
+            <h3 class="font-serif text-xl font-bold text-white mb-1">Soirée Jazz & Gastronomie</h3>
+            <p class="text-white/80 text-sm">Musique live et menu dégustation 5 services.</p>
+          </div>
+        </div>
+
+        <div class="card-hover group relative rounded-3xl overflow-hidden shadow-md reveal">
+          <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80" alt="Brunch dominical" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="bg-secondary text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">Chaque dimanche</span>
+            <h3 class="font-serif text-xl font-bold text-white mb-1">Brunch Dominical</h3>
+            <p class="text-white/80 text-sm">Buffet généreux de 10h à 15h, ambiance festive.</p>
+          </div>
+        </div>
+
+        <div class="card-hover group relative rounded-3xl overflow-hidden shadow-md reveal">
+          <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&q=80" alt="Dégustation de vins" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">1er samedi/mois</span>
+            <h3 class="font-serif text-xl font-bold text-white mb-1">Dégustation de Vins</h3>
+            <p class="text-white/80 text-sm">Grands crus commentés par notre sommelier.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Promo banner -->
+      <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-3xl p-8 md:p-12 border border-orange-100 reveal">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h3 class="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mb-5">Offres exclusives pour nos fidèles clients</h3>
+            <ul class="space-y-3 text-gray-600 text-sm">
+              <li class="flex items-center space-x-3">
+                <span class="w-2 h-2 bg-primary rounded-full flex-shrink-0"></span>
+                <span>–20 % sur votre 5e visite avec la carte fidélité</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <span class="w-2 h-2 bg-primary rounded-full flex-shrink-0"></span>
+                <span>Menu anniversaire offert sur présentation d'une pièce d'identité</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <span class="w-2 h-2 bg-primary rounded-full flex-shrink-0"></span>
+                <span>Happy hour de 18h à 20h du lundi au jeudi</span>
+              </li>
+            </ul>
+          </div>
+          <div class="text-center md:text-right">
+            <div class="inline-block bg-white rounded-2xl p-6 shadow-md">
+              <div class="text-5xl font-bold gradient-text mb-2">–20%</div>
+              <div class="text-gray-600 text-sm">Sur votre prochaine réservation<br/>Code : <strong class="text-secondary">MAURICIEN20</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       NEWSLETTER
+  ════════════════════════════════════════ -->
+  <section id="newsletter" class="py-20" style="background: linear-gradient(135deg, #C70039 0%, #FF5733 100%);">
+    <div class="max-w-3xl mx-auto px-4 text-center reveal">
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-4">Ne manquez rien de nos actualités</h2>
+      <p class="text-white/90 text-lg mb-10 leading-relaxed">
+        Inscrivez-vous à notre newsletter et recevez en avant-première nos événements,
+        offres exclusives et nouvelles créations culinaires.
+      </p>
+      <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+        <input
+          type="email"
+          placeholder="Votre adresse email..."
+          class="flex-1 px-6 py-4 rounded-full text-gray-800 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-lg"
+          required
+        />
+        <button type="submit"
+                class="bg-white text-primary font-bold px-7 py-4 rounded-full hover:bg-yellow-300 hover:text-secondary transition-all duration-300 shadow-lg whitespace-nowrap text-sm">
+          Inscrivez-vous à notre newsletter
+        </button>
+      </form>
+      <p class="text-white/60 text-xs mt-4">Pas de spam · Désabonnement à tout moment</p>
+      <div id="success-msg" class="hidden mt-6 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full font-semibold inline-block">
+        Merci ! Vous êtes maintenant inscrit(e) à notre newsletter.
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       TÉMOIGNAGES
+  ════════════════════════════════════════ -->
+  <section class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <span class="text-primary font-semibold text-sm uppercase tracking-widest">Témoignages</span>
+        <div class="section-divider mt-3 mb-7 mx-auto"></div>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900">Ce que disent nos clients</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <div class="bg-white rounded-3xl p-8 shadow-md card-hover reveal">
+          <div class="text-yellow-400 text-xl mb-4">★★★★★</div>
+          <p class="text-gray-600 italic mb-6 leading-relaxed">"Une expérience culinaire hors du commun ! Le plateau de fruits de mer était frais et délicieux. L'ambiance est parfaite pour une soirée romantique."</p>
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 btn-primary rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">S</div>
+            <div>
+              <div class="font-semibold text-gray-800 text-sm">Sophie M.</div>
+              <div class="text-gray-400 text-xs">Cliente fidèle</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-md card-hover reveal">
+          <div class="text-yellow-400 text-xl mb-4">★★★★★</div>
+          <p class="text-gray-600 italic mb-6 leading-relaxed">"Le meilleur restaurant de la ville, sans hésitation. La côte de bœuf est extraordinaire et le service est irréprochable. À recommander absolument !"</p>
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style="background:#C70039;">T</div>
+            <div>
+              <div class="font-semibold text-gray-800 text-sm">Thomas L.</div>
+              <div class="text-gray-400 text-xs">Habitué depuis 3 ans</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-md card-hover reveal">
+          <div class="text-yellow-400 text-xl mb-4">★★★★★</div>
+          <p class="text-gray-600 italic mb-6 leading-relaxed">"Les soirées jazz du vendredi sont magiques ! La musique, la nourriture et l'atmosphère créent un mélange parfait. Je ne raterais cela pour rien au monde."</p>
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">A</div>
+            <div>
+              <div class="font-semibold text-gray-800 text-sm">Amina K.</div>
+              <div class="text-gray-400 text-xs">Amatrice de jazz</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       CONTACT / RÉSERVATION
+  ════════════════════════════════════════ -->
+  <section id="contact" class="py-24 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <span class="text-primary font-semibold text-sm uppercase tracking-widest">Réservation</span>
+        <div class="section-divider mt-3 mb-7 mx-auto"></div>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Réservez votre table</h2>
+        <p class="text-gray-600 text-lg max-w-xl mx-auto">Contactez-nous directement ou remplissez le formulaire ci-dessous et notre équipe vous recontacte dans les plus brefs délais.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-start">
+
+        <!-- Info -->
+        <div class="reveal space-y-6">
+          <div class="flex items-start space-x-4">
+            <div class="w-11 h-11 btn-primary rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800 mb-1">Adresse</div>
+              <div class="text-gray-500 text-sm">12 Rue des Saveurs, 75001 Paris</div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="w-11 h-11 btn-primary rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800 mb-1">Téléphone</div>
+              <div class="text-gray-500 text-sm">+33 1 23 45 67 89</div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="w-11 h-11 btn-primary rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800 mb-1">Horaires</div>
+              <div class="text-gray-500 text-sm">Lun–Jeu 12h–22h · Ven–Sam 12h–23h30<br/>Dimanche 10h–21h</div>
+            </div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="w-11 h-11 btn-primary rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800 mb-1">Email</div>
+              <div class="text-gray-500 text-sm">contact@lemauricien.fr</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form id="reservation-form" class="bg-gray-50 rounded-3xl p-8 shadow-sm reveal space-y-5">
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-gray-700 text-sm font-semibold mb-2">Prénom</label>
+              <input type="text" placeholder="Marie" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all" required />
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-semibold mb-2">Nom</label>
+              <input type="text" placeholder="Dupont" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all" required />
+            </div>
+          </div>
+          <div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Téléphone</label>
+            <input type="tel" placeholder="+33 6 00 00 00 00" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all" required />
+          </div>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-gray-700 text-sm font-semibold mb-2">Date</label>
+              <input type="date" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all" required />
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-semibold mb-2">Nombre de personnes</label>
+              <select class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all bg-white">
+                <option>1 personne</option>
+                <option>2 personnes</option>
+                <option>3–4 personnes</option>
+                <option>5–6 personnes</option>
+                <option>7+ personnes</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Message (optionnel)</label>
+            <textarea rows="3" placeholder="Allergie, occasion spéciale, demande particulière..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm transition-all resize-none"></textarea>
+          </div>
+          <button type="submit" class="btn-primary w-full text-white font-bold py-4 rounded-xl text-sm">
+            Confirmer ma réservation →
+          </button>
+          <div id="form-success" class="hidden text-center text-green-700 font-semibold text-sm bg-green-50 py-3 rounded-xl">
+            Réservation envoyée ! Nous vous contacterons très bientôt.
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════ -->
+  <footer class="bg-gray-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+        <div class="lg:col-span-1">
+          <a href="#" class="flex items-center space-x-2 mb-5">
+            <div class="w-10 h-10 btn-primary rounded-full flex items-center justify-center">
+              <span class="text-white font-bold text-xl leading-none">M</span>
+            </div>
+            <span class="font-serif text-2xl font-bold">Le Mauricien</span>
+          </a>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Votre destination culinaire au coeur de la ville, pour des moments gastronomiques inoubliables.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-5 text-sm uppercase tracking-wider">Navigation</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="#about"       class="hover:text-primary transition-colors">À Propos</a></li>
+            <li><a href="#specialties" class="hover:text-primary transition-colors">Nos Spécialités</a></li>
+            <li><a href="#events"      class="hover:text-primary transition-colors">Événements</a></li>
+            <li><a href="#contact"     class="hover:text-primary transition-colors">Réservation</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-5 text-sm uppercase tracking-wider">Horaires</h4>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li class="flex justify-between gap-4"><span>Lun – Jeu</span><span>12h – 22h</span></li>
+            <li class="flex justify-between gap-4"><span>Ven – Sam</span><span>12h – 23h30</span></li>
+            <li class="flex justify-between gap-4"><span>Dimanche</span><span>10h – 21h</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-5 text-sm uppercase tracking-wider">Contact</h4>
+          <ul class="space-y-3 text-gray-400 text-sm">
+            <li>12 Rue des Saveurs, 75001 Paris</li>
+            <li>+33 1 23 45 67 89</li>
+            <li>contact@lemauricien.fr</li>
+          </ul>
+          <div class="flex items-center space-x-3 mt-5">
+            <a href="#" aria-label="Facebook" class="w-9 h-9 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+            </a>
+            <a href="#" aria-label="Instagram" class="w-9 h-9 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke-width="2"/>
+                <circle cx="12" cy="12" r="4" stroke-width="2"/>
+                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 text-center">
+        <p class="text-gray-500 text-sm">© 2024 Le Mauricien · Tous droits réservés · Restaurant Gastronomique Paris</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════
+       SCRIPTS
+  ════════════════════════════════════════ -->
+  <script>
+    /* Mobile menu */
+    const burger     = document.getElementById('burger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconOpen   = document.getElementById('icon-open');
+    const iconClose  = document.getElementById('icon-close');
+
+    burger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      iconOpen.classList.toggle('hidden');
+      iconClose.classList.toggle('hidden');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      iconOpen.classList.remove('hidden');
+      iconClose.classList.add('hidden');
+    }));
+
+    /* Tab filter */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.style.background = '';
+          b.style.color = '';
+          b.style.boxShadow = '';
+          b.classList.remove('btn-primary', 'text-white');
+          b.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+        });
+        btn.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+        btn.classList.add('btn-primary', 'text-white');
+
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('[data-category]').forEach(card => {
+          if (tab === 'all' || card.dataset.category === tab) {
+            card.style.display = '';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(16px)';
+            requestAnimationFrame(() => {
+              card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            });
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    /* Newsletter */
+    document.getElementById('newsletter-form').addEventListener('submit', e => {
+      e.preventDefault();
+      e.target.style.display = 'none';
+      document.getElementById('success-msg').classList.remove('hidden');
+    });
+
+    /* Reservation form */
+    document.getElementById('reservation-form').addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('form-success').classList.remove('hidden');
+      e.target.querySelectorAll('input,textarea,select,button[type=submit]').forEach(el => el.disabled = true);
+    });
+
+    /* Scroll reveal */
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+  </script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+{
+  "name": "Auto-Candidature Freelance - Tony PAYET",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 1 }]
+        }
+      },
+      "id": "node-001",
+      "name": "Toutes les heures",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 400]
+    },
+
+    { "parameters": { "url": "https://remoteok.com/api", "options": {} },
+      "id": "node-002", "name": "RemoteOK API", "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2, "position": [480, 100] },
+
+    { "parameters": { "jsCode": "const data = $input.first().json;\nconst jobs = Array.isArray(data) ? data.slice(1) : [];\nconst kw = /web|javascript|react|vue|angular|node|python|ai|ia|automation|automatisation|fullstack|frontend|backend|wordpress|php|n8n|langchain|chatbot|llm/i;\nreturn jobs.filter(j => kw.test(`${j.position||''} ${(j.tags||[]).join(' ')} ${j.description||''}`)).slice(0,10).map(j => ({ json: { id:`remoteok_${j.id||Math.random().toString(36).substr(2,9)}`, title:j.position||'Sans titre', company:j.company||'Inconnu', description:(j.description||'').replace(/<[^>]*>/g,'').substring(0,600), url:j.url||`https://remoteok.com/jobs/${j.id}`, platform:'RemoteOK', skills:(j.tags||[]).join(', '), posted_at:j.date||new Date().toISOString() } }));" },
+      "id": "node-003", "name": "Parse RemoteOK", "type": "n8n-nodes-base.code",
+      "typeVersion": 2, "position": [700, 100] },
+
+    { "parameters": { "url": "https://remotive.com/api/remote-jobs", "sendQuery": true,
+        "queryParameters": { "parameters": [{ "name": "category", "value": "software-dev" }, { "name": "limit", "value": "20" }] }, "options": {} },
+      "id": "node-004", "name": "Remotive API", "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2, "position": [480, 300] },
+
+    { "parameters": { "jsCode": "const data = $input.first().json;\nconst jobs = data.jobs || [];\nconst kw = /web|javascript|react|vue|angular|node|python|ai|ia|automation|automatisation|fullstack|frontend|backend|wordpress|php|n8n|langchain|chatbot|llm/i;\nreturn jobs.filter(j => kw.test(`${j.title||''} ${j.description||''} ${(j.tags||[]).join(' ')}`)).slice(0,10).map(j => ({ json: { id:`remotive_${j.id}`, title:j.title||'Sans titre', company:j.company_name||'Inconnu', description:(j.description||'').replace(/<[^>]*>/g,'').substring(0,600), url:j.url||'', platform:'Remotive', skills:(j.tags||[]).join(', '), posted_at:j.publication_date||new Date().toISOString() } }));" },
+      "id": "node-005", "name": "Parse Remotive", "type": "n8n-nodes-base.code",
+      "typeVersion": 2, "position": [700, 300] },
+
+    { "parameters": { "url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+        "options": { "response": { "response": { "responseFormat": "text" } } } },
+      "id": "node-006", "name": "WWR RSS", "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2, "position": [480, 500] },
+
+    { "parameters": { "jsCode": "const xml = $input.first().json?.data || String($input.first().json);\nconst items=[];\nconst re=/<item>([\\s\\S]*?)<\\/item>/g;\nlet m;\nwhile((m=re.exec(xml))!==null){\n  const it=m[1];\n  const get=tag=>{for(const p of[new RegExp(`<${tag}[^>]*><!\\\\[CDATA\\\\[([\\\\s\\\\S]*?)\\\\]\\\\]><\\/${tag}>`),new RegExp(`<${tag}[^>]*>([^<]*)<\\/${tag}>`)]) {const r=it.match(p);if(r)return r[1].trim();}return '';};\n  const title=get('title'),link=get('link')||get('guid'),desc=get('description');\n  if(title){const slug=link.split('/').filter(Boolean).pop()||Math.random().toString(36).substr(2,9);items.push({json:{id:`wwr_${slug}`,title:title.includes(':')?title.split(':').slice(1).join(':').trim():title,company:title.includes(':')?title.split(':')[0].trim():'WWR',description:desc.replace(/<[^>]*>/g,'').substring(0,600),url:link,platform:'WeWorkRemotely',skills:'',posted_at:new Date().toISOString()}});}\n}\nconst kw=/web|javascript|react|vue|angular|node|python|ai|ia|automation|fullstack|frontend|backend|wordpress|php/i;\nreturn items.filter(i=>kw.test(`${i.json.title} ${i.json.description}`)).slice(0,10);" },
+      "id": "node-007", "name": "Parse WWR", "type": "n8n-nodes-base.code",
+      "typeVersion": 2, "position": [700, 500] },
+
+    { "parameters": { "url": "https://fr.indeed.com/rss", "sendQuery": true,
+        "queryParameters": { "parameters": [{ "name": "q", "value": "freelance développeur web IA" }, { "name": "sort", "value": "date" }, { "name": "fromage", "value": "1" }] },
+        "options": { "response": { "response": { "responseFormat": "text" } } } },
+      "id": "node-008", "name": "Indeed France RSS", "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2, "position": [480, 700] },
+
+    { "parameters": { "jsCode": "const xml = $input.first().json?.data || String($input.first().json);\nconst items=[];\nconst re=/<item>([\\s\\S]*?)<\\/item>/g;\nlet m;\nwhile((m=re.exec(xml))!==null){\n  const it=m[1];\n  const get=tag=>{for(const p of[new RegExp(`<${tag}[^>]*><!\\\\[CDATA\\\\[([\\\\s\\\\S]*?)\\\\]\\\\]><\\/${tag}>`),new RegExp(`<${tag}[^>]*>([^<]*)<\\/${tag}>`)]) {const r=it.match(p);if(r)return r[1].trim();}return '';};\n  const title=get('title'),link=get('link')||get('guid'),desc=get('description'),source=get('source')||'Indeed';\n  if(title){const slug=link.split('jk=')[1]?.substring(0,16)||Math.random().toString(36).substr(2,9);items.push({json:{id:`indeed_${slug}`,title,company:source,description:desc.replace(/<[^>]*>/g,'').substring(0,600),url:link,platform:'Indeed France',skills:'',posted_at:new Date().toISOString()}});}\n}\nconst kw=/web|javascript|react|vue|angular|node|python|ai|ia|automation|automatisation|fullstack|frontend|backend|wordpress|php|freelance/i;\nreturn items.filter(i=>kw.test(`${i.json.title} ${i.json.description}`)).slice(0,10);" },
+      "id": "node-009", "name": "Parse Indeed", "type": "n8n-nodes-base.code",
+      "typeVersion": 2, "position": [700, 700] },
+
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://jsearch.p.rapidapi.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-RapidAPI-Key", "value": "={{ $env.RAPIDAPI_KEY }}" },
+            { "name": "X-RapidAPI-Host", "value": "jsearch.p.rapidapi.com" }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "query", "value": "freelance web developer AI automation" },
+            { "name": "page", "value": "1" },
+            { "name": "num_pages", "value": "1" },
+            { "name": "date_posted", "value": "today" },
+            { "name": "remote_jobs_only", "value": "true" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-021",
+      "name": "JSearch API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 900]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst jobs = data.data || [];\n\nreturn jobs.slice(0, 10).map(j => ({\n  json: {\n    id: `jsearch_${j.job_id || Math.random().toString(36).substr(2,9)}`,\n    title: j.job_title || 'Sans titre',\n    company: j.employer_name || 'Inconnu',\n    description: (j.job_description || '').substring(0, 600),\n    url: j.job_apply_link || j.job_google_link || '',\n    platform: `JSearch/${j.job_publisher || 'LinkedIn'}`,\n    skills: (j.job_required_skills || []).join(', '),\n    posted_at: j.job_posted_at_datetime_utc || new Date().toISOString()\n  }\n}));"
+      },
+      "id": "node-022",
+      "name": "Parse JSearch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 900]
+    },
+
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.freelancer.com/api/projects/0.1/projects/active/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Freelancer-OAuth-V1", "value": "={{ $env.FREELANCER_TOKEN }}" }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "query", "value": "web developer AI automation chatbot" },
+            { "name": "limit", "value": "20" },
+            { "name": "offset", "value": "0" },
+            { "name": "full_description", "value": "true" },
+            { "name": "job_details", "value": "true" },
+            { "name": "languages[]", "value": "fr" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-023",
+      "name": "Freelancer.com API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 1100]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst projects = data?.result?.projects || [];\n\nreturn projects.slice(0, 10).map(p => ({\n  json: {\n    id: `freelancer_${p.id}`,\n    title: p.title || 'Sans titre',\n    company: `Client #${p.owner_id || '?'}`,\n    description: (p.description || '').substring(0, 600),\n    url: `https://www.freelancer.com/projects/${p.seo_url || p.id}`,\n    platform: 'Freelancer.com',\n    skills: (p.jobs || []).map(j => j.name).join(', '),\n    budget: p.budget ? `${p.budget.minimum}-${p.budget.maximum} ${p.currency?.sign || '$'}` : 'N/A',\n    posted_at: p.time_submitted ? new Date(p.time_submitted * 1000).toISOString() : new Date().toISOString()\n  }\n}));"
+      },
+      "id": "node-024",
+      "name": "Parse Freelancer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 1100]
+    },
+
+    { "parameters": { "mode": "append", "options": {} },
+      "id": "node-010", "name": "Merge RemoteOK+Remotive",
+      "type": "n8n-nodes-base.merge", "typeVersion": 3, "position": [940, 200] },
+
+    { "parameters": { "mode": "append", "options": {} },
+      "id": "node-011", "name": "Merge WWR+Indeed",
+      "type": "n8n-nodes-base.merge", "typeVersion": 3, "position": [940, 600] },
+
+    { "parameters": { "mode": "append", "options": {} },
+      "id": "node-012", "name": "Merge Groupe1",
+      "type": "n8n-nodes-base.merge", "typeVersion": 3, "position": [1160, 400] },
+
+    { "parameters": { "mode": "append", "options": {} },
+      "id": "node-025", "name": "Merge JSearch+Freelancer",
+      "type": "n8n-nodes-base.merge", "typeVersion": 3, "position": [940, 1000] },
+
+    { "parameters": { "mode": "append", "options": {} },
+      "id": "node-026", "name": "Merge All Sources",
+      "type": "n8n-nodes-base.merge", "typeVersion": 3, "position": [1380, 700] },
+
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nif (!staticData.appliedJobs) staticData.appliedJobs = [];\n\nconst allJobs = $input.all().map(item => item.json).filter(j => j && j.id);\n\nconst seenIds = new Set();\nconst newJobs = allJobs.filter(job => {\n  if (staticData.appliedJobs.includes(job.id)) return false;\n  if (seenIds.has(job.id)) return false;\n  seenIds.add(job.id);\n  return true;\n});\n\nconst toProcess = newJobs.slice(0, 3);\nconsole.log(`Total: ${allJobs.length} | Nouvelles: ${newJobs.length} | A traiter: ${toProcess.length}`);\n\nif (toProcess.length === 0) {\n  return [{ json: { __noJobs: true, message: 'Aucune nouvelle offre' } }];\n}\nreturn toProcess.map(job => ({ json: job }));"
+      },
+      "id": "node-013",
+      "name": "Filtrer Dédupliquer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1600, 700]
+    },
+
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [{ "id": "cond-001", "leftValue": "={{ $json.__noJobs }}", "rightValue": true, "operator": { "type": "boolean", "operation": "notEquals" } }],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-014", "name": "Nouvelles offres?",
+      "type": "n8n-nodes-base.if", "typeVersion": 2, "position": [1820, 700]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "const job = $input.item.json;\nconst budgetInfo = job.budget ? `\\nBudget: ${job.budget}` : '';\n\nconst prompt = `Tu es Tony PAYET, développeur web et IA freelance expérimenté.\\n\\nRédige une candidature professionnelle et percutante en FRANÇAIS (150-200 mots maximum) pour cette offre freelance :\\n\\nTitre: ${job.title}\\nEntreprise: ${job.company}\\nPlateforme: ${job.platform}${budgetInfo}\\nCompétences mentionnées: ${job.skills || 'non spécifiées'}\\nDescription: ${job.description}\\n\\nProfil de Tony PAYET:\\n- Développeur web full-stack (React, Vue.js, Node.js, PHP/WordPress, Python)\\n- Expert IA et automatisation (n8n, Make/Integromat, Claude AI, LangChain)\\n- Création d'agents IA, chatbots, RAG, automatisations métier\\n- Disponible 100% remote (basé à La Réunion)\\n- LinkedIn: https://www.linkedin.com/in/payet-tony-76695197/\\n- TJM: 55€/jour\\n- Email: tony.payet.professionnel@gmail.com\\n\\nRègles:\\n1. Accroche forte directement liée à l'offre\\n2. 2-3 compétences techniques précises correspondant à l'offre\\n3. Exemple concret de valeur ajoutée\\n4. Mentionne disponibilité immédiate et TJM 55€/j\\n5. Signature: Tony PAYET | tony.payet.professionnel@gmail.com | LinkedIn: https://www.linkedin.com/in/payet-tony-76695197/\\n\\nRédige UNIQUEMENT le message, sans intro ni commentaire.`;\n\nreturn [{ json: { ...job, claudePrompt: prompt } }];"
+      },
+      "id": "node-015", "name": "Préparer Prompt",
+      "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [2040, 600]
+    },
+
+    {
+      "parameters": {
+        "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+          { "name": "anthropic-version", "value": "2023-06-01" },
+          { "name": "content-type", "value": "application/json" }
+        ]},
+        "sendBody": true, "contentType": "raw", "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 700, messages: [{ role: 'user', content: $json.claudePrompt }] }) }}",
+        "options": {}
+      },
+      "id": "node-016", "name": "Claude AI",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [2260, 600]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "const claudeResponse = $input.item.json;\nconst jobData = $('Préparer Prompt').item.json;\nconst coverLetter = claudeResponse.content?.[0]?.text || 'Erreur génération message';\nreturn [{ json: { jobId:jobData.id, jobTitle:jobData.title, jobCompany:jobData.company, jobPlatform:jobData.platform, jobUrl:jobData.url, jobSkills:jobData.skills, jobBudget:jobData.budget||'N/A', coverLetter, emailSubject:`Candidature Freelance - ${jobData.title} | Tony PAYET`, generatedAt:new Date().toISOString() } }];"
+      },
+      "id": "node-017", "name": "Traiter Réponse",
+      "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [2480, 600]
+    },
+
+    {
+      "parameters": {
+        "fromEmail": "tony.payet.professionnel@gmail.com",
+        "toEmail": "tony.payet.professionnel@gmail.com",
+        "subject": "=[Auto-Candidature] {{ $json.jobPlatform }} - {{ $json.jobTitle }} @ {{ $json.jobCompany }}",
+        "emailType": "html",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 680px; margin: 0 auto;\">\n  <div style=\"background: #1a1a2e; color: white; padding: 20px; border-radius: 8px 8px 0 0;\">\n    <h2 style=\"margin:0;\">Candidature Auto-Generee</h2>\n    <p style=\"margin: 5px 0 0; opacity: 0.8;\">{{ $json.generatedAt }}</p>\n  </div>\n  <div style=\"background: #f8f9fa; padding: 20px; border: 1px solid #e0e0e0;\">\n    <table style=\"width:100%; border-collapse:collapse;\">\n      <tr><td style=\"padding:8px;font-weight:bold;width:140px;\">Poste</td><td style=\"padding:8px;\">{{ $json.jobTitle }}</td></tr>\n      <tr style=\"background:white;\"><td style=\"padding:8px;font-weight:bold;\">Entreprise</td><td style=\"padding:8px;\">{{ $json.jobCompany }}</td></tr>\n      <tr><td style=\"padding:8px;font-weight:bold;\">Plateforme</td><td style=\"padding:8px;\">{{ $json.jobPlatform }}</td></tr>\n      <tr style=\"background:white;\"><td style=\"padding:8px;font-weight:bold;\">Budget</td><td style=\"padding:8px;\">{{ $json.jobBudget }}</td></tr>\n      <tr><td style=\"padding:8px;font-weight:bold;\">Competences</td><td style=\"padding:8px;\">{{ $json.jobSkills || 'N/A' }}</td></tr>\n      <tr style=\"background:white;\"><td style=\"padding:8px;font-weight:bold;\">Lien</td><td style=\"padding:8px;\"><a href=\"{{ $json.jobUrl }}\">Voir l'offre</a></td></tr>\n    </table>\n  </div>\n  <div style=\"background:white;padding:25px;border:1px solid #e0e0e0;border-top:none;\">\n    <h3 style=\"color:#1a1a2e;border-bottom:2px solid #4f46e5;padding-bottom:8px;\">Message de candidature</h3>\n    <div style=\"background:#f0f4ff;padding:20px;border-radius:6px;border-left:4px solid #4f46e5;white-space:pre-wrap;line-height:1.6;\">{{ $json.coverLetter }}</div>\n  </div>\n  <div style=\"background:#e8f5e9;padding:15px;border:1px solid #c8e6c9;border-top:none;border-radius:0 0 8px 8px;text-align:center;\">\n    <p style=\"margin:0;color:#2e7d32;\">Genere par n8n Auto-Candidature</p>\n  </div>\n</div>",
+        "options": {}
+      },
+      "id": "node-018", "name": "Envoyer Email",
+      "type": "n8n-nodes-base.emailSend", "typeVersion": 2.1, "position": [2700, 600],
+      "credentials": { "smtp": { "id": "smtp-tony", "name": "Gmail SMTP Tony" } }
+    },
+
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nif (!staticData.appliedJobs) staticData.appliedJobs = [];\nconst jobId = $input.item.json.jobId;\nif (jobId && !staticData.appliedJobs.includes(jobId)) {\n  staticData.appliedJobs.push(jobId);\n  if (staticData.appliedJobs.length > 2000) staticData.appliedJobs = staticData.appliedJobs.slice(-2000);\n}\nconsole.log(`Email envoye: ${$input.item.json.jobTitle} @ ${$input.item.json.jobCompany}`);\nconsole.log(`Total traites: ${staticData.appliedJobs.length}`);\nreturn $input.all();"
+      },
+      "id": "node-019", "name": "Marquer Traité",
+      "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [2920, 600]
+    },
+
+    {
+      "parameters": {
+        "content": "## SETUP REQUIS\n\n**1. Variables (Settings → Variables)**\n- `ANTHROPIC_API_KEY` → console.anthropic.com\n- `RAPIDAPI_KEY` → rapidapi.com (JSearch, gratuit 200 req/mois)\n- `FREELANCER_TOKEN` → developers.freelancer.com (OAuth2)\n\n**2. Credential SMTP Gmail**\nCredentials → New → SMTP\n- Host: smtp.gmail.com | Port: 587\n- User: tony.payet.professionnel@gmail.com\n- Pass: mot de passe d'application\n(Google Account → Sécurité → Mots de passe des applications)\n\n**3. Activer le workflow** → Toggle haut droite\n\n---\n**6 SOURCES ACTIVES:**\n- RemoteOK (international)\n- Remotive (international)\n- WeWorkRemotely (international)\n- Indeed France\n- JSearch → LinkedIn/Glassdoor/Indeed\n- Freelancer.com (projets FR/EN)\n\n**Cadence:** 1×/heure\n**Limite:** 3 candidatures/run",
+        "height": 480,
+        "width": 360,
+        "color": 5
+      },
+      "id": "node-020", "name": "Setup Instructions",
+      "type": "n8n-nodes-base.stickyNote", "typeVersion": 1, "position": [250, 850]
+    }
+  ],
+
+  "connections": {
+    "Toutes les heures": {
+      "main": [[
+        { "node": "RemoteOK API",       "type": "main", "index": 0 },
+        { "node": "Remotive API",        "type": "main", "index": 0 },
+        { "node": "WWR RSS",             "type": "main", "index": 0 },
+        { "node": "Indeed France RSS",   "type": "main", "index": 0 },
+        { "node": "JSearch API",         "type": "main", "index": 0 },
+        { "node": "Freelancer.com API",  "type": "main", "index": 0 }
+      ]]
+    },
+    "RemoteOK API":          { "main": [[{ "node": "Parse RemoteOK", "type": "main", "index": 0 }]] },
+    "Parse RemoteOK":        { "main": [[{ "node": "Merge RemoteOK+Remotive", "type": "main", "index": 0 }]] },
+    "Remotive API":          { "main": [[{ "node": "Parse Remotive", "type": "main", "index": 0 }]] },
+    "Parse Remotive":        { "main": [[{ "node": "Merge RemoteOK+Remotive", "type": "main", "index": 1 }]] },
+    "Merge RemoteOK+Remotive": { "main": [[{ "node": "Merge Groupe1", "type": "main", "index": 0 }]] },
+    "WWR RSS":               { "main": [[{ "node": "Parse WWR", "type": "main", "index": 0 }]] },
+    "Parse WWR":             { "main": [[{ "node": "Merge WWR+Indeed", "type": "main", "index": 0 }]] },
+    "Indeed France RSS":     { "main": [[{ "node": "Parse Indeed", "type": "main", "index": 0 }]] },
+    "Parse Indeed":          { "main": [[{ "node": "Merge WWR+Indeed", "type": "main", "index": 1 }]] },
+    "Merge WWR+Indeed":      { "main": [[{ "node": "Merge Groupe1", "type": "main", "index": 1 }]] },
+    "Merge Groupe1":         { "main": [[{ "node": "Merge All Sources", "type": "main", "index": 0 }]] },
+    "JSearch API":           { "main": [[{ "node": "Parse JSearch", "type": "main", "index": 0 }]] },
+    "Parse JSearch":         { "main": [[{ "node": "Merge JSearch+Freelancer", "type": "main", "index": 0 }]] },
+    "Freelancer.com API":    { "main": [[{ "node": "Parse Freelancer", "type": "main", "index": 0 }]] },
+    "Parse Freelancer":      { "main": [[{ "node": "Merge JSearch+Freelancer", "type": "main", "index": 1 }]] },
+    "Merge JSearch+Freelancer": { "main": [[{ "node": "Merge All Sources", "type": "main", "index": 1 }]] },
+    "Merge All Sources":     { "main": [[{ "node": "Filtrer Dédupliquer", "type": "main", "index": 0 }]] },
+    "Filtrer Dédupliquer":   { "main": [[{ "node": "Nouvelles offres?", "type": "main", "index": 0 }]] },
+    "Nouvelles offres?": {
+      "main": [
+        [{ "node": "Préparer Prompt", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Préparer Prompt":  { "main": [[{ "node": "Claude AI", "type": "main", "index": 0 }]] },
+    "Claude AI":        { "main": [[{ "node": "Traiter Réponse", "type": "main", "index": 0 }]] },
+    "Traiter Réponse":  { "main": [[{ "node": "Envoyer Email", "type": "main", "index": 0 }]] },
+    "Envoyer Email":    { "main": [[{ "node": "Marquer Traité", "type": "main", "index": 0 }]] }
+  },
+
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "versionId": "2.0.0",
+  "meta": { "instanceId": "tony-payet-freelance" },
+  "id": "auto-candidature-freelance-tony-payet",
+  "tags": [
+    { "id": "tag-freelance", "name": "freelance" },
+    { "id": "tag-automation", "name": "automation" }
+  ]
+}

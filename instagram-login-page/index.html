@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instagram – Connect with Friends and Share Your Moments</title>
+  <meta name="description" content="Create an account or log in to Instagram to share your favorite moments with friends and the world. Discover photos, videos, and stories that inspire you." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#1877F2" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Instagram – Connect with Friends and Share Your Moments" />
+  <meta property="og:description" content="Create an account or log in to Instagram to share your favorite moments with friends and the world." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/images/instagram-logo.svg" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Instagram – Connect with Friends and Share Your Moments" />
+  <meta name="twitter:description" content="Create an account or log in to Instagram. Share photos, videos, and stories." />
+
+  <link rel="icon" type="image/svg+xml" href="assets/images/instagram-logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ===========================
+       HEADER
+       =========================== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="Instagram Home">
+        <img src="assets/images/instagram-logo.svg" alt="Instagram" class="logo-icon" width="36" height="36" />
+        <span class="logo-text">Instagram</span>
+      </a>
+      <nav class="header-actions" aria-label="Header actions">
+        <a href="#login" class="btn btn-ghost btn-sm">Log in</a>
+        <a href="#create-account" class="btn btn-primary btn-sm" style="width:auto;">Sign up</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ===========================
+         HERO SECTION
+         =========================== -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-inner container">
+
+        <!-- Phone mockup visual -->
+        <div class="hero-visual" aria-hidden="true">
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-logo">
+                <img src="assets/images/instagram-logo.svg" alt="" width="44" height="44" />
+              </div>
+              <div class="phone-posts">
+                <div class="phone-post">
+                  <div class="phone-post-placeholder" style="background:linear-gradient(135deg,#f09433,#e6683c);border-radius:4px;width:100%;height:70px;"></div>
+                </div>
+                <div class="phone-post">
+                  <div class="phone-post-placeholder" style="background:linear-gradient(135deg,#dc2743,#cc2366);border-radius:4px;width:100%;height:70px;"></div>
+                </div>
+                <div class="phone-post">
+                  <div class="phone-post-placeholder" style="background:linear-gradient(135deg,#bc1888,#833ab4);border-radius:4px;width:100%;height:70px;"></div>
+                </div>
+                <div class="phone-post">
+                  <div class="phone-post-placeholder" style="background:linear-gradient(135deg,#1877F2,#0d6ae0);border-radius:4px;width:100%;height:70px;"></div>
+                </div>
+              </div>
+              <div class="phone-stats">
+                <span class="phone-stat">2.1B+</span>
+                <span class="phone-stat">❤️ 4.5M</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating badges -->
+          <div class="hero-badge badge-followers">
+            <span class="badge-dot"></span>
+            <span>2.1B active users</span>
+          </div>
+          <div class="hero-badge badge-likes">
+            <span style="font-size:1rem;">📸</span>
+            <span>100M+ photos/day</span>
+          </div>
+        </div>
+
+        <!-- Hero content -->
+        <div class="hero-content">
+          <span class="hero-eyebrow">
+            <img src="assets/images/instagram-logo.svg" alt="" width="16" height="16" />
+            Welcome to Instagram
+          </span>
+
+          <h1 class="hero-title" id="hero-heading">
+            Connect with Friends and<br/>
+            <span class="gradient">Share Your Moments</span>
+          </h1>
+
+          <p class="hero-desc">
+            Access your Instagram account to share photos, discover videos, and explore stories from people and communities worldwide. Join over 2 billion users creating meaningful connections every day.
+          </p>
+
+          <div class="hero-ctas">
+            <a href="#login" class="btn btn-primary">Log in to Instagram</a>
+            <a href="#create-account" class="btn btn-secondary">Create new account</a>
+          </div>
+
+          <div class="hero-trust">
+            <div class="trust-avatars" aria-hidden="true">
+              <div class="trust-avatar">JM</div>
+              <div class="trust-avatar">SK</div>
+              <div class="trust-avatar">AR</div>
+              <div class="trust-avatar">PL</div>
+            </div>
+            <span>Join millions sharing moments daily</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===========================
+         STATS BAR
+         =========================== -->
+    <div class="stats-bar" aria-label="Instagram statistics">
+      <div class="stats-inner container">
+        <div class="stat-item" data-animate>
+          <h3 data-counter="2100" data-suffix="M+">0</h3>
+          <p>Monthly active users</p>
+        </div>
+        <div class="stat-item" data-animate>
+          <h3 data-counter="100" data-suffix="M+">0</h3>
+          <p>Photos shared daily</p>
+        </div>
+        <div class="stat-item" data-animate>
+          <h3 data-counter="500" data-suffix="M+">0</h3>
+          <p>Stories every day</p>
+        </div>
+        <div class="stat-item" data-animate>
+          <h3 data-counter="200" data-suffix="+">0</h3>
+          <p>Countries & territories</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===========================
+         LOGIN SECTION
+         =========================== -->
+    <section class="login-section" id="login" aria-labelledby="login-heading">
+      <div class="login-grid container">
+
+        <!-- Left: Login Form Card -->
+        <div class="login-right">
+          <div class="login-card" data-animate>
+            <div class="login-logo" aria-hidden="true">
+              <span class="login-logo-text">Instagram</span>
+            </div>
+
+            <h2 id="login-heading" style="display:none;">Login to Instagram</h2>
+
+            <!-- Error alert -->
+            <div class="alert alert-error" id="loginAlert" role="alert" aria-live="polite">
+              <span class="alert-icon">⚠️</span>
+              <span>Sorry, your password was incorrect. Please double-check your password.</span>
+            </div>
+
+            <form id="loginForm" novalidate aria-label="Instagram login form">
+              <div class="form-group">
+                <label for="username" class="sr-only">Mobile number, username, or email</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="form-input"
+                  placeholder="Mobile number, username, or email"
+                  autocomplete="username"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  aria-label="Mobile number, username, or email"
+                />
+              </div>
+              <div class="form-group">
+                <div class="password-wrapper">
+                  <label for="password" class="sr-only">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-input"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                    aria-label="Password"
+                  />
+                  <button type="button" class="password-toggle" aria-label="Show password">Show</button>
+                </div>
+              </div>
+              <div class="login-btn">
+                <button type="submit" class="btn btn-primary" disabled aria-label="Log in to Instagram">Log in</button>
+              </div>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+
+            <!-- Facebook Login -->
+            <button id="facebookLoginBtn" class="btn btn-facebook" aria-label="Log in with Facebook">
+              <svg class="facebook-btn-icon" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span class="fb-btn-text">Log in with Facebook</span>
+            </button>
+
+            <a href="#reset-password" class="forgot-link" aria-label="Forgot password? Reset it here">Forgot password?</a>
+          </div>
+
+          <!-- Create New Account Card -->
+          <div class="new-account-card" id="create-account" data-animate>
+            <p><strong>Don't have an account?</strong></p>
+            <button id="createAccountBtn" class="btn btn-secondary" aria-label="Create a new Instagram account">Create new account</button>
+          </div>
+
+          <!-- App Download -->
+          <div class="app-download" data-animate>
+            <p>Get the app.</p>
+            <div class="app-badges">
+              <a href="#" class="app-badge" aria-label="Download on the App Store">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+                <span>
+                  <span class="app-badge-sub">Download on the</span>
+                  <span class="app-badge-name">App Store</span>
+                </span>
+              </a>
+              <a href="#" class="app-badge" aria-label="Get it on Google Play">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3.18 23.76c.31.17.67.19 1.01.06l11.67-6.74-2.52-2.52-10.16 9.2zm-1.64-19.7A1.99 1.99 0 0 0 1 5.45v13.1c0 .54.19 1.03.54 1.4l.08.07 7.34-7.34v-.17L1.54 4.06zm14.26 9.92-2.45-2.45-2.45 2.45 2.45 2.45 2.45-2.45zm2.47-11.04-3-1.73-2.7 2.7 2.7 2.7 3.01-1.74a2 2 0 0 0 0-3.46l-.01.53z"/>
+                </svg>
+                <span>
+                  <span class="app-badge-sub">Get it on</span>
+                  <span class="app-badge-name">Google Play</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Info content -->
+        <div>
+          <div data-animate>
+            <span class="section-label">Section 1</span>
+            <h2 style="margin-bottom:16px;">Login to Instagram</h2>
+            <p style="color:var(--text-secondary);line-height:1.7;margin-bottom:24px;">
+              Access your Instagram account by entering your mobile number, username, or email and password. Stay connected with your close friends and explore new content from communities and creators you love.
+            </p>
+          </div>
+
+          <div class="features-grid" style="grid-template-columns:1fr 1fr;gap:16px;" data-animate>
+            <div class="feature-card" style="padding:20px;">
+              <div class="feature-icon icon-gradient" aria-hidden="true">📸</div>
+              <h3 class="feature-title" style="font-size:.9375rem;">Share Photos</h3>
+              <p class="feature-desc" style="font-size:.8125rem;">Post photos and videos to your personal feed.</p>
+            </div>
+            <div class="feature-card" style="padding:20px;">
+              <div class="feature-icon icon-primary" aria-hidden="true">🎭</div>
+              <h3 class="feature-title" style="font-size:.9375rem;">Stories</h3>
+              <p class="feature-desc" style="font-size:.8125rem;">Share moments that disappear after 24 hours.</p>
+            </div>
+            <div class="feature-card" style="padding:20px;">
+              <div class="feature-icon icon-secondary" aria-hidden="true">🎬</div>
+              <h3 class="feature-title" style="font-size:.9375rem;">Reels</h3>
+              <p class="feature-desc" style="font-size:.8125rem;">Create and discover short, entertaining videos.</p>
+            </div>
+            <div class="feature-card" style="padding:20px;">
+              <div class="feature-icon icon-green" aria-hidden="true">💬</div>
+              <h3 class="feature-title" style="font-size:.9375rem;">Messaging</h3>
+              <p class="feature-desc" style="font-size:.8125rem;">Send direct messages and share content privately.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===========================
+         CREATE ACCOUNT SECTION
+         =========================== -->
+    <section class="section section-alt" id="section-create" aria-labelledby="create-heading">
+      <div class="container" style="max-width:975px;">
+        <div class="section-header" data-animate>
+          <span class="section-label">Section 2</span>
+          <h2 class="section-title" id="create-heading">Create a New Account</h2>
+          <p class="section-desc">
+            Join Instagram today to start sharing your photos and videos with friends and followers. Enjoy a personalized feed and connect with communities worldwide.
+          </p>
+        </div>
+
+        <div class="features-grid" data-animate>
+          <div class="feature-card">
+            <div class="feature-icon icon-gradient" aria-hidden="true">🌍</div>
+            <h3 class="feature-title">Global Community</h3>
+            <p class="feature-desc">Connect with over 2 billion people across more than 200 countries and territories worldwide.</p>
+            <button onclick="showToast('🎉','Sign up feature coming soon!')" class="feature-link btn" style="background:none;padding:0;font-size:.875rem;color:var(--primary);">Create new account →</button>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon icon-primary" aria-hidden="true">🎯</div>
+            <h3 class="feature-title">Personalized Feed</h3>
+            <p class="feature-desc">Your feed adapts to your interests, showing you content from creators and topics you love most.</p>
+            <button onclick="showToast('🎉','Sign up feature coming soon!')" class="feature-link btn" style="background:none;padding:0;font-size:.875rem;color:var(--primary);">Get started →</button>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon icon-secondary" aria-hidden="true">⭐</div>
+            <h3 class="feature-title">Creator Tools</h3>
+            <p class="feature-desc">Access powerful tools to grow your audience, track insights, and monetize your creative content.</p>
+            <button onclick="showToast('🎉','Sign up feature coming soon!')" class="feature-link btn" style="background:none;padding:0;font-size:.875rem;color:var(--primary);">Start creating →</button>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:40px;" data-animate>
+          <button id="createAccountBtn" class="btn btn-primary" style="width:auto;padding:14px 48px;font-size:1rem;" aria-label="Create a new Instagram account">
+            Create new account
+          </button>
+          <p style="margin-top:12px;font-size:.8125rem;color:var(--text-muted);">
+            By signing up, you agree to our <a href="#terms">Terms</a>, <a href="#privacy">Privacy Policy</a> and <a href="#cookies">Cookies Policy</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         RESET PASSWORD SECTION
+         =========================== -->
+    <section class="reset-section" id="reset-password" aria-labelledby="reset-heading">
+      <div class="reset-inner container">
+
+        <div class="reset-content" data-animate>
+          <span class="section-label">Section 3</span>
+          <h2 id="reset-heading">Forgot Your Password?</h2>
+          <p>
+            If you have trouble logging in, use the password reset option to regain access to your account quickly and securely. We'll send a link to your email or a code to your phone.
+          </p>
+
+          <div class="reset-steps" aria-label="Steps to reset password">
+            <div class="reset-step">
+              <div class="step-number" aria-hidden="true">1</div>
+              <div class="step-text">
+                <h4>Enter your email or phone</h4>
+                <p>Provide the email address or phone number linked to your Instagram account.</p>
+              </div>
+            </div>
+            <div class="reset-step">
+              <div class="step-number" aria-hidden="true">2</div>
+              <div class="step-text">
+                <h4>Check your inbox or messages</h4>
+                <p>We'll send you a secure reset link or a 6-digit verification code.</p>
+              </div>
+            </div>
+            <div class="reset-step">
+              <div class="step-number" aria-hidden="true">3</div>
+              <div class="step-text">
+                <h4>Set a new password</h4>
+                <p>Follow the link or enter the code to create a new, strong password.</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="#login" class="btn btn-danger" style="width:auto;padding:12px 32px;" aria-label="Go to login page">
+            Reset password
+          </a>
+        </div>
+
+        <div class="reset-visual" data-animate>
+          <div class="reset-icon-large" aria-hidden="true">🔐</div>
+          <h3>Quick Password Reset</h3>
+          <p>Enter your email or username and we'll send you a reset link instantly.</p>
+
+          <!-- Success alert -->
+          <div class="alert alert-success" id="resetSuccess" role="alert" aria-live="polite">
+            <span class="alert-icon">✅</span>
+            <span>Reset link sent! Check your email inbox.</span>
+          </div>
+
+          <form id="resetForm" class="reset-form" novalidate aria-label="Password reset form">
+            <label for="resetEmail" class="sr-only">Email address or username</label>
+            <input
+              type="email"
+              id="resetEmail"
+              class="form-input"
+              placeholder="Enter your email or username"
+              autocomplete="email"
+              aria-label="Enter your email address or username"
+            />
+            <button type="submit" class="btn btn-primary" aria-label="Send password reset link">
+              Send reset link
+            </button>
+          </form>
+
+          <p style="margin-top:16px;font-size:.75rem;color:var(--text-muted);">
+            Having trouble? <a href="#resources">Learn more about account recovery</a>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===========================
+         FACEBOOK LOGIN SECTION
+         =========================== -->
+    <section class="section" id="section-facebook" aria-labelledby="facebook-heading">
+      <div class="container" style="max-width:975px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+
+          <div data-animate>
+            <span class="section-label">Section 4</span>
+            <h2 id="facebook-heading" style="margin-bottom:16px;">Login with Facebook</h2>
+            <p style="color:var(--text-secondary);line-height:1.7;margin-bottom:24px;">
+              Easily log in using your Facebook account for a seamless experience across platforms. One click is all it takes to access your Instagram with your existing Meta account credentials.
+            </p>
+
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;" aria-label="Benefits of Facebook login">
+              <li style="display:flex;align-items:center;gap:10px;font-size:.9375rem;">
+                <span style="width:24px;height:24px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;" aria-hidden="true">✓</span>
+                One-click access with your Meta account
+              </li>
+              <li style="display:flex;align-items:center;gap:10px;font-size:.9375rem;">
+                <span style="width:24px;height:24px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;" aria-hidden="true">✓</span>
+                No need to remember a separate password
+              </li>
+              <li style="display:flex;align-items:center;gap:10px;font-size:.9375rem;">
+                <span style="width:24px;height:24px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;" aria-hidden="true">✓</span>
+                Secure OAuth authentication
+              </li>
+              <li style="display:flex;align-items:center;gap:10px;font-size:.9375rem;">
+                <span style="width:24px;height:24px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;" aria-hidden="true">✓</span>
+                Seamless experience across Meta apps
+              </li>
+            </ul>
+
+            <button id="facebookLoginBtn" class="btn btn-facebook" style="width:auto;padding:12px 32px;" aria-label="Log in to Instagram with your Facebook account">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              <span class="fb-btn-text">Log in with Facebook</span>
+            </button>
+          </div>
+
+          <div data-animate>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;text-align:center;box-shadow:var(--shadow-md);">
+              <div style="width:80px;height:80px;background:#1877F2;border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;" aria-hidden="true">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </div>
+              <h3 style="margin-bottom:10px;">Connect Your Accounts</h3>
+              <p style="color:var(--text-secondary);font-size:.875rem;line-height:1.7;margin-bottom:20px;">
+                Link your Facebook and Instagram accounts for unified settings, cross-platform sharing, and a consistent experience across all Meta products.
+              </p>
+              <div style="display:flex;justify-content:center;align-items:center;gap:16px;padding:16px;background:var(--bg);border-radius:var(--radius-md);">
+                <div style="text-align:center;">
+                  <div style="width:48px;height:48px;background:var(--instagram-gradient);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;" aria-hidden="true">
+                    <img src="assets/images/instagram-logo.svg" alt="" width="32" height="32" />
+                  </div>
+                  <span style="font-size:.75rem;font-weight:600;">Instagram</span>
+                </div>
+                <span style="font-size:1.5rem;color:var(--text-muted);" aria-hidden="true">⟷</span>
+                <div style="text-align:center;">
+                  <div style="width:48px;height:48px;background:#1877F2;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;" aria-hidden="true">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </div>
+                  <span style="font-size:.75rem;font-weight:600;">Facebook</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         RESOURCES SECTION
+         =========================== -->
+    <section class="resources-section" id="resources" aria-labelledby="resources-heading">
+      <div class="resources-inner">
+        <div class="section-header" data-animate>
+          <span class="section-label">Section 5</span>
+          <h2 class="section-title" id="resources-heading">Explore Instagram Resources</h2>
+          <p class="section-desc">
+            Learn more about Instagram, its policies, and additional features like Instagram Lite, Meta Verified, and developer APIs.
+          </p>
+        </div>
+
+        <div class="resources-grid" data-animate>
+          <div class="resource-card">
+            <div class="resource-icon" aria-hidden="true">ℹ️</div>
+            <h3 class="resource-title">About Instagram</h3>
+            <p class="resource-desc">Learn about our mission, company history, and the team behind the world's largest photo-sharing platform.</p>
+            <a href="#" class="resource-link" aria-label="Visit Instagram's About page">Visit About page →</a>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:#fce4e8;" aria-hidden="true">🔒</div>
+            <h3 class="resource-title">Privacy Policy</h3>
+            <p class="resource-desc">Understand how we collect, use, and protect your personal data to keep your account safe and secure.</p>
+            <a href="#" class="resource-link" aria-label="Read Instagram's Privacy Policy">Read Privacy Policy →</a>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:#e6f9f0;" aria-hidden="true">📋</div>
+            <h3 class="resource-title">Terms of Service</h3>
+            <p class="resource-desc">Review the terms and conditions that govern your use of Instagram and the rights and responsibilities of all users.</p>
+            <a href="#" class="resource-link" aria-label="Read Instagram's Terms of Service">View Terms →</a>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:#fff3e0;" aria-hidden="true">⚡</div>
+            <h3 class="resource-title">Instagram Lite</h3>
+            <p class="resource-desc">Experience Instagram on any device with our lightweight app, designed for slower connections and older devices.</p>
+            <a href="#" class="resource-link" aria-label="Learn about Instagram Lite">Learn more →</a>
+          </div>
+        </div>
+
+        <div class="resources-grid" style="margin-top:20px;" data-animate>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:linear-gradient(135deg,rgba(24,119,242,.1),rgba(188,24,136,.1));" aria-hidden="true">✅</div>
+            <h3 class="resource-title">Meta Verified</h3>
+            <p class="resource-desc">Get verified on Instagram and Facebook with a blue badge that confirms your authentic identity to followers.</p>
+            <a href="#" class="resource-link" aria-label="Learn about Meta Verified">Get verified →</a>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:#e8f5e9;" aria-hidden="true">🛠️</div>
+            <h3 class="resource-title">Developer API</h3>
+            <p class="resource-desc">Build integrations with the Instagram Graph API to manage posts, access insights, and automate your workflow.</p>
+            <a href="#" class="resource-link" aria-label="Visit Instagram Developer API documentation">View API docs →</a>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:#fff9e6;" aria-hidden="true">📊</div>
+            <h3 class="resource-title">Creator Studio</h3>
+            <p class="resource-desc">Manage your Instagram presence, schedule posts, monitor performance, and engage with your community.</p>
+            <a href="#" class="resource-link" aria-label="Visit Creator Studio">Open Studio →</a>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:#f3e5f5;" aria-hidden="true">🛡️</div>
+            <h3 class="resource-title">Safety Center</h3>
+            <p class="resource-desc">Learn about our tools for reporting, blocking, and controlling your experience to stay safe on Instagram.</p>
+            <a href="#" class="resource-link" aria-label="Visit the Instagram Safety Center">Visit Safety Center →</a>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:40px;" data-animate>
+          <a href="#" class="btn btn-secondary" style="width:auto;padding:12px 32px;" aria-label="Visit all Instagram resource pages">Visit About, Privacy, Terms, and API pages</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===========================
+         CTA BANNER
+         =========================== -->
+    <section class="cta-banner" aria-labelledby="cta-heading">
+      <h2 id="cta-heading">Start Sharing Your Story Today</h2>
+      <p>Join over 2 billion people on Instagram. Share what matters, discover what inspires, and connect with the world.</p>
+      <div class="cta-banner-actions">
+        <button onclick="document.getElementById('login').scrollIntoView({behavior:'smooth'})" class="btn btn-white" aria-label="Log in to your Instagram account">Log in now</button>
+        <button id="createAccountBtn" onclick="showToast('🎉','Account creation coming soon!')" class="btn btn-outline-white" aria-label="Create a new Instagram account">Create free account</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===========================
+       FOOTER
+       =========================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="#" id="about">Meta</a>
+        <a href="#" id="about-ig">About</a>
+        <a href="#" id="blog">Blog</a>
+        <a href="#" id="jobs">Jobs</a>
+        <a href="#" id="help">Help</a>
+        <a href="#" id="api">API</a>
+        <a href="#" id="privacy">Privacy</a>
+        <a href="#" id="terms">Terms</a>
+        <a href="#" id="locations">Locations</a>
+        <a href="#" id="instagram-lite">Instagram Lite</a>
+        <a href="#" id="threads">Threads</a>
+        <a href="#" id="contact">Contact Uploading &amp; Non-Users</a>
+        <a href="#" id="meta-verified">Meta Verified</a>
+      </nav>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2024 Instagram from Meta</span>
+        <button class="footer-lang" aria-label="Change language">
+          🌐 English (UK)
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Screen reader only styles -->
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

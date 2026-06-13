@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "wordpress": {
+      "command": "npx",
+      "args": ["-y", "@automattic/mcp-server-wordpress"],
+      "env": {
+        "WORDPRESS_SITE_URL": "http://wordpress-d0cc8wgs008ocwkckosggs84.158.220.127.234.sslip.io",
+        "WORDPRESS_AUTH_TOKEN": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vd29yZHByZXNzLWQwY2M4d2dzMDA4b2N3a2Nrb3NnZ3M4NC4xNTguMjIwLjEyNy4yMzQuc3NsaXAuaW8iLCJpYXQiOjE3NzQ0NTcyNDYsImV4cCI6MTc3NDU0MzY0NiwidXNlcl9pZCI6MSwianRpIjoieWpLRHkzcnpnWld0cWttZlAzSkNGaGRnQTdsRjN6VTkifQ._VibTo5rsUuX5QOp8Yl_Vh9JZsDfgttYKEmDaDB6ROA"
+      }
+    }
+  }
+}

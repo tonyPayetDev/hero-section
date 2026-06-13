@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(bash -)",
+      "Bash(apt-get install:*)",
+      "Bash(npm install -g netlify-cli)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "mcp__coolify__private_keys",
+      "mcp__coolify__github_apps",
+      "Bash(ls /coolify)",
+      "Read(//home/**)",
+      "mcp__coolify__env_vars",
+      "Bash(python3 -c \":*)",
+      "Read(//root/**)",
+      "Read(//root/.config/**)",
+      "mcp__coolify__control",
+      "Bash(find /work -name application.php -path */config/*)",
+      "Bash(find /work -name *.php -path */config/*)",
+      "Bash(git clone:*)",
+      "Bash(git -C bedrock remote get-url origin)",
+      "Bash(TELEGRAM_BOT_TOKEN=8593693753:AAHQf74MrJwEVFK73de5TEGRz78LsxDvgMI TELEGRAM_CHAT_ID=6683661437 /usr/local/bin/claude-telegram)",
+      "Bash(TELEGRAM_BOT_TOKEN=8593693753:AAHQf74MrJwEVFK73de5TEGRz78LsxDvgMI TELEGRAM_CHAT_ID=6683661437 /usr/local/bin/claude-notify-telegram)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(claude mcp:*)",
+      "mcp__coolify__deploy",
+      "mcp__coolify__application_logs",
+      "Bash(python3 generate_pages.py)",
+      "mcp__coolify__application",
+      "mcp__coolify__get_application",
+      "Bash(npm --version)",
+      "Bash(env)",
+      "Bash(python3 -c ' *)",
+      "Bash(npm install *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "mcp__coolify__deployment"
+    ]
+  }
+}

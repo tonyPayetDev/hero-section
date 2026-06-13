@@ -1,0 +1,354 @@
+{
+  "name": "Humian B-Roll - Kie.ai TTS + FFmpeg + Blotato Instagram",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0a1b2c3d-0001-0001-0001-000000000001",
+      "name": "Demarrer",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [180, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const videos = [\n  {\n    videoId: 1,\n    duration: 28,\n    orientation: 'landscape',\n    videoUrl: 'REMPLACER_VIDEO_URL_1',\n    script: 'Instagram sur pilote automatique. Poste chaque jour. Sans lever le doigt. L\\'IA travaille non-stop. Ton contenu tourne seul. Abonnes. Engagement. Croissance. Automatise des aujourd\\'hui.',\n    caption: \"L'automatisation Instagram c'est maintenant. #automation #instagram #ia #digitalmarketing\"\n  },\n  {\n    videoId: 2,\n    duration: 21,\n    orientation: 'landscape',\n    videoUrl: 'REMPLACER_VIDEO_URL_2',\n    script: 'Arrete de poster manuellement. L\\'IA s\\'occupe de tout. Tu veux des abonnes. Voila la solution. Publie. Engage. Grandis. Tout automatiquement.',\n    caption: \"Publie sans effort sur Instagram. #automatisation #croissance #instagram #smm\"\n  },\n  {\n    videoId: 3,\n    duration: 26,\n    orientation: 'portrait',\n    videoUrl: 'REMPLACER_VIDEO_URL_3',\n    script: 'Tes reels en automatique. Stories programmees a l\\'avance. Posts publies sans toi. L\\'IA cree ton contenu. Chaque semaine. Sans effort. Resultats garantis.',\n    caption: \"Delègue ton Instagram à l'IA. #reels #stories #automatisation #createur\"\n  },\n  {\n    videoId: 4,\n    duration: 28,\n    orientation: 'landscape',\n    videoUrl: 'REMPLACER_VIDEO_URL_4',\n    script: 'Tes concurrents avancent vite. Pendant que tu hesites. Ils publient. Ils grandissent. Passe a l\\'automatisation. Instagram en mode turbo. Agis maintenant.',\n    caption: \"Ne reste pas en retard. #urgence #automatisation #instagram #marketing #growth\"\n  }\n];\n\nreturn videos.map(v => ({ json: v }));"
+      },
+      "id": "0a1b2c3d-0002-0002-0002-000000000002",
+      "name": "Videos et Scripts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 420]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "0a1b2c3d-0003-0003-0003-000000000003",
+      "name": "Boucle Videos",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [620, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/v1/tts/create",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.script }}"
+            },
+            {
+              "name": "voice",
+              "value": "fr-FR-DeniseNeural"
+            },
+            {
+              "name": "language",
+              "value": "fr-FR"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rvN66ZNt7zZ1eHBj",
+          "name": "Kie.ai API"
+        }
+      },
+      "id": "0a1b2c3d-0004-0004-0004-000000000004",
+      "name": "Kie.ai - Creer TTS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [840, 420]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-jobid",
+              "name": "jobId",
+              "value": "={{ $json.data.jobId }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-videourl",
+              "name": "videoUrl",
+              "value": "={{ $('Boucle Videos').item.json.videoUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-caption",
+              "name": "caption",
+              "value": "={{ $('Boucle Videos').item.json.caption }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-orientation",
+              "name": "orientation",
+              "value": "={{ $('Boucle Videos').item.json.orientation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0a1b2c3d-0005-0005-0005-000000000005",
+      "name": "Memoriser JobId",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1060, 420]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "id": "0a1b2c3d-0006-0006-0006-000000000006",
+      "name": "Attendre 5s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1280, 420],
+      "webhookId": "b1c2d3e4-f5a6-7890-bcde-f01234567890"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.kie.ai/v1/tts/{{ $('Memoriser JobId').item.json.jobId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rvN66ZNt7zZ1eHBj",
+          "name": "Kie.ai API"
+        }
+      },
+      "id": "0a1b2c3d-0007-0007-0007-000000000007",
+      "name": "Kie.ai - Verifier Statut",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1500, 420]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "state-check-001",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0a1b2c3d-0008-0008-0008-000000000008",
+      "name": "Termine ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1720, 420]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-audiourl",
+              "name": "audioUrl",
+              "value": "={{ $json.data.resultJson.resultUrls[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-videourl2",
+              "name": "videoUrl",
+              "value": "={{ $('Memoriser JobId').item.json.videoUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-caption2",
+              "name": "caption",
+              "value": "={{ $('Memoriser JobId').item.json.caption }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-orientation2",
+              "name": "orientation",
+              "value": "={{ $('Memoriser JobId').item.json.orientation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0a1b2c3d-0009-0009-0009-000000000009",
+      "name": "Extraire URL Audio",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1940, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ffmpeg.tonypayet.com/v2/media",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "videoUrl",
+              "value": "={{ $json.videoUrl }}"
+            },
+            {
+              "name": "audioUrl",
+              "value": "={{ $json.audioUrl }}"
+            },
+            {
+              "name": "action",
+              "value": "merge"
+            },
+            {
+              "name": "orientation",
+              "value": "={{ $json.orientation }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0a1b2c3d-0010-0010-0010-000000000010",
+      "name": "FFmpeg - Fusionner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2160, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.blotato.com/v1/posts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "accountId",
+              "value": "35077"
+            },
+            {
+              "name": "mediaUrl",
+              "value": "={{ $json.url }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $('Extraire URL Audio').item.json.caption }}"
+            },
+            {
+              "name": "platform",
+              "value": "instagram"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "krtcIfRPhx6xSQvk",
+          "name": "Blotato API"
+        }
+      },
+      "id": "0a1b2c3d-000a-000a-000a-00000000000a",
+      "name": "Blotato - Publier Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2380, 320]
+    }
+  ],
+  "connections": {
+    "Demarrer": {
+      "main": [
+        [{"node": "Videos et Scripts", "type": "main", "index": 0}]
+      ]
+    },
+    "Videos et Scripts": {
+      "main": [
+        [{"node": "Boucle Videos", "type": "main", "index": 0}]
+      ]
+    },
+    "Boucle Videos": {
+      "main": [
+        [{"node": "Kie.ai - Creer TTS", "type": "main", "index": 0}],
+        []
+      ]
+    },
+    "Kie.ai - Creer TTS": {
+      "main": [
+        [{"node": "Memoriser JobId", "type": "main", "index": 0}]
+      ]
+    },
+    "Memoriser JobId": {
+      "main": [
+        [{"node": "Attendre 5s", "type": "main", "index": 0}]
+      ]
+    },
+    "Attendre 5s": {
+      "main": [
+        [{"node": "Kie.ai - Verifier Statut", "type": "main", "index": 0}]
+      ]
+    },
+    "Kie.ai - Verifier Statut": {
+      "main": [
+        [{"node": "Termine ?", "type": "main", "index": 0}]
+      ]
+    },
+    "Termine ?": {
+      "main": [
+        [{"node": "Extraire URL Audio", "type": "main", "index": 0}],
+        [{"node": "Attendre 5s", "type": "main", "index": 0}]
+      ]
+    },
+    "Extraire URL Audio": {
+      "main": [
+        [{"node": "FFmpeg - Fusionner", "type": "main", "index": 0}]
+      ]
+    },
+    "FFmpeg - Fusionner": {
+      "main": [
+        [{"node": "Blotato - Publier Instagram", "type": "main", "index": 0}]
+      ]
+    },
+    "Blotato - Publier Instagram": {
+      "main": [
+        [{"node": "Boucle Videos", "type": "main", "index": 0}]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "pinData": {}
+}
