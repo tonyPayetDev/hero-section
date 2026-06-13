@@ -102,7 +102,7 @@ export default function HeroSection() {
 
         {/* LEFT COLUMN - Text Content */}
         <motion.div
-          className="flex flex-col justify-center col-span-1"
+          className="flex flex-col justify-center col-span-1 order-2 md:order-1"
           variants={leftColumnVariants}
           initial="hidden"
           animate="visible"
@@ -157,7 +157,7 @@ export default function HeroSection() {
         {/* CENTER COLUMN - Portrait with Hover Interactions */}
         <motion.div
           ref={portraitRef}
-          className="flex items-center justify-center col-span-1 relative h-80 sm:h-96 md:h-full"
+          className="flex items-center justify-center col-span-1 relative h-80 sm:h-96 md:h-full order-1 md:order-2"
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
