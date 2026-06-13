@@ -176,10 +176,7 @@ export default function HeroSection() {
                   : 'linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%)',
               }}
             >
-              {/* Placeholder for user photo */}
-              <div className="w-full h-full bg-gradient-to-b from-orange-500 via-purple-600 to-gray-900 flex items-center justify-center">
-                <span className="text-white text-opacity-50 text-lg">Your Photo Here</span>
-              </div>
+              <img src="/portrait.png" alt="Tony Payet" className="w-full h-full object-cover" />
             </div>
 
             {/* Cyberpunk HUD overlay (revealed on hover) */}
