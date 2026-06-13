@@ -98,7 +98,7 @@ export default function HeroSection() {
       </nav>
 
       {/* MAIN CONTENT */}
-      <div className="h-full pt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-8 lg:px-16">
+      <div className="min-h-screen pt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:h-full gap-8 px-8 lg:px-16">
 
         {/* LEFT COLUMN - Text Content */}
         <motion.div
@@ -157,7 +157,7 @@ export default function HeroSection() {
         {/* CENTER COLUMN - Portrait with Hover Interactions */}
         <motion.div
           ref={portraitRef}
-          className="flex items-center justify-center col-span-1 relative h-64 md:h-full"
+          className="flex items-center justify-center col-span-1 relative h-80 sm:h-96 md:h-full"
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
