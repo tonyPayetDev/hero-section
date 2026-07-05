@@ -37,7 +37,8 @@
       "Bash(git commit *)",
       "Bash(git remote *)",
       "Bash(git push *)",
-      "mcp__coolify__deployment"
+      "mcp__coolify__deployment",
+      "Bash(mkdir -p /home/user/hero-section/.claude/agent-memory/business-orchestrator && ls -la /home/user/hero-section/.claude/agent-memory/business-orchestrator/)"
     ]
   }
 }
