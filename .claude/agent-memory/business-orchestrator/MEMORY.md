@@ -56,3 +56,39 @@ lui-même dans l'éditeur n8n (où les credentials sont visibles).
   (typiquement SSH, Apify, Notion, triggers) n'affichent pas leur bloc `credentials`, ne PAS
   tenter de réécriture complète — se limiter à des actions sûres et réversibles
   (unpublish/publish, archive) et documenter le fix manuel pour Tony.
+
+## 2026-07-06
+
+**Contexte** : toujours 0 page Notion avec "🤖 Délégable IA" = vrai (tous statuts confondus,
+vérifié par `GROUP BY Statut`, pas seulement to_do/in_progress) — situation identique à hier.
+
+**Vérifications faites (RAS confirmé)** :
+- n8n `search_executions(status:["error"])` sur toute l'instance depuis `startedAfter:
+  2026-07-05T00:00:00Z` → 0 résultat. Le fix du 07-05 (unpublish de `GQEjDIbLWjz8Gw9r`) tient
+  toujours, aucun nouveau workflow cassé. Note : deux workflows actifs sont apparus/ont été mis
+  à jour début juillet et ressemblent à des remplacements manuels de Tony pour le pipeline
+  restaurant : `3RQuddaYocqqNOGP` ("Dev restaurant V4", MAJ 07-02) et `iIv2o7ADJl6wVKYT`
+  ("restaurant v5 demo + essai", MAJ 07-04) — aucun des deux n'a d'erreur. Je n'ai pas ouvert
+  leur détail (pas nécessaire, pas d'erreur), à vérifier un jour où un signal apparaît dessus.
+- GitHub `tonyPayetDev/hero-section` : 0 issue ouverte, 0 PR ouverte.
+- Le repo n'a pas de CLAUDE.md à la racine (seul `.agents/skills/playwright-skill/CLAUDE.md`
+  existe) — la consigne de le lire pour les conventions ne s'applique pas tant qu'il n'est pas
+  créé.
+- Série de blog "veille IA & automatisation" (`blog/veille-ia-auto-*.html`, committée par un
+  agent Claude Code, cadence ~2-4 jours) : le dernier article (07-04) annonce lui-même
+  "Prochaine veille : 7-9 juillet 2026" dans son footer. Le 06-07 était donc **prématuré** —
+  ne pas générer l'article avant l'échéance annoncée sous peine de doublon/incohérence de
+  calendrier. **Pattern à retenir** : toujours lire le `<footer>` du dernier article de cette
+  série avant de décider s'il est "temps" d'en écrire un nouveau — la date annoncée fait foi,
+  pas un calcul de cadence moyenne.
+
+**Action prise** : aucune tâche exécutée. Page Notion "✅ RAS — 06 juillet 2026" créée
+(id 3955fda3-ad05-8127-a91b-dbae020714e2, Projet=ORGANISATION, Statut=Terminé) documentant
+l'audit complet plutôt que d'inventer une tâche artificielle.
+
+**Pattern à surveiller à l'avenir** :
+- Cette base Notion peut rester vide de tâches "Délégable IA" plusieurs jours de suite —
+  ce n'est pas une anomalie en soi, mais si ça dure > 1 semaine il pourrait être pertinent de
+  suggérer à Tony (via une page Notion, pas une action directe) de qualifier davantage de
+  tâches comme délégables, sinon cet agent tourne à vide.
+- Prochaine fenêtre où le blog veille IA sera légitimement dû : 7-9 juillet 2026.
