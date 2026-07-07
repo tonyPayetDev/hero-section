@@ -92,3 +92,49 @@ l'audit complet plutôt que d'inventer une tâche artificielle.
   suggérer à Tony (via une page Notion, pas une action directe) de qualifier davantage de
   tâches comme délégables, sinon cet agent tourne à vide.
 - Prochaine fenêtre où le blog veille IA sera légitimement dû : 7-9 juillet 2026.
+
+## 2026-07-07
+
+**Contexte** : toujours 0 page Notion avec "🤖 Délégable IA" = vrai (vérifié sur les tâches
+to-do/in-progress via la vue déjà filtrée `view://2fafbeb0-...` — 50 résultats, tous "__NO__").
+Troisième jour consécutif dans ce cas — pattern confirmé, pas une anomalie ponctuelle.
+
+**Découverte** : `search_executions(status:["error"])` a remonté 2 échecs le 06/07 sur le
+workflow `WFqUJ2g2btf976cd` ("🎬 Script Sheet → Vidéo Avatar → Validation → Réseaux") — pipeline
+quotidien (Trigger 9h) qui génère des reels perso (stratégie lead magnet "commente X pour
+recevoir le workflow gratuitement") pour Instagram/TikTok/LinkedIn à partir d'un Google Sheet
+"30 Vidéos".
+
+Root cause (2 problèmes cumulés) :
+1. Le nœud SSH "Create video hyperframe" appelle Claude Code dans un container Docker
+   (`claude-code-h0o8cgkw8gsc4c408c4s4wss`) qui n'a NI node/npm/npx NI ffmpeg, et pas les droits
+   root pour les installer. Impossible d'y construire/rendre une composition HyperFrames. L'agent
+   Claude Code interne refuse (à raison) de livrer une URL_VIDEO fictive et répond par un message
+   texte demandant comment procéder — ce qui casse le parsing regex `VIDEO_URL:` en aval.
+2. Le webhook public `avatar-api.automatisationboost.com` renvoie 503 côté Cloudflare (service
+   Coolify interne OK, mais DNS/proxy public cassé).
+   Bug shell secondaire déjà corrigé entre les deux échecs (07:00 → 07:44) par ailleurs : le
+   prompt Claude passait en clair dans la commande SSH et cassait sur les apostrophes/parenthèses
+   → un nœud "Build Prompt (base64)" a été ajouté pour encoder le prompt, mais ça ne résout pas
+   le manque d'outillage (1) ni le 503 (2).
+
+**Action prise** : `unpublish_workflow` sur `WFqUJ2g2btf976cd` (safe, réversible), AVANT le run
+de 9h du jour (aucune exécution du 07/07 au moment du check). Évite un 3e échec silencieux et une
+3e ligne du Google Sheet bloquée en "En Cours".
+
+**Page Notion créée** : "🐛 Workflow n8n cassé — Script Sheet → Vidéo Avatar (désactivé, 2 échecs
+consécutifs)" (id 3965fda3-ad05-81aa-be41-ed8c6faa66a7, Projet=Content, ROI=🔥5, Délégable
+IA=NO, Statut=Terminé).
+
+**Pattern à surveiller à l'avenir** :
+- 3e jour de suite sans aucune tâche Notion délégable IA (05, 06, 07 juillet). Le signal fort
+  reste `search_executions(status:["error"])` sur n8n — c'est systématiquement là que se trouve
+  le vrai "1%" du jour en ce moment, pas dans la base de tâches.
+- Les workflows de la série "Script Sheet → Vidéo Avatar" / HyperFrames dépendent d'un container
+  SSH externe (`claude-code-*`) qui peut manquer d'outillage (node/ffmpeg) sans prévenir — vérifier
+  ce point AVANT de blâmer le prompt ou la config n8n si un nœud SSH "Create video hyperframe"
+  échoue à nouveau à l'avenir.
+- Je n'ai pas d'accès Google Sheets API dans cette session (seulement n8n/Notion/git) : je ne
+  peux pas remettre moi-même les lignes bloquées "En Cours" à "À faire" dans le sheet "30 Vidéos".
+  Documenté pour Tony dans la page Notion — à vérifier si un accès Sheets devient disponible un
+  jour pour automatiser ce nettoyage.
