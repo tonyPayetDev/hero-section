@@ -250,9 +250,9 @@
         text-transform: uppercase;
         letter-spacing: 0.01em;
         color: #fff;
-        -webkit-text-stroke: 3px #000;
         text-shadow:
           -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+          -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000,
           0 6px 18px rgba(0, 0, 0, 0.6);
         white-space: nowrap;
       }
@@ -498,28 +498,31 @@
       ></audio>
 
       <!-- ============ SOUND DESIGN (tracks 11-13) ============ -->
-      <!-- BGM : pad synthétisé localement via ffmpeg (accord La mineur, lowpass + echo, fade
-           in/out) — pas de vraie musique "epic" disponible dans ce sandbox (pas de clé
-           HeyGen/Gemini, pas d'abonnement Splice actif). Remplacer par un vrai morceau dès que
-           l'accès Epidemic Sound MCP (ajouté à .claude/settings.json, actif au prochain
-           redémarrage) ou une autre source devient utilisable. Volume très bas pour rester
-           discret sous la voix. -->
+      <!-- BGM : "Ascension Protocol" (assets.automatisationboost.com, brand track fournie par
+           l'utilisateur), trim 0-16.73s (intro la plus discrète du morceau) + fade in 0.3s /
+           fade out 0.6s, cover art (mjpeg attaché) retirée (-vn) pour ne garder que l'audio.
+           Remplace "Close Up" (Mixkit) — retour utilisateur : musique de marque demandée
+           explicitement. Volume bas pour rester discret sous la voix. -->
       <audio
         id="bgm"
-        src="assets/bgm-pad.mp3"
+        src="assets/bgm-ascension.mp3"
         data-start="0"
         data-duration="16.73"
         data-track-index="11"
-        data-volume="0.15"
+        data-volume="0.12"
       ></audio>
 
-      <!-- Whooshs de transition de scène (synthétisés : sweep de fréquence + bruit filtré) -->
-      <audio src="assets/sfx-whoosh.mp3" data-start="4.68" data-duration="0.55" data-track-index="12" data-volume="0.5"></audio>
-      <audio src="assets/sfx-whoosh.mp3" data-start="10.32" data-duration="0.55" data-track-index="12" data-volume="0.5"></audio>
-      <audio src="assets/sfx-whoosh.mp3" data-start="13.44" data-duration="0.55" data-track-index="12" data-volume="0.5"></audio>
+      <!-- Whooshs de transition de scène : "Cinematic whoosh fast transition" (Mixkit Free License,
+           id 1492) — remplace "Fast whoosh transition", jugé "moyen" par l'utilisateur ; celui-ci
+           est plus cinématique/premium. Trim 1.33s natif + léger fade out. -->
+      <audio src="assets/sfx-whoosh-v2.mp3" data-start="4.68" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio src="assets/sfx-whoosh-v2.mp3" data-start="10.32" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio src="assets/sfx-whoosh-v2.mp3" data-start="13.44" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
 
-      <!-- Chime au reveal du mot-clé CTA (synthétisé, 3 sinusoïdes 880/1318/1760Hz + echo) -->
-      <audio src="assets/sfx-chime.mp3" data-start="13.72" data-duration="0.7" data-track-index="13" data-volume="0.65"></audio>
+      <!-- Chime au reveal du mot-clé CTA : "Sci-Fi confirmation" (Mixkit Free License, id 914) —
+           remplace "Positive notification" (bell générique), mieux thématisé pour une vidéo
+           Agent IA. Trim 1.04s natif + léger fade out. -->
+      <audio src="assets/sfx-chime-v2.mp3" data-start="13.72" data-duration="1.07" data-track-index="13" data-volume="0.35"></audio>
     </div>
 
     <script>

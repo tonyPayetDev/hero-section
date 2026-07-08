@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Autoboost Neon Video — #3 Lead Generation &amp; Cold Email</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Inter";
+        font-weight: 400;
+        src: url("fonts/Inter-400-latin.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Inter";
+        font-weight: 700;
+        src: url("fonts/Inter-700-latin.woff2") format("woff2");
+      }
+
+      :root {
+        --bg: #060606;
+        --yellow: #ffe600;
+        --violet: #a855f7;
+        --orange: #ff8a3d;
+        --panel: #121212;
+        --panel-border: rgba(255, 230, 0, 0.25);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: #fff;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      /* ---------- Scenes (content zone: 0-1120px) ---------- */
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1080px;
+        height: 1120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 64px;
+        text-align: center;
+      }
+
+      .kicker {
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--violet);
+        margin-bottom: 18px;
+      }
+
+      .headline {
+        font-size: 64px;
+        font-weight: 700;
+        line-height: 1.15;
+        margin: 0 0 28px;
+      }
+      .headline .hi { color: var(--yellow); }
+      .headline .hi-v { color: var(--violet); }
+      .headline .hi-o { color: var(--orange); }
+
+      /* ---------- Scene 1: Hook ---------- */
+      .hook-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 999px;
+        padding: 14px 28px;
+        font-size: 34px;
+        font-weight: 700;
+        margin-bottom: 40px;
+      }
+      .hook-tag .strike { color: var(--orange); text-decoration: line-through; opacity: 0.7; }
+      .hook-tag .arrow { color: var(--yellow); }
+      .hook-tag .now { color: var(--violet); }
+
+      /* ---------- Scene 2: Dashboard cards ---------- */
+      .dash-card {
+        width: 860px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 20px;
+        padding: 32px 36px;
+        margin-top: 12px;
+      }
+      .dash-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 32px;
+        font-weight: 700;
+      }
+      .dash-row:last-child { border-bottom: none; }
+      .dash-row .score { color: var(--yellow); font-size: 30px; }
+
+      /* ---------- Scene 3: Automation flow ---------- */
+      .flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 980px;
+        margin-top: 20px;
+        position: relative;
+      }
+      .flow-node {
+        width: 148px;
+        height: 148px;
+        border-radius: 20px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: none;
+      }
+      .flow-node .ic { font-size: 48px; }
+      .flow-node .lb { font-size: 20px; font-weight: 700; color: #ddd; }
+      .flow-arrow {
+        flex: 1;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.18);
+        position: relative;
+        margin: 0 6px;
+      }
+      .flow-arrow .pulse {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--yellow);
+        box-shadow: 0 0 18px 4px var(--yellow);
+        transform: translate(-50%, -50%);
+      }
+      .flow-panel {
+        margin-top: 36px;
+        width: 620px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 14px;
+        padding: 18px 24px;
+        font-size: 22px;
+        font-family: monospace;
+        color: var(--violet);
+        text-align: left;
+      }
+      .flow-panel .k { color: #888; }
+      .flow-panel .v { color: var(--yellow); }
+
+      /* ---------- Scene 4: Counter ---------- */
+      .counter-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .counter {
+        font-size: 200px;
+        font-weight: 700;
+        color: var(--yellow);
+        line-height: 1;
+      }
+      .counter-label {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--violet);
+        margin-top: 12px;
+      }
+
+      /* ---------- Scene 5: CTA ---------- */
+      .cta-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .free-pill {
+        background: var(--orange);
+        color: #1a0d00;
+        font-weight: 700;
+        font-size: 30px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 12px 32px;
+        border-radius: 999px;
+      }
+      .cta-keyword {
+        font-size: 88px;
+        font-weight: 700;
+        color: var(--yellow);
+        text-shadow: 0 0 40px rgba(255, 230, 0, 0.55);
+      }
+      .cta-sub {
+        font-size: 32px;
+        font-weight: 700;
+        color: #eee;
+      }
+
+      /* ---------- Captions (safe band 1130-1270) ---------- */
+      .caption {
+        position: absolute;
+        top: 1130px;
+        left: 0;
+        width: 1080px;
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 60px;
+      }
+      .caption .line {
+        font-size: 52px;
+        font-weight: 700;
+        color: #fff;
+        -webkit-text-stroke: 2px #000;
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 6px 18px rgba(0, 0, 0, 0.6);
+        white-space: nowrap;
+      }
+      .caption .line span.hot {
+        color: var(--yellow);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(255, 230, 0, 0.85);
+      }
+      .caption .line span.violet {
+        color: var(--violet);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(168, 85, 247, 0.85);
+      }
+      .caption .line span.orange {
+        color: var(--orange);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(255, 138, 61, 0.85);
+      }
+
+      /* ---------- Avatar / setup zone (bottom ~700px) ---------- */
+      #avatar {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 780px;
+        height: 700px;
+        object-fit: cover;
+        object-position: center top;
+      }
+
+      #avatar-ring {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        width: 720px;
+        height: 720px;
+        margin-left: -360px;
+        border-radius: 50%;
+        border: 4px solid var(--yellow);
+        opacity: 0;
+        pointer-events: none;
+        box-shadow: 0 0 40px rgba(255, 230, 0, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="autoboost-03-lead-generation" data-width="1080" data-height="1920" data-duration="18">
+
+      <!-- ============ SCENES (track 0) ============ -->
+
+      <section id="scene-1" class="scene clip" data-start="0" data-duration="4.26" data-track-index="0">
+        <div class="hook-tag">
+          <span class="strike">2010</span>
+          <span class="arrow">→</span>
+          <span class="now">2026</span>
+        </div>
+        <div class="headline">Arrête de prospecter <span class="hi">à la main</span></div>
+      </section>
+
+      <section id="scene-2" class="scene clip" data-start="4.26" data-duration="2.85" data-track-index="0">
+        <div class="kicker">Ce workflow</div>
+        <div class="headline">Trouve tes <span class="hi">entreprises cibles</span></div>
+        <div class="dash-card">
+          <div class="dash-row"><span>Boulangerie Saint-Denis</span><span class="score">92% match</span></div>
+          <div class="dash-row"><span>Studio Yoga Réunion</span><span class="score">88% match</span></div>
+          <div class="dash-row"><span>Auto École Express</span><span class="score">85% match</span></div>
+        </div>
+      </section>
+
+      <section id="scene-3" class="scene clip" data-start="7.11" data-duration="5.68" data-track-index="0">
+        <div class="headline" style="font-size:48px;margin-bottom:16px;">Enrichit, rédige, <span class="hi-v">envoie</span></div>
+        <div class="flow">
+          <div class="flow-node"><span class="ic">📇</span><span class="lb">Contacts</span></div>
+          <div class="flow-arrow" id="arrow-1"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic">🤖</span><span class="lb">Agent IA</span></div>
+          <div class="flow-arrow" id="arrow-2"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic">🔗</span><span class="lb">n8n</span></div>
+          <div class="flow-arrow" id="arrow-3"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic">✉️</span><span class="lb">Email</span></div>
+        </div>
+        <div class="flow-panel">
+          <div><span class="k">to:</span> <span class="v">contact@boulangerie-sd.re</span></div>
+          <div><span class="k">subject:</span> <span class="v">Bonjour Boulangerie Saint-Denis 👋</span></div>
+          <div><span class="k">status:</span> <span class="v">sent ✔</span></div>
+        </div>
+      </section>
+
+      <section id="scene-4" class="scene clip" data-start="12.79" data-duration="1.89" data-track-index="0">
+        <div class="counter-wrap">
+          <div class="counter" id="counter-num">0%</div>
+          <div class="counter-label">Automatique</div>
+        </div>
+      </section>
+
+      <section id="scene-5" class="scene clip" data-start="14.68" data-duration="3.32" data-track-index="0">
+        <div class="cta-card">
+          <div class="free-pill">Modèle gratuit</div>
+          <div class="cta-keyword">LEADS</div>
+          <div class="cta-sub">Commente ce mot pour le récupérer</div>
+        </div>
+      </section>
+
+      <!-- ============ CAPTIONS (track 1) ============ -->
+
+      <div id="cap-1" class="caption clip" data-start="0" data-duration="1.42" data-track-index="1">
+        <div class="line">Arrête de <span class="orange">prospecter</span></div>
+      </div>
+      <div id="cap-2" class="caption clip" data-start="1.42" data-duration="1.42" data-track-index="1">
+        <div class="line">à la <span class="hot">main</span></div>
+      </div>
+      <div id="cap-3" class="caption clip" data-start="2.84" data-duration="1.42" data-track-index="1">
+        <div class="line">comme en <span class="orange">2010</span></div>
+      </div>
+      <div id="cap-4" class="caption clip" data-start="4.26" data-duration="1.42" data-track-index="1">
+        <div class="line">Ce <span class="violet">workflow</span> trouve</div>
+      </div>
+      <div id="cap-5" class="caption clip" data-start="5.68" data-duration="1.43" data-track-index="1">
+        <div class="line">les <span class="hot">entreprises</span> cibles</div>
+      </div>
+      <div id="cap-6" class="caption clip" data-start="7.11" data-duration="1.42" data-track-index="1">
+        <div class="line"><span class="violet">Enrichit</span> les contacts</div>
+      </div>
+      <div id="cap-7" class="caption clip" data-start="8.53" data-duration="1.42" data-track-index="1">
+        <div class="line">Rédige un <span class="hot">email</span></div>
+      </div>
+      <div id="cap-8" class="caption clip" data-start="9.95" data-duration="1.42" data-track-index="1">
+        <div class="line"><span class="violet">Personnalisé</span> pour chacun</div>
+      </div>
+      <div id="cap-9" class="caption clip" data-start="11.37" data-duration="1.42" data-track-index="1">
+        <div class="line">Et <span class="orange">envoie</span> tout</div>
+      </div>
+      <div id="cap-10" class="caption clip" data-start="12.79" data-duration="1.42" data-track-index="1">
+        <div class="line">Cent pour <span class="hot">cent</span></div>
+      </div>
+      <div id="cap-11" class="caption clip" data-start="14.21" data-duration="0.47" data-track-index="1">
+        <div class="line"><span class="violet">Automatique</span></div>
+      </div>
+      <div id="cap-12" class="caption clip" data-start="14.68" data-duration="0.95" data-track-index="1">
+        <div class="line">C'est <span class="orange">gratuit</span></div>
+      </div>
+      <div id="cap-13" class="caption clip" data-start="15.63" data-duration="0.95" data-track-index="1">
+        <div class="line">Commente <span class="hot">LEADS</span></div>
+      </div>
+      <div id="cap-14" class="caption clip" data-start="16.58" data-duration="1.42" data-track-index="1">
+        <div class="line">pour le récupérer</div>
+      </div>
+
+      <!-- ============ AVATAR (track 2) ============ -->
+      <video
+        id="avatar"
+        src="assets/avatar-keyed.mp4"
+        data-start="0"
+        data-duration="18"
+        data-track-index="2"
+        muted
+        playsinline
+      ></video>
+      <div id="avatar-ring" data-start="14.68" data-duration="3.32" data-track-index="3" class="clip"></div>
+
+      <!-- ============ AUDIO (track 10) ============ -->
+      <!-- IMPORTANT: assets/voice.mp3 must be generated locally (WaveSpeed qwen3-tts/voice-clone
+           via n8n webhook avatar-webhook-v2 or tts-gen) before this composition can render.
+           Re-sync data-start/data-duration on captions + data-duration on root/audio once the
+           real narration length is known — see NOTES.md. -->
+      <audio
+        id="voice"
+        src="assets/voice.mp3"
+        data-start="0"
+        data-duration="18"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Scene entrances (slide up + fade)
+      const scenes = ["#scene-1", "#scene-2", "#scene-3", "#scene-4", "#scene-5"];
+      const sceneStarts = [0, 4.26, 7.11, 12.79, 14.68];
+      scenes.forEach((sel, i) => {
+        tl.from(sel, { y: 40, opacity: 0, duration: 0.45, ease: "power3.out" }, sceneStarts[i] + 0.05);
+      });
+
+      // Caption pop-ins
+      const captions = [
+        ["#cap-1", 0], ["#cap-2", 1.42], ["#cap-3", 2.84], ["#cap-4", 4.26],
+        ["#cap-5", 5.68], ["#cap-6", 7.11], ["#cap-7", 8.53], ["#cap-8", 9.95],
+        ["#cap-9", 11.37], ["#cap-10", 12.79], ["#cap-11", 14.21], ["#cap-12", 14.68],
+        ["#cap-13", 15.63], ["#cap-14", 16.58],
+      ];
+      captions.forEach(([sel, t]) => {
+        tl.from(sel + " .line", { scale: 0.85, opacity: 0, duration: 0.18, ease: "back.out(2)" }, t + 0.02);
+      });
+
+      // Scene 2 dashboard rows stagger in
+      tl.from("#scene-2 .dash-row", { x: 30, opacity: 0, duration: 0.35, stagger: 0.12, ease: "power2.out" }, 4.5);
+
+      // Scene 3 automation flow — pulse dots travel along each arrow in sequence
+      const arrowDur = 5.68 / 3;
+      ["#arrow-1 .pulse", "#arrow-2 .pulse", "#arrow-3 .pulse"].forEach((sel, i) => {
+        const start = 7.11 + 0.3 + i * arrowDur;
+        tl.fromTo(sel, { left: "0%" }, { left: "100%", duration: arrowDur * 0.8, ease: "power1.inOut", repeat: 1 }, start);
+      });
+      tl.from("#scene-3 .flow-node", { scale: 0.8, opacity: 0, duration: 0.3, stagger: 0.08, ease: "back.out(2)" }, 7.2);
+      tl.from("#scene-3 .flow-panel", { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" }, 11.9);
+
+      // Scene 4 counter count-up
+      const counter = { val: 0 };
+      tl.to(counter, {
+        val: 100,
+        duration: 1.5,
+        ease: "power1.out",
+        onUpdate: () => {
+          document.getElementById("counter-num").textContent = Math.round(counter.val) + "%";
+        },
+      }, 12.9);
+
+      // Scene 5 CTA — avatar ring pulse + keyword glow beat
+      tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 14.7);
+      tl.to("#avatar-ring", { rotation: 360, duration: 3.3, ease: "none" }, 14.7);
+      tl.from(".cta-keyword", { scale: 0.7, opacity: 0, duration: 0.4, ease: "back.out(2.5)" }, 15.0);
+
+      window.__timelines["autoboost-03-lead-generation"] = tl;
+    </script>
+  </body>
+</html>

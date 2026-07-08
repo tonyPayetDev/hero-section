@@ -1,5 +1,80 @@
 # Autoboost Neon Video — #4 Telegram Agent IA
 
+## ✅ SOUND DESIGN v4 + FIX CAPTIONS (2026-07-08, suite 6)
+
+Retours utilisateur sur le rendu v3 : SFX "moyens", musique de marque à utiliser à la place de
+Mixkit, et captions "un peu bizarres".
+
+- **BGM** : remplacé "Close Up" (Mixkit) par **"Ascension Protocol"** (piste de marque fournie
+  par l'utilisateur : `assets.automatisationboost.com/music/Ascension%20Protocol.mp3`, générée
+  via Suno). Trim 0–16.73s (intro la plus discrète, -18.8dB vs -13 à -16dB plus loin dans le
+  morceau), `-vn` pour retirer la cover art mjpeg attachée (aurait ajouté un flux vidéo parasite
+  au fichier audio), fade in 0.3s / fade out 0.6s → `assets/bgm-ascension.mp3`.
+- **SFX** : remplacés par des picks plus premium sur Mixkit (mêmes méthode/licence que la suite
+  précédente) : whoosh "Fast whoosh transition" → **"Cinematic whoosh fast transition"**
+  (`sfx-whoosh-v2.mp3`, 1.38s) ; chime "Positive notification" (bell générique) →
+  **"Sci-Fi confirmation"** (`sfx-chime-v2.mp3`, 1.07s), mieux thématisé pour une vidéo Agent IA.
+- **Fix captions** : `.caption .line` combinait `-webkit-text-stroke: 3px #000` **et** un contour
+  simulé en `text-shadow` 4 directions — les deux techniques superposées produisaient un effet de
+  double-contour/lettres dédoublées sous le rasterizer logiciel Chrome headless (SwiftShader),
+  confirmé visuellement via des captures Playwright du MP4 rendu (voir méthode ci-dessous) sur
+  quasi toutes les captions ("TU PAIES CHATGPT", "CHERCHE SUR LE", "COMMENTE AGENT", etc.). Le bug
+  était invisible à l'inspection du DOM/CSS ou à `hyperframes validate/inspect` (`ok:true` quand
+  même) — seule une vérification visuelle de frames réelles l'a révélé. Fix : retrait du
+  `-webkit-text-stroke`, contour porté intégralement par un `text-shadow` étendu à 8 directions
+  (4 diagonales + 4 axes) au lieu de 4. Règle ajoutée au skill `veille-to-video` pour ne plus
+  répéter cette combinaison.
+- **Vérification visuelle** : capture d'écran du MP4 rendu via `playwright-skill` — méthode :
+  ouvrir une page HTML locale (`file://`) avec un `<video>` pointant vers le MP4 (le player mp4
+  refuse le chargement si la page est ouverte via `page.setContent()`/origine non-file:// —
+  `MEDIA_ELEMENT_ERROR: Media load rejected by URL safety check` ; il faut naviguer vers un vrai
+  fichier `.html` en `file://`), puis `video.currentTime = t` + attendre l'event `seeked` + screenshot
+  de l'élément vidéo. Confirmé le bug sur le rendu v3, confirmé le fix sur le rendu v4. En bonus,
+  a confirmé que le warning de contraste `hyperframes validate` sur `.free-pill` ("Modèle gratuit")
+  était un faux positif (frame de transition mid-fade, pas un vrai problème visuel — le badge
+  s'affiche bien avec son fond orange une fois stabilisé).
+
+Revalidé (`ok:true`, seul warning préexistant sans lien : slot voix) et re-rendu. `ffprobe` :
+H.264 1080×1920, AAC, 16.77s, 6.76MB. `volumedetect` : mean -26.2dB / max -5.9dB, cohérent avec
+les passes précédentes.
+
+**Uploadé sur Blotato (lien media only, PAS publié)** :
+`https://database.blotato.io/storage/v1/object/public/public_media/aef82d60-4167-4bf9-b043-3808d5fccdb4/8e96c554-971f-4851-ba4c-a6ec66f4074d.mp4`
+
+---
+
+## ✅ SOUND DESIGN v3 — vraie musique/SFX libres de droits (2026-07-08, suite 5)
+
+Suite au blocage Epidemic Sound (recherche OK mais `DownloadRecording`/`DownloadSoundEffect`
+renvoient `FORBIDDEN` — voir section dédiée plus bas) et HeyGen (CLI absent du sandbox, `resolve.mjs`
+du skill `media-use` échoue proprement en "no provider could resolve"), décision utilisateur :
+contourner avec de la **vraie musique libre de droits (Mixkit, licence "Mixkit Free" — usage
+commercial libre, sans attribution)** plutôt qu'utiliser les previews basse qualité Epidemic Sound
+(refusé par principe, ce sont des previews non licenciées pour du contenu publié).
+
+Scrapé `mixkit.co` en HTTP direct (`curl` + parsing du JSON-LD embarqué dans les pages catégorie,
+et de l'endpoint `/free-sound-effects/download/<id>/` qui renvoie l'URL réelle `assets.mixkit.co/.../<id>.wav`
+derrière le bouton "Download") :
+- **BGM** : "Close Up" (Michael Ramir C., Corporate Music, mood positif/futuriste) —
+  `assets/bgm-mixkit.mp3`, trim 0–16.73s + fade in 0.3s / fade out 0.6s, volume 0.12.
+- **Whoosh transition** : "Fast whoosh transition" — `assets/sfx-whoosh-mixkit.mp3`, trim 0.8s +
+  fade out, aux 3 mêmes repères (4.68s/10.32s/13.44s).
+- **Chime CTA** : "Positive notification" — `assets/sfx-chime-mixkit.mp3`, trim 2.4s + fade out,
+  à 13.72s (le CTA a assez de marge — 3s restantes — pour laisser sonner tout le chime).
+
+Anciens fichiers synthétisés (`bgm-pad.mp3`, `sfx-whoosh.mp3`, `sfx-chime.mp3`) laissés sur disque
+mais plus référencés par `public/index.html`.
+
+Revalidé (`ok:true`, seul warning préexistant sans lien : slot voix 16.73s vs média 15.96s) et
+re-rendu. Vérifié `ffprobe` (H.264 1080×1920, AAC, 16.77s, 6.83MB) et `volumedetect` sur le mix
+complet : mean -26.7dB / max -6.5dB — quasi identique à la balance de la passe synthétisée
+précédente (-26/-7.6dB), donc la vraie musique ne casse pas l'équilibre sous la voix.
+
+**Uploadé sur Blotato (lien media only, PAS publié)** :
+`https://database.blotato.io/storage/v1/object/public/public_media/aef82d60-4167-4bf9-b043-3808d5fccdb4/f6d60e14-4a26-4d97-9d5e-6f4b0cb49c2f.mp4`
+
+---
+
 ## ✅ RETOUCHES SUPPLÉMENTAIRES (2026-07-08, suite 4) — anneau rapproché + comète néon + son v2
 
 Retour utilisateur sur le rendu précédent : le sound design "pas ouf", l'anneau néon trop loin de
@@ -33,19 +108,40 @@ mouvement entre deux frames à 0.5s et 1.5s) et à l'oreille (`volumedetect` : m
 **Uploadé sur Blotato (lien media only, PAS publié)** :
 `https://database.blotato.io/storage/v1/object/public/public_media/aef82d60-4167-4bf9-b043-3808d5fccdb4/f76d7328-9d44-4da7-8a38-9c5561e2b687.mp4`
 
-### Epidemic Sound MCP — toujours pas actif
+### Epidemic Sound MCP — actif mais téléchargement refusé (2026-07-08, suite 5)
 
-L'utilisateur a demandé confirmation ; vérifié via recherche d'outils dans la session en cours :
-aucun outil `search_music`/`download_music_track`/etc. disponible, confirmant que le nouveau
-serveur MCP dans `.claude/settings.json` (ajouté suite 3) n'est chargé qu'au redémarrage de
-Claude Code, pas en cours de session. Doc officielle consultée
-(`https://developers.epidemicsound.com/docs/mcp/`) : c'est un serveur MCP pur (Streamable HTTP,
-JSON-RPC), pas d'API REST simple utilisable en `curl` — la config déjà en place (URL +
-`Authorization: Bearer`) est correcte, confirmée contre la doc. Outils exposés une fois actif :
-`search_music`, `find_similar_track`, `search_sound_effects`, `download_music_track`,
-`download_sound_effect`, etc. Clé API valide 30 jours à partir du 2026-07-08 (expire ~07-08 août).
-**Prochaine étape dès qu'une nouvelle session est démarrée** : chercher une vraie piste "epic
-léger" via `search_music` et remplacer `assets/bgm-pad.mp3` (synthétisé) par le vrai fichier.
+Nouvelle session : les outils MCP (`SearchRecordings`, `SearchSoundEffects`, `DownloadRecording`,
+`DownloadSoundEffect`, etc.) sont bien chargés cette fois (confirmation qu'il fallait juste
+redémarrer Claude Code, comme prévu). **Recherche fonctionnelle** : trouvé "Floating Point"
+(Isaac Larson, id `5f127b1b-d694-3dc8-b122-96aa4e6c4eab`) — électro/ambient, mood "hopeful",
+31.8s, sans voix — bon candidat pour remplacer le pad synthétisé "epic léger".
+
+**Mais `DownloadRecording` et `DownloadSoundEffect` renvoient tous les deux `FORBIDDEN`**
+("You don't have permission to download this asset"), testé sur 2 pistes musicales différentes
+et 1 SFX. Recherche et téléchargement sont donc deux permissions distinctes côté API Epidemic
+Sound — le token actuel permet de chercher le catalogue mais pas de récupérer les fichiers
+(probablement un abonnement/plan qui n'inclut pas les droits de licence, ou une clé sans scope
+download). Le token expire de toute façon ~07-08 août 2026 (30 jours depuis le 2026-07-08).
+
+**Ne pas contourner** en utilisant les `lqmp3Url` de preview renvoyés par la recherche : ce sont
+des previews basse qualité non licenciées pour usage commercial, pas des fichiers utilisables
+dans une vidéo publiée.
+
+**Sound design du render actuel inchangé** : toujours le pad synthétisé ffmpeg (`assets/bgm-pad.mp3`)
+décrit dans la suite 4 ci-dessus — aucune vraie piste Epidemic Sound intégrée. À reprendre une
+fois l'abonnement/droits de téléchargement confirmés côté compte Epidemic Sound de l'utilisateur.
+
+**Fallback HeyGen tenté et bloqué aussi** : skill `media-use` (`resolve.mjs --type bgm`) échoue
+proprement avec "no provider could resolve" — le CLI `heygen` n'est pas installé dans ce sandbox
+et aucune `HEYGEN_API_KEY` n'est configurée (ni en env, ni documentée dans un CLAUDE.md du repo).
+Pas de faux résultat/preview utilisé en substitut — refusé par principe (voir décision utilisateur
+ci-dessous, pas de contournement avec un asset non licencié).
+
+**Décision utilisateur (2026-07-08)** : Tony va vérifier/régler son abonnement Epidemic Sound
+(droits de download, ou régénérer le token) plutôt que de fournir une clé HeyGen. **Prochaine
+étape dès confirmation** : relancer `SearchRecordings`/`DownloadRecording` sur "Floating Point"
+(id `5f127b1b-d694-3dc8-b122-96aa4e6c4eab`, électro/ambient/hopeful, 31.8s) ou équivalent,
+remplacer `assets/bgm-pad.mp3`, re-render, re-vérifier (`ffprobe`/`volumedetect`), re-upload Blotato.
 
 ---
 
