@@ -138,3 +138,41 @@ IA=NO, Statut=Terminé).
   peux pas remettre moi-même les lignes bloquées "En Cours" à "À faire" dans le sheet "30 Vidéos".
   Documenté pour Tony dans la page Notion — à vérifier si un accès Sheets devient disponible un
   jour pour automatiser ce nettoyage.
+
+## 2026-07-08
+
+**Contexte** : 4e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress).
+`search_executions(status:["error"])` sur n8n depuis 2026-07-07T16:38 (juste après le fix manuel
+de Tony sur `S85QlXjhIO6nBvzY`) → 0 résultat.
+
+**Vérification faite (RAS confirmé)** : le workflow `S85QlXjhIO6nBvzY` ("[Avatar AI] Webhook v2 -
+Fonctionnel") avait eu 3 exécutions en erreur le 07/07 (12:28 et 15:40) — le nœud "Extract Audio
+URL" échouait car le polling Wavespeed/Qwen3 TTS ne bouclait pas assez (statut "processing" au
+lieu d'attendre "completed"). Le workflow a été modifié par Tony lui-même à 16:25:54 (updatedAt
+postérieur aux erreurs) et toutes les exécutions depuis (63813-63818) sont en succès. **Rien à
+faire ici — déjà résolu avant le run, ne pas ré-ouvrir sans nouveau signal d'erreur.**
+
+**Action prise** : l'article `blog/veille-ia-auto-2026-07-04.html` annonçait dans son footer
+"Prochaine veille : 7-9 juillet 2026" — le 08/07 est dans cette fenêtre (voir pattern déjà noté
+le 06-07 : toujours lire le footer du dernier article avant de décider s'il est temps d'en écrire
+un nouveau). Recherche web (WebSearch) de 6 actus IA/automatisation réelles et datées 5-8 juillet
+2026 (Anthropic dépasse OpenAI en revenus, JADEPUFFER premier ransomware agentique, plan
+cybersécurité IA de l'UE, Claude Cowork web/mobile, n8n 2.28.7, Tencent Hy3 open-source), rédaction
+de `blog/veille-ia-auto-2026-07-08.html` au même gabarit CSS/structure que la série existante
+(réutiliser le `<style>` de l'article précédent tel quel, ne changer que le contenu). Commit
+`7c55314`, poussé sur `origin/main`. Nouvelle échéance annoncée en footer : 10-12 juillet 2026.
+
+**Page Notion créée** : "📰 Blog — Veille IA & Automatisation 5-8 juillet 2026 publiée"
+(id 3975fda3-ad05-8131-842c-d9f8c2ff67ce, Projet=Content, ROI=⚡4, Délégable IA=NO, Statut=Terminé).
+
+**Pattern à surveiller à l'avenir** :
+- 5e jour probable demain sans tâche Notion délégable IA si la tendance continue — la base reste
+  quasi vide depuis le 05/07. Le pattern "suggérer à Tony de qualifier plus de tâches" (noté le
+  06-07) devient de plus en plus pertinent si ça continue après le 10/07.
+- Avant de traiter tout signal d'erreur n8n déjà vu dans une veille précédente, vérifier
+  `updatedAt` du workflow vs. `startedAt` des exécutions en erreur : si le workflow a été modifié
+  APRÈS les erreurs, il est probablement déjà corrigé (cas vécu ici avec Avatar AI Webhook v2) —
+  vérifier les exécutions les plus récentes avant d'agir pour éviter un doublon de fix ou une
+  fausse alerte.
+- Prochaine fenêtre où le blog veille IA sera légitimement due : 10-12 juillet 2026 (à vérifier
+  dans le footer de `veille-ia-auto-2026-07-08.html` au cas où elle serait ajustée manuellement).
