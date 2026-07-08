@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veille IA & Automatisation — 5 - 8 juillet 2026</title>
+  <meta name="description" content="Les 6 actus IA et automatisation du 5 au 8 juillet 2026 : Anthropic dépasse OpenAI en revenus, JADEPUFFER premier ransomware agentique, plan cybersécurité IA de l'UE, Claude Cowork sur web et mobile, n8n 2.28.7 et Tencent Hy3 open-source." />
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a24;
+      --surface2: #22222f;
+      --accent: #7c5cfc;
+      --accent2: #a78bfa;
+      --text: #e2e2f0;
+      --muted: #9090b0;
+      --border: #2e2e42;
+      --green: #34d399;
+      --orange: #fb923c;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      background: linear-gradient(135deg, #0d0020 0%, #0a0a1a 40%, #001a12 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 24px 48px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      max-width: 760px;
+      margin: 0 auto 16px;
+    }
+
+    header h1 span { color: var(--accent2); }
+
+    .meta { color: var(--muted); font-size: 14px; }
+    .meta strong { color: var(--text); }
+
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .intro {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+    .intro strong { color: var(--text); }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      transition: border-color .2s;
+    }
+    .news-card:hover { border-color: var(--accent); }
+
+    .card-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .icon-purple { background: rgba(124,92,252,.18); }
+    .icon-blue   { background: rgba(34,211,238,.15); }
+    .icon-green  { background: rgba(52,211,153,.15); }
+    .icon-orange { background: rgba(251,146,60,.15); }
+    .icon-pink   { background: rgba(244,114,182,.15); }
+    .icon-yellow { background: rgba(250,204,21,.15); }
+    .icon-red    { background: rgba(248,113,113,.15); }
+
+    .card-meta { flex: 1; }
+    .card-tag { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .tag-purple { color: var(--accent2); }
+    .tag-blue   { color: var(--cyan); }
+    .tag-green  { color: var(--green); }
+    .tag-orange { color: var(--orange); }
+    .tag-pink   { color: var(--pink); }
+    .tag-yellow { color: #fbbf24; }
+    .tag-red    { color: #f87171; }
+
+    .card-title { font-size: 1.15rem; font-weight: 700; line-height: 1.3; color: var(--text); }
+
+    .card-body { font-size: 14.5px; color: var(--muted); line-height: 1.75; }
+    .card-body strong { color: var(--text); }
+
+    .card-source {
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--muted);
+    }
+    .card-source a { color: var(--accent2); font-weight: 600; }
+
+    .insight {
+      background: linear-gradient(135deg, rgba(124,92,252,.12), rgba(167,139,250,.06));
+      border: 1px solid rgba(124,92,252,.3);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-top: 16px;
+      font-size: 13.5px;
+    }
+    .insight-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent2); margin-bottom: 6px; }
+    .insight p { color: var(--muted); }
+    .insight p strong { color: var(--text); }
+
+    .analysis {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      margin-top: 48px;
+    }
+    .analysis h2 { font-size: 1.35rem; font-weight: 800; margin-bottom: 20px; }
+    .analysis h2 span { color: var(--accent2); }
+    .analysis p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+    .analysis p strong { color: var(--text); }
+
+    .tip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .tip-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .tip-card .tip-icon { font-size: 22px; margin-bottom: 10px; }
+    .tip-card h3 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .tip-card p { font-size: 12.5px; color: var(--muted); margin-bottom: 0; }
+
+    footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+    footer a { color: var(--accent2); }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 99px; padding: 3px 12px; font-size: 12px; color: var(--muted); }
+
+    .stat-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 18px 0 12px;
+    }
+    .stat-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      flex: 1;
+      min-width: 140px;
+    }
+    .stat-box .stat-num { font-size: 1.5rem; font-weight: 800; color: var(--accent2); }
+    .stat-box .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .alert-banner {
+      background: linear-gradient(135deg, rgba(248,113,113,.12), rgba(251,146,60,.08));
+      border: 1px solid rgba(248,113,113,.35);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .alert-banner strong { color: #f87171; }
+
+    .success-banner {
+      background: linear-gradient(135deg, rgba(52,211,153,.12), rgba(34,211,238,.08));
+      border: 1px solid rgba(52,211,153,.35);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .success-banner strong { color: var(--green); }
+
+    @media (max-width: 600px) {
+      .news-card { padding: 20px 18px; }
+      .analysis  { padding: 24px 20px; }
+      .card-header { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Veille du 5 – 8 juillet 2026</div>
+  <h1>IA &amp; Automatisation :<br /><span>6 signaux forts de cette semaine</span></h1>
+  <p class="meta"><strong>5 au 8 juillet 2026</strong> &nbsp;·&nbsp; Curatée par AutomationBoost</p>
+</header>
+
+<main>
+
+  <div class="intro">
+    <strong>TL;DR :</strong> Anthropic dépasse officiellement OpenAI en revenus annualisés (47 Md$ vs 25-33 Md$), confirmant le basculement du marché IA vers l'entreprise. Sysdig documente JADEPUFFER, la première attaque ransomware pilotée de bout en bout par un agent IA autonome — un signal d'alarme direct pour vos clients PME. La Commission Européenne dévoile son plan d'action Cybersécurité & IA. Claude Cowork débarque sur web et mobile pour les abonnés Max. n8n sort la 2.28.7 avec des correctifs de sécurité sur l'auth et les credentials IA. Et Tencent publie Hy3, un modèle open-weight 295B sous licence Apache 2.0, gratuit deux semaines sur OpenRouter. Voici l'essentiel.
+  </div>
+
+  <p class="section-title">6 actus à retenir</p>
+
+  <!-- NEWS 1 : Anthropic dépasse OpenAI -->
+  <div class="news-card">
+    <div class="card-header">
+      <div class="card-icon icon-purple">📈</div>
+      <div class="card-meta">
+        <div class="card-tag tag-purple">Marché IA · Juillet 2026</div>
+        <div class="card-title">Anthropic dépasse OpenAI en revenus — 47 Md$ de run-rate annualisé, porté à 80 % par l'entreprise</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Fortune confirme début juillet ce que plusieurs signaux laissaient présager depuis mai : <strong>Anthropic a dépassé OpenAI en revenus</strong>. Anthropic vise un run-rate annualisé de <strong>47 milliards de dollars</strong> et une rentabilité dès 2029 — un an d'avance sur OpenAI, qui déclare pour sa part 25 à 33 milliards de dollars de revenus annualisés sur sa dernière communication.</p>
+      <br />
+      <p>La différence tient à la stratégie : <strong>80 % des revenus d'Anthropic viennent de clients entreprise</strong>, contre une base beaucoup plus consumer chez OpenAI (environ 40 % enterprise). Anthropic avait déjà dépassé OpenAI en abonnements business dès le mois de mai, et les données Similarweb montrent que le trafic mensuel vers ChatGPT est passé sous la barre des 50 % du marché génératif pour la première fois — signe que les utilisateurs basculent plus facilement d'un modèle à l'autre qu'avant.</p>
+      <div class="insight">
+        <div class="insight-label">💡 Impact freelances / entrepreneurs</div>
+        <p>Le basculement vers l'entreprise valide une chose : <strong>le marché qui paie vraiment, c'est le B2B outillé</strong>, pas le grand public. Si vos offres actuelles ciblent des particuliers ou des micro-usages, c'est le moment de repositionner vers des PME qui ont un vrai budget IA récurrent. La bascule facile entre modèles (Claude, GPT, Gemini) est aussi un argument commercial : vendez la <strong>résilience multi-fournisseur</strong>, pas la dépendance à un seul LLM.</p>
+      </div>
+    </div>
+    <div class="card-source">
+      Sources :
+      <a href="https://fortune.com/2026/07/02/sam-altman-new-world-order-ai-openai-google-anthropic/" target="_blank">Fortune — Sam Altman seeks new world order for AI</a> ·
+      <a href="https://www.trendingtopics.eu/anthropic-overtakes-openai-in-revenue-hitting-30-billion-run-rate/" target="_blank">Trending Topics — Anthropic overtakes OpenAI in revenue</a> ·
+      <a href="https://www.axios.com/2026/05/28/anthropic-ai-fundraising-openai" target="_blank">Axios — Anthropic most valuable AI startup</a>
+    </div>
+  </div>
+
+  <!-- NEWS 2 : JADEPUFFER ransomware agentique -->
+  <div class="news-card">
+    <div class="card-header">
+      <div class="card-icon icon-red">🔓</div>
+      <div class="card-meta">
+        <div class="card-tag tag-red">Cybersécurité · 6 juillet 2026</div>
+        <div class="card-title">JADEPUFFER : le premier ransomware entièrement piloté par un agent IA — 600 payloads exécutés, note de rançon rédigée par l'IA elle-même</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>L'équipe de recherche de <strong>Sysdig</strong> a documenté ce que TechCrunch qualifie de première attaque ransomware "agentique" de bout en bout : baptisée <strong>JADEPUFFER</strong>, elle exploite une faille (CVE-2025-3248) sur une instance Langflow exposée sur internet, puis laisse un agent IA gérer <strong>seul</strong> le mouvement latéral, le vol d'identifiants, le chiffrement des fichiers et même la <strong>rédaction de la note de rançon</strong>.</p>
+      <br />
+      <p>L'agent a exécuté environ <strong>600 payloads</strong>, s'adaptant en temps réel aux obstacles rencontrés — un échec de connexion corrigé en seulement <strong>31 secondes</strong>. Les chercheurs notent un détail révélateur : les payloads sont saturés de commentaires en langage naturel expliquant le raisonnement de chaque étape (priorisation ROI des cibles, justification des actions) — une signature typique de génération de code par LLM, absente chez les opérateurs humains.</p>
+      <br />
+      <div class="alert-banner">
+        <strong>Nuance importante :</strong> un humain reste impliqué en amont — choix de la cible, infrastructure de commande et contrôle, identifiants initiaux. Ce n'est pas encore une attaque 100 % autonome de bout en bout, mais l'exécution technique complète, elle, l'est.
+      </div>
+      <div class="insight">
+        <div class="insight-label">💡 Impact freelances / entrepreneurs</div>
+        <p>Si vous déployez des instances self-hosted pour vos clients (n8n, Langflow, Docker exposés), <strong>c'est votre alerte à passer immédiatement</strong> : vérifiez que rien n'est exposé publiquement sans authentification forte, et patchez systématiquement. C'est aussi une opportunité commerciale directe : proposez un <strong>audit de surface d'attaque</strong> (30-60 min, 150-300 €) à vos clients qui ont des outils IA/no-code exposés — l'argument JADEPUFFER rend la vente facile.</p>
+      </div>
+    </div>
+    <div class="card-source">
+      Sources :
+      <a href="https://techcrunch.com/2026/07/06/the-first-ai-run-ransomware-attack-still-needed-a-human/" target="_blank">TechCrunch — The first AI-run ransomware attack still needed a human</a> ·
+      <a href="https://www.sysdig.com/blog/jadepuffer-agentic-ransomware-for-automated-database-extortion" target="_blank">Sysdig — JADEPUFFER: Agentic ransomware</a> ·
+      <a href="https://www.bleepingcomputer.com/news/security/jadepuffer-ransomware-used-ai-agent-to-automate-entire-attack/" target="_blank">BleepingComputer — JadePuffer used AI agent</a>
+    </div>
+  </div>
+
+  <!-- NEWS 3 : Plan UE Cybersécurité & IA -->
+  <div class="news-card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🇪🇺</div>
+      <div class="card-meta">
+        <div class="card-tag tag-blue">Régulation UE · 7 juillet 2026</div>
+        <div class="card-title">La Commission Européenne dévoile son Plan d'Action Cybersécurité & IA — évaluation des modèles avancés et plateforme de test sécurisée</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>La Commission Européenne a présenté le <strong>7 juillet 2026</strong> son <strong>Plan d'Action sur la Cybersécurité et l'Intelligence Artificielle</strong>, une réponse structurée aux risques ET aux opportunités des modèles IA avancés en matière de cybersécurité. Le plan reconnaît explicitement la double nature de l'IA : elle peut détecter des vulnérabilités et protéger les infrastructures critiques, mais aussi automatiser des cyberattaques à une échelle et une vitesse inédites (écho direct à JADEPUFFER, publié la veille).</p>
+      <br />
+      <p>Quatre axes concrets : une <strong>capacité d'évaluation UE</strong> des modèles avancés (en appui de l'AI Act), un <strong>Blueprint européen</strong> avec l'ENISA pour l'accès sécurisé aux systèmes IA dans les secteurs critiques (énergie, transport, santé, finance, administration), un <strong>EU Grand Challenge</strong> sur l'IA pour la cybersécurité, et le renforcement de l'application de la directive NIS2 et du Cyber Resilience Act.</p>
+      <div class="insight">
+        <div class="insight-label">💡 Impact freelances / entrepreneurs</div>
+        <p>Les obligations NIS2 et Cyber Resilience Act touchent de plus en plus de PME européennes, y compris à La Réunion pour celles qui travaillent avec des donneurs d'ordre continentaux. <strong>La conformité IA/cybersécurité devient un service à part entière</strong> : documenter les risques d'un déploiement IA pour un client (même basique) est un livrable que peu de freelances proposent aujourd'hui — c'est un boulevard pour se différencier avant que la demande n'explose.</p>
+      </div>
+    </div>
+    <div class="card-source">
+      Sources :
+      <a href="https://digital-strategy.ec.europa.eu/en/news/commission-presents-eu-action-plan-cybersecurity-and-artificial-intelligence" target="_blank">Commission Européenne — EU Action Plan on Cybersecurity and AI</a> ·
+      <a href="https://www.euronews.com/my-europe/2026/07/07/brussels-pitches-ai-cybersecurity-plan-amid-dependence-on-us-models" target="_blank">Euronews — Brussels pitches AI cybersecurity plan</a> ·
+      <a href="https://digital-strategy.ec.europa.eu/en/library/factsheet-action-plan-cybersecurity-and-artificial-intelligence" target="_blank">Commission Européenne — Factsheet</a>
+    </div>
+  </div>
+
+  <!-- NEWS 4 : Claude Cowork web/mobile -->
+  <div class="news-card">
+    <div class="card-header">
+      <div class="card-icon icon-green">📱</div>
+      <div class="card-meta">
+        <div class="card-tag tag-green">Anthropic · 7 juillet 2026</div>
+        <div class="card-title">Claude Cowork s'étend au web et au mobile — les sessions tournent maintenant à distance, même laptop fermé</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Lancé en janvier en app desktop, <strong>Claude Cowork</strong> — l'agent d'Anthropic pour le travail de bureau généraliste, dans l'esprit de Claude Code — est désormais disponible sur <strong>web et mobile</strong> pour les abonnés Max depuis le 7 juillet. Nouveauté clé : les sessions peuvent désormais tourner <strong>à distance en bêta</strong>, avec fichiers et progression sauvegardés sur le compte Claude, et les tâches planifiées continuent de s'exécuter même quand l'appareil est éteint.</p>
+      <br />
+      <p>En parallèle, Claude Code et Claude Cowork sont désormais disponibles en bêta publique dans <strong>Claude for Government Desktop</strong>, sur un environnement certifié FedRAMP High — confirmant qu'Anthropic pousse ses agents "office work" vers des contextes à exigences de conformité élevées, au-delà du seul usage développeur.</p>
+      <div class="insight">
+        <div class="insight-label">💡 Impact freelances / entrepreneurs</div>
+        <p>Un Cowork qui tourne à distance et survit à la fermeture du laptop change concrètement le <strong>rapport temps/livrable</strong> : vous pouvez lancer une tâche longue (rédaction, recherche, préparation de démo client) le matin et la retrouver terminée sans y avoir consacré une session complète. Testez-le sur vos tâches récurrentes à faible supervision (rapports clients, veille, premiers jets de contenu) avant de le proposer en option "productivité augmentée" à vos clients qui ont un abonnement Max.</p>
+      </div>
+    </div>
+    <div class="card-source">
+      Sources :
+      <a href="https://techcrunch.com/2026/07/07/the-coding-agent-wars-are-spilling-into-the-rest-of-the-office-claude-cowork/" target="_blank">TechCrunch — Claude Cowork expands to mobile and web</a> ·
+      <a href="https://www.anthropic.com/news" target="_blank">Anthropic — Newsroom</a> ·
+      <a href="https://releasebot.io/updates/anthropic/claude-code" target="_blank">Releasebot — Claude Code Updates July 2026</a>
+    </div>
+  </div>
+
+  <!-- NEWS 5 : n8n 2.28.7 -->
+  <div class="news-card">
+    <div class="card-header">
+      <div class="card-icon icon-orange">🔧</div>
+      <div class="card-meta">
+        <div class="card-tag tag-orange">n8n · 6-7 juillet 2026</div>
+        <div class="card-title">n8n 2.28.7 — correctifs sur l'auth Digest, les erreurs OAuth et la validation des uploads CSV des data tables</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>n8n a publié la version <strong>2.28.7</strong> les 6-7 juillet, une mise à jour de maintenance mais avec plusieurs correctifs qui méritent l'attention si vous auto-hébergez votre instance. Au menu : rollback des mises à jour de community packages qui échouent, envoi des identifiants <strong>Digest auth uniquement après le challenge serveur</strong> (fuite d'identifiants évitée en cas d'échec de handshake), exclusion des <strong>credentials managés AI Gateway</strong> des vérifications de permissions pré-exécution, remontée claire des causes sous-jacentes en cas d'échec de callback OAuth, et validation des uploads CSV des data tables <strong>par extension de fichier</strong>.</p>
+      <br />
+      <div class="success-banner">
+        <strong>À faire cette semaine :</strong> si vous gérez des instances n8n self-hosted pour vous ou vos clients (notamment celles exposées publiquement, cf. l'alerte JADEPUFFER ci-dessus), planifiez la mise à jour vers 2.28.7 — les correctifs auth/OAuth réduisent directement la surface d'attaque.
+      </div>
+      <div class="insight">
+        <div class="insight-label">💡 Impact freelances / entrepreneurs</div>
+        <p>Ce patch est un bon prétexte pour <strong>facturer une intervention de maintenance</strong> à vos clients sous contrat n8n : mise à jour + vérification rapide des credentials exposés + test des webhooks critiques. C'est exactement le type de ticket récurrent (30-45 min, 60-90 €) qui construit une relation de maintenance mensuelle sur la durée.</p>
+      </div>
+    </div>
+    <div class="card-source">
+      Sources :
+      <a href="https://docs.n8n.io/changelog/release-notes-2.x" target="_blank">n8n Docs — Release notes 2.x</a> ·
+      <a href="https://github.com/n8n-io/n8n/releases" target="_blank">GitHub — n8n releases</a> ·
+      <a href="https://releasebot.io/updates/n8n" target="_blank">Releasebot — n8n Release Notes</a>
+    </div>
+  </div>
+
+  <!-- NEWS 6 : Tencent Hy3 -->
+  <div class="news-card">
+    <div class="card-header">
+      <div class="card-icon icon-pink">🧠</div>
+      <div class="card-meta">
+        <div class="card-tag tag-pink">Open-source · 6 juillet 2026</div>
+        <div class="card-title">Tencent publie Hy3 : modèle open-weight 295B (21B actifs), licence Apache 2.0, gratuit sur OpenRouter pendant deux semaines</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Tencent Hunyuan a officiellement lancé <strong>Hy3</strong> le 6 juillet 2026 : un modèle Mixture-of-Experts de <strong>295 milliards de paramètres</strong> dont seulement <strong>21 milliards sont actifs</strong> par requête, avec une fenêtre de contexte de <strong>256K tokens</strong>. L'architecture MoE réduit fortement le coût d'inférence, et la licence <strong>Apache 2.0</strong> autorise le self-hosting, le fine-tuning et l'usage commercial sans les restrictions géographiques qui limitaient certains modèles chinois précédents.</p>
+      <br />
+      <p>Par rapport à la préversion d'avril, retravaillée avec le retour de 50 équipes produit internes, les hallucinations sont passées de <strong>12,5 % à 5,4 %</strong> et les erreurs de sens commun de <strong>25,4 % à 12,7 %</strong>. Hy3 revendique des performances comparables à GLM-5.2 et DeepSeek-V4 à moitié de leur taille, et dépasserait même GPT-5.5 sur certaines tâches scientifiques. Il est disponible sur Hugging Face, ModelScope et GitHub (version FP8 incluse), et <strong>gratuit sur OpenRouter pendant deux semaines</strong>.</p>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-num">295B</div>
+          <div class="stat-label">paramètres totaux (21B actifs)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">256K</div>
+          <div class="stat-label">tokens de contexte</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">2 sem.</div>
+          <div class="stat-label">gratuit sur OpenRouter</div>
+        </div>
+      </div>
+      <div class="insight">
+        <div class="insight-label">💡 Impact freelances / entrepreneurs</div>
+        <p>Une fenêtre gratuite de deux semaines sur OpenRouter, c'est l'occasion de <strong>tester Hy3 sur vos workflows n8n à fort volume</strong> (classification, extraction, résumés) sans engager de budget, puis de comparer le rapport qualité/coût face à Claude ou GPT une fois la gratuité terminée. Pour les tâches à faible enjeu et fort volume, un modèle Apache 2.0 self-hostable comme Hy3 peut faire baisser vos coûts d'infra de 30-50 % sur les briques où la qualité "frontier" n'est pas indispensable.</p>
+      </div>
+    </div>
+    <div class="card-source">
+      Sources :
+      <a href="https://venturebeat.com/technology/tencents-apache-licensed-hy3-takes-on-glm-5-2-at-half-the-size-and-wins-everywhere-except-coding" target="_blank">VentureBeat — Tencent's Hy3 takes on GLM-5.2</a> ·
+      <a href="https://www.marktechpost.com/2026/07/06/tencent-releases-hy3-open-295b-moe-model/" target="_blank">MarkTechPost — Tencent Releases Hy3</a> ·
+      <a href="https://the-decoder.com/tencent-releases-hy3-open-source-model-that-allegedly-matches-models-up-to-five-times-its-active-size/" target="_blank">The Decoder — Tencent releases Hy3</a>
+    </div>
+  </div>
+
+  <!-- ANALYSE -->
+  <div class="analysis">
+    <h2>Analyse : <span>Ce que ça change vraiment pour vous</span></h2>
+
+    <p>Ces quatre jours de début juillet racontent une histoire à deux visages : d'un côté un marché IA qui bascule massivement vers l'entreprise et l'open-source à coût réduit, de l'autre une prise de conscience sécuritaire brutale sur ce que l'autonomie agentique rend possible côté attaquants.</p>
+
+    <p><strong>1. Le marché confirme : l'entreprise paie, pas le grand public.</strong> Anthropic qui dépasse OpenAI grâce à 80 % de revenus B2B, c'est la validation définitive d'une thèse déjà présente dans nos veilles précédentes. Si votre pipeline commercial dépend encore de leads particuliers ou de micro-projets, 2026 est l'année pour <strong>repositionner votre offre vers des PME avec un budget récurrent</strong> — audit, déploiement, maintenance.</p>
+
+    <p><strong>2. JADEPUFFER change la conversation sécurité avec vos clients.</strong> Ce n'est plus une menace théorique : un agent IA a mené une intrusion complète, seul, en s'adaptant en temps réel. Couplé au plan cybersécurité de l'UE publié le lendemain, c'est le momentum parfait pour <strong>packager un audit de surface d'attaque IA</strong> — un service simple, rapide à livrer, et facile à vendre avec ces deux actus comme preuve sociale.</p>
+
+    <p><strong>3. Les outils que vous utilisez déjà s'améliorent silencieusement — restez à jour.</strong> n8n 2.28.7 corrige des failles d'authentification concrètes, Claude Cowork gagne en autonomie réelle (sessions à distance), et Hy3 ouvre une fenêtre gratuite pour tester un modèle open-weight compétitif. Aucune de ces trois évolutions ne fait la une seule, mais ensemble elles représentent un vrai gain : <strong>infrastructure plus sûre, agents plus autonomes, coûts d'inférence potentiellement plus bas</strong>.</p>
+
+    <div class="tip-grid">
+      <div class="tip-card">
+        <div class="tip-icon">🛡️</div>
+        <h3>Packagez un audit sécurité IA</h3>
+        <p>JADEPUFFER + plan UE = argument de vente tout fait. Proposez un audit de surface d'attaque à vos clients avec des outils IA/no-code exposés.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔄</div>
+        <h3>Patchez vos instances n8n</h3>
+        <p>Mise à jour 2.28.7 + vérification des credentials = ticket de maintenance facturable et relation client renforcée.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🧪</div>
+        <h3>Testez Hy3 gratuitement</h3>
+        <p>Deux semaines gratuites sur OpenRouter : comparez le rapport qualité/coût sur vos workflows n8n à fort volume avant d'engager du budget.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🎯</div>
+        <h3>Recentrez sur le B2B récurrent</h3>
+        <p>Anthropic dépasse OpenAI grâce à l'entreprise. Le grand public ne paie plus — orientez votre offre vers des PME avec budget récurrent.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pills" style="margin-top:32px;">
+    <span class="pill">Anthropic vs OpenAI</span>
+    <span class="pill">Revenus IA</span>
+    <span class="pill">JADEPUFFER</span>
+    <span class="pill">Ransomware agentique</span>
+    <span class="pill">Cybersécurité</span>
+    <span class="pill">Plan UE IA</span>
+    <span class="pill">NIS2</span>
+    <span class="pill">Claude Cowork</span>
+    <span class="pill">n8n 2.28.7</span>
+    <span class="pill">Tencent Hy3</span>
+    <span class="pill">Open-source</span>
+    <span class="pill">Apache 2.0</span>
+  </div>
+
+</main>
+
+<footer>
+  <p>Veille curatée par <a href="https://automationboost.fr">AutomationBoost</a> — 8 juillet 2026</p>
+  <p style="margin-top:8px;">Prochaine veille : 10-12 juillet 2026</p>
+</footer>
+
+</body>
+</html>
