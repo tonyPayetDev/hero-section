@@ -38,7 +38,25 @@
       "Bash(git remote *)",
       "Bash(git push *)",
       "mcp__coolify__deployment",
-      "Bash(mkdir -p /home/user/hero-section/.claude/agent-memory/business-orchestrator && ls -la /home/user/hero-section/.claude/agent-memory/business-orchestrator/)"
+      "Bash(mkdir -p /home/user/hero-section/.claude/agent-memory/business-orchestrator && ls -la /home/user/hero-section/.claude/agent-memory/business-orchestrator/)",
+      "Bash(node -c js/main.js)",
+      "Bash(node -c js/scroll-animations.js)",
+      "Bash(chmod -R 777 /work/.agents/skills/playwright-skill/)",
+      "Bash(node run.js /tmp/playwright-test-tony-site.js)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "TELEGRAM_BOT_TOKEN=8593693753:AAHQf74MrJwEVFK73de5TEGRz78LsxDvgMI TELEGRAM_CHAT_ID=6683661437 /usr/local/bin/claude-telegram",
+            "statusMessage": "Telegram listener starting...",
+            "async": true
+          }
+        ]
+      }
     ]
   }
 }
