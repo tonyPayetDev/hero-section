@@ -305,16 +305,41 @@
 
       #avatar-ring {
         position: absolute;
-        bottom: 40px;
+        bottom: 58px;
         left: 50%;
-        width: 680px;
-        height: 680px;
-        margin-left: -340px;
+        width: 644px;
+        height: 644px;
+        margin-left: -322px;
         border-radius: 50%;
         border: 3px solid var(--yellow);
         opacity: 0;
         pointer-events: none;
         box-shadow: 0 0 40px rgba(255, 230, 0, 0.35);
+      }
+
+      /* Rotating neon comet — conic-gradient ring masked to a thin annulus, spun via GSAP.
+         A uniform-color ring looks identical at any rotation angle, so the "spin" needs a
+         directional gradient to actually read as motion. */
+      #avatar-orbit {
+        position: absolute;
+        bottom: 52px;
+        left: 50%;
+        width: 656px;
+        height: 656px;
+        margin-left: -328px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: conic-gradient(
+          from 0deg,
+          transparent 0deg,
+          transparent 280deg,
+          rgba(255, 230, 0, 0.12) 320deg,
+          var(--yellow) 353deg,
+          #fff8d6 360deg
+        );
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+        mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+        filter: drop-shadow(0 0 12px rgba(255, 230, 0, 0.9));
       }
 
       /* ---------- Scene 3 fullscreen broll (avatar hidden this window) ---------- */
@@ -457,6 +482,7 @@
         ></video>
       </div>
       <div id="avatar-ring" data-start="0" data-duration="16.73" data-track-index="3" class="clip"></div>
+      <div id="avatar-orbit" data-start="0" data-duration="16.73" data-track-index="4" class="clip"></div>
 
       <!-- ============ AUDIO (track 10) ============ -->
       <!-- assets/voice.mp3 = vrai rendu WaveSpeed qwen3-tts/voice-clone (webhook avatar-webhook-v2,
@@ -487,13 +513,13 @@
         data-volume="0.15"
       ></audio>
 
-      <!-- Whooshs de transition de scène (synthétisés, bruit filtré) -->
-      <audio src="assets/sfx-whoosh.mp3" data-start="4.68" data-duration="0.6" data-track-index="12" data-volume="0.45"></audio>
-      <audio src="assets/sfx-whoosh.mp3" data-start="10.32" data-duration="0.6" data-track-index="12" data-volume="0.45"></audio>
-      <audio src="assets/sfx-whoosh.mp3" data-start="13.44" data-duration="0.6" data-track-index="12" data-volume="0.45"></audio>
+      <!-- Whooshs de transition de scène (synthétisés : sweep de fréquence + bruit filtré) -->
+      <audio src="assets/sfx-whoosh.mp3" data-start="4.68" data-duration="0.55" data-track-index="12" data-volume="0.5"></audio>
+      <audio src="assets/sfx-whoosh.mp3" data-start="10.32" data-duration="0.55" data-track-index="12" data-volume="0.5"></audio>
+      <audio src="assets/sfx-whoosh.mp3" data-start="13.44" data-duration="0.55" data-track-index="12" data-volume="0.5"></audio>
 
-      <!-- Chime au reveal du mot-clé CTA (synthétisé, sinusoïdes 880/1760Hz) -->
-      <audio src="assets/sfx-chime.mp3" data-start="13.72" data-duration="0.5" data-track-index="13" data-volume="0.6"></audio>
+      <!-- Chime au reveal du mot-clé CTA (synthétisé, 3 sinusoïdes 880/1318/1760Hz + echo) -->
+      <audio src="assets/sfx-chime.mp3" data-start="13.72" data-duration="0.7" data-track-index="13" data-volume="0.65"></audio>
     </div>
 
     <script>
@@ -532,8 +558,8 @@
       tl.from("#scene-3 .flow-panel", { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" }, 9.45);
 
       // Scene 3 = fullscreen broll beat: avatar hidden, flow diagram takes the whole frame
-      tl.to("#avatar-frame", { opacity: 0, duration: 0.3, ease: "power2.out" }, 6.46);
-      tl.to("#avatar-frame", { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.32);
+      tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 6.46);
+      tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.32);
 
       // Avatar neon ring — continuous breathing pulse whenever the avatar is on screen.
       // Bounded repeat counts (not repeat:-1) so each segment fully finishes — and settles
@@ -543,6 +569,13 @@
       // determinism rules — no infinite repeat inside a finite-duration composition).
       tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 11, yoyo: true }, 0);
       tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 5, yoyo: true }, 10.32);
+
+      // Avatar neon orbit — the actual "spinning neon" accent: a conic-gradient comet ring,
+      // continuously rotated. (A uniform-color ring like #avatar-ring looks identical at any
+      // angle, so #avatar-orbit carries a bright comet-head gradient that visibly sweeps
+      // around the circle.) One-directional relative rotation, bounded repeat (not repeat:-1)
+      // per the same determinism constraint as the pulse above.
+      tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 7, ease: "none" }, 0);
 
       // Scene 4 sovereignty badges stagger in
       tl.from("#scene-4 .sov-badge", { scale: 0.85, opacity: 0, duration: 0.35, stagger: 0.18, ease: "back.out(2)" }, 10.45);

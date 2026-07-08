@@ -1,5 +1,54 @@
 # Autoboost Neon Video — #4 Telegram Agent IA
 
+## ✅ RETOUCHES SUPPLÉMENTAIRES (2026-07-08, suite 4) — anneau rapproché + comète néon + son v2
+
+Retour utilisateur sur le rendu précédent : le sound design "pas ouf", l'anneau néon trop loin de
+l'avatar, et vouloir un vrai effet "néon qui tourne en cercle".
+
+**Découverte clé** : `#avatar-ring` avait déjà une `rotation: 360` sur le beat CTA depuis la
+passe précédente, mais comme c'est un anneau de couleur unie (`border` plein), une rotation ne
+produit **aucun changement visuel** — un cercle uniforme est identique à n'importe quel angle.
+D'où l'impression que "l'effet neon ne tourne pas".
+
+`public/index.html` :
+- `#avatar-ring` rapproché : 680px → 644px (anneau presque collé au cadre avatar 620px).
+- Nouvel élément `#avatar-orbit` (656px) : anneau fin en `conic-gradient` (transparent sur la
+  majorité du tour, tête de comète jaune/blanche sur les derniers ~40°) découpé en anneau via
+  `mask: radial-gradient(...)`. GSAP fait tourner cet élément en continu
+  (`rotation: "+=360"`, `repeat:7`, sans yoyo) — **c'est ce dégradé directionnel qui rend la
+  rotation visible**, contrairement à `#avatar-ring`. Inclus dans le fondu de la scène broll
+  (masqué avec `#avatar-frame` pendant 6.46–10.32s).
+- Sound design régénéré (toujours synthétisé ffmpeg, pas de vraie musique — voir plus bas) :
+  nappe passée de 4 à 5 couches (ajout d'un scintillement aigu discret), `vibrato` léger +
+  `volume` automatisé en expression (`0.5+0.14*sin(2*PI*t/7.5)`) pour un swell lent façon
+  "epic", lowpass remonté 1600→2400Hz (moins étouffé), highpass 50Hz (nettoie le sub-bass).
+  Whoosh reconstruit avec un vrai balayage de fréquence via `aevalsrc` (chirp descendant
+  3200→400Hz sur 0.55s) au lieu d'un simple bruit filtré statique — beaucoup plus crédible
+  comme "whoosh". Chime passé à 3 tons (880/1318/1760Hz) + echo pour une queue plus naturelle.
+
+Revalidé (`ok:true`, 0 issue `inspect`), re-rendu, vérifié visuellement (comète confirmée en
+mouvement entre deux frames à 0.5s et 1.5s) et à l'oreille (`volumedetect` : mean -26dB/max
+-7.6dB, cohérent).
+
+**Uploadé sur Blotato (lien media only, PAS publié)** :
+`https://database.blotato.io/storage/v1/object/public/public_media/aef82d60-4167-4bf9-b043-3808d5fccdb4/f76d7328-9d44-4da7-8a38-9c5561e2b687.mp4`
+
+### Epidemic Sound MCP — toujours pas actif
+
+L'utilisateur a demandé confirmation ; vérifié via recherche d'outils dans la session en cours :
+aucun outil `search_music`/`download_music_track`/etc. disponible, confirmant que le nouveau
+serveur MCP dans `.claude/settings.json` (ajouté suite 3) n'est chargé qu'au redémarrage de
+Claude Code, pas en cours de session. Doc officielle consultée
+(`https://developers.epidemicsound.com/docs/mcp/`) : c'est un serveur MCP pur (Streamable HTTP,
+JSON-RPC), pas d'API REST simple utilisable en `curl` — la config déjà en place (URL +
+`Authorization: Bearer`) est correcte, confirmée contre la doc. Outils exposés une fois actif :
+`search_music`, `find_similar_track`, `search_sound_effects`, `download_music_track`,
+`download_sound_effect`, etc. Clé API valide 30 jours à partir du 2026-07-08 (expire ~07-08 août).
+**Prochaine étape dès qu'une nouvelle session est démarrée** : chercher une vraie piste "epic
+léger" via `search_music` et remplacer `assets/bgm-pad.mp3` (synthétisé) par le vrai fichier.
+
+---
+
 ## ✅ RETOUCHES SUPPLÉMENTAIRES (2026-07-08, suite 3) — captions, anneau pulsé, sound design
 
 Demandes utilisateur après la passe circulaire/broll :
