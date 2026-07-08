@@ -1,11 +1,28 @@
 {
+  "env": {
+    "N8N_API_URL": "https://n7n.automatisationboost.com",
+    "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ODA1Y2I2NC0zNjE1LTRlMTMtOTNhOS04ZjlhMWZjZWQ3ODQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiYjBkZWI0YmUtNGNhZS00M2VmLWI4OGMtYTJiNmMyNzQwZTYwIiwiaWF0IjoxNzgxMzU0MzU4fQ.DWkZ8P_rXEjrHYosoD8YxBBier4NEId3eT4WVOwnzxU"
+  },
   "mcpServers": {
+    "21st-dev-magic": {
+      "command": "npx",
+      "args": ["-y", "@21st-dev/magic@latest"],
+      "env": {
+        "API_KEY": "21st_sk_5c2cf455bd270a273a10d447f993d1e6bb48ad7117f38403a36eb00ac042b2f8"
+      }
+    },
     "wordpress": {
       "command": "npx",
       "args": ["-y", "@automattic/mcp-server-wordpress"],
       "env": {
         "WORDPRESS_SITE_URL": "http://wordpress-d0cc8wgs008ocwkckosggs84.158.220.127.234.sslip.io",
         "WORDPRESS_AUTH_TOKEN": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vd29yZHByZXNzLWQwY2M4d2dzMDA4b2N3a2Nrb3NnZ3M4NC4xNTguMjIwLjEyNy4yMzQuc3NsaXAuaW8iLCJpYXQiOjE3NzQ0NTcyNDYsImV4cCI6MTc3NDU0MzY0NiwidXNlcl9pZCI6MSwianRpIjoieWpLRHkzcnpnWld0cWttZlAzSkNGaGRnQTdsRjN6VTkifQ._VibTo5rsUuX5QOp8Yl_Vh9JZsDfgttYKEmDaDB6ROA"
+      }
+    },
+    "epidemic-sound": {
+      "url": "https://www.epidemicsound.com/a/mcp-service/mcp",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ4NENRVjFLS3NVRFppX0VYSm0tUE5pZUFMS3Fyemx4MlZnSUJURVB6THFnIn0.eyJleHAiOjE3ODYxMjQ4MjYsImlhdCI6MTc4MzUzMjgyNiwiYXV0aF90aW1lIjoxNzgzNTMyNzU1LCJqdGkiOiJudHJ0dGU6MGJkMjkwNmQtOWNjNy0wYmIyLTg0ZWEtY2ZmYWRlMTRlYTMxIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5lcGlkZW1pY3NvdW5kLmNvbS9hdXRoL3JlYWxtcy9hY2NvdW50cyIsImF1ZCI6ImVwaWRlbWljLWFwaSIsInN1YiI6IjY5NTliMDViLThiNDgtNGNiNC1iZjEyLWZhZTk0ZjUxMTgzOSIsInR5cCI6IkJlYXJlciIsImF6cCI6ImVwaWRlbWljLWFwaSIsInNpZCI6IkFWc29vT0NrVHpndjduRnRrU3NNSTdkeSIsInNjb3BlIjoiZW1haWwiLCJ3b3Jrc3BhY2VfaWQiOiI4MDc5MmJjOS01ZjdmLTQ4ZTAtOTdhNy04YjkyZGFlODczMjkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibG9jYWxlIjoiZnIiLCJlbWFpbCI6InRvbnkucGF5ZXQucHJvZmVzc2lvbm5lbEBnbWFpbC5jb20ifQ.C7iAYsNRNgeAMLAXo-K8ElCRCFvu9ct-e6t6Z55r4FAWpLUh7Orx9dJBDQJcx7hv1yWk2L15U4Bea3pbK1Vu3eXwAHSjuq_aK47MptN3AO5B0kgx1eq3s2EUOD6OrwaGmkOvMYI0-YJIuYp9S1-4LyxaydJWxDj6XYE-cXqLoX6NJk1KQncNoRqqwb7-OPCl90CYjq5ylbs1j2VECplIrptNVxLpoSeT1lZnUtW_zC5H6NMbcvHOTmmFjzwIoOlzA4RoNKZngAWO07j8ibo6D6jpzY9XPs6zTedyicw6VPSFhE_Ko-wb19euQabzt64jIXdihWVWIqj-TmP0sZotYQ"
       }
     }
   }
