@@ -31,13 +31,13 @@
     background: var(--bg);
   }
 
-  /* ========== Scenes ========== */
+  /* ========== Scenes (content zone: 0-1120px, avatar overlay fills the rest) ========== */
   .scene {
     position: absolute;
     top: 0;
     left: 0;
     width: 1080px;
-    height: 1920px;
+    height: 1120px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -208,32 +208,11 @@
     font-weight: 600;
   }
 
-  /* Scene 4: Avatar + CTA */
+  /* Scene 4: CTA (avatar is the persistent #avatar-frame overlay below) */
   .scene-4 {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%);
-  }
-
-  .scene-4 .avatar-cta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-  }
-
-  .scene-4 .avatar-frame {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid var(--accent-yellow);
-    box-shadow: 0 0 30px rgba(255, 230, 0, 0.5);
-  }
-
-  .scene-4 .avatar-frame video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    justify-content: flex-start;
+    padding-top: 140px;
   }
 
   .scene-4 .cta-text {
@@ -266,10 +245,41 @@
     color: var(--text-gray);
   }
 
+  /* Persistent avatar overlay — pattern from autoboost-04 / autoboost-10 */
+  #avatar-frame {
+    position: absolute; bottom: 70px; left: 50%;
+    width: 560px; height: 560px; margin-left: -280px;
+    border-radius: 50%; overflow: hidden; background: var(--bg);
+    border: 5px solid var(--accent-yellow);
+    box-shadow: 0 0 0 2px rgba(6,6,6,0.9), 0 0 36px 4px rgba(255,230,0,0.55), 0 0 90px 20px rgba(255,230,0,0.22);
+    z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute; top: 50%; left: 50%;
+    width: 560px; height: 706px; transform: translate(-50%, -46%);
+    object-fit: cover; object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute; bottom: 58px; left: 50%;
+    width: 584px; height: 584px; margin-left: -292px;
+    border-radius: 50%; border: 3px solid var(--accent-yellow); opacity: 0; pointer-events: none;
+    box-shadow: 0 0 40px rgba(255,230,0,0.35); z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute; bottom: 52px; left: 50%;
+    width: 596px; height: 596px; margin-left: -298px;
+    border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg,
+      rgba(255,230,0,0.12) 320deg, var(--accent-yellow) 353deg, #fff8d6 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255,230,0,0.9)); z-index: 5;
+  }
+
   /* ========== Captions ========== */
   .caption-belt {
     position: absolute;
-    bottom: 350px;
+    top: 960px;
     left: 0;
     right: 0;
     text-align: center;
@@ -311,8 +321,8 @@
                  0 -3px 0 #000, 0 3px 0 #000;
   }
 
-  /* ========== Audio & Video ========== */
-  audio, video {
+  /* ========== Audio ========== */
+  audio {
     display: none;
   }
 </style>
@@ -381,21 +391,23 @@
     </div>
   </div>
 
-  <!-- Scene 4: Avatar + CTA -->
+  <!-- Scene 4: CTA (avatar itself is the persistent #avatar-frame below) -->
   <div class="scene scene-4">
-    <div class="avatar-cta">
-      <div class="avatar-frame">
-        <video id="avatar" src="assets/avatar-keyed.mp4" playsinline></video>
+    <div class="cta-text">
+      <div class="cta-badge">Workflow Gratuit</div>
+      <div class="cta-keyword">
+        Commente <span class="hot">NOTION</span>
       </div>
-      <div class="cta-text">
-        <div class="cta-badge">Workflow Gratuit</div>
-        <div class="cta-keyword">
-          Commente <span class="hot">NOTION</span>
-        </div>
-        <div class="cta-instruction">pour recevoir le workflow</div>
-      </div>
+      <div class="cta-instruction">pour recevoir le workflow</div>
     </div>
   </div>
+
+  <!-- Persistent avatar overlay -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="16.0" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="16.0" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="16.0" class="clip"></div>
 
   <!-- Caption Belt -->
   <div class="caption-belt">
@@ -419,11 +431,11 @@
   </div>
 
   <!-- Audio -->
-  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="16.0"></audio>
-  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="16.0"></audio>
-  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="3.12"></audio>
-  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="5.12"></audio>
-  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="13.46"></audio>
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="16.0" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="16.0" data-volume="0.12"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="3.12" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="5.12" data-volume="0.35"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="13.46" data-volume="0.4"></audio>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -449,11 +461,16 @@
   tl.to(".scene-3 .dashboard-mock", { opacity: 1, duration: 0.5, y: 0 }, 5.3, { y: 20 });
   tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 10.5);
 
-  // Scene 4: Avatar + CTA (10.8 → 16.0s)
+  // Scene 4: CTA (10.8 → 16.0s)
   tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 10.8);
-  tl.to(".scene-4 .avatar-frame", { opacity: 1, scale: 1, duration: 0.5 }, 11.0);
   tl.to(".scene-4 .cta-keyword", { scale: 1.1, duration: 0.4 }, 13.46);
   tl.to(".scene-4 .cta-keyword", { opacity: 1, duration: 0.3 }, 13.26);
+
+  // Persistent avatar — on screen the whole video (no broll cutaway in this comp)
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 31, yoyo: true }, 0);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 7, ease: "none" }, 0);
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 13.46);
+  tl.to("#avatar-ring", { rotation: "+=360", duration: 2.54, ease: "none" }, 13.46);
 
   // Captions
   tl.to(".caption", { opacity: 0, duration: 0 }, 0);

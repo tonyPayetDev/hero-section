@@ -309,6 +309,19 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
   toujours prioritaire sur une source tierce si l'utilisateur en donne une — télécharger, retirer
   la cover art (`-vn`), trim/fade sur la durée de la vidéo.
 
+## Piège CSS fréquent : `video { display: none }` cache l'avatar silencieusement
+
+Plusieurs comps plus anciennes (ex. autoboost-07) ont une règle générique `audio, video { display:
+none; }` pour masquer les éléments `<audio>` (corrects, pas de UI native voulue). Si `<video
+id="avatar">` matche aussi ce sélecteur, le cercle avatar reste vide sur TOUT le rendu final — pas
+seulement `validate`/`inspect` qui ne le détectent pas, même l'inspection visuelle de frames ne
+révèle qu'un cercle noir sans message d'erreur explicite. Cause : `#avatar-frame video { ... }` ne
+déclare pas `display`, donc la propriété se résout via l'autre règle qui la déclare
+(`video { display:none }`), indépendamment de la spécificité de `#avatar-frame video` sur les
+AUTRES propriétés. Avant d'ajouter l'overlay avatar persistant, toujours vérifier :
+`grep -n "video\s*{" public/index.html` et s'assurer qu'aucune règle générique `video { display:
+none }` ne matche l'avatar — restreindre à `audio { display: none; }` seul si besoin.
+
 ## Règles Avatar — pattern OBLIGATOIRE (référence : autoboost-04 Telegram Agent IA)
 
 **Ceci n'est pas optionnel.** Confirmé en production (2026-07-09, autoboost-10 Livres Enfants) :
