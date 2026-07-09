@@ -208,6 +208,28 @@
     font-weight: 600;
   }
 
+  /* Scene 3b: fullscreen broll */
+  .scene-broll {
+    height: 1920px;
+    padding: 0;
+    background: #000;
+  }
+  .scene-broll video {
+    position: absolute; top: 0; left: 0;
+    width: 1080px; height: 1920px;
+    object-fit: cover;
+    filter: brightness(0.55) saturate(1.1);
+  }
+  .scene-broll::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.1) 30%, rgba(10,10,10,0.1) 60%, rgba(10,10,10,0.6) 100%);
+  }
+  .scene-broll .broll-label {
+    position: absolute; bottom: 120px; left: 0; right: 0;
+    text-align: center; font-size: 16px; color: var(--text-gray); z-index: 2;
+  }
+
   /* Scene 4: CTA (avatar is the persistent #avatar-frame overlay below) */
   .scene-4 {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%);
@@ -328,7 +350,7 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="autoboost-07-dashboard-notion" data-width="1080" data-height="1920" data-duration="16.0">
+<div id="root" data-composition-id="autoboost-07-dashboard-notion" data-width="1080" data-height="1920" data-duration="30.1">
   <!-- Scene 1: Hook -->
   <div class="scene scene-1">
     <div class="hook-split">
@@ -391,6 +413,12 @@
     </div>
   </div>
 
+  <!-- Scene 3b: broll matin (je me lève) -->
+  <div class="scene scene-broll scene-3b">
+    <video src="assets/broll-morning.mp4" playsinline muted data-start="19.4" data-duration="5.3"></video>
+    <div class="broll-label">Chaque matin, sans effort</div>
+  </div>
+
   <!-- Scene 4: CTA (avatar itself is the persistent #avatar-frame below) -->
   <div class="scene scene-4">
     <div class="cta-text">
@@ -404,38 +432,61 @@
 
   <!-- Persistent avatar overlay -->
   <div id="avatar-frame">
-    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="16.0" data-layout-allow-overflow="true" muted playsinline></video>
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="30.1" data-layout-allow-overflow="true" muted playsinline></video>
   </div>
-  <div id="avatar-ring" data-start="0" data-duration="16.0" class="clip"></div>
-  <div id="avatar-orbit" data-start="0" data-duration="16.0" class="clip"></div>
+  <div id="avatar-ring" data-start="0" data-duration="30.1" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="30.1" class="clip"></div>
 
   <!-- Caption Belt -->
   <div class="caption-belt">
-    <div class="caption" data-start="0" data-end="0.98"><span class="hot">Si tu</span> commences</div>
-    <div class="caption" data-start="0.98" data-end="1.68">encore ta <span class="hot">journée</span></div>
-    <div class="caption" data-start="1.68" data-end="2.34">sans savoir <span class="hot">où</span></div>
-    <div class="caption" data-start="2.34" data-end="2.7">tu en es</div>
-    <div class="caption" data-start="3.12" data-end="3.78">ce workflow <span class="hot">va</span></div>
-    <div class="caption" data-start="3.78" data-end="4.36">changer ta <span class="hot">vie</span></div>
-    <div class="caption" data-start="5.12" data-end="5.64">Chaque matin <span class="violet">il</span></div>
-    <div class="caption" data-start="5.64" data-end="6.48">récupère mes <span class="hot">tâches</span></div>
-    <div class="caption" data-start="6.86" data-end="7.62">mes <span class="hot">revenus</span> mes</div>
-    <div class="caption" data-start="7.62" data-end="8.88"><span class="violet">objectifs</span> et génère</div>
-    <div class="caption" data-start="8.88" data-end="9.62">un <span class="hot">résumé</span> IA</div>
-    <div class="caption" data-start="9.62" data-end="10.8">en <span class="violet">Notion</span></div>
-    <div class="caption" data-start="10.8" data-end="11.72">Je me <span class="hot">lève</span></div>
-    <div class="caption" data-start="11.72" data-end="12.38">j'ouvre <span class="violet">Notion</span></div>
-    <div class="caption" data-start="12.38" data-end="13.46">tout est <span class="hot">là</span></div>
-    <div class="caption" data-start="13.46" data-end="14.24">Commente <span class="hot">NOTION</span></div>
-    <div class="caption" data-start="14.24" data-end="15.3">pour recevoir le <span class="violet">workflow</span> gratuitement</div>
+    <div class="caption" data-start="0" data-end="0.9">Si tu <span class="hot">commences</span></div>
+    <div class="caption" data-start="0.9" data-end="1.68">encore ta <span class="violet">journée</span></div>
+    <div class="caption" data-start="1.68" data-end="2.32">sans <span class="hot">savoir</span> où</div>
+    <div class="caption" data-start="2.32" data-end="2.68"><span class="violet">tu</span> en es</div>
+    <div class="caption" data-start="3.26" data-end="3.84">ce <span class="hot">workflow</span> va</div>
+    <div class="caption" data-start="3.84" data-end="4.86"><span class="violet">complètement</span> changer ta</div>
+    <div class="caption" data-start="4.86" data-end="5.86">vie <span class="hot">Chaque</span> matin</div>
+    <div class="caption" data-start="6.04" data-end="6.56"><span class="violet">avant</span> même que</div>
+    <div class="caption" data-start="6.56" data-end="7.08">tu te <span class="hot">réveilles</span></div>
+    <div class="caption" data-start="7.46" data-end="8.52">il récupère <span class="violet">automatiquement</span></div>
+    <div class="caption" data-start="8.52" data-end="9.4">tes <span class="hot">tâches</span> en</div>
+    <div class="caption" data-start="9.4" data-end="10.12">cours tes <span class="violet">revenus</span></div>
+    <div class="caption" data-start="10.12" data-end="10.96">du <span class="hot">mois</span> et</div>
+    <div class="caption" data-start="10.96" data-end="11.58">l <span class="violet">avancement</span> de</div>
+    <div class="caption" data-start="11.58" data-end="12.86">tes <span class="hot">objectifs</span> Il</div>
+    <div class="caption" data-start="12.86" data-end="13.56">génère <span class="violet">ensuite</span> un</div>
+    <div class="caption" data-start="13.56" data-end="14.64">résumé <span class="hot">intelligent</span> avec</div>
+    <div class="caption" data-start="14.64" data-end="15.58">l IA <span class="violet">directement</span></div>
+    <div class="caption" data-start="15.58" data-end="16.24">dans ton <span class="hot">espace</span></div>
+    <div class="caption" data-start="16.24" data-end="17.6"><span class="violet">Notion</span> Zéro copier</div>
+    <div class="caption" data-start="17.6" data-end="18.54">coller zéro <span class="hot">tableur</span></div>
+    <div class="caption" data-start="18.54" data-end="18.98">à <span class="violet">mettre</span> à</div>
+    <div class="caption" data-start="18.98" data-end="19.38"><span class="hot">jour</span> à la</div>
+    <div class="caption" data-start="19.38" data-end="20.24"><span class="violet">main</span> Je me</div>
+    <div class="caption" data-start="20.24" data-end="20.62">lève j <span class="hot">ouvre</span></div>
+    <div class="caption" data-start="20.62" data-end="21.3"><span class="violet">Notion</span> et tout</div>
+    <div class="caption" data-start="21.3" data-end="21.8">est <span class="hot">déjà</span> là</div>
+    <div class="caption" data-start="22.14" data-end="22.42">ce <span class="violet">que</span> j</div>
+    <div class="caption" data-start="22.42" data-end="22.74">ai à <span class="hot">faire</span></div>
+    <div class="caption" data-start="22.84" data-end="23.08"><span class="violet">où</span> j en</div>
+    <div class="caption" data-start="23.08" data-end="23.92">suis <span class="hot">financièrement</span> et</div>
+    <div class="caption" data-start="23.92" data-end="24.3">si je <span class="violet">suis</span></div>
+    <div class="caption" data-start="24.3" data-end="24.66">dans les <span class="hot">temps</span></div>
+    <div class="caption" data-start="25.08" data-end="25.34"><span class="violet">Ça</span> m a</div>
+    <div class="caption" data-start="25.34" data-end="25.92">fait <span class="hot">gagner</span> au</div>
+    <div class="caption" data-start="25.92" data-end="26.42">moins 30 <span class="violet">minutes</span></div>
+    <div class="caption" data-start="26.42" data-end="27.6">chaque matin <span class="hot">Commente</span></div>
+    <div class="caption" data-start="27.6" data-end="28.18"><span class="violet">Notion</span> et je</div>
+    <div class="caption" data-start="28.18" data-end="28.54">t <span class="hot">envoie</span> le</div>
+    <div class="caption" data-start="28.54" data-end="29.84">workflow complet <span class="violet">gratuitement</span></div>
   </div>
 
   <!-- Audio -->
-  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="16.0" data-volume="1"></audio>
-  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="16.0" data-volume="0.12"></audio>
-  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="3.12" data-volume="0.35"></audio>
-  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="5.12" data-volume="0.35"></audio>
-  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="13.46" data-volume="0.4"></audio>
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="30.1" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="30.1" data-volume="0.12"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="6.0" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="19.4" data-volume="0.35"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="26.42" data-volume="0.4"></audio>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -444,33 +495,41 @@
 
   const tl = gsap.timeline({ paused: true });
 
-  // Scene 1: Hook (0 → 3.12s)
+  // Scene 1: Hook (0 → 6.0s)
   tl.to(".scene-1", { opacity: 1, duration: 0.3 }, 0);
   tl.to(".scene-1 .hook-left", { opacity: 0.6, duration: 0.5 }, 0.2);
   tl.to(".scene-1 .hook-right", { opacity: 1, duration: 0.5 }, 0.3, "-=0.3");
-  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 2.82);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 5.7);
 
-  // Scene 2: Cards (3.12 → 5.12s)
-  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 3.12);
-  tl.to(".scene-2 .card", { opacity: 1, duration: 0.3, stagger: 0.15 }, 3.3);
-  tl.to(".scene-2 .card", { scale: 1.05, duration: 0.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 3.9);
-  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 4.82);
+  // Scene 2: Cards (6.0 → 12.9s)
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 6.0);
+  tl.to(".scene-2 .card", { opacity: 1, duration: 0.3, stagger: 0.15 }, 6.2);
+  tl.to(".scene-2 .card", { scale: 1.05, duration: 0.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 7.0);
+  tl.to(".scene-2 .card", { scale: 1.05, duration: 0.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 10.5);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 12.6);
 
-  // Scene 3: Dashboard (5.12 → 10.8s)
-  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 5.12);
-  tl.to(".scene-3 .dashboard-mock", { opacity: 1, duration: 0.5, y: 0 }, 5.3, { y: 20 });
-  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 10.5);
+  // Scene 3: Dashboard (12.9 → 19.4s)
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 12.9);
+  tl.to(".scene-3 .dashboard-mock", { opacity: 1, duration: 0.5, y: 0 }, 13.1, { y: 20 });
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 19.1);
 
-  // Scene 4: CTA (10.8 → 16.0s)
-  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 10.8);
-  tl.to(".scene-4 .cta-keyword", { scale: 1.1, duration: 0.4 }, 13.46);
-  tl.to(".scene-4 .cta-keyword", { opacity: 1, duration: 0.3 }, 13.26);
+  // Scene 3b: broll matin (19.4 → 24.7s)
+  tl.to(".scene-3b", { opacity: 1, duration: 0.3 }, 19.4);
+  tl.to(".scene-3b", { opacity: 0, duration: 0.3 }, 24.4);
 
-  // Persistent avatar — on screen the whole video (no broll cutaway in this comp)
-  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 31, yoyo: true }, 0);
-  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 7, ease: "none" }, 0);
-  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 13.46);
-  tl.to("#avatar-ring", { rotation: "+=360", duration: 2.54, ease: "none" }, 13.46);
+  // Scene 4: CTA (24.7 → 30.1s)
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 24.7);
+  tl.to(".scene-4 .cta-keyword", { scale: 1.1, duration: 0.4 }, 26.42);
+  tl.to(".scene-4 .cta-keyword", { opacity: 1, duration: 0.3 }, 26.22);
+
+  // Persistent avatar — visible 0→19.4s and 24.7→30.1s, hidden during broll
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 19.4);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 24.7);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 37, yoyo: true }, 0);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 10, yoyo: true }, 24.7);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 13, ease: "none" }, 0);
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 26.42);
+  tl.to("#avatar-ring", { rotation: "+=360", duration: 3.68, ease: "none" }, 26.42);
 
   // Captions
   tl.to(".caption", { opacity: 0, duration: 0 }, 0);

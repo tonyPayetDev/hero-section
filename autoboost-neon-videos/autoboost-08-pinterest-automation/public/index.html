@@ -165,6 +165,28 @@
     margin-top: 8px;
   }
 
+  /* Scene 2b: fullscreen broll */
+  .scene-broll {
+    height: 1920px;
+    padding: 0;
+    background: #000;
+  }
+  .scene-broll video {
+    position: absolute; top: 0; left: 0;
+    width: 1080px; height: 1920px;
+    object-fit: cover;
+    filter: brightness(0.55) saturate(1.1);
+  }
+  .scene-broll::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.1) 30%, rgba(10,10,10,0.1) 60%, rgba(10,10,10,0.6) 100%);
+  }
+  .scene-broll .broll-label {
+    position: absolute; bottom: 120px; left: 0; right: 0;
+    text-align: center; font-size: 16px; color: var(--text-gray); z-index: 2;
+  }
+
   /* Scene 4: CTA (avatar is the persistent #avatar-frame overlay below) */
   .scene-4 {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%);
@@ -268,7 +290,7 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="autoboost-08-pinterest-automation" data-width="1080" data-height="1920" data-duration="16.5">
+<div id="root" data-composition-id="autoboost-08-pinterest-automation" data-width="1080" data-height="1920" data-duration="32.3">
   <!-- Scene 1: Hook -->
   <div class="scene scene-1">
     <div class="hook-content">
@@ -346,6 +368,12 @@
     </div>
   </div>
 
+  <!-- Scene 2b: broll phone (publie automatiquement) -->
+  <div class="scene scene-broll scene-2b">
+    <video src="assets/broll-phone.mp4" playsinline muted data-start="15.92" data-duration="3.44"></video>
+    <div class="broll-label">Publication automatique, chaque jour</div>
+  </div>
+
   <!-- Scene 4: CTA (avatar itself is the persistent #avatar-frame below) -->
   <div class="scene scene-4">
     <div class="cta-badge">Workflow Gratuit</div>
@@ -357,36 +385,59 @@
 
   <!-- Persistent avatar overlay -->
   <div id="avatar-frame">
-    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="16.5" data-layout-allow-overflow="true" muted playsinline></video>
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="32.3" data-layout-allow-overflow="true" muted playsinline></video>
   </div>
-  <div id="avatar-ring" data-start="0" data-duration="16.5" class="clip"></div>
-  <div id="avatar-orbit" data-start="0" data-duration="16.5" class="clip"></div>
+  <div id="avatar-ring" data-start="0" data-duration="32.3" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="32.3" class="clip"></div>
 
   <!-- Captions -->
   <div class="caption-belt">
-    <div class="caption" data-start="0" data-end="1.12"><span class="hot">Pinterest</span> est le</div>
-    <div class="caption" data-start="1.12" data-end="1.72">canal le <span class="hot">plus</span></div>
-    <div class="caption" data-start="1.72" data-end="2.44">sous <span class="hot">estimé</span> pour</div>
-    <div class="caption" data-start="2.44" data-end="3.24">le trafic <span class="hot">gratuit</span></div>
-    <div class="caption" data-start="3.24" data-end="4.6">en <span class="violet">2026</span> et</div>
-    <div class="caption" data-start="4.6" data-end="5.1">personne n'en</div>
-    <div class="caption" data-start="5.1" data-end="6.18">parle Ce <span class="hot">workflow</span></div>
-    <div class="caption" data-start="6.18" data-end="6.98">crée les <span class="hot">épingles</span></div>
-    <div class="caption" data-start="7.54" data-end="8.14">rédige les <span class="violet">descriptions</span></div>
-    <div class="caption" data-start="8.14" data-end="9.24"><span class="hot">SEO</span> avec Claude</div>
-    <div class="caption" data-start="9.52" data-end="10.64">et publie <span class="hot">automatiquement</span></div>
-    <div class="caption" data-start="11.3" data-end="12.46"><span class="hot">Zéro</span> effort Trafic</div>
-    <div class="caption" data-start="12.46" data-end="14.16">passif Commente <span class="hot">PINTEREST</span></div>
-    <div class="caption" data-start="14.16" data-end="15.04">pour recevoir le</div>
-    <div class="caption" data-start="15.04" data-end="15.84">workflow gratuitement</div>
+    <div class="caption" data-start="0" data-end="1"><span class="hot">Pinterest</span> est le</div>
+    <div class="caption" data-start="1" data-end="1.52"><span class="violet">canal</span> le plus</div>
+    <div class="caption" data-start="1.52" data-end="2.26">sous <span class="hot">estimé</span> pour</div>
+    <div class="caption" data-start="2.26" data-end="3.1">le trafic <span class="violet">gratuit</span></div>
+    <div class="caption" data-start="3.1" data-end="4.48">en <span class="hot">2026</span> et</div>
+    <div class="caption" data-start="4.48" data-end="5.22"><span class="violet">pourtant</span> personne n</div>
+    <div class="caption" data-start="5.22" data-end="6.18">en <span class="hot">parle</span> Ce</div>
+    <div class="caption" data-start="6.18" data-end="7.34">workflow <span class="violet">automatise</span> tout</div>
+    <div class="caption" data-start="7.48" data-end="7.88"><span class="hot">de</span> A à</div>
+    <div class="caption" data-start="7.88" data-end="8.92">Z Tu <span class="violet">lui</span></div>
+    <div class="caption" data-start="8.92" data-end="9.44"><span class="hot">donnes</span> juste un</div>
+    <div class="caption" data-start="9.44" data-end="10.16"><span class="violet">thème</span> et il</div>
+    <div class="caption" data-start="10.16" data-end="10.66">crée l <span class="hot">épingle</span></div>
+    <div class="caption" data-start="10.66" data-end="11.54"><span class="violet">visuel</span> avec l</div>
+    <div class="caption" data-start="11.54" data-end="12.42">IA <span class="hot">rédige</span> une</div>
+    <div class="caption" data-start="12.42" data-end="13.76"><span class="violet">description</span> optimisée SEO</div>
+    <div class="caption" data-start="13.76" data-end="14.88">avec <span class="hot">Claude</span> choisit</div>
+    <div class="caption" data-start="14.88" data-end="15.34">les <span class="violet">bons</span> mots</div>
+    <div class="caption" data-start="15.34" data-end="15.92">clés et <span class="hot">publie</span></div>
+    <div class="caption" data-start="15.92" data-end="17"><span class="violet">automatiquement</span> sur ton</div>
+    <div class="caption" data-start="17" data-end="17.6"><span class="hot">compte</span> chaque jour</div>
+    <div class="caption" data-start="18" data-end="18.4"><span class="violet">sans</span> que tu</div>
+    <div class="caption" data-start="18.4" data-end="19.04"><span class="hot">touches</span> à rien</div>
+    <div class="caption" data-start="19.36" data-end="19.86"><span class="violet">Résultat</span> sur mon</div>
+    <div class="caption" data-start="19.86" data-end="21.36"><span class="hot">propre</span> compte 847</div>
+    <div class="caption" data-start="21.36" data-end="22.56">000 <span class="violet">impressions</span> 23</div>
+    <div class="caption" data-start="22.56" data-end="23.8">400 <span class="hot">clics</span> et</div>
+    <div class="caption" data-start="23.8" data-end="24.36">une <span class="violet">croissance</span> de</div>
+    <div class="caption" data-start="24.36" data-end="24.88"><span class="hot">plus</span> de 300</div>
+    <div class="caption" data-start="24.88" data-end="25.58"><span class="violet">en</span> un</div>
+    <div class="caption" data-start="25.58" data-end="26.66">mois Zéro <span class="hot">agence</span></div>
+    <div class="caption" data-start="26.92" data-end="27.98">zéro <span class="violet">effort</span> du</div>
+    <div class="caption" data-start="27.98" data-end="28.86"><span class="hot">trafic</span> passif qui</div>
+    <div class="caption" data-start="28.86" data-end="29.42"><span class="violet">continue</span> de grossir</div>
+    <div class="caption" data-start="29.42" data-end="30.82">Commente <span class="hot">PINTEREST</span> et</div>
+    <div class="caption" data-start="30.82" data-end="31.1">je t <span class="violet">envoie</span></div>
+    <div class="caption" data-start="31.1" data-end="32">le workflow <span class="hot">gratuitement</span></div>
   </div>
 
   <!-- Audio -->
-  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="16.5" data-volume="1"></audio>
-  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="16.5" data-volume="0.12"></audio>
-  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="3.24" data-volume="0.35"></audio>
-  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="5.1" data-volume="0.35"></audio>
-  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="14.16" data-volume="0.4"></audio>
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32.3" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="32.3" data-volume="0.12"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="6.18" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="15.92" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="19.36" data-volume="0.3"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="26.92" data-volume="0.4"></audio>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -395,31 +446,38 @@
 
   const tl = gsap.timeline({ paused: true });
 
-  // Scene 1: Hook (0 → 5.1s)
+  // Scene 1: Hook (0 → 6.18s)
   tl.to(".scene-1", { opacity: 1, duration: 0.3 }, 0);
   tl.to(".scene-1 .icon-large", { scale: 1, opacity: 1, duration: 0.5 }, 0.2);
   tl.to(".scene-1 .hook-text h2", { opacity: 1, duration: 0.4 }, 0.3);
-  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 4.8);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 5.88);
 
-  // Scene 2: Workflow (5.1 → 10.64s)
-  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 5.1);
-  tl.to(".scene-2 .flow-row", { opacity: 1, y: 0, duration: 0.3, stagger: 0.25 }, 5.3);
-  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 10.34);
+  // Scene 2: Workflow (6.18 → 15.92s)
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 6.18);
+  tl.to(".scene-2 .flow-row", { opacity: 1, y: 0, duration: 0.3, stagger: 0.25 }, 6.38);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 15.62);
 
-  // Scene 3: Dashboard (10.64 → 12.46s)
-  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 10.64);
-  tl.to(".scene-3 .stat-box", { opacity: 1, scale: 1, duration: 0.3, stagger: 0.08 }, 10.8);
-  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 12.16);
+  // Scene 2b: broll phone (15.92 → 19.36s)
+  tl.to(".scene-2b", { opacity: 1, duration: 0.3 }, 15.92);
+  tl.to(".scene-2b", { opacity: 0, duration: 0.3 }, 19.06);
 
-  // Scene 4: CTA (12.46 → 16.5s)
-  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 12.46);
-  tl.to(".scene-4 .cta-keyword", { scale: 1.1, opacity: 1, duration: 0.4 }, 13.86);
+  // Scene 3: Dashboard (19.36 → 26.92s)
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 19.36);
+  tl.to(".scene-3 .stat-box", { opacity: 1, scale: 1, duration: 0.3, stagger: 0.08 }, 19.56);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 26.62);
 
-  // Persistent avatar — on screen the whole video (no broll cutaway in this comp)
-  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 32, yoyo: true }, 0);
-  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 7, ease: "none" }, 0);
-  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 13.86);
-  tl.to("#avatar-ring", { rotation: "+=360", duration: 2.64, ease: "none" }, 13.86);
+  // Scene 4: CTA (26.92 → 32.3s)
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 26.92);
+  tl.to(".scene-4 .cta-keyword", { scale: 1.1, opacity: 1, duration: 0.4 }, 29.42);
+
+  // Persistent avatar — visible 0→15.92s and 19.36→32.3s, hidden during broll
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 15.92);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 19.36);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 31, yoyo: true }, 0);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 25, yoyo: true }, 19.36);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 14, ease: "none" }, 0);
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 29.42);
+  tl.to("#avatar-ring", { rotation: "+=360", duration: 2.88, ease: "none" }, 29.42);
 
   // Captions
   tl.to(".caption", { opacity: 0, duration: 0 }, 0);

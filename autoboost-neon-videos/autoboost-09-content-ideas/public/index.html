@@ -108,6 +108,28 @@
   .scene-3 .sheet-row .idea { color: var(--text-white); flex: 1; }
   .scene-3 .sheet-row .tag { color: var(--accent-violet); font-size: 11px; }
 
+  /* Scene 3b: fullscreen broll */
+  .scene-broll {
+    height: 1920px;
+    padding: 0;
+    background: #000;
+  }
+  .scene-broll video {
+    position: absolute; top: 0; left: 0;
+    width: 1080px; height: 1920px;
+    object-fit: cover;
+    filter: brightness(0.55) saturate(1.1);
+  }
+  .scene-broll::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.1) 30%, rgba(10,10,10,0.1) 60%, rgba(10,10,10,0.6) 100%);
+  }
+  .scene-broll .broll-label {
+    position: absolute; bottom: 120px; left: 0; right: 0;
+    text-align: center; font-size: 16px; color: var(--text-gray); z-index: 2;
+  }
+
   /* Scene 4: CTA (avatar is the persistent #avatar-frame overlay below) */
   .scene-4 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%); justify-content: flex-start; padding-top: 140px; }
   .scene-4 .cta-badge {
@@ -179,7 +201,7 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="autoboost-09-content-ideas" data-width="1080" data-height="1920" data-duration="15.5">
+<div id="root" data-composition-id="autoboost-09-content-ideas" data-width="1080" data-height="1920" data-duration="29.8">
 
   <!-- Scene 1: Hook -->
   <div class="scene scene-1">
@@ -211,6 +233,12 @@
     </div>
   </div>
 
+  <!-- Scene 3b: broll notebook (choisir et filmer) -->
+  <div class="scene scene-broll scene-3b">
+    <video src="assets/broll-notebook.mp4" playsinline muted data-start="20.96" data-duration="5.76"></video>
+    <div class="broll-label">Tu choisis, tu filmes</div>
+  </div>
+
   <!-- Scene 4: CTA (avatar itself is the persistent #avatar-frame below) -->
   <div class="scene scene-4">
     <div class="cta-badge">Workflow Gratuit</div>
@@ -220,36 +248,58 @@
 
   <!-- Persistent avatar overlay -->
   <div id="avatar-frame">
-    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="15.5" data-layout-allow-overflow="true" muted playsinline></video>
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="29.8" data-layout-allow-overflow="true" muted playsinline></video>
   </div>
-  <div id="avatar-ring" data-start="0" data-duration="15.5" class="clip"></div>
-  <div id="avatar-orbit" data-start="0" data-duration="15.5" class="clip"></div>
+  <div id="avatar-ring" data-start="0" data-duration="29.8" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="29.8" class="clip"></div>
 
   <!-- Captions -->
   <div class="caption-belt">
-    <div class="caption" data-start="0" data-end="1.08">La <span class="hot">panne</span> d'</div>
-    <div class="caption" data-start="1.08" data-end="1.82">inspiration c'est</div>
-    <div class="caption" data-start="1.82" data-end="2.52">une <span class="hot">excuse</span> qui</div>
-    <div class="caption" data-start="2.52" data-end="3.12">n'existe <span class="hot">plus</span></div>
-    <div class="caption" data-start="3.12" data-end="4.66">en <span class="violet">2026</span></div>
-    <div class="caption" data-start="4.66" data-end="5.78">Ce <span class="hot">workflow</span> analyse</div>
-    <div class="caption" data-start="5.78" data-end="7.4">les <span class="violet">tendances</span> les concurrents</div>
-    <div class="caption" data-start="7.54" data-end="8.58">les <span class="violet">hashtags</span> et</div>
-    <div class="caption" data-start="8.58" data-end="9.34">génère plus de</div>
-    <div class="caption" data-start="9.34" data-end="10.32"><span class="hot">1200</span> idées de</div>
-    <div class="caption" data-start="10.32" data-end="10.96"><span class="hot">contenu</span> par jour</div>
-    <div class="caption" data-start="10.96" data-end="11.58">dans un <span class="violet">Google</span></div>
-    <div class="caption" data-start="11.58" data-end="13.3"><span class="violet">Sheet</span> Commente <span class="hot">IDEAS</span></div>
-    <div class="caption" data-start="13.3" data-end="14.1">pour recevoir le</div>
-    <div class="caption" data-start="14.1" data-end="14.86">workflow gratuitement</div>
+    <div class="caption" data-start="0" data-end="1.58">La <span class="hot">panne</span> d</div>
+    <div class="caption" data-start="1.58" data-end="2"><span class="violet">inspiration</span> c est</div>
+    <div class="caption" data-start="2" data-end="2.6">une <span class="hot">excuse</span> qui</div>
+    <div class="caption" data-start="2.6" data-end="3.22">n <span class="violet">existe</span> plus</div>
+    <div class="caption" data-start="3.22" data-end="4.86">en <span class="hot">2026</span> Ce</div>
+    <div class="caption" data-start="4.86" data-end="5.74"><span class="violet">workflow</span> scanne en</div>
+    <div class="caption" data-start="5.74" data-end="6.52">continu les <span class="hot">tendances</span></div>
+    <div class="caption" data-start="6.52" data-end="7.24">de ton <span class="violet">secteur</span></div>
+    <div class="caption" data-start="8" data-end="8.48"><span class="hot">analyse</span> ce que</div>
+    <div class="caption" data-start="8.48" data-end="9.04">font tes <span class="violet">concurrents</span></div>
+    <div class="caption" data-start="9.04" data-end="10.14">qui <span class="hot">cartonnent</span> et</div>
+    <div class="caption" data-start="10.14" data-end="10.82">repère les <span class="violet">hashtags</span></div>
+    <div class="caption" data-start="10.82" data-end="11.44">qui <span class="hot">explosent</span> en</div>
+    <div class="caption" data-start="11.44" data-end="12.26">ce <span class="violet">moment</span> Il</div>
+    <div class="caption" data-start="12.26" data-end="12.9"><span class="hot">croise</span> toutes ces</div>
+    <div class="caption" data-start="12.9" data-end="13.5"><span class="violet">données</span> avec l</div>
+    <div class="caption" data-start="13.5" data-end="14.22">IA et <span class="hot">génère</span></div>
+    <div class="caption" data-start="14.22" data-end="14.96"><span class="violet">plus</span> de 1200</div>
+    <div class="caption" data-start="14.96" data-end="15.66">idées de <span class="hot">contenus</span></div>
+    <div class="caption" data-start="15.66" data-end="16.9">par jour <span class="violet">directement</span></div>
+    <div class="caption" data-start="16.9" data-end="17.5"><span class="hot">rangées</span> dans un</div>
+    <div class="caption" data-start="17.5" data-end="18.62"><span class="violet">Google</span> Sheet classé</div>
+    <div class="caption" data-start="18.62" data-end="19.26">par <span class="hot">thème</span> et</div>
+    <div class="caption" data-start="19.26" data-end="20.96">par <span class="violet">source</span> Tu</div>
+    <div class="caption" data-start="20.96" data-end="21.2">n as <span class="hot">plus</span></div>
+    <div class="caption" data-start="21.2" data-end="21.62">qu à <span class="violet">choisir</span></div>
+    <div class="caption" data-start="21.62" data-end="22.28"><span class="hot">celle</span> qui te</div>
+    <div class="caption" data-start="22.28" data-end="22.98"><span class="violet">parle</span> et à</div>
+    <div class="caption" data-start="22.98" data-end="24"><span class="hot">filmer</span> Finis de</div>
+    <div class="caption" data-start="24" data-end="24.5"><span class="violet">fixer</span> un écran</div>
+    <div class="caption" data-start="24.5" data-end="25.24"><span class="hot">vide</span> en te</div>
+    <div class="caption" data-start="25.24" data-end="25.94"><span class="violet">demandant</span> quoi poster</div>
+    <div class="caption" data-start="26.72" data-end="27.54">Commente <span class="hot">IDEAS</span> et</div>
+    <div class="caption" data-start="27.54" data-end="27.88">je t <span class="violet">envoie</span></div>
+    <div class="caption" data-start="27.88" data-end="28.86">le <span class="hot">workflow</span> complet</div>
+    <div class="caption" data-start="28.86" data-end="29.52"><span class="violet">gratuitement</span></div>
   </div>
 
   <!-- Audio -->
-  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="15.5" data-volume="1"></audio>
-  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="15.5" data-volume="0.12"></audio>
-  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="3.12" data-volume="0.35"></audio>
-  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="7.54" data-volume="0.35"></audio>
-  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="13.3" data-volume="0.4"></audio>
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="29.8" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="29.8" data-volume="0.12"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="4.86" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="12.26" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="20.96" data-volume="0.3"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="26.72" data-volume="0.4"></audio>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -257,31 +307,38 @@
   window.__timelines = window.__timelines || {};
   const tl = gsap.timeline({ paused: true });
 
-  // Scene 1: Hook (0 → 3.12s)
+  // Scene 1: Hook (0 → 4.86s)
   tl.to(".scene-1", { opacity: 1, duration: 0.3 }, 0);
   tl.to(".scene-1 .icon-large", { scale: 1.1, duration: 0.5, yoyo: true, repeat: 1 }, 0.3);
-  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 2.82);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 4.56);
 
-  // Scene 2: Counter (3.12 → 7.54s)
-  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 3.12);
-  tl.from(".scene-2 .counter-display", { textContent: 0, duration: 1, snap: { textContent: 1 }, ease: "power1.out" }, 3.4);
-  tl.to(".scene-2 .source-tag", { opacity: 1, duration: 0.3, stagger: 0.15 }, 4.6);
-  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 7.24);
+  // Scene 2: Counter (4.86 → 12.26s)
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 4.86);
+  tl.from(".scene-2 .counter-display", { textContent: 0, duration: 1, snap: { textContent: 1 }, ease: "power1.out" }, 5.1);
+  tl.to(".scene-2 .source-tag", { opacity: 1, duration: 0.3, stagger: 0.15 }, 6.3);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 11.96);
 
-  // Scene 3: Sheet (7.54 → 11.58s)
-  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 7.54);
-  tl.to(".scene-3 .sheet-row", { opacity: 1, duration: 0.25, stagger: 0.2 }, 7.8);
-  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 11.28);
+  // Scene 3: Sheet (12.26 → 20.96s)
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 12.26);
+  tl.to(".scene-3 .sheet-row", { opacity: 1, duration: 0.25, stagger: 0.2 }, 12.5);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 20.66);
 
-  // Scene 4: CTA (11.58 → 15.5s)
-  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 11.58);
-  tl.to(".scene-4 .cta-keyword", { scale: 1.1, opacity: 1, duration: 0.4 }, 12.7);
+  // Scene 3b: broll notebook (20.96 → 26.72s)
+  tl.to(".scene-3b", { opacity: 1, duration: 0.3 }, 20.96);
+  tl.to(".scene-3b", { opacity: 0, duration: 0.3 }, 26.42);
 
-  // Persistent avatar — on screen the whole video (no broll cutaway in this comp)
-  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 30, yoyo: true }, 0);
-  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 6, ease: "none" }, 0);
-  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 12.7);
-  tl.to("#avatar-ring", { rotation: "+=360", duration: 2.8, ease: "none" }, 12.7);
+  // Scene 4: CTA (26.72 → 29.8s)
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 26.72);
+  tl.to(".scene-4 .cta-keyword", { scale: 1.1, opacity: 1, duration: 0.4 }, 27.54);
+
+  // Persistent avatar — visible 0→20.96s and 26.72→29.8s, hidden during broll
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 20.96);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 26.72);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 41, yoyo: true }, 0);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 6, yoyo: true }, 26.72);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 9, ease: "none" }, 0);
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 27.54);
+  tl.to("#avatar-ring", { rotation: "+=360", duration: 2.26, ease: "none" }, 27.54);
 
   // Captions
   tl.to(".caption", { opacity: 0, duration: 0 }, 0);

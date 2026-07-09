@@ -22,6 +22,11 @@ Créer une vidéo promo sociale française au format 9:16 à partir d'un script 
 ## Style obligatoire
 
 - **Format** : 1080x1920 vertical, 30 fps sauf indication contraire du projet.
+- **Durée** : 25 à 35 secondes, toujours (confirmé 2026-07-09, remplace l'ancien objectif ~15-20s de
+  la colonne Sheet "Script Voix Off (20s)" — ce libellé de colonne est obsolète, ne pas s'y fier).
+  Si le script du Sheet ne tient qu'en ~15s de narration au débit normal, l'étoffer (plus de détail,
+  un exemple, un bénéfice supplémentaire) avant de générer la voix — ne jamais livrer une vidéo
+  sous les 25s. Voir Étape 1 pour le calcul du nombre de mots cible.
 - **Palette** : fond noir mat, accent global jaune `#FFE600`, plus violet `#A855F7` et orange `#FF8A3D` en highlights. Ne jamais revenir au bleu comme accent dominant.
 - **Voix** : utiliser la voix clonée de l'utilisateur uniquement après accord explicite pour cette vidéo précise. Préférer `C:\Users\User\Work\Video IA AUTOBOOST\audio\voice-reference-clean.wav` avec WaveSpeed `wavespeed-ai/qwen3-tts/voice-clone`.
 - **Captions** : style TikTok, centrées autour de la bande de sécurité médiane quand le bas contient l'avatar/setup, une seule ligne, trois mots maximum si possible. Surligner exactement un mot actif/puissant par caption en néon jaune/violet/orange. Ne pas mettre de boîte/fond visible derrière chaque mot ; texte blanc avec contour/ombre noire, et glow néon coloré pour le mot actif.
@@ -43,6 +48,9 @@ Créer une vidéo promo sociale française au format 9:16 à partir d'un script 
 ### Étape 1 — Parser le script
 
 Découper en hook / corps / CTA / durée cible. Supprimer les blocs de script collés en double.
+Cible 25-35s : au débit de narration observé sur ce projet (~3.7-4.1 mots/seconde), viser
+**95-140 mots**. Si le script source est plus court, étoffer le corps (détail du process, exemple
+concret, bénéfice, preuve sociale) plutôt que de ralentir artificiellement le débit vocal.
 
 ### Étape 2 — Réécrire la narration si besoin
 
