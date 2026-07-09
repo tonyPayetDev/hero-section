@@ -1,0 +1,406 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #10 Générateur Livres Enfants</title>
+<style>
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; }
+
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 1120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 64px;
+    text-align: center;
+    opacity: 0;
+  }
+
+  /* Scene 1: Hook */
+  .scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+  .scene-1 .icon-large { font-size: 70px; margin-bottom: 20px; }
+  .scene-1 h2 { font-size: 30px; font-weight: 700; margin: 0 0 16px 0; line-height: 1.3; }
+  .scene-1 .highlight { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.5); }
+  .scene-1 p { font-size: 16px; color: var(--text-gray); margin: 0; }
+
+  /* Scene 2: Input — prénom + thème */
+  .scene-2 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%); }
+  .scene-2 .input-card {
+    background: rgba(255,230,0,0.06);
+    border: 2px solid var(--accent-yellow);
+    border-radius: 8px;
+    padding: 32px;
+    width: 100%;
+    max-width: 700px;
+    text-align: left;
+  }
+  .scene-2 .input-row { margin-bottom: 20px; opacity: 0; }
+  .scene-2 .input-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-gray); margin-bottom: 6px;
+  }
+  .scene-2 .input-value {
+    font-size: 22px; font-weight: 700; color: var(--accent-yellow);
+  }
+  .scene-2 .arrow-down { text-align: center; font-size: 24px; color: var(--accent-orange); margin: 12px 0; opacity: 0; }
+
+  /* Scene 3: Book pages generation */
+  .scene-3 { background: #000; }
+  .scene-3 .book-container {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+  }
+  .scene-3 .book-page {
+    width: 180px;
+    height: 240px;
+    background: linear-gradient(135deg, rgba(255,230,0,0.1), rgba(168,85,247,0.1));
+    border: 2px solid var(--accent-yellow);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  .scene-3 .book-label {
+    font-size: 16px;
+    color: var(--text-gray);
+    margin-top: 30px;
+  }
+
+  /* Scene 3b/3c: fullscreen broll */
+  .scene-broll {
+    height: 1920px;
+    padding: 0;
+    background: #000;
+  }
+  .scene-broll video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 1920px;
+    object-fit: cover;
+    filter: brightness(0.55) saturate(1.1);
+  }
+  .scene-broll::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.1) 30%, rgba(10,10,10,0.1) 60%, rgba(10,10,10,0.6) 100%);
+  }
+  .scene-broll .broll-label {
+    position: absolute;
+    bottom: 120px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 16px;
+    color: var(--text-gray);
+    z-index: 2;
+  }
+
+  /* Scene 4: CTA (avatar is the persistent #avatar-frame overlay below) */
+  .scene-4 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 140px; }
+  .scene-4 .cta-badge {
+    display: inline-block; background: var(--accent-orange);
+    padding: 12px 24px; border-radius: 20px; font-size: 12px;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: #000; margin-bottom: 16px;
+  }
+  .scene-4 .cta-keyword {
+    font-size: 46px; font-weight: 700; color: var(--accent-yellow);
+    text-shadow: 0 0 30px rgba(255,230,0,0.6); margin-bottom: 12px;
+  }
+  .scene-4 .cta-text { font-size: 16px; color: var(--text-gray); }
+
+  /* Persistent avatar overlay — circular neon frame, on screen most of the video (pattern from
+     autoboost-04 Telegram Agent IA: bottom-anchored, sibling of .scene, hidden only during broll). */
+  #avatar-frame {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    width: 560px;
+    height: 560px;
+    margin-left: -280px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--bg);
+    border: 5px solid var(--accent-yellow);
+    box-shadow:
+      0 0 0 2px rgba(6, 6, 6, 0.9),
+      0 0 36px 4px rgba(255, 230, 0, 0.55),
+      0 0 90px 20px rgba(255, 230, 0, 0.22);
+    z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 560px;
+    height: 706px;
+    transform: translate(-50%, -46%);
+    object-fit: cover;
+    object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute;
+    bottom: 58px;
+    left: 50%;
+    width: 584px;
+    height: 584px;
+    margin-left: -292px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-yellow);
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 40px rgba(255, 230, 0, 0.35);
+    z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    width: 596px;
+    height: 596px;
+    margin-left: -298px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 280deg,
+      rgba(255, 230, 0, 0.12) 320deg,
+      var(--accent-yellow) 353deg,
+      #fff8d6 360deg
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255, 230, 0, 0.9));
+    z-index: 5;
+  }
+
+  /* Captions */
+  .caption-belt { position: absolute; top: 960px; left: 0; right: 0; text-align: center; z-index: 10; }
+  .caption {
+    display: inline-block; font-size: 27px; font-weight: 700; color: var(--text-white);
+    text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+                 -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0; max-width: 90%;
+  }
+  .caption .hot {
+    color: var(--accent-yellow);
+    text-shadow: 0 0 20px rgba(255,230,0,0.8), -3px -3px 0 #000, 3px -3px 0 #000,
+                 -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000,
+                 0 -3px 0 #000, 0 3px 0 #000;
+  }
+  .caption .violet {
+    color: var(--accent-violet);
+    text-shadow: 0 0 20px rgba(168,85,247,0.8), -3px -3px 0 #000, 3px -3px 0 #000,
+                 -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000,
+                 0 -3px 0 #000, 0 3px 0 #000;
+  }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-10-livres-enfants" data-width="1080" data-height="1920" data-duration="25">
+
+  <!-- Scene 1: Hook -->
+  <div class="scene scene-1">
+    <div class="icon-large"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:70px;height:70px;"><path d="M4 5.5A2.5 2.5 0 016.5 3H12v16H6.5A2.5 2.5 0 004 16.5v-11z" stroke-linejoin="round"/><path d="M20 5.5A2.5 2.5 0 0017.5 3H12v16h5.5a2.5 2.5 0 012.5 2.5v-16z" stroke-linejoin="round"/></svg></div>
+    <h2>Un business à lancer<br/><span class="highlight">ce week-end</span></h2>
+    <p>Zéro stock. Zéro investissement.</p>
+  </div>
+
+  <!-- Scene 2: Input -->
+  <div class="scene scene-2">
+    <div class="input-card">
+      <div class="input-row">
+        <div class="input-label">Prénom de l'enfant</div>
+        <div class="input-value">Léo</div>
+      </div>
+      <div class="arrow-down">+</div>
+      <div class="input-row">
+        <div class="input-label">Thème</div>
+        <div class="input-value">L'aventure spatiale</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3: Book generation -->
+  <div class="scene scene-3">
+    <div>
+      <div class="book-container">
+        <div class="book-page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:40px;height:40px;"><path d="M12 2c2.5 2 4 5.5 4 9 0 2-1 4-4 6-3-2-4-4-4-6 0-3.5 1.5-7 4-9z" stroke-linejoin="round"/><circle cx="12" cy="10" r="1.5"/><path d="M9 15l-2 4M15 15l2 4M12 17v3" stroke-linecap="round"/></svg></div>
+        <div class="book-page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:40px;height:40px;"><path d="M20 13.5a8 8 0 11-9.5-9.4 6.5 6.5 0 009.5 9.4z" stroke-linejoin="round"/></svg></div>
+        <div class="book-page"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:40px;height:40px;"><path d="M12 2l2.6 6.6L21 9.5l-5 4.6 1.4 7L12 17.8 6.6 21l1.4-7-5-4.6 6.4-.9L12 2z"/></svg></div>
+      </div>
+      <div class="book-label">Illustrations générées par IA</div>
+    </div>
+  </div>
+
+  <!-- Scene 3b: broll illustration -->
+  <div class="scene scene-broll scene-3b">
+    <video src="assets/broll-illustration.mp4" playsinline muted data-start="12.93" data-duration="3.94"></video>
+    <div class="broll-label">Chaque illustration, générée sur-mesure</div>
+  </div>
+
+  <!-- Scene 3c: broll livre fini -->
+  <div class="scene scene-broll scene-3c">
+    <video src="assets/broll-book.mp4" playsinline muted data-start="16.87" data-duration="4.46"></video>
+    <div class="broll-label">Prêt à imprimer ou à vendre en ligne</div>
+  </div>
+
+  <!-- Scene 4: CTA (avatar itself is the persistent #avatar-frame below) -->
+  <div class="scene scene-4">
+    <div class="cta-badge">Workflow Gratuit</div>
+    <div class="cta-keyword">Commente <span class="hot">LIVRE</span></div>
+    <div class="cta-text">pour recevoir le workflow</div>
+  </div>
+
+  <!-- Persistent avatar overlay (track 2/3/4) — on screen 0→12.93s and 21.33→25s, hidden during broll -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="25" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="25" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="25" class="clip"></div>
+
+  <!-- Captions -->
+  <div class="caption-belt">
+    <div class="caption" data-start="0" data-end="1.09">Voilà un <span class="hot">business</span></div>
+    <div class="caption" data-start="1.09" data-end="1.52">que tu peux</div>
+    <div class="caption" data-start="1.52" data-end="2.13">lancer ce <span class="hot">week</span></div>
+    <div class="caption" data-start="2.13" data-end="3.07">end avec <span class="violet">zéro</span></div>
+    <div class="caption" data-start="3.07" data-end="3.78">stock et <span class="violet">zéro</span></div>
+    <div class="caption" data-start="3.78" data-end="4.66"><span class="hot">investissement</span> de départ</div>
+    <div class="caption" data-start="5.13" data-end="5.57">Tu donnes juste</div>
+    <div class="caption" data-start="5.57" data-end="6.04">le <span class="hot">prénom</span> de</div>
+    <div class="caption" data-start="6.04" data-end="6.45">l'<span class="violet">enfant</span> et</div>
+    <div class="caption" data-start="6.45" data-end="6.87">le <span class="hot">thème</span> qu'</div>
+    <div class="caption" data-start="6.87" data-end="7.67">il préfère : les</div>
+    <div class="caption" data-start="7.67" data-end="8.53"><span class="violet">dinosaures</span>, l'espace</div>
+    <div class="caption" data-start="8.62" data-end="9.67">les <span class="hot">princesses</span></div>
+    <div class="caption" data-start="9.67" data-end="10.49">Le workflow <span class="hot">génère</span></div>
+    <div class="caption" data-start="10.49" data-end="11.24">toutes les <span class="violet">illustrations</span></div>
+    <div class="caption" data-start="11.24" data-end="12.25">avec l'<span class="hot">intelligence artificielle</span></div>
+    <div class="caption" data-start="12.25" data-end="12.93">dans le style</div>
+    <div class="caption" data-start="12.93" data-end="13.45">que tu choisis</div>
+    <div class="caption" data-start="13.45" data-end="14.22">et rédige une</div>
+    <div class="caption" data-start="14.22" data-end="14.98">histoire <span class="hot">complète</span> et</div>
+    <div class="caption" data-start="14.98" data-end="16.22"><span class="hot">personnalisée</span> En quelques</div>
+    <div class="caption" data-start="16.22" data-end="16.87"><span class="hot">minutes</span> tu as</div>
+    <div class="caption" data-start="16.87" data-end="17.81">un livre <span class="violet">unique</span></div>
+    <div class="caption" data-start="17.81" data-end="18.26">prêt à imprimer</div>
+    <div class="caption" data-start="18.26" data-end="18.69">ou à vendre</div>
+    <div class="caption" data-start="18.69" data-end="19.46">en ligne</div>
+    <div class="caption" data-start="19.46" data-end="20.20">Les parents <span class="hot">adorent</span></div>
+    <div class="caption" data-start="20.20" data-end="20.84">offrir quelque chose</div>
+    <div class="caption" data-start="20.84" data-end="21.63">de vraiment <span class="violet">personnel</span></div>
+    <div class="caption" data-start="21.63" data-end="22.62">à leurs enfants</div>
+    <div class="caption" data-start="22.62" data-end="23.22">Commente <span class="hot">LIVRE</span></div>
+    <div class="caption" data-start="23.22" data-end="23.61">et je t'envoie</div>
+    <div class="caption" data-start="23.61" data-end="24.82">le workflow <span class="violet">gratuitement</span></div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="25" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="25" data-volume="0.12"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="4.66" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="9.67" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="12.93" data-volume="0.3"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="16.87" data-volume="0.3"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="22.62" data-volume="0.4"></audio>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // Scene 1: Hook (0 → 4.66s)
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, 0);
+  tl.to(".scene-1 .icon-large", { scale: 1.1, duration: 0.5, yoyo: true, repeat: 1 }, 0.3);
+  tl.to(".scene-1 .icon-large", { scale: 1.1, duration: 0.5, yoyo: true, repeat: 1 }, 2.2);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 4.36);
+
+  // Scene 2: Input (4.66 → 9.67s)
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 4.66);
+  tl.to(".scene-2 .input-row, .scene-2 .arrow-down", { opacity: 1, duration: 0.3, stagger: 0.3 }, 4.96);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 9.37);
+
+  // Scene 3: Book generation (9.67 → 12.93s)
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 9.67);
+  tl.to(".scene-3 .book-page", { opacity: 1, scale: 1, duration: 0.4, stagger: 0.2 }, 9.97);
+  tl.to(".scene-3 .book-page", { y: -10, duration: 0.6, yoyo: true, repeat: 1, stagger: 0.1, ease: "sine.inOut" }, 11.2);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 12.6);
+
+  // Scene 3b: broll illustration (12.93 → 16.87s)
+  tl.to(".scene-3b", { opacity: 1, duration: 0.3 }, 12.93);
+  tl.to(".scene-3b", { opacity: 0, duration: 0.3 }, 16.57);
+
+  // Scene 3c: broll livre fini (16.87 → 21.33s)
+  tl.to(".scene-3c", { opacity: 1, duration: 0.3 }, 16.87);
+  tl.to(".scene-3c", { opacity: 0, duration: 0.3 }, 21.03);
+
+  // Scene 4: CTA (21.63 → 25s)
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 21.63);
+  tl.to(".scene-4 .cta-keyword", { scale: 1.1, opacity: 1, duration: 0.4 }, 22.62);
+
+  // Persistent avatar — visible 0→12.93s and 21.33→25s, hidden during broll (pattern from autoboost-04)
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 12.93);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 21.33);
+
+  // Avatar neon ring — continuous breathing pulse whenever the avatar is on screen.
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 25, yoyo: true }, 0);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 6, yoyo: true }, 21.33);
+
+  // Avatar orbit — rotating neon comet, continuous.
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 11, ease: "none" }, 0);
+
+  // CTA beat — ring pulse + spin when "Commente LIVRE" lands.
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 21.63);
+  tl.to("#avatar-ring", { rotation: "+=360", duration: 3.37, ease: "none" }, 21.63);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.15 }, start);
+    tl.to(el, { opacity: 0, duration: 0.15 }, end - 0.15);
+  });
+
+  window.__timelines["autoboost-10-livres-enfants"] = tl;
+</script>
+</body>
+</html>

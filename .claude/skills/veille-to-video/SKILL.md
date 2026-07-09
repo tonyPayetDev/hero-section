@@ -230,36 +230,120 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
   toujours prioritaire sur une source tierce si l'utilisateur en donne une — télécharger, retirer
   la cover art (`-vn`), trim/fade sur la durée de la vidéo.
 
-## Règles Avatar
+## Règles Avatar — pattern OBLIGATOIRE (référence : autoboost-04 Telegram Agent IA)
 
+**Ceci n'est pas optionnel.** Confirmé en production (2026-07-09, autoboost-10 Livres Enfants) :
+un avatar limité à une seule scène de fin (ex. juste la scène CTA) est un défaut, pas une variante
+acceptable — l'utilisateur veut l'avatar visible **4 à 5 fois / la majorité de la vidéo**, exactement
+comme dans autoboost-04. Reproduire ce pattern par défaut sur toute nouvelle vidéo, sans le
+redemander à l'utilisateur.
+
+**Architecture — l'avatar n'est PAS un enfant de `.scene`.** C'est un overlay persistant, sibling
+des `.scene`, ancré au canevas entier (`#root`, 1080×1920), qui reste à l'écran pendant presque
+toute la comp et n'est masqué que pendant les scènes broll plein écran. Trois éléments :
+
+```html
+<!-- Sibling des .scene, PAS imbriqué dedans -->
+<div id="avatar-frame">
+  <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="<durée totale comp>"
+         data-layout-allow-overflow="true" muted playsinline></video>
+</div>
+<div id="avatar-ring" data-start="0" data-duration="<durée totale comp>" class="clip"></div>
+<div id="avatar-orbit" data-start="0" data-duration="<durée totale comp>" class="clip"></div>
+```
+
+```css
+#avatar-frame {
+  position: absolute; bottom: 70px; left: 50%;
+  width: 560px; height: 560px; margin-left: -280px;
+  border-radius: 50%; overflow: hidden; background: var(--bg);
+  border: 5px solid var(--accent-yellow);
+  box-shadow: 0 0 0 2px rgba(6,6,6,0.9), 0 0 36px 4px rgba(255,230,0,0.55), 0 0 90px 20px rgba(255,230,0,0.22);
+  z-index: 5;
+}
+#avatar-frame video {
+  position: absolute; top: 50%; left: 50%;
+  width: 560px; height: 706px; transform: translate(-50%, -46%);
+  object-fit: cover; object-position: center top;
+}
+#avatar-ring {
+  position: absolute; bottom: 58px; left: 50%;
+  width: 584px; height: 584px; margin-left: -292px;
+  border-radius: 50%; border: 3px solid var(--accent-yellow); opacity: 0; pointer-events: none;
+  box-shadow: 0 0 40px rgba(255,230,0,0.35); z-index: 5;
+}
+#avatar-orbit {
+  position: absolute; bottom: 52px; left: 50%;
+  width: 596px; height: 596px; margin-left: -298px;
+  border-radius: 50%; pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg,
+    rgba(255,230,0,0.12) 320deg, var(--accent-yellow) 353deg, #fff8d6 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+  filter: drop-shadow(0 0 12px rgba(255,230,0,0.9)); z-index: 5;
+}
+```
+
+GSAP (adapter les timestamps aux fenêtres broll de la comp) :
+
+```js
+// Masquer seulement pendant les scènes broll plein écran (ex. 12.93 → 21.33)
+tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, BROLL_START);
+tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, BROLL_END);
+
+// Respiration continue de l'anneau — repeat FINI dimensionné pour couvrir chaque fenêtre visible
+tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: N1, yoyo: true }, 0);
+tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: N2, yoyo: true }, BROLL_END);
+
+// Orbit — comète néon qui tourne en continu
+tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: M, ease: "none" }, 0);
+
+// Beat CTA — pulse + spin plus fort quand le mot-clé apparaît
+tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, CTA_START);
+tl.to("#avatar-ring", { rotation: "+=360", duration: <temps restant>, ease: "none" }, CTA_START);
+```
+
+N1/N2/M = `Math.ceil(durée_fenêtre / durée_tween) - 1` (ex. fenêtre 12.93s / 0.5s → repeat:25).
+**Jamais `repeat:-1`** dans une timeline seek-based/déterministe.
+
+**Vidéo avatar plus courte que la comp** : si `avatar-keyed.mp4` fait moins que `data-duration`
+(fréquent, l'asset source dure souvent ~17s), le loop-étendre AVANT de référencer le fichier :
+`ffmpeg -stream_loop -1 -t <durée comp> -i avatar-keyed.mp4 -c copy avatar-keyed.mp4` — sinon
+l'avatar gèle/disparaît dès que la source est épuisée, silencieusement (seul `validate` avertit :
+"Video is Xs but its slot is Ys"). Même chose pour `bgm` si le morceau est plus court que la comp.
+
+**Scène = 1120px de haut, PAS 1920px.** `.scene { height: 1120px; ... }` est correct et voulu —
+le contenu de chaque scène (texte, cartes, icônes) occupe le haut du canevas, et l'avatar overlay
+occupe le bas. Ne PAS mettre `.scene` à 1920px pour "combler le noir en bas" : c'est l'avatar qui
+doit combler cet espace, pas le texte de la scène repositionné. (Erreur commise et corrigée le
+2026-07-09 sur autoboost-10 — le vrai bug n'était pas la hauteur de `.scene`, c'était l'absence
+totale de l'overlay avatar persistant.)
+
+**Captions à `top: 960px`** (pas `bottom: ...`) pour rester au-dessus du cercle avatar (voir
+Règles Captions ci-dessus) — sinon les captions tombent dans la zone avatar et se chevauchent.
+
+**Broll plein écran (pattern pour varier, avatar masqué)** : scènes dédiées avec leur propre classe
+(ex. `.scene-broll`), explicitement `height: 1920px` (override du 1120px par défaut, ces scènes-là
+n'ont pas besoin de laisser de la place à l'avatar puisqu'il est masqué). Bon candidat : schéma
+d'automatisation, ou un vrai clip vidéo broll (voir ci-dessous). Refaire apparaître l'avatar en
+fondu à la fin de la fenêtre broll (voir GSAP ci-dessus), jamais `display:none` (casse les
+transitions d'opacité).
+  - **Broll = vrai clip vidéo (pas juste un schéma motion-design)** : Mixkit
+    (`https://mixkit.co/free-stock-video/<tag>/`), scrapable comme la musique/SFX (JSON-LD,
+    champ `"contentUrl"`, licence Mixkit Free, usage commercial libre sans attribution). Vérifier
+    par thumbnail (`thumbnailUrl` du JSON-LD) AVANT de télécharger le mp4 complet — les résultats
+    Mixkit sont parfois hors-sujet malgré un nom de fichier trompeur (repéré 2026-07-09 : un clip
+    nommé "hand drawing" était en réalité une animation de dashboard marketing). Une fois choisi,
+    trim + downscale immédiatement pour la taille du fichier (`ffmpeg -ss <in> -t <durée scène>
+    -vf "scale=1080:-2" -an -c:v libx264 -crf 23 <out>`) — un clip Mixkit brut fait 30-70 Mo pour
+    quelques secondes utiles, pas la peine de garder ça dans le projet. Poser en `<video>` plein
+    cadre (`object-fit:cover`, `muted`, `data-start`/`data-duration` sur la fenêtre de la scène),
+    assombri (`filter: brightness(0.5-0.6)`) + dégradé sombre en overlay pour que les captions
+    restent lisibles par-dessus. Pexels bloque le scraping direct (`403` testé) — n'y recourir
+    que via clé API officielle si l'utilisateur en fournit une ; sinon Mixkit reste la source par
+    défaut, proposer 1-2 clips par défaut sur toute vidéo à plusieurs scènes narratives distinctes
+    (ne pas attendre que l'utilisateur le redemande).
 - Avatar keyé propre ou composite setup sans filtres latéraux vert/noir.
-- Toujours sous la bande de sécurité des captions pour les vidéos split verticales.
-- **Cadre circulaire + anneau néon permanent (pattern recommandé)** : si la vidéo source de
-  l'avatar a un fond quasi-noir mais pas identique au `--bg` de la comp (rectangle visible en
-  différence de nuance), ne pas chercher à re-keyer — plus simple et robuste de masquer l'avatar
-  dans un cercle (`border-radius:50%; overflow:hidden` sur un conteneur, vidéo en `object-fit:cover`
-  dedans avec `data-layout-allow-overflow="true"`) avec une bordure + `box-shadow` néon jaune en
-  dur sur ce conteneur. Le crop circulaire élimine le rectangle sans dépendre de la qualité du
-  fond source. Ajouter un anneau externe séparé qui pulse en continu (`opacity`/`scale`, GSAP
-  `yoyo:true` avec un `repeat` **fini** dimensionné pour tenir dans la comp — jamais `repeat:-1`
-  dans une timeline seek-based/déterministe) pour un effet "néon vivant", avec un beat plus fort
-  (rotation 360°, scale plus grand) réservé au moment CTA.
-- **Broll plein écran sans avatar (pattern optionnel)** : pour varier, masquer l'avatar (fade
-  opacity du conteneur circulaire, pas de `display:none`) pendant une scène choisie et étendre
-  cette scène à la hauteur totale (1920px au lieu de 1120px) pour qu'elle remplisse tout le cadre
-  — bon candidat : le schéma d'automatisation ou tout visuel dense qui bénéficie de plus d'espace.
-  Refaire apparaître l'avatar en fondu au début de la scène suivante.
-  - **Si un vrai clip vidéo (pas juste un schéma motion-design) est nécessaire pour ce broll** :
-    Mixkit a aussi une section vidéo stock (`https://mixkit.co/free-stock-video/<tag>/`), scrapable
-    avec la même méthode que la musique/SFX (voir section "Sound design" plus haut) — le JSON-LD de
-    la page contient un champ `"contentUrl"` par clip avec un lien mp4 direct
-    (`https://assets.mixkit.co/videos/<id>/<id>-1080.mp4` ou `-720`), licence Mixkit Free (usage
-    commercial libre, sans attribution). Pexels a un catalogue plus large mais bloque le scraping
-    direct (`403` testé) — n'y recourir que via leur clé API officielle si l'utilisateur en fournit
-    une ; sinon Mixkit reste la source par défaut. Poser le clip en `<video>` plein cadre
-    (`object-fit:cover`, `muted`, `data-start`/`data-duration` sur la fenêtre de la scène), loopé
-    avec `-stream_loop -1 -t <durée>` côté ffmpeg si le clip source est plus court que la scène
-    (jamais via `trim` dans le filter graph, voir CLAUDE.md racine).
 - Valider que l'avatar ne recouvre jamais les captions ni le texte important de la scène.
 
 ---
@@ -271,6 +355,8 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
 - [ ] Palette noir mat + jaune/violet/orange respectée, pas de bleu dominant
 - [ ] Captions TikTok mot-à-mot validées (0 dépassement `inspect`)
 - [ ] Avatar sans filtre vert/noir, ne recouvre jamais captions/texte
+- [ ] Avatar en overlay persistant (sibling des `.scene`, pas imbriqué dans une seule scène CTA) — visible 4-5 fois / majorité de la vidéo, masqué seulement pendant le broll
+- [ ] Au moins 1-2 broll (schéma motion-design ou clip Mixkit) si la vidéo a plusieurs scènes narratives distinctes
 - [ ] `validate` + `inspect` = 0 problème avant rendu
 - [ ] Rendu vérifié via `ffprobe` (durée, résolution, taille)
 - [ ] Compte Blotato confirmé avec l'utilisateur avant publication

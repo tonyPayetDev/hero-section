@@ -1,0 +1,428 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #8 Pinterest Automation</title>
+<style>
+  @font-face {
+    font-family: "Inter";
+    font-weight: 400 700;
+    font-display: block;
+    src: url("https://cdn.jsdelivr.net/npm/inter@4.0.2/inter.ttf") format("truetype");
+  }
+
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: "Inter", system-ui, sans-serif; }
+
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* Scenes */
+  .scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 1920px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 64px;
+    text-align: center;
+    opacity: 0;
+  }
+
+  /* Scene 1: Hook — Pinterest traffic untapped */
+  .scene-1 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%);
+  }
+
+  .scene-1 .hook-content {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scene-1 .icon-large {
+    font-size: 80px;
+    opacity: 0.7;
+  }
+
+  .scene-1 .hook-text h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+  }
+
+  .scene-1 .hook-text .highlight {
+    color: var(--accent-yellow);
+    text-shadow: 0 0 20px rgba(255, 230, 0, 0.5);
+  }
+
+  .scene-1 .hook-text p {
+    font-size: 16px;
+    color: var(--text-gray);
+    margin: 0;
+  }
+
+  /* Scene 2: Workflow — Epingles + SEO */
+  .scene-2 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+  }
+
+  .scene-2 .workflow-box {
+    background: rgba(255, 230, 0, 0.05);
+    border: 2px solid var(--accent-yellow);
+    border-radius: 8px;
+    padding: 40px;
+    width: 100%;
+    max-width: 850px;
+  }
+
+  .scene-2 .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+
+  .scene-2 .flow-icon {
+    font-size: 28px;
+    min-width: 40px;
+  }
+
+  .scene-2 .flow-text {
+    text-align: left;
+    flex: 1;
+  }
+
+  .scene-2 .flow-text .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-gray);
+  }
+
+  .scene-2 .flow-text .value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-yellow);
+  }
+
+  .scene-2 .flow-arrow {
+    color: var(--accent-orange);
+    font-size: 20px;
+  }
+
+  /* Scene 3: Pinterest dashboard */
+  .scene-3 {
+    background: #000;
+  }
+
+  .scene-3 .dashboard-card {
+    background: rgba(255, 230, 0, 0.08);
+    border: 2px solid var(--accent-yellow);
+    border-radius: 8px;
+    padding: 40px;
+    width: 90%;
+    max-width: 800px;
+  }
+
+  .scene-3 .stat-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .scene-3 .stat-box {
+    text-align: center;
+  }
+
+  .scene-3 .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent-yellow);
+  }
+
+  .scene-3 .stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-gray);
+    margin-top: 8px;
+  }
+
+  /* Scene 4: Avatar + CTA */
+  .scene-4 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%);
+  }
+
+  .scene-4 .avatar-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .scene-4 .avatar-frame {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--accent-yellow);
+    box-shadow: 0 0 30px rgba(255, 230, 0, 0.5);
+  }
+
+  .scene-4 .avatar-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .scene-4 .cta-badge {
+    display: inline-block;
+    background: var(--accent-orange);
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #000;
+    margin-bottom: 16px;
+  }
+
+  .scene-4 .cta-keyword {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent-yellow);
+    text-shadow: 0 0 30px rgba(255, 230, 0, 0.6);
+    margin-bottom: 12px;
+  }
+
+  .scene-4 .cta-text {
+    font-size: 16px;
+    color: var(--text-gray);
+  }
+
+  /* Captions */
+  .caption-belt {
+    position: absolute;
+    bottom: 350px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .caption {
+    display: inline-block;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-white);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    text-shadow:
+      -3px -3px 0 #000, 3px -3px 0 #000,
+      -3px 3px 0 #000, 3px 3px 0 #000,
+      -3px 0 0 #000, 3px 0 0 #000,
+      0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0;
+    max-width: 90%;
+  }
+
+  .caption .hot {
+    color: var(--accent-yellow);
+    text-shadow: 0 0 20px rgba(255, 230, 0, 0.8),
+                 -3px -3px 0 #000, 3px -3px 0 #000,
+                 -3px 3px 0 #000, 3px 3px 0 #000;
+  }
+
+  /* Audio */
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-08-pinterest-automation" data-width="1080" data-height="1920" data-duration="16.5">
+  <!-- Scene 1: Hook -->
+  <div class="scene scene-1">
+    <div class="hook-content">
+      <div class="icon-large"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:80px;height:80px;"><path d="M12 2a7 7 0 00-2.5 13.5L9 22l2-1.5L13 22l-.5-6.5A7 7 0 0012 2z" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+      <div class="hook-text">
+        <h2>Pinterest = <span class="highlight">Trafic Gratuit</span></h2>
+        <p>Le canal le plus sous-estimé en 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2: Workflow -->
+  <div class="scene scene-2">
+    <div class="workflow-box">
+      <div class="flow-row">
+        <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:28px;height:28px;"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z" stroke-linejoin="round"/></svg></div>
+        <div class="flow-text">
+          <div class="label">Idée/Description</div>
+          <div class="value">Thème pour épingle</div>
+        </div>
+      </div>
+      <div class="flow-row" style="justify-content: center;">
+        <div class="flow-arrow">↓</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:28px;height:28px;"><path d="M12 3a9 9 0 100 18c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.2 0-.9.7-1.5 1.5-1.5H16a5 5 0 005-5c0-3.9-4-7-9-7z" stroke-linejoin="round"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="11" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="8.5" r="1" fill="currentColor" stroke="none"/></svg></div>
+        <div class="flow-text">
+          <div class="label">IA Crée Épingle</div>
+          <div class="value">Image haute résolution</div>
+        </div>
+      </div>
+      <div class="flow-row" style="justify-content: center;">
+        <div class="flow-arrow">↓</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:28px;height:28px;"><path d="M4 17v3h3l10-10-3-3L4 17z" stroke-linejoin="round"/><path d="M14 4l3 3" stroke-linecap="round"/></svg></div>
+        <div class="flow-text">
+          <div class="label">SEO Description</div>
+          <div class="value">Rédigée par Claude</div>
+        </div>
+      </div>
+      <div class="flow-row" style="justify-content: center;">
+        <div class="flow-arrow">↓</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:28px;height:28px;"><path d="M12 4v11" stroke-linecap="round"/><path d="M8 8l4-4 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3" stroke-linecap="round"/></svg></div>
+        <div class="flow-text">
+          <div class="label">Publie Automatique</div>
+          <div class="value">Zéro effort</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3: Dashboard -->
+  <div class="scene scene-3">
+    <div class="dashboard-card">
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-value">847K</div>
+          <div class="stat-label">Impressions</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">23.4K</div>
+          <div class="stat-label">Clics</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">+340%</div>
+          <div class="stat-label">Growth MoM</div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <div style="font-size: 14px; color: var(--text-gray);">Tout ça avec <span style="color: var(--accent-yellow); font-weight: 700;">zéro agence</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 4: Avatar + CTA -->
+  <div class="scene scene-4">
+    <div class="avatar-cta">
+      <div class="avatar-frame">
+        <video id="avatar" src="assets/avatar-keyed.mp4" playsinline></video>
+      </div>
+      <div>
+        <div class="cta-badge">Workflow Gratuit</div>
+        <div class="cta-keyword">
+          Commente <span class="hot">PINTEREST</span>
+        </div>
+        <div class="cta-text">pour recevoir le workflow</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Captions -->
+  <div class="caption-belt">
+    <div class="caption" data-start="0" data-end="1.12"><span class="hot">Pinterest</span> est le</div>
+    <div class="caption" data-start="1.12" data-end="1.72">canal le <span class="hot">plus</span></div>
+    <div class="caption" data-start="1.72" data-end="2.44">sous <span class="hot">estimé</span> pour</div>
+    <div class="caption" data-start="2.44" data-end="3.24">le trafic <span class="hot">gratuit</span></div>
+    <div class="caption" data-start="3.24" data-end="4.6">en <span class="violet">2026</span> et</div>
+    <div class="caption" data-start="4.6" data-end="5.1">personne n'en</div>
+    <div class="caption" data-start="5.1" data-end="6.18">parle Ce <span class="hot">workflow</span></div>
+    <div class="caption" data-start="6.18" data-end="6.98">crée les <span class="hot">épingles</span></div>
+    <div class="caption" data-start="7.54" data-end="8.14">rédige les <span class="violet">descriptions</span></div>
+    <div class="caption" data-start="8.14" data-end="9.24"><span class="hot">SEO</span> avec Claude</div>
+    <div class="caption" data-start="9.52" data-end="10.64">et publie <span class="hot">automatiquement</span></div>
+    <div class="caption" data-start="11.3" data-end="12.46"><span class="hot">Zéro</span> effort Trafic</div>
+    <div class="caption" data-start="12.46" data-end="14.16">passif Commente <span class="hot">PINTEREST</span></div>
+    <div class="caption" data-start="14.16" data-end="15.04">pour recevoir le</div>
+    <div class="caption" data-start="15.04" data-end="15.84">workflow gratuitement</div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="16.5"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="16.5"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="3.24"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="5.1"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="14.16"></audio>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+
+  const tl = gsap.timeline({ paused: true });
+
+  // Scene 1: Hook (0 → 5.1s)
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, 0);
+  tl.to(".scene-1 .icon-large", { scale: 1, opacity: 1, duration: 0.5 }, 0.2);
+  tl.to(".scene-1 .hook-text h2", { opacity: 1, duration: 0.4 }, 0.3);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 4.8);
+
+  // Scene 2: Workflow (5.1 → 10.64s)
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 5.1);
+  tl.to(".scene-2 .flow-row", { opacity: 1, y: 0, duration: 0.3, stagger: 0.25 }, 5.3);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 10.34);
+
+  // Scene 3: Dashboard (10.64 → 12.46s)
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 10.64);
+  tl.to(".scene-3 .stat-box", { opacity: 1, scale: 1, duration: 0.3, stagger: 0.08 }, 10.8);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 12.16);
+
+  // Scene 4: Avatar + CTA (12.46 → 16.5s)
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 12.46);
+  tl.to(".scene-4 .avatar-frame", { opacity: 1, scale: 1, duration: 0.5 }, 12.66);
+  tl.to(".scene-4 .cta-keyword", { scale: 1.1, opacity: 1, duration: 0.4 }, 13.86);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.15 }, start);
+    tl.to(el, { opacity: 0, duration: 0.15 }, end - 0.15);
+  });
+
+  window.__timelines["autoboost-08-pinterest-automation"] = tl;
+</script>
+</body>
+</html>
