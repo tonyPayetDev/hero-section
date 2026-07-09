@@ -230,10 +230,11 @@ Si l'espace disque bloque le rendu, ne nettoyer QUE : cache Chrome Puppeteer/Hyp
 
 ### Étape 8 — Publier sur Blotato
 
-1. `blotato_list_accounts` pour retrouver le bon compte (ex. `automatisationboost` sur Instagram, comptes TikTok existants) — **toujours confirmer avec l'utilisateur quel compte/plateforme cibler** avant de publier, la publication est visible publiquement et irréversible.
-2. Uploader le MP4 rendu (`blotato_create_presigned_upload_url` + upload, ou `blotato_create_visual` selon le cas) pour obtenir une URL média Blotato.
+1. `blotato_list_accounts` pour retrouver le bon compte (ex. `automatisationboost` sur Instagram, comptes TikTok existants) — **toujours confirmer avec l'utilisateur quel compte/plateforme cibler** avant de publier, la publication est visible publiquement et irréversible. Comptes de référence déjà utilisés (2026-07-09) : Instagram `automatisationboost` (id `54617`), TikTok `tonypayet4` (id `36488`).
+2. Uploader le MP4 rendu via `blotato_create_presigned_upload_url` (récupère `presignedUrl` + `publicUrl`) puis `curl -X PUT "<presignedUrl>" --data-binary "@<fichier local>" -H "Content-Type: video/mp4"`. **Ne pas passer l'URL de la page de prévisualisation Coolify directement en `mediaUrls`** — testé et confirmé : Blotato renvoie `"Failed to fetch media URL: 403 Forbidden"` même si l'URL est publique et accessible en curl direct (protection réseau côté Blotato ou Cloudflare, cause exacte non identifiée). Toujours passer par l'upload presigned, jamais par l'URL de preview.
 3. `blotato_create_post` avec la légende = `Texte TikTok + Hashtags` de la ligne du Sheet, en respectant les champs requis par plateforme (ex. TikTok : `privacyLevel`, `disabledComments`, etc. — voir `requiredFields` renvoyés par `blotato_list_accounts`).
-4. Rapporter l'URL/ID du post à l'utilisateur.
+4. **Programmation étalée sur la semaine** (pattern demandé et utilisé 2026-07-09 pour un lot de plusieurs vidéos) : passer `scheduledTime` (ISO 8601 UTC) à `blotato_create_post` plutôt que publier immédiatement. Espacer d'au moins 2 jours entre vidéos pour ne pas saturer les comptes ; heure Réunion (UTC+4) → soustraire 4h pour l'UTC (ex. 18h Réunion = `14:00:00Z`). Chaque vidéo = 2 posts (IG + TikTok) au même `scheduledTime`.
+5. Rapporter l'URL/ID du post (ou la date programmée) à l'utilisateur.
 
 ### Étape 9 — Mettre à jour le Sheet (Statut/Vidéo Finale/Date)
 
@@ -405,6 +406,13 @@ tl.to("#avatar-ring", { rotation: "+=360", duration: <temps restant>, ease: "non
 
 N1/N2/M = `Math.ceil(durée_fenêtre / durée_tween) - 1` (ex. fenêtre 12.93s / 0.5s → repeat:25).
 **Jamais `repeat:-1`** dans une timeline seek-based/déterministe.
+
+**Piège vérifié (2026-07-09, autoboost-08) : ne PAS mettre `#avatar-ring` dans un seul tween
+continu qui couvre toute la comp.** Si son repeat dépasse la fenêtre broll (ex. `repeat:63` sur
+32s alors que le broll est à 15.92-19.36s), l'anneau continue de pulser — donc de redevenir
+visible — par-dessus le broll, même avatar/orbit bien masqués. Symptôme : un cercle néon vide qui
+flotte sur la vidéo broll. Toujours calculer N1/N2 pour que chaque tween s'arrête AVANT le début
+du broll suivant, jamais un seul tween qui traverse la coupure.
 
 **Vidéo avatar plus courte que la comp** : si `avatar-keyed.mp4` fait moins que `data-duration`
 (fréquent, l'asset source dure souvent ~17s), le loop-étendre AVANT de référencer le fichier :
