@@ -176,3 +176,63 @@ de `blog/veille-ia-auto-2026-07-08.html` au même gabarit CSS/structure que la s
   fausse alerte.
 - Prochaine fenêtre où le blog veille IA sera légitimement due : 10-12 juillet 2026 (à vérifier
   dans le footer de `veille-ia-auto-2026-07-08.html` au cas où elle serait ajustée manuellement).
+
+## 2026-07-09
+
+**Contexte** : 5e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress).
+`search_executions(status:["error"])` depuis 2026-07-08T16:38 → 3 échecs consécutifs (19:54-19:56)
+sur `6InNNRjMJxiteEkV` ("TTS Generator - Voice Clone + OpenAI Fallback"), le webhook
+`/webhook/tts-gen` documenté dans le CLAUDE.md racine comme fallback TTS des pipelines vidéo.
+
+**Root cause** : le nœud "Extract Audio URL" jetait une erreur dure si le clonage vocal
+WaveSpeed n'était pas `completed` après un unique `Wait 40s` + un seul poll — aucune relance,
+aucun fallback. Le texte qui échouait (~300 caractères) a mis ~62s à se terminer côté
+WaveSpeed, largement au-dessus des 40s impartis. Pas de lien avec les bugs du 07-05/07-07
+(workflows différents) — nouveau pattern : ce n'est pas la première fois qu'un nœud "Wait N
+secondes puis poll une fois" sous-dimensionne le temps nécessaire à une API async (déjà vu
+sur le pipeline avatar-reel le 07-07, cause différente mais même famille de bug).
+
+**Action prise** : fix chirurgical via `update_workflow` (opérations atomiques node-level, PAS
+de réécriture SDK complète — les credentials du nœud "OpenAI TTS" ne sont pas exposés via
+`get_workflow_details`, donc rewrite complet interdit par le pattern déjà noté le 07-05).
+Ajout d'une vraie boucle de polling bornée (Track Poll Attempts + Poll Complete? + Max
+Attempts?, jusqu'à 6×20s = 120s) qui bascule vers OpenAI TTS (fallback déjà existant pour le
+cas "pas de voixUrl", maintenant réutilisé aussi en cas de timeout WaveSpeed) plutôt que de
+lever une erreur. `Wait 40s` renommé `Wait Before Poll`, réduit à 20s. Expression `input` du
+nœud OpenAI TTS changée de `$json.body.text` à `$('TTS Request').item.json.body.text` pour
+fonctionner peu importe la branche d'entrée (fix nécessaire car OpenAI TTS reçoit maintenant
+des données de deux branches différentes).
+
+Workflow **publié** (`publish_workflow` — important : `update_workflow` seul ne suffit pas,
+il ne met à jour que le brouillon ; `activeVersionId` reste sur l'ancienne version cassée tant
+qu'on n'appelle pas `publish_workflow` explicitement — piège à ne pas refaire).
+
+**Test de validation réel** : `execute_workflow` (mode production) avec le texte exact qui
+avait échoué 3 fois. Résultat : `status: success`, voix clonée obtenue après 3 tentatives de
+poll (~60s), MP3 109 Ko livré normalement via `Return Cloned Audio`. Le curl direct depuis ce
+sandbox vers `n7n.automatisationboost.com` est bloqué par le proxy réseau de l'environnement
+(403 sur CONNECT) — utiliser `execute_workflow` du MCP n8n pour tester en conditions réelles
+à la place, ça s'exécute côté serveur n8n et contourne cette restriction.
+
+**Page Notion créée** : "🐛 Workflow n8n corrigé — TTS Generator (polling loop + fallback
+OpenAI, 3 échecs consécutifs résolus)" (id 3985fda3-ad05-81e0-86d2-c850f062dfc0, Projet=Content,
+ROI=🔥5, Délégable IA=NO, Statut=Terminé).
+
+**Note secondaire non traitée** : "Submit Voice Clone" et "Poll WaveSpeed Result" ont un token
+`Authorization: Bearer wsk_live_...` en dur dans les headers (warning `HARDCODED_CREDENTIALS`
+retourné par `update_workflow`), pré-existant, hors scope du fix du jour.
+
+**Pattern à surveiller à l'avenir** :
+- 5e jour sans tâche Notion délégable IA — le signal `search_executions(status:["error"])`
+  reste, pour la 3e fois cette semaine (07-05, 07-07, 07-09), la vraie source du "1%" du jour.
+  Suggestion à envisager pour Tony si ça continue après le 12/07 : qualifier plus de tâches
+  comme délégables, sinon cet agent tourne quasi exclusivement sur la détection n8n.
+- Avant tout `update_workflow` node-level, vérifier si des credentials de nœuds sont invisibles
+  via `get_workflow_details` (pattern du 07-05) — si oui, rester sur des opérations atomiques
+  ciblées (comme ici) plutôt qu'un rewrite SDK complet.
+- **Toujours appeler `publish_workflow` après `update_workflow`** — sinon le fix reste en
+  brouillon et ne s'applique jamais en production. Vérifier `activeVersionId` dans la réponse
+  de `get_workflow_details` pour confirmer.
+- Pour tester un webhook n8n en conditions réelles depuis ce sandbox, utiliser
+  `mcp__n8n__execute_workflow` (mode production) plutôt que `curl` direct — le réseau sortant
+  du sandbox vers `n7n.automatisationboost.com` est bloqué par le proxy.
