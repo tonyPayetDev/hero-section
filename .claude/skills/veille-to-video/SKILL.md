@@ -120,6 +120,39 @@ quand d'autres hôtes sont bloqués par la politique réseau, voir plus bas). To
 note ci-dessous) en début de session pour diagnostiquer l'environnement réel plutôt que de
 recopier aveuglément les exports `FONTCONFIG_PATH`/`LD_LIBRARY_PATH` d'une session précédente.
 
+Session 2026-07-10 (conteneur différent, projet #11 "Mise à jour site via téléphone") : `node` v22
+déjà dans le `$PATH`, `FONTCONFIG_PATH`/`LD_LIBRARY_PATH` pas nécessaires (fontconfig système
+fonctionnait nativement), `ffmpeg` absent mais installable proprement via `apt-get update &&
+apt-get install -y --no-install-recommends ffmpeg` (le premier essai sans `apt-get update` a
+échoué sur des paquets 404 `libva2`/`libcaca0`, résolu par un `update` avant l'install). **Piège :
+`/opt/pw-browsers/ffmpeg-*/ffmpeg-linux` (le binaire ffmpeg embarqué par Playwright pour ses
+captures d'écran) est un build volontairement minimal (`--disable-everything`, seulement
+webm/vp8/png/mjpeg) — inutilisable pour `hyperframes render` ou tout traitement audio/vidéo de ce
+pipeline (pas de libx264, pas de décodeur mp3/aac). Ne pas le confondre avec un vrai ffmpeg malgré
+sa présence pratique dans `$PATH` potentiel ; toujours installer le vrai paquet système.**
+`node_modules/.bin/hyperframes browser ensure` télécharge son propre Chrome Headless Shell dans
+`~/.cache/hyperframes/chrome/` sans problème.
+
+**Render lent (mode "screenshot" plutôt que "beginframe")** : dans cette session, la calibration
+`hyperframes render` a timeout sur le mode rapide (`BeginFrame auto-worker calibration timed out`)
+et est retombée sur le mode `screenshot`, plus lent. Une comp de 36s (1086 frames à 30fps) a mis
+**~11 minutes** à rendre — largement au-dessus de l'estimation "~3-4min pour ~17s" d'une session
+précédente. Prévoir un budget de temps proportionnellement plus long (pas juste linéaire à la
+durée) quand ce fallback se produit, lancer le rendu en arrière-plan (`nohup`/`disown`) et
+poller le process plutôt que d'attendre en bloquant.
+
+**Gmail MCP de cette session n'expose que `create_draft`, pas d'outil d'envoi direct** (pas de
+`send_message`/`send_draft`). L'étape "envoyer un email" du pipeline ne peut donc produire qu'un
+brouillon dans la boîte Gmail de l'utilisateur, pas un envoi réel — le signaler explicitement
+plutôt que de prétendre l'email est parti.
+
+**Git : détecté en HEAD détaché au démarrage de session, avec la branche locale `main` en retard
+sur `origin/main`** (le clone du conteneur avait un `main` local périmé alors que `HEAD` pointait
+déjà sur le dernier commit distant en détaché). Avant de committer, vérifier `git status`/`git
+branch` : si détaché avec `origin/main` en avance sur `main` local, faire `git checkout -B main`
+(reset du pointeur local sur `HEAD` courant, fast-forward sûr tant que `git merge-base --is-ancestor
+main HEAD` est vrai) puis push, plutôt que de rester en HEAD détaché ou de merger inutilement.
+
 **Politique réseau restrictive (proxy CONNECT 403)** : dans cette session, `curl`/tout accès HTTPS
 direct depuis le shell était bloqué (403 policy denial) vers `docs.google.com`, `n7n.automatisationboost.com`,
 `database.blotato.io` (Blotato storage) et `cdn.jsdelivr.net` — mais **les serveurs MCP connectés
