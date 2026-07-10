@@ -1,0 +1,7 @@
+# Scratch render output (frame captures, work dirs) — regenerable via `hyperframes render`.
+# The canonical deliverable lives in public/renders/<final>.mp4.
+# Anchored to project root only — do NOT match public/renders/ (the kept final MP4s).
+/renders/
+
+# Regenerable via `npm install hyperframes@0.7.5 --ignore-scripts` (see NOTES.md).
+node_modules/
