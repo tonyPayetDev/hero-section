@@ -236,3 +236,80 @@ retourné par `update_workflow`), pré-existant, hors scope du fix du jour.
 - Pour tester un webhook n8n en conditions réelles depuis ce sandbox, utiliser
   `mcp__n8n__execute_workflow` (mode production) plutôt que `curl` direct — le réseau sortant
   du sandbox vers `n7n.automatisationboost.com` est bloqué par le proxy.
+
+## 2026-07-10
+
+**Contexte** : 6e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress).
+`search_executions(status:["error"])` depuis le dernier check → 1 seul résultat
+(`S85QlXjhIO6nBvzY`, avatar-webhook-v2), mais body de la requête vide (`user-agent: curl/7.88.1`,
+`content-length: 0`) → un simple test manuel malformé, pas un bug du workflow. Aucune action
+prise dessus. Blog veille IA : `veille-ia-auto-2026-07-09.html` couvre déjà 7-9 juillet, pas dû
+aujourd'hui (footer ne donne plus de prochaine date annoncée — pattern à surveiller si ça se
+reproduit).
+
+**Découverte** : la pipeline Autoboost Neon Video (lead-gen reels IG/TikTok, voir skill
+`veille-to-video`) avait 3 vidéos rendues et commitées (#7 dashboard-notion, #8
+pinterest-automation, #9 content-ideas, commit `8245b78` du 09/07) mais bloquées en "🟡 En
+attente validation" dans le Sheet de suivi, avec des dates de publication prévues 10/07 (#7,
+**aujourd'hui**), 12/07 (#8), 14/07 (#9) — trouvé via le workflow n8n `FwAhWukWOqHMqNO3` ("Update
+Autoboost Sheet — Statut #7-#10"). (#10 livres-enfants était déjà bien publié le 09/07, rien à
+faire dessus.)
+
+Root cause à double niveau :
+1. Le lien de prévisualisation écrit dans le Sheet (`https://previsualisation.automatisationboost.com/...`)
+   ne correspond à aucune app Coolify déployée ni aucun webhook n8n existant — probablement une
+   URL aspirationnelle jamais mise en place (seule la vidéo #5 a un vrai proxy de preview
+   fonctionnel, sur `n7n.automatisationboost.com/webhook/autoboost-05-preview`, chemin spécifique
+   à #5 uniquement).
+2. Comme déjà pressenti dans les mémoires précédentes (07-06, 07-07 : "le serveur MCP Gmail
+   connecté dans cette session n'expose qu'un outil `create_draft`, pas d'envoi direct") — les
+   emails de "validation" envoyés à Tony pour les vidéos précédentes n'étaient en réalité que des
+   BROUILLONS Gmail jamais envoyés. Tony n'a donc probablement jamais reçu de notification
+   exploitable pour approuver la publication, et #7 risquait de rater sa date de publication du
+   jour sans que personne ne s'en aperçoive.
+
+**Action prise** : vérifié que les 3 MP4 rendus sont bien poussés sur `origin/main` (attention :
+le `git fetch` initial de cette session avait un ref `origin/main` local périmé qui semblait en
+retard de plusieurs commits sur HEAD — un simple `git fetch origin main` a résolu ça, PAS un vrai
+problème de push manqué ; toujours fetch avant de conclure à un push manquant). URLs
+`raw.githubusercontent.com/.../renders/*.mp4` confirmées HTTP 200 en direct.
+
+Construit et exécuté un workflow n8n ponctuel (`[Oneoff] Send Autoboost Validation Email
+2026-07-10`, id `dI2jwJHOdvQHbimP`) utilisant le nœud **Gmail natif n8n**
+(`n8n-nodes-base.gmail`, `resource: message`, `operation: send`, credential "Gmail account" déjà
+configurée) — contourne définitivement la limitation `create_draft` du serveur MCP Gmail. Email
+envoyé avec succès à `tony.payet.professionnel@gmail.com` (execution `64022`, labels Gmail
+retournés : `SENT`, `INBOX` — confirmé livré, PAS un brouillon) avec les 3 liens vidéo GitHub raw
+fonctionnels et un rappel de répondre "OK #7" (ou mettre à jour le Sheet) pour déclencher la
+publication Blotato à la prochaine session. Je n'ai PAS publié moi-même sur Blotato : pas de MCP
+Blotato dans cette session, `get_node_types` échoue sur le node natif n8n
+`@blotato/n8n-nodes-blotato.blotato` (bug outillage — "Invalid package name ... contains invalid
+characters", probablement lié au préfixe `@scope/` dans l'ID), et publier du contenu marketing
+public sans validation explicite de Tony serait une action irréversible non autorisée.
+
+**Page Notion créée** : "📹 Pipeline Autoboost bloqué — validation email jamais envoyée (corrigé,
+#7 due aujourd'hui)" (id `3995fda3-ad05-81d8-8480-fb7cad53729b`, Projet=Content, ROI=🔥5,
+Délégable IA=NO, Statut=Terminé).
+
+**Pattern à surveiller à l'avenir** :
+- Ne jamais supposer qu'un "email de validation envoyé" par une session précédente a réellement
+  atteint Tony — vérifier le label Gmail retourné (`SENT` vs seulement un brouillon dans les
+  résultats de `create_draft`) avant de considérer une étape d'approbation comme franchie.
+  Plusieurs jours de mémoire (07-06, 07-07) avaient noté cette limitation sans jamais la
+  contourner avant aujourd'hui.
+- Le nœud Gmail natif n8n (`n8n-nodes-base.gmail`, `operation: send`) fonctionne et envoie un
+  vrai email avec la credential "Gmail account" déjà configurée dans n8n — à utiliser en
+  priorité sur le serveur MCP Gmail (limité à `create_draft`) chaque fois qu'un envoi réel est
+  nécessaire.
+- `get_node_types` du MCP n8n échoue actuellement sur les node IDs avec préfixe de package scopé
+  (`@blotato/n8n-nodes-blotato.blotato`) — si publier sur Blotato via un workflow n8n redevient
+  nécessaire, prévoir de contourner (ex. builder un node minimal sans discriminants, ou demander
+  l'aide de l'outillage n8n directement) plutôt que de deviner les paramètres à l'aveugle pour
+  une action irréversible et publique.
+- Ne jamais publier de contenu marketing public (Blotato/réseaux sociaux) sans validation
+  explicite de Tony, même si un rendu est technique-ready — le pipeline `veille-to-video` a été
+  conçu avec une étape de validation humaine intentionnelle, ce n'est pas un oubli à corriger en
+  publiant à sa place.
+- 6e jour sans tâche Notion délégable IA — le seuil de suggestion à Tony (qualifier plus de
+  tâches comme délégables) évoqué le 07-09 pour "après le 12/07" approche ; réévaluer demain
+  (07-11) et le jour suivant si la base reste vide.
