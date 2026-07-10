@@ -1,0 +1,435 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #13 WhatsApp A/B Test Restaurant</title>
+<style>
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; }
+
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 1120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 64px;
+    text-align: center;
+    opacity: 0;
+  }
+
+  /* Scene 1: Hook */
+  .scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+  .scene-1 .icon-large { margin-bottom: 20px; color: var(--accent-orange); }
+  .scene-1 h2 { font-size: 32px; font-weight: 700; margin: 0 0 16px 0; line-height: 1.3; }
+  .scene-1 .highlight { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.5); }
+  .scene-1 p { font-size: 17px; color: var(--text-gray); margin: 0; }
+
+  /* Scene 2: A/B comparison cards */
+  .scene-2 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%); }
+  .scene-2 .compare-row { display: flex; gap: 20px; width: 100%; max-width: 760px; margin-bottom: 24px; }
+  .scene-2 .compare-card {
+    flex: 1; border-radius: 10px; padding: 22px 18px; text-align: left; opacity: 0;
+    background: rgba(255,255,255,0.03);
+  }
+  .scene-2 .compare-card.a { border: 2px solid var(--accent-yellow); }
+  .scene-2 .compare-card.b { border: 2px solid var(--accent-violet); }
+  .scene-2 .compare-card .label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;
+  }
+  .scene-2 .compare-card.a .label { color: var(--accent-yellow); }
+  .scene-2 .compare-card.b .label { color: var(--accent-violet); }
+  .scene-2 .compare-card .line { font-size: 14px; color: var(--text-white); line-height: 1.5; }
+  .scene-2 .same-time { font-size: 18px; color: var(--text-gray); opacity: 0; }
+  .scene-2 .same-time .hot { color: var(--accent-yellow); font-weight: 700; }
+
+  /* Scene 3: bar chart */
+  .scene-3 { background: #000; }
+  .scene-3 .chart-title { font-size: 20px; color: var(--text-gray); margin-bottom: 40px; }
+  .scene-3 .chart-row { display: flex; align-items: flex-end; gap: 70px; height: 280px; }
+  .scene-3 .bar-col { display: flex; flex-direction: column; align-items: center; }
+  .scene-3 .bar {
+    width: 120px; border-radius: 10px 10px 0 0; transform-origin: bottom;
+  }
+  .scene-3 .bar.a { background: linear-gradient(180deg, rgba(255,230,0,0.7), rgba(255,230,0,0.25)); height: 150px; }
+  .scene-3 .bar.b { background: linear-gradient(180deg, rgba(168,85,247,0.9), rgba(168,85,247,0.3)); height: 260px; box-shadow: 0 0 30px rgba(168,85,247,0.5); }
+  .scene-3 .bar-label { margin-top: 14px; font-size: 15px; font-weight: 700; color: var(--text-white); }
+  .scene-3 .bar-pct { font-size: 22px; font-weight: 700; }
+  .scene-3 .bar-col.a .bar-pct { color: var(--accent-yellow); }
+  .scene-3 .bar-col.b .bar-pct { color: var(--accent-violet); }
+  .scene-3 .winner-tag {
+    margin-top: 34px; font-size: 16px; font-weight: 700; color: var(--accent-violet);
+    text-shadow: 0 0 18px rgba(168,85,247,0.6); opacity: 0;
+  }
+
+  /* Scene 4: automation flow pipeline */
+  .scene-4 { background: #000; }
+  .scene-4 .flow-title { font-size: 20px; color: var(--text-gray); margin-bottom: 36px; }
+  .scene-4 .flow-row { display: flex; align-items: center; justify-content: center; gap: 0; }
+  .scene-4 .flow-node {
+    width: 150px; height: 150px; border-radius: 16px;
+    background: rgba(255,230,0,0.05); border: 2px solid var(--accent-yellow);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; opacity: 0;
+  }
+  .scene-4 .flow-node svg { width: 42px; height: 42px; color: var(--accent-yellow); }
+  .scene-4 .flow-node span { font-size: 14px; font-weight: 700; color: var(--text-white); }
+  .scene-4 .flow-dot {
+    width: 56px; height: 2px; background: rgba(255,230,0,0.25); position: relative; opacity: 0;
+  }
+  .scene-4 .flow-dot::after {
+    content: ""; position: absolute; top: -3px; left: 0; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent-yellow); box-shadow: 0 0 12px rgba(255,230,0,0.9);
+  }
+  .scene-4 .flow-caption { margin-top: 40px; font-size: 22px; font-weight: 700; color: var(--accent-violet); text-shadow: 0 0 20px rgba(168,85,247,0.5); opacity: 0; }
+
+  /* Scene 5: fullscreen stat/proof (avatar hidden here) */
+  .scene-5 {
+    height: 1920px; padding: 220px 64px 0; background: radial-gradient(circle at 50% 30%, #1a0a2a 0%, #050505 70%);
+    justify-content: flex-start;
+  }
+  .scene-5 .zero-row { display: flex; flex-direction: column; gap: 18px; margin-bottom: 56px; }
+  .scene-5 .zero-item {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    font-size: 25px; font-weight: 700; color: var(--text-gray); opacity: 0;
+  }
+  .scene-5 .zero-item svg { width: 28px; height: 28px; color: var(--accent-orange); }
+  .scene-5 .zero-item .word { color: var(--accent-orange); text-decoration: line-through; }
+  .scene-5 .proof {
+    font-size: 40px; font-weight: 700; line-height: 1.3; opacity: 0;
+  }
+  .scene-5 .proof .hot { color: var(--accent-yellow); text-shadow: 0 0 26px rgba(255,230,0,0.6); }
+  .scene-5 .proof .sub { display: block; font-size: 20px; color: var(--text-gray); margin-top: 14px; font-weight: 400; }
+
+  /* Scene 6: CTA */
+  .scene-6 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 140px; }
+  .scene-6 .cta-badge {
+    display: inline-block; background: var(--accent-orange);
+    padding: 12px 24px; border-radius: 20px; font-size: 12px;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: #000; margin-bottom: 16px;
+  }
+  .scene-6 .cta-keyword {
+    font-size: 46px; font-weight: 700; color: var(--accent-yellow);
+    text-shadow: 0 0 30px rgba(255,230,0,0.6); margin-bottom: 12px;
+  }
+  .scene-6 .cta-text { font-size: 16px; color: var(--text-gray); }
+
+  /* Persistent avatar overlay — circular neon frame (autoboost-04/#10 pattern) */
+  #avatar-frame {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    width: 560px;
+    height: 560px;
+    margin-left: -280px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--bg);
+    border: 5px solid var(--accent-yellow);
+    box-shadow:
+      0 0 0 2px rgba(6, 6, 6, 0.9),
+      0 0 36px 4px rgba(255, 230, 0, 0.55),
+      0 0 90px 20px rgba(255, 230, 0, 0.22);
+    z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 560px;
+    height: 706px;
+    transform: translate(-50%, -46%);
+    object-fit: cover;
+    object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute;
+    bottom: 58px;
+    left: 50%;
+    width: 584px;
+    height: 584px;
+    margin-left: -292px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-yellow);
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 40px rgba(255, 230, 0, 0.35);
+    z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    width: 596px;
+    height: 596px;
+    margin-left: -298px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 280deg,
+      rgba(255, 230, 0, 0.12) 320deg,
+      var(--accent-yellow) 353deg,
+      #fff8d6 360deg
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255, 230, 0, 0.9));
+    z-index: 5;
+  }
+
+  /* Captions */
+  .caption-belt { position: absolute; top: 960px; left: 0; right: 0; text-align: center; z-index: 10; }
+  .caption {
+    display: inline-block; font-size: 27px; font-weight: 700; color: var(--text-white);
+    text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+                 -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0; max-width: 90%;
+  }
+  .caption .hot {
+    color: var(--accent-yellow);
+    text-shadow: 0 0 20px rgba(255,230,0,0.8), -3px -3px 0 #000, 3px -3px 0 #000,
+                 -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000,
+                 0 -3px 0 #000, 0 3px 0 #000;
+  }
+  .caption .violet {
+    color: var(--accent-violet);
+    text-shadow: 0 0 20px rgba(168,85,247,0.8), -3px -3px 0 #000, 3px -3px 0 #000,
+                 -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000,
+                 0 -3px 0 #000, 0 3px 0 #000;
+  }
+  .caption .orange {
+    color: var(--accent-orange);
+    text-shadow: 0 0 20px rgba(255,138,61,0.8), -3px -3px 0 #000, 3px -3px 0 #000,
+                 -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000,
+                 0 -3px 0 #000, 0 3px 0 #000;
+  }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-13-whatsapp-abtest" data-start="0" data-width="1080" data-height="1920" data-duration="32">
+
+  <!-- Scene 1: Hook -->
+  <div class="scene scene-1">
+    <div class="icon-large"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:70px;height:70px;"><path d="M4 20l1.4-4.2A8 8 0 1112 20a8 8 0 01-3.8-1L4 20z" stroke-linejoin="round"/><path d="M8.5 10.5c0 3 2.5 5.5 5.5 5.5" stroke-linecap="round"/></svg></div>
+    <h2>Même message. <span class="highlight">Personne ne l'ouvre.</span></h2>
+    <p>Ton restaurant envoie encore ça à tous ses clients ?</p>
+  </div>
+
+  <!-- Scene 2: A/B comparison -->
+  <div class="scene scene-2">
+    <div class="compare-row">
+      <div class="compare-card a">
+        <div class="label">Version A</div>
+        <div class="line">"Menu du jour dispo,<br/>réservez votre table !"</div>
+      </div>
+      <div class="compare-card b">
+        <div class="label">Version B</div>
+        <div class="line">"-20% ce soir si vous<br/>réservez avant 18h"</div>
+      </div>
+    </div>
+    <div class="same-time">Envoyées à <span class="hot">deux groupes</span> en même temps</div>
+  </div>
+
+  <!-- Scene 3: bar chart -->
+  <div class="scene scene-3">
+    <div class="chart-title">Qui génère le plus de réponses ?</div>
+    <div class="chart-row">
+      <div class="bar-col a">
+        <div class="bar a"></div>
+        <div class="bar-label">Version A</div>
+        <div class="bar-pct">31%</div>
+      </div>
+      <div class="bar-col b">
+        <div class="bar b"></div>
+        <div class="bar-label">Version B</div>
+        <div class="bar-pct">64%</div>
+      </div>
+    </div>
+    <div class="winner-tag">Le gagnant devient automatique</div>
+  </div>
+
+  <!-- Scene 4: automation flow -->
+  <div class="scene scene-4">
+    <div class="flow-title">Une fois le gagnant identifié</div>
+    <div class="flow-row">
+      <div class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l2.6 6.6L21 9.5l-5 4.6 1.4 7L12 17.8 6.6 21l1.4-7-5-4.6 6.4-.9L12 2z" stroke-linejoin="round"/></svg><span>Gagnant</span></div>
+      <div class="flow-dot"></div>
+      <div class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1112 20a8 8 0 01-3.8-1L4 20z" stroke-linejoin="round"/></svg><span>Envoi auto</span></div>
+      <div class="flow-dot"></div>
+      <div class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.6"/><path d="M3.5 19c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5M15.5 19c0-2.6-1-4.6-2.7-5.7 3.6-.4 6.2 2 6.2 5.7" stroke-linecap="round"/></svg><span>Base clients</span></div>
+    </div>
+  </div>
+
+  <!-- Scene 5: fullscreen proof (avatar hidden here) -->
+  <div class="scene scene-5">
+    <div class="zero-row">
+      <div class="zero-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h6" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7l7.5 5L18 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 16l5 5M21 16l-5 5" stroke-linecap="round"/></svg><span class="word">Zéro</span> message dans le vide</div>
+      <div class="zero-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="1.3"/><circle cx="16" cy="8" r="1.3"/><circle cx="8" cy="16" r="1.3"/><circle cx="16" cy="16" r="1.3"/><rect x="4" y="4" width="16" height="16" rx="3"/></svg><span class="word">Zéro</span> hasard</div>
+    </div>
+    <div class="proof">Taux de réponse <span class="hot">doublé</span><span class="sub">en une seule semaine</span></div>
+  </div>
+
+  <!-- Scene 6: CTA (avatar itself is the persistent #avatar-frame below) -->
+  <div class="scene scene-6">
+    <div class="cta-badge">Workflow Gratuit</div>
+    <div class="cta-keyword">Commente <span class="orange">WHATSAPP</span></div>
+    <div class="cta-text">pour recevoir le workflow</div>
+  </div>
+
+  <!-- Persistent avatar overlay -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="32" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="32" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="32" class="clip"></div>
+
+  <!-- Captions -->
+  <div class="caption-belt">
+    <div class="caption" data-start="0" data-end="1.1">Ton restaurant envoie</div>
+    <div class="caption" data-start="1.1" data-end="1.78">le <span class="hot">même</span> message</div>
+    <div class="caption" data-start="1.78" data-end="2.68">WhatsApp à tous</div>
+    <div class="caption" data-start="2.68" data-end="3.38">tes clients et</div>
+    <div class="caption" data-start="3.38" data-end="4.08"><span class="orange">personne</span> ne l'</div>
+    <div class="caption" data-start="4.08" data-end="5.14">ouvre. Ce workflow</div>
+    <div class="caption" data-start="5.14" data-end="6.32"><span class="hot">arrête</span> ça. Il</div>
+    <div class="caption" data-start="6.32" data-end="6.98">crée <span class="violet">deux</span> versions</div>
+    <div class="caption" data-start="6.98" data-end="7.8">différentes d'un</div>
+    <div class="caption" data-start="7.8" data-end="8.98">message : l'accroche</div>
+    <div class="caption" data-start="9.34" data-end="10.0">l'offre, l'</div>
+    <div class="caption" data-start="10.0" data-end="10.5">appel à l'</div>
+    <div class="caption" data-start="10.5" data-end="11.1">action, et les</div>
+    <div class="caption" data-start="11.1" data-end="11.62">envoie à <span class="violet">deux</span></div>
+    <div class="caption" data-start="11.62" data-end="12.24">groupes de clients</div>
+    <div class="caption" data-start="12.24" data-end="12.7">en <span class="hot">même</span> temps</div>
+    <div class="caption" data-start="13.14" data-end="13.7">Il <span class="hot">mesure</span> en</div>
+    <div class="caption" data-start="13.7" data-end="14.42">temps réel laquelle</div>
+    <div class="caption" data-start="14.42" data-end="15.02">des deux versions</div>
+    <div class="caption" data-start="15.02" data-end="15.64">génère le plus</div>
+    <div class="caption" data-start="15.64" data-end="16.48">de <span class="hot">réservations</span> et</div>
+    <div class="caption" data-start="16.48" data-end="17.56">de <span class="hot">réponses</span>. Une</div>
+    <div class="caption" data-start="17.56" data-end="18.06">fois le <span class="violet">gagnant</span></div>
+    <div class="caption" data-start="18.06" data-end="19.38">identifié, il l'</div>
+    <div class="caption" data-start="19.38" data-end="20.26">envoie <span class="hot">automatiquement</span> à</div>
+    <div class="caption" data-start="20.26" data-end="20.68">tout le reste</div>
+    <div class="caption" data-start="20.68" data-end="21.16">de ta base</div>
+    <div class="caption" data-start="21.16" data-end="22.2">client. Plus <span class="orange">jamais</span></div>
+    <div class="caption" data-start="22.2" data-end="22.96">un message qui</div>
+    <div class="caption" data-start="22.96" data-end="23.36">tombe dans le</div>
+    <div class="caption" data-start="23.36" data-end="23.94">vide. Plus <span class="orange">jamais</span></div>
+    <div class="caption" data-start="23.94" data-end="24.9">de <span class="orange">hasard</span>. Que</div>
+    <div class="caption" data-start="24.9" data-end="25.4">des <span class="hot">vraies</span> données</div>
+    <div class="caption" data-start="25.4" data-end="26.0">de tes propres</div>
+    <div class="caption" data-start="26.0" data-end="27.1">clients. Ce test</div>
+    <div class="caption" data-start="27.1" data-end="27.7">a <span class="hot">doublé</span> mon</div>
+    <div class="caption" data-start="27.7" data-end="28.16">taux de réponse</div>
+    <div class="caption" data-start="28.16" data-end="28.78">en une semaine</div>
+    <div class="caption" data-start="28.78" data-end="30.08">Commente <span class="orange">WhatsApp</span> pour</div>
+    <div class="caption" data-start="30.08" data-end="30.8">recevoir ce workflow</div>
+    <div class="caption" data-start="30.8" data-end="31.3"><span class="orange">gratuitement</span></div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="32" data-volume="0.12"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="5.14" data-volume="0.35"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="13.14" data-volume="0.3"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="18.06" data-volume="0.3"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="22.2" data-volume="0.3"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="28.78" data-volume="0.4"></audio>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // Scene 1: Hook (0 → 5.14s)
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, 0);
+  tl.to(".scene-1 .icon-large", { scale: 1.15, duration: 0.5, yoyo: true, repeat: 1 }, 0.3);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, 4.84);
+
+  // Scene 2: A/B comparison (5.14 → 12.7s)
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, 5.14);
+  tl.to(".scene-2 .compare-card", { opacity: 1, duration: 0.35, stagger: 0.3 }, 5.44);
+  tl.to(".scene-2 .same-time", { opacity: 1, duration: 0.3 }, 6.6);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, 12.4);
+
+  // Scene 3: bar chart (13.14 → 18.06s)
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, 13.14);
+  tl.fromTo(".scene-3 .bar.a", { scaleY: 0 }, { scaleY: 1, duration: 0.5, ease: "power2.out" }, 13.44);
+  tl.fromTo(".scene-3 .bar.b", { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: "power2.out" }, 13.74);
+  tl.to(".scene-3 .winner-tag", { opacity: 1, duration: 0.3 }, 17.0);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, 17.76);
+
+  // Scene 4: automation flow (18.06 → 22.2s)
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, 18.06);
+  tl.fromTo(".scene-4 .flow-node", { scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.35, stagger: 0.3 }, 18.36);
+  tl.to(".scene-4 .flow-dot", { opacity: 1, duration: 0.25, stagger: 0.3 }, 18.6);
+  tl.to(".scene-4", { opacity: 0, duration: 0.3 }, 21.9);
+
+  // Scene 5: fullscreen proof (22.2 → 28.78s), avatar hidden
+  tl.to(".scene-5", { opacity: 1, duration: 0.3 }, 22.2);
+  tl.to(".scene-5 .zero-item", { opacity: 1, duration: 0.3, stagger: 0.8 }, 22.5);
+  tl.fromTo(".scene-5 .proof", { scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 25.4);
+  tl.to(".scene-5", { opacity: 0, duration: 0.3 }, 28.48);
+
+  // Scene 6: CTA (28.78 → 32s)
+  tl.to(".scene-6", { opacity: 1, duration: 0.3 }, 28.78);
+  tl.to(".scene-6 .cta-keyword", { scale: 1.1, duration: 0.4 }, 28.78);
+
+  // Persistent avatar — visible 0→22.2s and 28.78→32s, hidden during scene 5
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 22.2);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 28.78);
+
+  // Avatar neon ring — continuous breathing pulse whenever the avatar is on screen.
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 43, yoyo: true }, 0);
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 5, yoyo: true }, 28.78);
+
+  // Avatar orbit — rotating neon comet, continuous.
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 14, ease: "none" }, 0);
+
+  // CTA beat — ring pulse + spin when "Commente WHATSAPP" lands.
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 28.78);
+  tl.to("#avatar-ring", { rotation: "+=360", duration: 3.22, ease: "none" }, 28.78);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.15 }, start);
+    tl.to(el, { opacity: 0, duration: 0.15 }, end - 0.15);
+  });
+
+  window.__timelines["autoboost-13-whatsapp-abtest"] = tl;
+</script>
+</body>
+</html>
