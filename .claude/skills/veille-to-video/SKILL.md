@@ -414,6 +414,17 @@ visible — par-dessus le broll, même avatar/orbit bien masqués. Symptôme : u
 flotte sur la vidéo broll. Toujours calculer N1/N2 pour que chaque tween s'arrête AVANT le début
 du broll suivant, jamais un seul tween qui traverse la coupure.
 
+**Piège vérifié (2026-07-10, autoboost-12) : `repeat` doit être IMPAIR pour que le ring retombe à
+opacity 0 avant le broll.** Un tween `yoyo:true` fait `repeat+1` allers-retours de `duration`
+chacun ; le dernier aller-retour ramène l'anneau à son état de repos (opacity 0) seulement si
+`repeat+1` est PAIR, donc si `repeat` est IMPAIR. Avec `repeat` pair (ex. la formule `ceil(...)-1`
+appliquée telle quelle a donné `repeat:44`), le tween se termine sur un aller "montant" et l'anneau
+reste figé visible en opacity 0.8 pendant tout le broll — bug confirmé par extraction de frame,
+invisible dans `validate`/`inspect`. Fix : après avoir calculé N avec la formule ci-dessus, si N
+est pair, décrémenter de 1 (le buffer avant le broll suivant augmente légèrement, sans risque).
+Seule la fenêtre juste AVANT un broll (donc suivie d'un hide) a besoin de cette parité correcte ;
+la dernière fenêtre avant la fin de la vidéo (pas de hide après) n'a pas ce risque.
+
 **Vidéo avatar plus courte que la comp** : si `avatar-keyed.mp4` fait moins que `data-duration`
 (fréquent, l'asset source dure souvent ~17s), le loop-étendre AVANT de référencer le fichier :
 `ffmpeg -stream_loop -1 -t <durée comp> -i avatar-keyed.mp4 -c copy avatar-keyed.mp4` — sinon
