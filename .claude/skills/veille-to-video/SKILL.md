@@ -487,6 +487,12 @@ transitions d'opacité).
 - Avatar keyé propre ou composite setup sans filtres latéraux vert/noir.
 - Valider que l'avatar ne recouvre jamais les captions ni le texte important de la scène.
 
+**Piège vérifié (2026-07-11, autoboost-14 MenuAuto Restaurant) : `ffmpeg -stream_loop -1 -t <dur> -i avatar-keyed.mp4 -c copy` (loop-extend recommandé plus haut) peut produire des keyframes très espacées** (repéré : intervalle max 10.42s) quand le fichier source a déjà un GOP long, car `-c copy` préserve la structure de GOP d'origine à chaque bouclage. `hyperframes render` log alors `[Compiler] WARNING: Video "avatar" has sparse keyframes ... This causes seek failures and frame freezing.` Fix : après le loop-extend, ré-encoder une passe avec un GOP court et régulier —
+`ffmpeg -i avatar-keyed.mp4 -c:v libx264 -r 30 -g 30 -keyint_min 30 -pix_fmt yuv420p -movflags +faststart -an avatar-keyed-fixed.mp4`
+(`-an` supprime la piste audio de l'avatar, sans impact puisque `<video id="avatar">` est de toute façon `muted`). Vérifier ensuite qu'aucun warning "sparse keyframes" ne réapparaît au prochain `render`.
+
+**Piège vérifié (2026-07-11, autoboost-14) : un scène broll fullscreen (`.scene-broll { height:1920px }`) avec `.scene` par défaut en `justify-content:center` peut centrer le contenu (flow-panel inclus) pile dans la bande de captions (`top:960-1100px`)**, provoquant un chevauchement caption/panel invisible à `validate`/`inspect` (qui ne connaissent pas le contenu spécifique de `.flow-panel`) mais bien visible sur les frames rendues. Fix : ancrer le contenu de la scène broll en haut plutôt qu'au centre — `justify-content: flex-start; padding-top: <valeur>px;` choisie pour que le bloc (headline + flow + panel) se termine bien avant `top:960px`. Toujours vérifier visuellement une frame au milieu de la fenêtre broll (pas seulement au début/fin) où un panel de données apparaît.
+
 ---
 
 ## Checklist finale
