@@ -313,3 +313,66 @@ Délégable IA=NO, Statut=Terminé).
 - 6e jour sans tâche Notion délégable IA — le seuil de suggestion à Tony (qualifier plus de
   tâches comme délégables) évoqué le 07-09 pour "après le 12/07" approche ; réévaluer demain
   (07-11) et le jour suivant si la base reste vide.
+
+## 2026-07-11
+
+**Note rétroactive** (entrée non loggée le jour même, reconstituée le 07-12 à partir des traces
+n8n/Notion) : le run du 07-11 a corrigé `S85QlXjhIO6nBvzY` (Avatar Webhook v2) — boucle de
+polling WaveSpeed sans limite, l'exécution 64060 du 10/07 avait tourné ~3h avant de planter
+("Prediction ID is required") après ~500 itérations, bloquant silencieusement la vidéo
+"Commente REPURPOSE". Fix : boucle bornée à 6 tentatives (~2min max, même pattern que le fix
+TTS Generator du 09/07), publié et validé par test réel (exécution 64099, succès en 25s). Page
+Notion `39a5fda3-ad05-81a1-bf94-ceebdb685e35`, ROI 🔥5, Délégable IA=NO.
+
+**Pattern à surveiller** : toujours committer une entrée mémoire le jour même du run — sans ça,
+le run suivant doit reconstituer l'historique à partir de Notion/n8n, ce qui coûte du temps et
+laisse des trous (ex. le workflow ponctuel `PsxbwJybPhz4SYLf` créé ce jour-là, probablement une
+tâche annexe du même run, reste sans contexte documenté).
+
+## 2026-07-12
+
+**Contexte** : 8e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress).
+`search_executions(status:["error"])` depuis le dernier check → 4 résultats, tous non
+actionnables : `PsxbwJybPhz4SYLf` (Sheet Video Update, webhook créé la veille) a eu 2 erreurs
+pendant sa propre phase de test le 11/07 à 18:41 puis fonctionne en succès en continu depuis
+18:42 (10+ exécutions réussies) — pas un bug du jour, juste la mise au point initiale du
+workflow. `S85QlXjhIO6nBvzY` (avatar-webhook-v2) a reçu 2 requêtes de test curl vides
+(`content-length: 0`) les 10/07 et 11/07 — pattern déjà noté le 10-07, pas un bug. GitHub :
+0 issue, 0 PR ouverte. Blog veille IA : dernier article 07-10, cadence normale (2-4 jours),
+pas en retard aujourd'hui.
+
+**Découverte** : lecture du Sheet de suivi Autoboost (`y2GynBwW0g1YqSsP`, workflow ponctuel de
+lecture) → la vidéo #7 (Dashboard Sync Notion) reste au statut "Programmé 2026-07-10" sans
+aucune preuve de publication réelle (2 jours de retard), et #8 (Pinterest Automation) affiche
+"Programmé 2026-07-12" — **due aujourd'hui**. Aucune exécution du workflow de mise à jour du
+Sheet (`FwAhWukWOqHMqNO3`) ni d'action Blotato depuis le 09/07 : l'email de validation envoyé le
+10/07 (demandant de répondre "OK #7") n'a manifestement pas eu de suite tracée. Root cause déjà
+identifiée le 10-07 toujours présente : le lien "previsualisation.automatisationboost.com" du
+Sheet ne correspond à aucune app déployée.
+
+**Action prise** : vérifié que les rendus MP4 réels de #7/#8/#9 (commit `8245b78`) sont bien sur
+`origin/main` et accessibles en HTTP 200 via `raw.githubusercontent.com`. Créé et exécuté un
+workflow n8n ponctuel (`[Oneoff] Autoboost Validation Reminder 2026-07-12`, id `Gm1KqZL1rPmdpxqL`,
+nœud Gmail natif `n8n-nodes-base.gmail` / credential "Gmail account") envoyant une relance réelle
+(labels Gmail retournés : `SENT`, `INBOX` — confirmé livré) avec les liens vidéo GitHub raw des
+3 vidéos, signalant explicitement que #7 est en retard et #8 due aujourd'hui, et redemandant une
+validation explicite ("OK #7"/"OK #8" ou MAJ du Sheet) avant toute publication. Je n'ai PAS publié
+moi-même sur Blotato (pas de MCP Blotato, et publier sans validation explicite de Tony reste
+interdit par le pattern déjà établi le 07-10).
+
+**Page Notion créée** : "📹 Relance validation Autoboost — #7 en retard, #8 due aujourd'hui
+(12/07)" (id `39b5fda3-ad05-8116-975f-cd61e0f641e5`, Projet=Content, ROI=🔥5, Délégable IA=NO,
+Statut=Terminé).
+
+**Pattern à surveiller à l'avenir** :
+- Le pipeline Autoboost Neon Video reste structurellement cassé côté suivi : le Sheet contient
+  des dates "Programmé" qui ne reflètent aucune publication Blotato réelle tant que Tony n'a pas
+  répondu/agi manuellement. Tant que ce lien de prévisualisation n'est pas corrigé et qu'aucune
+  automatisation de relecture des réponses email n'existe, ce sera probablement encore le signal
+  le plus fort les prochains jours — vérifier à chaque run si une réponse de Tony a fait avancer
+  le Sheet (colonne Statut Tournage / Date Publication) avant de renvoyer une nouvelle relance
+  (éviter de spammer Tony si rien n'a changé depuis moins de 24h).
+- 8e jour sans tâche Notion délégable IA — le seuil déjà évoqué (qualifier plus de tâches) est
+  maintenant clairement dépassé ; si la base reste vide après le 15/07, il devient pertinent de
+  le signaler explicitement à Tony dans une page dédiée plutôt que de continuer à ne trouver que
+  des signaux n8n/Sheet.
