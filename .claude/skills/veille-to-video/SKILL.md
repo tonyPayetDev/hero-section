@@ -311,6 +311,19 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
   seul, soit un `text-shadow` 8 directions (`-Npx -Npx`, `Npx -Npx`, `-Npx Npx`, `Npx Npx`, `-Npx 0`,
   `Npx 0`, `0 -Npx`, `0 Npx`, tous `0 #000`) + une ombre douce pour la profondeur — le `text-shadow`
   seul suffit largement et rend proprement en headless.
+- **`hyperframes validate`/`inspect` peuvent rapporter 0 problème alors qu'une caption déborde
+  largement des deux côtés de l'écran.** Repéré (2026-07-12) sur autoboost-15 : une caption de 3 mots
+  se terminant par un mot long (`"workflow complet gratuitement"`, 29 caractères) rendait à 1148px de
+  large en Inter 700/58px alors que la zone sûre n'est que de 960px (1080px − 2×60px de padding) —
+  `inspect` (9 échantillons de timeline) n'a tout simplement pas échantillonné cet instant précis et
+  n'a rien détecté ; seule une frame réelle extraite au bon timestamp (`ffmpeg -ss <t> -frames:v 1`
+  puis `Read`) l'a montré. Avec des captions écrites à la main (pas du sous-titrage brut), toujours
+  mesurer la largeur réelle avant de faire confiance à `inspect` seul, surtout si un mot de la
+  caption dépasse ~10-12 caractères : lancer chrome-headless-shell via `puppeteer-core` (déjà une
+  dépendance de `hyperframes`, présente dans `node_modules/puppeteer-core`) avec les mêmes polices
+  Inter embarquées et `white-space:nowrap`, mesurer `getBoundingClientRect().width` de chaque ligne de
+  caption, et diviser/raccourcir celles qui dépassent la largeur sûre (ici : split en deux captions
+  distinctes sur la même fenêtre temporelle plutôt que de réduire la police globalement).
 
 ## Sound design (BGM + SFX)
 
