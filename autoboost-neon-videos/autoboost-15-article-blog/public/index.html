@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Autoboost Neon Video — #15 Article de Blog SEO</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Inter";
+        font-weight: 400;
+        font-display: block;
+        src: url(fonts/Inter-400-latin.woff2) format("woff2");
+      }
+      @font-face {
+        font-family: "Inter";
+        font-weight: 700;
+        font-display: block;
+        src: url(fonts/Inter-700-latin.woff2) format("woff2");
+      }
+
+      :root {
+        --bg: #060606;
+        --yellow: #ffe600;
+        --violet: #a855f7;
+        --orange: #ff8a3d;
+        --panel: #121212;
+        --panel-border: rgba(255, 230, 0, 0.25);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: #fff;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      /* ---------- Scenes (content zone: 0-1120px) ---------- */
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1080px;
+        height: 1120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 64px;
+        text-align: center;
+      }
+
+      .kicker {
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--violet);
+        margin-bottom: 18px;
+      }
+
+      .headline {
+        font-size: 62px;
+        font-weight: 700;
+        line-height: 1.15;
+        margin: 0 0 28px;
+      }
+      .headline .hi { color: var(--yellow); }
+      .headline .hi-v { color: var(--violet); }
+      .headline .hi-o { color: var(--orange); }
+
+      /* ---------- Scene 1: Hook ---------- */
+      .hook-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 999px;
+        padding: 14px 28px;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 40px;
+      }
+      .hook-tag .strike { color: var(--orange); text-decoration: line-through; opacity: 0.7; }
+      .hook-tag .arrow { color: var(--yellow); }
+      .hook-tag .now { color: var(--violet); }
+
+      /* ---------- Scene 2: keyword input mockup ---------- */
+      .chat-card {
+        width: 820px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 20px;
+        padding: 26px 32px;
+        margin-top: 16px;
+        text-align: left;
+      }
+      .chat-row {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 11px 0;
+      }
+      .chat-row .ic { flex: none; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; color: var(--yellow); }
+      .chat-row .ic svg { width: 100%; height: 100%; }
+      .chat-bubble {
+        background: rgba(255, 230, 0, 0.08);
+        border: 1px solid var(--panel-border);
+        border-radius: 16px;
+        padding: 14px 20px;
+        font-size: 26px;
+        font-weight: 700;
+        color: #eee;
+        flex: 1;
+      }
+      .chat-row .status { margin-left: auto; color: var(--yellow); font-size: 22px; flex: none; }
+
+      /* ---------- Scene 3: Automation flow ---------- */
+      .flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 980px;
+        margin-top: 20px;
+        position: relative;
+      }
+      .flow-node {
+        width: 148px;
+        height: 148px;
+        border-radius: 20px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: none;
+      }
+      .flow-node .ic { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--yellow); }
+      .flow-node .ic svg { width: 100%; height: 100%; }
+      .flow-node .lb { font-size: 17px; font-weight: 700; color: #ddd; text-align: center; }
+      .flow-arrow {
+        flex: 1;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.18);
+        position: relative;
+        margin: 0 6px;
+      }
+      .flow-arrow .pulse {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--yellow);
+        box-shadow: 0 0 18px 4px var(--yellow);
+        transform: translate(-50%, -50%);
+      }
+      .flow-panel {
+        margin-top: 36px;
+        width: 720px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 14px;
+        padding: 18px 24px;
+        font-size: 20px;
+        font-family: monospace;
+        color: var(--violet);
+        text-align: left;
+      }
+      .flow-panel .k { color: #888; }
+      .flow-panel .v { color: var(--yellow); }
+
+      /* ---------- Scene 4: comparison badges ---------- */
+      .sov-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+      }
+      .sov-badge {
+        width: 700px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 999px;
+        padding: 22px 0;
+        font-size: 40px;
+        font-weight: 700;
+        color: #eee;
+      }
+      .sov-badge .strike { color: var(--orange); text-decoration: line-through; opacity: 0.65; }
+      .sov-badge .hi { color: var(--yellow); }
+      .sov-badge .hi-v { color: var(--violet); }
+
+      /* ---------- Scene 5: CTA ---------- */
+      .cta-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .free-pill {
+        background: var(--orange);
+        color: #1a0d00;
+        font-weight: 700;
+        font-size: 30px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 12px 32px;
+        border-radius: 999px;
+      }
+      .cta-keyword {
+        font-size: 76px;
+        font-weight: 700;
+        color: var(--yellow);
+        text-shadow: 0 0 40px rgba(255, 230, 0, 0.55);
+      }
+      .cta-sub {
+        font-size: 32px;
+        font-weight: 700;
+        color: #eee;
+      }
+
+      /* ---------- Captions (safe band, above avatar zone) ---------- */
+      .caption {
+        position: absolute;
+        top: 960px;
+        left: 0;
+        width: 1080px;
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 60px;
+      }
+      .caption .line {
+        font-size: 58px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+        color: #fff;
+        text-shadow:
+          -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+          -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000,
+          0 6px 18px rgba(0, 0, 0, 0.6);
+        white-space: nowrap;
+      }
+      .caption .line span.hot {
+        color: var(--yellow);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(255, 230, 0, 0.85);
+      }
+      .caption .line span.violet {
+        color: var(--violet);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(168, 85, 247, 0.85);
+      }
+      .caption .line span.orange {
+        color: var(--orange);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(255, 138, 61, 0.85);
+      }
+
+      /* ---------- Avatar / setup zone — circular neon frame ---------- */
+      #avatar-frame {
+        position: absolute;
+        bottom: 70px;
+        left: 50%;
+        width: 560px;
+        height: 560px;
+        margin-left: -280px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: var(--bg);
+        border: 5px solid var(--yellow);
+        box-shadow:
+          0 0 0 2px rgba(6, 6, 6, 0.9),
+          0 0 36px 4px rgba(255, 230, 0, 0.55),
+          0 0 90px 20px rgba(255, 230, 0, 0.22);
+      }
+      #avatar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 560px;
+        height: 706px;
+        transform: translate(-50%, -46%);
+        object-fit: cover;
+        object-position: center top;
+      }
+
+      #avatar-ring {
+        position: absolute;
+        bottom: 58px;
+        left: 50%;
+        width: 584px;
+        height: 584px;
+        margin-left: -292px;
+        border-radius: 50%;
+        border: 3px solid var(--yellow);
+        opacity: 0;
+        pointer-events: none;
+        box-shadow: 0 0 40px rgba(255, 230, 0, 0.35);
+      }
+
+      /* Rotating neon comet — conic-gradient ring masked to a thin annulus, spun via GSAP. */
+      #avatar-orbit {
+        position: absolute;
+        bottom: 52px;
+        left: 50%;
+        width: 596px;
+        height: 596px;
+        margin-left: -298px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: conic-gradient(
+          from 0deg,
+          transparent 0deg,
+          transparent 280deg,
+          rgba(255, 230, 0, 0.12) 320deg,
+          var(--yellow) 353deg,
+          #fff8d6 360deg
+        );
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+        mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+        filter: drop-shadow(0 0 12px rgba(255, 230, 0, 0.9));
+      }
+
+      /* ---------- Fullscreen broll scene (avatar hidden this window) ---------- */
+      .scene-broll {
+        height: 1920px;
+        justify-content: flex-start;
+        padding-top: 220px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="autoboost-15-article-blog" data-width="1080" data-height="1920" data-start="0" data-duration="35.00">
+
+      <!-- ============ SCENES (track 0) ============ -->
+
+      <section id="scene-1" class="scene clip" data-start="0" data-duration="5.50" data-track-index="0">
+        <div class="hook-tag">
+          <span class="strike">3 heures d'écriture</span>
+          <span class="arrow">→</span>
+          <span class="now">2 minutes</span>
+        </div>
+        <div class="headline">Fini de <span class="hi">rédiger tes articles SEO</span> à la main</div>
+      </section>
+
+      <section id="scene-2" class="scene clip" data-start="5.50" data-duration="4.84" data-track-index="0">
+        <div class="kicker">Un seul mot clé suffit</div>
+        <div class="headline">Le workflow <span class="hi-v">fait tout le reste</span></div>
+        <div class="chat-card">
+          <div class="chat-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+            <div class="chat-bubble">mot clé : "chaussures running"</div>
+            <span class="status">envoyé <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:0.85em;height:0.85em;vertical-align:-0.08em;display:inline-block;"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span>
+          </div>
+          <div class="chat-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span>
+            <div class="chat-bubble">Workflow activé</div>
+            <span class="status">en cours <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:0.85em;height:0.85em;vertical-align:-0.08em;display:inline-block;"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-3" class="scene clip scene-broll" data-start="10.34" data-duration="13.30" data-track-index="0">
+        <div class="headline" style="font-size:42px;margin-bottom:16px;">De l'idée à <span class="hi-v">l'article publié</span></div>
+        <div class="flow">
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span><span class="lb">Mot clé</span></div>
+          <div class="flow-arrow" id="arrow-1"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V7a2 2 0 0 1 2-2h5l2 2h5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></span><span class="lb">Plan +<br>Rédaction</span></div>
+          <div class="flow-arrow" id="arrow-2"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l1 3h3v2H2V6h3z"/><path d="M6 9h12l-1 12H7z"/></svg></span><span class="lb">Balises<br>méta</span></div>
+          <div class="flow-arrow" id="arrow-3"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></span><span class="lb">Publication</span></div>
+        </div>
+        <div class="flow-panel">
+          <div><span class="k">input:</span> <span class="v">un mot clé</span></div>
+          <div><span class="k">output:</span> <span class="v">plan + intro + corps + conclusion</span></div>
+          <div><span class="k">status:</span> <span class="v">publié direct sur le site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:0.85em;height:0.85em;vertical-align:-0.08em;display:inline-block;"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span></div>
+        </div>
+      </section>
+
+      <section id="scene-4" class="scene clip" data-start="23.64" data-duration="6.09" data-track-index="0">
+        <div class="sov-wrap">
+          <div class="sov-badge"><span class="strike">3 heures par article</span></div>
+          <div class="sov-badge"><span class="hi">12 articles</span> ce mois</div>
+          <div class="sov-badge">Zéro <span class="hi-v">rédacteur</span></div>
+        </div>
+      </section>
+
+      <section id="scene-5" class="scene clip" data-start="29.74" data-duration="5.26" data-track-index="0">
+        <div class="cta-card">
+          <div class="free-pill">Workflow gratuit</div>
+          <div class="cta-keyword">BLOG</div>
+          <div class="cta-sub">Commente ce mot pour le récupérer</div>
+        </div>
+      </section>
+
+      <!-- ============ CAPTIONS (track 1) — real WaveSpeed narration + Whisper word timestamps (n8n execution 64192) ============ -->
+
+      <div id="cap-1" class="caption clip" data-start="0" data-duration="1.14" data-track-index="1">
+        <div class="line"><span class="orange">Finis</span> de passer</div>
+      </div>
+      <div id="cap-2" class="caption clip" data-start="1.14" data-duration="0.64" data-track-index="1">
+        <div class="line"><span class="hot">3</span> heures à</div>
+      </div>
+      <div id="cap-3" class="caption clip" data-start="1.78" data-duration="0.76" data-track-index="1">
+        <div class="line">rédiger un <span class="hot">article</span></div>
+      </div>
+      <div id="cap-4" class="caption clip" data-start="2.54" data-duration="0.92" data-track-index="1">
+        <div class="line"><span class="hot">SEO</span> qui finit</div>
+      </div>
+      <div id="cap-5" class="caption clip" data-start="3.46" data-duration="0.68" data-track-index="1">
+        <div class="line">page <span class="orange">2</span> sur</div>
+      </div>
+      <div id="cap-6" class="caption clip" data-start="4.14" data-duration="1.36" data-track-index="1">
+        <div class="line"><span class="hot">Google</span>. Tu donnes</div>
+      </div>
+      <div id="cap-7" class="caption clip" data-start="5.5" data-duration="0.58" data-track-index="1">
+        <div class="line">un <span class="violet">seul</span> mot</div>
+      </div>
+      <div id="cap-8" class="caption clip" data-start="6.08" data-duration="0.42" data-track-index="1">
+        <div class="line"><span class="hot">clé</span> à ce</div>
+      </div>
+      <div id="cap-9" class="caption clip" data-start="6.5" data-duration="1.68" data-track-index="1">
+        <div class="line"><span class="violet">Workflow</span> n8n et</div>
+      </div>
+      <div id="cap-10" class="caption clip" data-start="8.18" data-duration="0.38" data-track-index="1">
+        <div class="line">il fait <span class="violet">tout</span></div>
+      </div>
+      <div id="cap-11" class="caption clip" data-start="8.56" data-duration="0.5" data-track-index="1">
+        <div class="line">le <span class="hot">travail</span> à</div>
+      </div>
+      <div id="cap-12" class="caption clip" data-start="9.06" data-duration="1.28" data-track-index="1">
+        <div class="line">ta <span class="violet">place</span>. Il</div>
+      </div>
+      <div id="cap-13" class="caption clip" data-start="10.34" data-duration="0.74" data-track-index="1">
+        <div class="line">analyse les <span class="hot">meilleurs</span></div>
+      </div>
+      <div id="cap-14" class="caption clip" data-start="11.08" data-duration="0.96" data-track-index="1">
+        <div class="line"><span class="hot">résultats</span> déjà en</div>
+      </div>
+      <div id="cap-15" class="caption clip" data-start="12.04" data-duration="0.82" data-track-index="1">
+        <div class="line">ligne, <span class="violet">construit</span> un</div>
+      </div>
+      <div id="cap-16" class="caption clip" data-start="12.86" data-duration="1.18" data-track-index="1">
+        <div class="line">plan <span class="hot">optimisé</span> puis</div>
+      </div>
+      <div id="cap-17" class="caption clip" data-start="14.04" data-duration="0.48" data-track-index="1">
+        <div class="line"><span class="violet">rédige</span> l'intro</div>
+      </div>
+      <div id="cap-18" class="caption clip" data-start="14.96" data-duration="0.45" data-track-index="1">
+        <div class="line">le <span class="hot">corps</span> et</div>
+      </div>
+      <div id="cap-19" class="caption clip" data-start="15.42" data-duration="0.8" data-track-index="1">
+        <div class="line">la <span class="hot">conclusion</span> avec</div>
+      </div>
+      <div id="cap-20" class="caption clip" data-start="16.22" data-duration="1.18" data-track-index="1">
+        <div class="line"><span class="violet">Claude</span>. Il génère</div>
+      </div>
+      <div id="cap-21" class="caption clip" data-start="17.4" data-duration="0.7" data-track-index="1">
+        <div class="line">aussi les <span class="hot">balises</span></div>
+      </div>
+      <div id="cap-22" class="caption clip" data-start="18.1" data-duration="0.91" data-track-index="1">
+        <div class="line"><span class="hot">méta</span> et le</div>
+      </div>
+      <div id="cap-23" class="caption clip" data-start="19.02" data-duration="1.32" data-track-index="1">
+        <div class="line">titre SEO <span class="violet">automatiquement</span></div>
+      </div>
+      <div id="cap-24" class="caption clip" data-start="20.34" data-duration="0.82" data-track-index="1">
+        <div class="line">Puis <span class="violet">publie</span></div>
+      </div>
+      <div id="cap-25" class="caption clip" data-start="21.16" data-duration="0.66" data-track-index="1">
+        <div class="line">l'article <span class="hot">directement</span></div>
+      </div>
+      <div id="cap-26" class="caption clip" data-start="21.82" data-duration="0.84" data-track-index="1">
+        <div class="line">sur ton <span class="hot">site</span></div>
+      </div>
+      <div id="cap-27" class="caption clip" data-start="22.66" data-duration="0.5" data-track-index="1">
+        <div class="line">sans que tu <span class="orange">touches</span></div>
+      </div>
+      <div id="cap-28" class="caption clip" data-start="23.16" data-duration="0.48" data-track-index="1">
+        <div class="line">à un <span class="orange">clavier</span></div>
+      </div>
+      <div id="cap-29" class="caption clip" data-start="24.34" data-duration="0.52" data-track-index="1">
+        <div class="line">Le <span class="hot">mois</span> dernier</div>
+      </div>
+      <div id="cap-30" class="caption clip" data-start="24.96" data-duration="0.4" data-track-index="1">
+        <div class="line">j'ai <span class="hot">sorti</span></div>
+      </div>
+      <div id="cap-31" class="caption clip" data-start="25.36" data-duration="0.76" data-track-index="1">
+        <div class="line"><span class="hot">12</span> articles avec</div>
+      </div>
+      <div id="cap-32" class="caption clip" data-start="26.12" data-duration="1.04" data-track-index="1">
+        <div class="line">ce <span class="violet">système</span> sans</div>
+      </div>
+      <div id="cap-33" class="caption clip" data-start="27.16" data-duration="0.68" data-track-index="1">
+        <div class="line"><span class="orange">embaucher</span> un seul</div>
+      </div>
+      <div id="cap-34" class="caption clip" data-start="27.84" data-duration="1.38" data-track-index="1">
+        <div class="line"><span class="hot">rédacteur</span>. Si tu</div>
+      </div>
+      <div id="cap-35" class="caption clip" data-start="29.22" data-duration="0.52" data-track-index="1">
+        <div class="line">veux <span class="hot">gagner</span> ce</div>
+      </div>
+      <div id="cap-36" class="caption clip" data-start="29.74" data-duration="0.38" data-track-index="1">
+        <div class="line"><span class="hot">temps</span>-là toi</div>
+      </div>
+      <div id="cap-37" class="caption clip" data-start="30.12" data-duration="1.04" data-track-index="1">
+        <div class="line">aussi, <span class="orange">commente</span> le</div>
+      </div>
+      <div id="cap-38" class="caption clip" data-start="31.16" data-duration="0.64" data-track-index="1">
+        <div class="line">mot <span class="orange">BLOG</span> juste</div>
+      </div>
+      <div id="cap-39" class="caption clip" data-start="31.8" data-duration="0.92" data-track-index="1">
+        <div class="line">ici et je</div>
+      </div>
+      <div id="cap-40" class="caption clip" data-start="32.72" data-duration="0.38" data-track-index="1">
+        <div class="line">t'<span class="violet">envoie</span> le</div>
+      </div>
+      <div id="cap-41" class="caption clip" data-start="33.1" data-duration="1.22" data-track-index="1">
+        <div class="line">workflow complet <span class="orange">gratuitement</span></div>
+      </div>
+
+      <!-- ============ AVATAR (track 2) — circular neon frame, hidden during scene-3 broll ============ -->
+      <div id="avatar-frame">
+        <video
+          id="avatar"
+          src="assets/avatar-keyed.mp4"
+          data-start="0"
+          data-duration="35.00"
+          data-track-index="2"
+          data-layout-allow-overflow="true"
+          muted
+          playsinline
+        ></video>
+      </div>
+      <div id="avatar-ring" data-start="0" data-duration="35.00" data-track-index="3" class="clip"></div>
+      <div id="avatar-orbit" data-start="0" data-duration="35.00" data-track-index="4" class="clip"></div>
+
+      <!-- ============ AUDIO (track 10) ============ -->
+      <!-- assets/voice.mp3 = rendu réel WaveSpeed qwen3-tts/voice-clone (webhook avatar-webhook-v2,
+           execution 64192). Timings resynchronisés sur la transcription Whisper mot-à-mot réelle
+           (41 groupes de mots, 0 -> 34.32s) avant rendu final. -->
+      <audio
+        id="voice"
+        src="assets/voice.mp3"
+        data-start="0"
+        data-duration="34.58"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <!-- ============ SOUND DESIGN (tracks 11-13) ============ -->
+      <audio
+        id="bgm"
+        src="assets/bgm-ascension.mp3"
+        data-start="0"
+        data-duration="35.00"
+        data-track-index="11"
+        data-volume="0.12"
+      ></audio>
+
+      <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="5.50" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="10.34" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="23.64" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="29.74" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+
+      <audio id="sfx-chime-1" src="assets/sfx-chime-v2.mp3" data-start="29.9" data-duration="1.07" data-track-index="13" data-volume="0.35"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Scene entrances (slide up + fade)
+      const scenes = ["#scene-1", "#scene-2", "#scene-3", "#scene-4", "#scene-5"];
+      const sceneStarts = [0, 5.50, 10.34, 23.64, 29.74];
+      scenes.forEach((sel, i) => {
+        tl.from(sel, { y: 40, opacity: 0, duration: 0.45, ease: "power3.out" }, sceneStarts[i] + 0.05);
+      });
+
+      // Caption pop-ins — real WaveSpeed narration + Whisper word timestamps (n8n execution 64192)
+      const captions = [
+        ["#cap-1", 0], ["#cap-2", 1.14], ["#cap-3", 1.78], ["#cap-4", 2.54],
+        ["#cap-5", 3.46], ["#cap-6", 4.14], ["#cap-7", 5.5], ["#cap-8", 6.08],
+        ["#cap-9", 6.5], ["#cap-10", 8.18], ["#cap-11", 8.56], ["#cap-12", 9.06],
+        ["#cap-13", 10.34], ["#cap-14", 11.08], ["#cap-15", 12.04], ["#cap-16", 12.86],
+        ["#cap-17", 14.04], ["#cap-18", 14.96], ["#cap-19", 15.42], ["#cap-20", 16.22],
+        ["#cap-21", 17.4], ["#cap-22", 18.1], ["#cap-23", 19.02], ["#cap-24", 20.34],
+        ["#cap-25", 21.16], ["#cap-26", 21.82], ["#cap-27", 22.66], ["#cap-28", 23.16],
+        ["#cap-29", 24.34], ["#cap-30", 24.96], ["#cap-31", 25.36], ["#cap-32", 26.12],
+        ["#cap-33", 27.16], ["#cap-34", 27.84], ["#cap-35", 29.22], ["#cap-36", 29.74],
+        ["#cap-37", 30.12], ["#cap-38", 31.16], ["#cap-39", 31.8], ["#cap-40", 32.72],
+        ["#cap-41", 33.1],
+      ];
+      captions.forEach(([sel, t]) => {
+        tl.from(sel + " .line", { scale: 0.85, opacity: 0, duration: 0.18, ease: "back.out(2)" }, t + 0.02);
+      });
+
+      // Scene 2 setup chat rows stagger in
+      tl.from("#scene-2 .chat-row", { x: 30, opacity: 0, duration: 0.35, stagger: 0.15, ease: "power2.out" }, 5.80);
+
+      // Scene 3 automation flow (broll, fullscreen) — pulse dots travel along each arrow,
+      // paced to the narration: analyse -> plan/rédaction -> balises méta -> publication
+      tl.from("#scene-3 .flow-node", { scale: 0.8, opacity: 0, duration: 0.3, stagger: 0.08, ease: "back.out(2)" }, 10.46);
+      tl.fromTo("#arrow-1 .pulse", { left: "0%" }, { left: "100%", duration: 2.6, ease: "power1.inOut", repeat: 1 }, 10.80);
+      tl.fromTo("#arrow-2 .pulse", { left: "0%" }, { left: "100%", duration: 3.4, ease: "power1.inOut", repeat: 1 }, 16.20);
+      tl.fromTo("#arrow-3 .pulse", { left: "0%" }, { left: "100%", duration: 2.2, ease: "power1.inOut", repeat: 1 }, 20.30);
+      tl.from("#scene-3 .flow-panel", { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" }, 18.50);
+
+      // Scene 3 = fullscreen broll beat: avatar hidden, flow diagram takes the whole frame
+      tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 10.34);
+      tl.set(["#avatar-frame", "#avatar-orbit"], { opacity: 0 }, 10.64);
+      tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 23.64);
+      tl.set(["#avatar-frame", "#avatar-orbit"], { opacity: 1 }, 23.94);
+
+      // Avatar neon ring — continuous breathing pulse whenever the avatar is on screen.
+      // Bounded repeat counts (not repeat:-1) so each segment fully finishes before the
+      // next scene boundary — required for deterministic seek-based timelines.
+      tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 19, yoyo: true }, 0);
+      tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 10, yoyo: true }, 23.64);
+
+      // Avatar neon orbit — spinning comet-head ring, continuously rotated (bounded repeat).
+      tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.3, repeat: 3, ease: "none" }, 0);
+      tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.3, repeat: 4, ease: "none" }, 23.64);
+
+      // Scene 4 comparison badges stagger in
+      tl.from("#scene-4 .sov-badge", { scale: 0.85, opacity: 0, duration: 0.35, stagger: 0.18, ease: "back.out(2)" }, 23.77);
+
+      // Scene 5 CTA — avatar ring pulse + keyword glow beat
+      tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 29.74);
+      tl.to("#avatar-ring", { rotation: 360, duration: 5.26, ease: "none" }, 29.74);
+      tl.from(".cta-keyword", { scale: 0.7, opacity: 0, duration: 0.4, ease: "back.out(2.5)" }, 30.04);
+
+      window.__timelines["autoboost-15-article-blog"] = tl;
+    </script>
+  </body>
+</html>

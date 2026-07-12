@@ -1,0 +1,8 @@
+# Scratch render output (frame captures, work dirs) — regenerable via `hyperframes render`.
+# The canonical deliverable lives in public/renders/menuauto-restaurant-FINAL.mp4.
+# Anchored to project root only — do NOT match public/renders/ (the kept final MP4s).
+/renders/
+
+# Local hyperframes/gsap install (this sandbox lacks working npx due to network policy,
+# so it's installed as a real project dependency here) — regenerable via `npm install`.
+node_modules/
