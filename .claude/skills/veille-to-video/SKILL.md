@@ -133,6 +133,18 @@ sa présence pratique dans `$PATH` potentiel ; toujours installer le vrai paquet
 `node_modules/.bin/hyperframes browser ensure` télécharge son propre Chrome Headless Shell dans
 `~/.cache/hyperframes/chrome/` sans problème.
 
+Session 2026-07-13 (routine cloud autonome, projet #16 "Veille RSS") : `node` v22 déjà dans le
+`$PATH`, `ffmpeg` absent mais `apt-get update && apt-get install -y --no-install-recommends ffmpeg`
+a suffi directement (pas de 404 cette fois). **Aucune des variables `FONTCONFIG_PATH`/
+`LD_LIBRARY_PATH` de la section précédente n'était nécessaire** — le texte (captions, headlines,
+flow-panel monospace) s'est rasterisé correctement sans rien exporter, confirmé par extraction de
+frames réelles à 11 timestamps. Ne pas exporter ces variables par défaut : lancer `hyperframes
+render` nu d'abord, et ne les ajouter que si l'inspection visuelle montre du texte manquant.
+Google Sheet toujours inaccessible en direct (`docs.google.com` bloqué) — le contournement par
+mini-workflow n8n `Manual Trigger → Google Sheets (read)` fonctionne toujours à l'identique.
+`avatar-webhook-v2` a répondu en ~48s cette fois (pas de timeout à gérer) — le cas rapide existe
+aussi, pas seulement le cas 1-4min documenté plus haut.
+
 **Render lent (mode "screenshot" plutôt que "beginframe")** : dans cette session, la calibration
 `hyperframes render` a timeout sur le mode rapide (`BeginFrame auto-worker calibration timed out`)
 et est retombée sur le mode `screenshot`, plus lent. Une comp de 36s (1086 frames à 30fps) a mis
@@ -140,6 +152,10 @@ et est retombée sur le mode `screenshot`, plus lent. Une comp de 36s (1086 fram
 précédente. Prévoir un budget de temps proportionnellement plus long (pas juste linéaire à la
 durée) quand ce fallback se produit, lancer le rendu en arrière-plan (`nohup`/`disown`) et
 poller le process plutôt que d'attendre en bloquant.
+Session 2026-07-13 : même fallback, comp de 34s (1020 frames) → **~9min24s** au total (calibration
+comprise). Utiliser Monitor avec un `until` loop sur un pattern précis (ex.
+`Render complete|FATAL|render failed`) plutôt que sur le mot `error` seul — des lignes `WARN`
+bénignes contiennent `"error":"..."` dans leur JSON et déclenchent de faux positifs.
 
 **Gmail MCP de cette session n'expose que `create_draft`, pas d'outil d'envoi direct** (pas de
 `send_message`/`send_draft`). L'étape "envoyer un email" du pipeline ne peut donc produire qu'un
