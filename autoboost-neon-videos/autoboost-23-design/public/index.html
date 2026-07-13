@@ -1,0 +1,412 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #23 Sites Web Pro avec Claude</title>
+<style>
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  .scene {
+    position: absolute; top: 0; left: 0; width: 1080px; height: 1120px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 50px 60px; text-align: center; opacity: 0;
+  }
+
+  /* ---- Browser frame holding the real screenshots ---- */
+  .browser {
+    width: 940px; border-radius: 14px; overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.16); background: #0d0d0d;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.7), 0 0 50px rgba(255,230,0,0.10);
+  }
+  .browser .bar {
+    height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 14px;
+    background: #141414; border-bottom: 1px solid rgba(255,255,255,0.10);
+  }
+  .browser .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .browser .d1 { background: #ff5f57; } .browser .d2 { background: #febc2e; } .browser .d3 { background: #28c840; }
+  .browser .url {
+    flex: 1; margin-left: 10px; height: 20px; border-radius: 6px;
+    background: rgba(255,255,255,0.07); font-size: 11px; color: var(--text-gray);
+    display: flex; align-items: center; padding: 0 10px; letter-spacing: .4px;
+  }
+  .browser .shot { display: block; width: 100%; height: 528px; object-fit: cover; object-position: center top; }
+  .shot-stack { position: relative; width: 100%; height: 528px; }
+  .shot-stack img { position: absolute; top: 0; left: 0; width: 100%; height: 528px; object-fit: cover; object-position: center top; opacity: 0; }
+
+  /* Scene 1: Hook */
+  .scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 90px; }
+  .scene-1 h2 { font-size: 36px; font-weight: 700; margin: 0 0 34px; line-height: 1.32; }
+  .scene-1 .highlight { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.5); }
+  #hook-browser { opacity: 0; }
+
+  /* Scene 2: the skill */
+  .scene-2 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); justify-content: flex-start; padding-top: 120px; }
+  .step-tag {
+    display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px;
+    font-size: 15px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-gray);
+  }
+  .step-tag .num {
+    width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: var(--accent-violet); color: #000; font-size: 16px; letter-spacing: 0;
+  }
+  .tool-card {
+    width: 760px; border-radius: 18px; padding: 30px 32px; opacity: 0; margin-bottom: 34px;
+    background: rgba(255,255,255,0.035); border: 2px solid rgba(168,85,247,0.55);
+    box-shadow: 0 0 44px rgba(168,85,247,0.16);
+    display: flex; align-items: center; gap: 22px; text-align: left;
+  }
+  .tool-card svg { width: 46px; height: 46px; flex: 0 0 46px; color: var(--accent-violet); }
+  .tool-card .tc-name { font-size: 32px; font-weight: 700; font-family: ui-monospace, monospace; }
+  .tool-card .tc-sub { font-size: 16px; color: var(--text-gray); margin-top: 4px; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 760px; }
+  .rules .r {
+    opacity: 0; border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.03); border: 2px solid rgba(255,230,0,0.35); text-align: left;
+  }
+  .rules .r svg { width: 26px; height: 26px; flex: 0 0 26px; color: var(--accent-yellow); }
+  .rules .r span { font-size: 20px; font-weight: 700; }
+
+  /* Scene 3: the MCP — real 21st.dev screenshot */
+  .scene-3 { background: linear-gradient(135deg, #0a0a0a 0%, #12081f 100%); justify-content: flex-start; padding-top: 110px; }
+  .scene-3 .tool-card { border-color: rgba(255,230,0,0.55); box-shadow: 0 0 44px rgba(255,230,0,0.14); margin-bottom: 30px; }
+  .scene-3 .tool-card svg { color: var(--accent-yellow); }
+  .scene-3 .step-tag .num { background: var(--accent-yellow); }
+  #mcp-browser { opacity: 0; }
+
+  /* Scene 4: the result — real client sites */
+  .scene-4 { background: radial-gradient(circle at 50% 35%, #12081f 0%, #050505 76%); justify-content: flex-start; padding-top: 100px; }
+  .scene-4 .r-title { font-size: 22px; color: var(--text-gray); margin-bottom: 26px; }
+  .scene-4 .r-title b { color: var(--text-white); }
+  #result-browser { opacity: 0; }
+  /* The url bar must name the site actually on screen — the three labels crossfade with the shots. */
+  #result-browser .url { position: relative; }
+  #result-browser .u-swap { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); opacity: 0; }
+  .site-label {
+    margin-top: 24px; font-size: 22px; font-weight: 700; color: var(--accent-yellow); opacity: 0;
+    text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 22px rgba(255,230,0,0.45);
+  }
+
+  /* Broll: the price (avatar hidden) */
+  .scene-broll { height: 1920px; padding: 0; justify-content: flex-start; background: #000; }
+  #broll-working { position: absolute; top: 0; left: 0; width: 1080px; height: 1920px; object-fit: cover; filter: brightness(0.4); }
+  .broll-shade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 1200px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.88) 50%, #000 100%);
+  }
+  .broll-top { position: absolute; top: 170px; left: 0; right: 0; text-align: center; font-size: 27px; font-weight: 700; opacity: 0; padding: 0 90px; line-height: 1.4; color: var(--text-gray); }
+  .price { position: absolute; top: 430px; left: 0; right: 0; text-align: center; opacity: 0; }
+  .price .n { font-size: 140px; font-weight: 700; line-height: 1; color: var(--text-gray); text-decoration: line-through; }
+  .price .u { font-size: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-top: 14px; color: var(--text-gray); }
+  .tonight { position: absolute; top: 790px; left: 0; right: 0; text-align: center; opacity: 0; }
+  .tonight .big {
+    display: inline-block; font-size: 46px; font-weight: 700; color: var(--accent-yellow);
+    border: 3px solid var(--accent-yellow); border-radius: 16px; padding: 18px 40px;
+    text-transform: uppercase; letter-spacing: 3px;
+    box-shadow: 0 0 44px rgba(255,230,0,0.35); background: rgba(255,230,0,0.08);
+    text-shadow: 0 0 26px rgba(255,230,0,0.6);
+  }
+
+  /* Scene 5: CTA */
+  .scene-5 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 150px; }
+  .scene-5 .cta-badge {
+    display: inline-block; background: var(--accent-orange); padding: 12px 24px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #000; margin-bottom: 18px;
+  }
+  .scene-5 .cta-keyword { font-size: 48px; font-weight: 700; color: var(--accent-yellow); text-shadow: 0 0 30px rgba(255,230,0,0.6); margin-bottom: 14px; }
+  .scene-5 .cta-text { font-size: 17px; color: var(--text-gray); }
+
+  /* Persistent avatar overlay */
+  #avatar-frame {
+    position: absolute; bottom: 70px; left: 50%; width: 560px; height: 560px; margin-left: -280px;
+    border-radius: 50%; overflow: hidden; background: var(--bg); border: 5px solid var(--accent-yellow);
+    box-shadow: 0 0 0 2px rgba(6,6,6,0.9), 0 0 36px 4px rgba(255,230,0,0.55), 0 0 90px 20px rgba(255,230,0,0.22); z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute; top: 50%; left: 50%; width: 560px; height: 706px;
+    transform: translate(-50%, -46%); object-fit: cover; object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute; bottom: 58px; left: 50%; width: 584px; height: 584px; margin-left: -292px;
+    border-radius: 50%; border: 3px solid var(--accent-yellow); opacity: 0; pointer-events: none;
+    box-shadow: 0 0 40px rgba(255,230,0,0.35); z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute; bottom: 52px; left: 50%; width: 596px; height: 596px; margin-left: -298px;
+    border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg, rgba(255,230,0,0.12) 320deg, var(--accent-yellow) 353deg, #fff8d6 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255,230,0,0.9)); z-index: 5;
+  }
+
+  /* Captions */
+  .caption-belt { position: absolute; top: 960px; left: 0; right: 0; height: 0; text-align: center; z-index: 10; }
+  .caption {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+    font-size: 27px; font-weight: 700; color: var(--text-white); text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0;
+  }
+  .caption .hot { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .violet { color: var(--accent-violet); text-shadow: 0 0 20px rgba(168,85,247,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .orange { color: var(--accent-orange); text-shadow: 0 0 20px rgba(255,138,61,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-23-design" data-start="0" data-width="1080" data-height="1920" data-duration="33">
+
+  <!-- Scene 1: Hook — real client site as proof -->
+  <div class="scene scene-1">
+    <h2>Claude Code designe maintenant<br/><span class="highlight">des sites de niveau pro.</span></h2>
+    <div class="browser" id="hook-browser">
+      <div class="bar">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+        <div class="url">closdelariviere.re</div>
+      </div>
+      <img class="shot" src="assets/shot-clos.png" alt="" />
+    </div>
+  </div>
+
+  <!-- Scene 2: the skill -->
+  <div class="scene scene-2">
+    <div class="step-tag"><span class="num">1</span> Le skill</div>
+    <div class="tool-card" id="card-skill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M12 3l2.4 5.2 5.6.7-4.2 3.9 1.1 5.6-4.9-2.8-4.9 2.8 1.1-5.6L4 8.9l5.6-.7z" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="tc-name">ui-ux-pro-max</div>
+        <div class="tc-sub">Les vraies règles du design, données à Claude</div>
+      </div>
+    </div>
+    <div class="rules">
+      <div class="r" id="r-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="9.5" r="1.4" fill="currentColor"/><circle cx="15" cy="9.5" r="1.4" fill="currentColor"/><circle cx="12" cy="15.5" r="1.4" fill="currentColor"/></svg>
+        <span>Palettes</span>
+      </div>
+      <div class="r" id="r-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 6h14M12 6v13M9 19h6" stroke-linecap="round"/></svg>
+        <span>Typographies</span>
+      </div>
+      <div class="r" id="r-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4v16M20 4v16M8 12h8M8 12l2-2M8 12l2 2M16 12l-2-2M16 12l-2 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Espacements</span>
+      </div>
+      <div class="r" id="r-4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 5l12 7-5 1.5L11 19z" stroke-linejoin="round"/></svg>
+        <span>États d'interaction</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3: the MCP — real 21st.dev screenshot -->
+  <div class="scene scene-3">
+    <div class="step-tag"><span class="num">2</span> Le serveur MCP</div>
+    <div class="tool-card" id="card-mcp">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/>
+        <rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/>
+      </svg>
+      <div>
+        <div class="tc-name">21st.dev</div>
+        <div class="tc-sub">Une bibliothèque de composants d'interface</div>
+      </div>
+    </div>
+    <div class="browser" id="mcp-browser">
+      <div class="bar">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+        <div class="url">21st.dev</div>
+      </div>
+      <img class="shot" src="assets/shot-21st.png" alt="" />
+    </div>
+  </div>
+
+  <!-- Scene 4: the result — real sites built with the stack -->
+  <div class="scene scene-4">
+    <div class="r-title">Tu décris ta page en une phrase.<br/><b>Il sort la landing complète.</b></div>
+    <div class="browser" id="result-browser">
+      <div class="bar">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+        <div class="url">
+          <span class="u-swap" id="u-1">automatisationboost.com</span>
+          <span class="u-swap" id="u-2">pizzadimuro.re</span>
+          <span class="u-swap" id="u-3">centre-sante-sport.re</span>
+        </div>
+      </div>
+      <div class="shot-stack">
+        <img id="st-1" src="assets/shot-ab.png" alt="" />
+        <img id="st-2" src="assets/shot-pizza.png" alt="" />
+        <img id="st-3" src="assets/shot-sante.png" alt="" />
+      </div>
+    </div>
+    <div class="site-label" id="site-label">Complète &amp; responsive</div>
+  </div>
+
+  <!-- Broll: 1500 € studio vs ce soir (avatar hidden) -->
+  <div class="scene scene-broll">
+    <video id="broll-working" src="assets/broll-working.mp4" data-start="27.02" data-duration="3.18" muted playsinline></video>
+    <div class="broll-shade"></div>
+    <div class="broll-top">Ce qu'un studio de design<br/>te facturerait pour une seule page</div>
+    <div class="price">
+      <div class="n">1500 €</div>
+      <div class="u">et trois semaines d'attente</div>
+    </div>
+    <div class="tonight">
+      <div class="big">Toi, tu l'as ce soir</div>
+    </div>
+  </div>
+
+  <!-- Scene 5: CTA -->
+  <div class="scene scene-5">
+    <div class="cta-badge">Configuration gratuite</div>
+    <div class="cta-keyword">Commente <span class="orange">DESIGN</span></div>
+    <div class="cta-text">et je t'envoie la configuration complète</div>
+  </div>
+
+  <!-- Persistent avatar overlay -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="33" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="33" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="33" class="clip"></div>
+
+  <!-- Captions — text from narration.txt, timings from Whisper on voice.mp3 -->
+  <div class="caption-belt" id="caption-belt">
+    <div class="caption" data-start="0" data-end="1.30"><span class="hot">CLAUDE CODE</span> SAIT</div>
+    <div class="caption" data-start="1.30" data-end="2.15">MAINTENANT <span class="violet">DESIGNER</span></div>
+    <div class="caption" data-start="2.15" data-end="2.80">DES SITES</div>
+    <div class="caption" data-start="2.80" data-end="3.75">DE NIVEAU <span class="hot">PRO</span></div>
+    <div class="caption" data-start="3.75" data-end="4.18">ET ÇA TIENT</div>
+    <div class="caption" data-start="4.18" data-end="5.42">EN DEUX <span class="hot">INSTALLATIONS</span></div>
+    <div class="caption" data-start="5.42" data-end="6.90">LA PREMIÈRE : UN <span class="violet">SKILL</span></div>
+    <div class="caption" data-start="6.90" data-end="8.35"><span class="hot">UI UX PRO MAX</span></div>
+    <div class="caption" data-start="8.35" data-end="9.85">LES VRAIES <span class="hot">RÈGLES</span></div>
+    <div class="caption" data-start="9.85" data-end="10.90">DU DESIGN</div>
+    <div class="caption" data-start="10.90" data-end="11.75">PALETTES <span class="violet">TYPOGRAPHIES</span></div>
+    <div class="caption" data-start="12.20" data-end="13.45">ESPACEMENTS <span class="violet">ÉTATS</span></div>
+    <div class="caption" data-start="13.45" data-end="14.85">D'INTERACTION</div>
+    <div class="caption" data-start="15.10" data-end="16.10">UN SERVEUR <span class="violet">MCP</span></div>
+    <div class="caption" data-start="16.38" data-end="17.90"><span class="hot">21ST.DEV</span></div>
+    <div class="caption" data-start="17.90" data-end="19.45">UNE <span class="hot">BIBLIOTHÈQUE</span></div>
+    <div class="caption" data-start="19.45" data-end="20.66">DE COMPOSANTS</div>
+    <div class="caption" data-start="20.66" data-end="21.70">TU DÉCRIS TA PAGE</div>
+    <div class="caption" data-start="21.70" data-end="22.85">EN UNE <span class="hot">PHRASE</span></div>
+    <div class="caption" data-start="23.02" data-end="24.45">IL SORT UNE <span class="hot">LANDING</span></div>
+    <div class="caption" data-start="24.45" data-end="25.70">COMPLÈTE ET <span class="hot">RESPONSIVE</span></div>
+    <div class="caption" data-start="25.70" data-end="27.00">FINI LE <span class="orange">TEMPLATE</span></div>
+    <div class="caption" data-start="27.02" data-end="27.70">UN STUDIO</div>
+    <div class="caption" data-start="27.70" data-end="29.10"><span class="orange">1500 EUROS</span></div>
+    <div class="caption" data-start="29.15" data-end="30.02">TU L'AS <span class="hot">CE SOIR</span></div>
+    <div class="caption" data-start="30.05" data-end="31.05">COMMENTE LE MOT <span class="orange">DESIGN</span></div>
+    <div class="caption" data-start="31.05" data-end="32.10">ET JE T'ENVOIE</div>
+    <div class="caption" data-start="32.10" data-end="32.95">LA CONFIG <span class="hot">COMPLÈTE</span></div>
+  </div>
+
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32.73" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="33" data-volume="0.09"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="5.42" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="15.10" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="20.66" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="27.02" data-volume="0.15"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="30.05" data-volume="0.20"></audio>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // ---- Scene windows, cut on the real voice track (voice.mp3 = 32.73s) ----
+  const S1 = 0,     S1_END = 5.42;   // hook + real client site
+  const S2 = 5.42,  S2_END = 15.10;  // the skill + its 4 design rules
+  const S3 = 15.10, S3_END = 20.66;  // the MCP + real 21st.dev screenshot
+  const S4 = 20.66, S4_END = 27.02;  // the result — real sites cycling
+  const BR = 27.02, BR_END = 30.20;  // 1500 € studio vs ce soir (avatar hidden)
+  const S5 = 30.20, S5_END = 33.00;  // CTA
+
+  // Scene 1 — the site lands on "des sites de niveau pro" (2.15)
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, S1);
+  tl.fromTo("#hook-browser", { y: 40, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power3.out" }, S1 + 2.15);
+  tl.to("#hook-browser", { scale: 1.04, duration: 2.5, ease: "none" }, S1 + 2.85);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, S1_END - 0.3);
+
+  // Scene 2 — rules land on the words: palettes/typographies (10.90), espacements/états (12.20)
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, S2);
+  tl.fromTo("#card-skill", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, S2 + 1.55);
+  tl.fromTo("#r-1", { y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.5)" }, 10.90);
+  tl.fromTo("#r-2", { y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.5)" }, 11.30);
+  tl.fromTo("#r-3", { y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.5)" }, 12.20);
+  tl.fromTo("#r-4", { y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.5)" }, 12.80);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, S2_END - 0.3);
+
+  // Scene 3 — the 21st.dev screenshot lands on "21st.dev" (16.38)
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, S3);
+  tl.fromTo("#card-mcp", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, S3 + 0.3);
+  tl.fromTo("#mcp-browser", { y: 34, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 16.38);
+  tl.to("#mcp-browser", { scale: 1.03, duration: 2.6, ease: "none" }, 17.60);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, S3_END - 0.3);
+
+  // Scene 4 — three real sites cycle in the same browser frame
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, S4);
+  tl.fromTo("#result-browser", { y: 30, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, S4 + 0.2);
+  tl.to(["#st-1", "#u-1"], { opacity: 1, duration: 0.4 }, S4 + 0.4);   // automatisationboost.com
+  tl.to(["#st-1", "#u-1"], { opacity: 0, duration: 0.4 }, 23.60);
+  tl.to(["#st-2", "#u-2"], { opacity: 1, duration: 0.4 }, 23.60);      // pizza di muro — on "landing"
+  tl.to(["#st-2", "#u-2"], { opacity: 0, duration: 0.4 }, 25.30);
+  tl.to(["#st-3", "#u-3"], { opacity: 1, duration: 0.4 }, 25.30);      // centre santé sport
+  tl.fromTo(".site-label", { y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 24.45);
+  tl.to(".scene-4", { opacity: 0, duration: 0.3 }, S4_END - 0.3);
+
+  // Broll — price on "1500 euros" (27.70), "ce soir" on 29.15
+  tl.to(".scene-broll", { opacity: 1, duration: 0.3 }, BR);
+  tl.to(".broll-top", { opacity: 1, duration: 0.35 }, BR + 0.15);
+  tl.fromTo(".price", { scale: 0.88 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, 27.70);
+  tl.fromTo(".tonight", { y: 18, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 29.15);
+  tl.to(".scene-broll", { opacity: 0, duration: 0.3 }, BR_END - 0.3);
+
+  // Scene 5: CTA
+  tl.to(".scene-5", { opacity: 1, duration: 0.3 }, S5);
+  tl.to(".scene-5 .cta-keyword", { scale: 1.1, duration: 0.4 }, S5);
+
+  // Persistent avatar — hidden only during the broll
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, BR);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, BR_END);
+
+  // Avatar ring — finite ODD repeat per visible window
+  // window 1: 0 -> 27.02 => ceil(27.02/0.5)-1 = 54, even -> 53
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 53, yoyo: true }, 0);
+  // window 2: 30.20 -> 33.00 => ceil(2.80/0.5)-1 = 5 (odd, OK)
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 5, yoyo: true }, BR_END);
+
+  // Avatar orbit — 33s / 2.2s => repeat 14
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 14, ease: "none" }, 0);
+
+  // CTA beat
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, S5);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, ease: "none" }, S5);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.15 }, start);
+    tl.to(el, { opacity: 0, duration: 0.15 }, end - 0.15);
+  });
+
+  window.__timelines["autoboost-23-design"] = tl;
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #24 Claude Code en équipe de 6 devs</title>
+<style>
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  .scene {
+    position: absolute; top: 0; left: 0; width: 1080px; height: 1120px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 50px 60px; text-align: center; opacity: 0;
+  }
+
+  /* ---- Shared: numbered skill card ---- */
+  .skill-card {
+    width: 800px; border-radius: 18px; padding: 26px 30px; opacity: 0;
+    background: rgba(255,255,255,0.035); border: 2px solid rgba(168,85,247,0.55);
+    box-shadow: 0 0 44px rgba(168,85,247,0.16);
+    display: flex; align-items: center; gap: 22px; text-align: left;
+  }
+  .skill-card .n {
+    width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-violet); color: #000; font-size: 26px; font-weight: 700;
+  }
+  .skill-card .sc-name { font-size: 30px; font-weight: 700; font-family: ui-monospace, monospace; }
+  .skill-card .sc-sub { font-size: 16px; color: var(--text-gray); margin-top: 4px; }
+  .skill-card.gold { border-color: rgba(255,230,0,0.55); box-shadow: 0 0 44px rgba(255,230,0,0.14); }
+  .skill-card.gold .n { background: var(--accent-yellow); }
+
+  /* ---- Browser frame holding the real GitHub screenshots ---- */
+  .browser {
+    width: 940px; border-radius: 14px; overflow: hidden; margin-top: 30px;
+    border: 2px solid rgba(255,255,255,0.16); background: #0d0d0d;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.7), 0 0 50px rgba(255,230,0,0.10);
+  }
+  .browser .bar {
+    height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 14px;
+    background: #141414; border-bottom: 1px solid rgba(255,255,255,0.10);
+  }
+  .browser .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .browser .d1 { background: #ff5f57; } .browser .d2 { background: #febc2e; } .browser .d3 { background: #28c840; }
+  .browser .url {
+    flex: 1; margin-left: 10px; height: 20px; border-radius: 6px;
+    background: rgba(255,255,255,0.07); font-size: 11px; color: var(--text-gray);
+    display: flex; align-items: center; padding: 0 10px; letter-spacing: .4px;
+  }
+  .browser .shot { display: block; width: 100%; height: 470px; object-fit: cover; object-position: center top; }
+
+  /* Scene 1: Hook */
+  .scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+  .scene-1 h2 { font-size: 38px; font-weight: 700; margin: 0 0 40px; line-height: 1.3; }
+  .scene-1 .highlight { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.5); }
+  .devs { display: flex; gap: 14px; justify-content: center; }
+  .devs .d {
+    width: 74px; height: 74px; border-radius: 50%; opacity: 0;
+    background: rgba(255,230,0,0.08); border: 2px solid var(--accent-yellow);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .devs .d svg { width: 34px; height: 34px; color: var(--accent-yellow); }
+
+  /* Scene 2 / 3 / 5: card + real repo screenshot */
+  .scene-2 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); justify-content: flex-start; padding-top: 110px; }
+  .scene-3 { background: linear-gradient(135deg, #0a0a0a 0%, #12081f 100%); justify-content: flex-start; padding-top: 110px; }
+  .scene-5 { background: radial-gradient(circle at 50% 38%, #12081f 0%, #050505 76%); justify-content: flex-start; padding-top: 110px; }
+
+  /* Scene 4: the two review agents */
+  .scene-4 { background: linear-gradient(135deg, #0a0a0a 0%, #14081f 100%); justify-content: flex-start; padding-top: 100px; }
+  .agents { display: flex; gap: 16px; justify-content: center; margin-top: 34px; }
+  .agents .a {
+    width: 180px; border-radius: 14px; padding: 20px 14px; opacity: 0;
+    background: rgba(255,255,255,0.03); border: 2px solid rgba(255,230,0,0.4);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .agents .a svg { width: 30px; height: 30px; color: var(--accent-yellow); }
+  .agents .a .t { font-size: 17px; font-weight: 700; }
+  .sec-card { margin-top: 34px; }
+
+  /* Broll: the team roles (avatar hidden) */
+  .scene-broll { height: 1920px; padding: 0; justify-content: flex-start; background: #000; }
+  #broll-working { position: absolute; top: 0; left: 0; width: 1080px; height: 1920px; object-fit: cover; filter: brightness(0.35); }
+  .broll-shade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 1300px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 45%, #000 100%);
+  }
+  .broll-top { position: absolute; top: 190px; left: 0; right: 0; text-align: center; font-size: 30px; font-weight: 700; opacity: 0; padding: 0 90px; line-height: 1.4; }
+  .broll-top .hl { color: var(--accent-yellow); text-shadow: 0 0 24px rgba(255,230,0,0.5); }
+  .roles { position: absolute; top: 400px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .roles .role {
+    width: 620px; border-radius: 14px; padding: 22px 28px; opacity: 0;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,230,0,0.45);
+    display: flex; align-items: center; gap: 18px; text-align: left;
+    box-shadow: 0 0 30px rgba(255,230,0,0.12);
+  }
+  .roles .role svg { width: 28px; height: 28px; flex: 0 0 28px; color: var(--accent-yellow); }
+  .roles .role .rt { font-size: 26px; font-weight: 700; }
+
+  /* Scene 6: CTA */
+  .scene-6 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 150px; }
+  .scene-6 .cta-badge {
+    display: inline-block; background: var(--accent-orange); padding: 12px 24px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #000; margin-bottom: 18px;
+  }
+  .scene-6 .cta-keyword { font-size: 48px; font-weight: 700; color: var(--accent-yellow); text-shadow: 0 0 30px rgba(255,230,0,0.6); margin-bottom: 14px; }
+  .scene-6 .cta-text { font-size: 17px; color: var(--text-gray); }
+
+  /* Persistent avatar overlay */
+  #avatar-frame {
+    position: absolute; bottom: 70px; left: 50%; width: 560px; height: 560px; margin-left: -280px;
+    border-radius: 50%; overflow: hidden; background: var(--bg); border: 5px solid var(--accent-yellow);
+    box-shadow: 0 0 0 2px rgba(6,6,6,0.9), 0 0 36px 4px rgba(255,230,0,0.55), 0 0 90px 20px rgba(255,230,0,0.22); z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute; top: 50%; left: 50%; width: 560px; height: 706px;
+    transform: translate(-50%, -46%); object-fit: cover; object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute; bottom: 58px; left: 50%; width: 584px; height: 584px; margin-left: -292px;
+    border-radius: 50%; border: 3px solid var(--accent-yellow); opacity: 0; pointer-events: none;
+    box-shadow: 0 0 40px rgba(255,230,0,0.35); z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute; bottom: 52px; left: 50%; width: 596px; height: 596px; margin-left: -298px;
+    border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg, rgba(255,230,0,0.12) 320deg, var(--accent-yellow) 353deg, #fff8d6 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255,230,0,0.9)); z-index: 5;
+  }
+
+  /* Captions */
+  .caption-belt { position: absolute; top: 960px; left: 0; right: 0; height: 0; text-align: center; z-index: 10; }
+  .caption {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+    font-size: 27px; font-weight: 700; color: var(--text-white); text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0;
+  }
+  .caption .hot { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .violet { color: var(--accent-violet); text-shadow: 0 0 20px rgba(168,85,247,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .orange { color: var(--accent-orange); text-shadow: 0 0 20px rgba(255,138,61,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-24-equipe" data-start="0" data-width="1080" data-height="1920" data-duration="34">
+
+  <!-- Scene 1: Hook -->
+  <div class="scene scene-1">
+    <h2>Six skills transforment Claude Code<br/><span class="highlight">en équipe de six développeurs.</span></h2>
+    <div class="devs">
+      <div class="d" id="dv-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0114 0" stroke-linecap="round"/></svg></div>
+      <div class="d" id="dv-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0114 0" stroke-linecap="round"/></svg></div>
+      <div class="d" id="dv-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0114 0" stroke-linecap="round"/></svg></div>
+      <div class="d" id="dv-4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0114 0" stroke-linecap="round"/></svg></div>
+      <div class="d" id="dv-5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0114 0" stroke-linecap="round"/></svg></div>
+      <div class="d" id="dv-6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0114 0" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+
+  <!-- Scene 2: Superpowers — real repo -->
+  <div class="scene scene-2">
+    <div class="skill-card" id="card-1">
+      <div class="n">1</div>
+      <div>
+        <div class="sc-name">superpowers</div>
+        <div class="sc-sub">Il planifie, écrit les tests, relit son propre code</div>
+      </div>
+    </div>
+    <div class="browser" id="br-1">
+      <div class="bar">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+        <div class="url">github.com/obra/superpowers</div>
+      </div>
+      <img class="shot" src="assets/shot-superpowers.png" alt="" />
+    </div>
+  </div>
+
+  <!-- Scene 3: frontend design — real repo -->
+  <div class="scene scene-3">
+    <div class="skill-card" id="card-2">
+      <div class="n">2</div>
+      <div>
+        <div class="sc-name">frontend-design</div>
+        <div class="sc-sub">Fini les interfaces qui sentent l'IA</div>
+      </div>
+    </div>
+    <div class="browser" id="br-2">
+      <div class="bar">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+        <div class="url">github.com/anthropics/skills</div>
+      </div>
+      <img class="shot" src="assets/shot-skills.png" alt="" />
+    </div>
+  </div>
+
+  <!-- Scene 4: code review + security review -->
+  <div class="scene scene-4">
+    <div class="skill-card gold" id="card-3">
+      <div class="n">3</div>
+      <div>
+        <div class="sc-name">code-review</div>
+        <div class="sc-sub">Plusieurs agents en parallèle</div>
+      </div>
+    </div>
+    <div class="agents">
+      <div class="a" id="ag-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L21 21" stroke-linecap="round"/></svg>
+        <div class="t">Bugs</div>
+      </div>
+      <div class="a" id="ag-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h14M5 10h9M5 15h14M5 20h6" stroke-linecap="round"/></svg>
+        <div class="t">Conventions</div>
+      </div>
+      <div class="a" id="ag-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2" stroke-linecap="round"/></svg>
+        <div class="t">Historique</div>
+      </div>
+    </div>
+    <div class="skill-card gold sec-card" id="card-4">
+      <div class="n">4</div>
+      <div>
+        <div class="sc-name">security-review</div>
+        <div class="sc-sub">Les failles trouvées avant la production</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 5: memory — real repo -->
+  <div class="scene scene-5">
+    <div class="skill-card" id="card-5">
+      <div class="n">5</div>
+      <div>
+        <div class="sc-name">claude-mem</div>
+        <div class="sc-sub">Le contexte du projet, gardé entre les sessions</div>
+      </div>
+    </div>
+    <div class="browser" id="br-3">
+      <div class="bar">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+        <div class="url">github.com/thedotmack/claude-mem</div>
+      </div>
+      <img class="shot" src="assets/shot-claude-mem.png" alt="" />
+    </div>
+  </div>
+
+  <!-- Broll: #6, the team roles (avatar hidden) -->
+  <div class="scene scene-broll">
+    <video id="broll-working" src="assets/broll-working.mp4" data-start="27.28" data-duration="4.38" muted playsinline></video>
+    <div class="broll-shade"></div>
+    <div class="broll-top">6 — Un pack qui joue les rôles<br/>d'une <span class="hl">vraie équipe</span></div>
+    <div class="roles">
+      <div class="role" id="ro-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 18l2-9 4 4 2-7 2 7 4-4 2 9z" stroke-linejoin="round"/></svg>
+        <div class="rt">CEO</div>
+      </div>
+      <div class="role" id="ro-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l7 4v10l-7 4-7-4V7z" stroke-linejoin="round"/><path d="M12 12v9M12 12l7-4M12 12L5 8" stroke-linecap="round"/></svg>
+        <div class="rt">Release Manager</div>
+      </div>
+      <div class="role" id="ro-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="rt">QA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 6: CTA -->
+  <div class="scene scene-6">
+    <div class="cta-badge">Liste complète gratuite</div>
+    <div class="cta-keyword">Commente <span class="orange">EQUIPE</span></div>
+    <div class="cta-text">et je t'envoie la liste complète</div>
+  </div>
+
+  <!-- Persistent avatar overlay -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="34" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="34" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="34" class="clip"></div>
+
+  <!-- Captions — text from narration, timings from Whisper on voice.mp3 -->
+  <div class="caption-belt" id="caption-belt">
+    <div class="caption" data-start="0" data-end="1.44"><span class="hot">SIX SKILLS</span> TRANSFORMENT</div>
+    <div class="caption" data-start="1.44" data-end="2.30">CLAUDE CODE</div>
+    <div class="caption" data-start="2.30" data-end="2.96">EN ÉQUIPE DE SIX</div>
+    <div class="caption" data-start="2.96" data-end="4.20"><span class="hot">DÉVELOPPEURS</span></div>
+    <div class="caption" data-start="4.20" data-end="5.70">UN : <span class="violet">SUPERPOWERS</span></div>
+    <div class="caption" data-start="5.76" data-end="6.88">IL PLANIFIE, ÉCRIT</div>
+    <div class="caption" data-start="6.88" data-end="7.64">LES <span class="hot">TESTS</span></div>
+    <div class="caption" data-start="7.64" data-end="8.98"><span class="hot">RELIT</span> SON PROPRE CODE</div>
+    <div class="caption" data-start="8.98" data-end="10.05">AVANT DE TOUCHER UN FICHIER</div>
+    <div class="caption" data-start="10.12" data-end="12.04">DEUX : <span class="violet">FRONTEND DESIGN</span></div>
+    <div class="caption" data-start="12.04" data-end="12.84">FINI LES INTERFACES</div>
+    <div class="caption" data-start="12.84" data-end="13.72">QUI SENTENT L'<span class="orange">IA</span></div>
+    <div class="caption" data-start="13.84" data-end="15.10">TROIS : <span class="violet">CODE REVIEW</span></div>
+    <div class="caption" data-start="15.10" data-end="16.02">AGENTS EN <span class="hot">PARALLÈLE</span></div>
+    <div class="caption" data-start="16.02" data-end="16.96">UN SUR LES <span class="orange">BUGS</span></div>
+    <div class="caption" data-start="16.96" data-end="17.94">UN SUR LES CONVENTIONS</div>
+    <div class="caption" data-start="18.14" data-end="19.16">QUATRE : <span class="violet">SECURITY REVIEW</span></div>
+    <div class="caption" data-start="19.16" data-end="20.20">IL SCANNE TOUTE LA BASE</div>
+    <div class="caption" data-start="20.20" data-end="21.44">ET TROUVE LES <span class="orange">FAILLES</span></div>
+    <div class="caption" data-start="21.44" data-end="22.30">AVANT LA PRODUCTION</div>
+    <div class="caption" data-start="22.64" data-end="23.75">CINQ : <span class="violet">LA MÉMOIRE</span></div>
+    <div class="caption" data-start="23.82" data-end="24.82">TON PROJET RESTE EN TÊTE</div>
+    <div class="caption" data-start="24.82" data-end="26.24">ENTRE LES <span class="hot">SESSIONS</span></div>
+    <div class="caption" data-start="26.24" data-end="27.10">PLUS JAMAIS LE CONTEXTE</div>
+    <div class="caption" data-start="27.28" data-end="27.98">SIX : <span class="violet">UN PACK</span></div>
+    <div class="caption" data-start="27.98" data-end="29.92">UNE VRAIE <span class="hot">ÉQUIPE</span></div>
+    <div class="caption" data-start="30.02" data-end="31.16">CEO, RELEASE MANAGER, QA</div>
+    <div class="caption" data-start="31.66" data-end="32.66">COMMENTE LE MOT <span class="orange">EQUIPE</span></div>
+    <div class="caption" data-start="32.66" data-end="33.70">JE T'ENVOIE LA <span class="hot">LISTE</span></div>
+  </div>
+
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="33.76" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="34" data-volume="0.09"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="4.20" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="10.12" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="13.84" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="22.64" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-5" src="assets/sfx-whoosh-v2.mp3" data-start="27.28" data-volume="0.15"></audio>
+  <audio id="sfx-chime" src="assets/sfx-chime-v2.mp3" data-start="31.66" data-volume="0.20"></audio>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // ---- Scene windows, cut on the real voice track (voice.mp3 = 33.76s) ----
+  const S1 = 0,     S1_END = 4.20;   // hook — six devs
+  const S2 = 4.20,  S2_END = 10.12;  // 1. superpowers (real repo)
+  const S3 = 10.12, S3_END = 13.84;  // 2. frontend-design (real repo)
+  const S4 = 13.84, S4_END = 22.64;  // 3. code-review + 4. security-review
+  const S5 = 22.64, S5_END = 27.28;  // 5. claude-mem (real repo)
+  const BR = 27.28, BR_END = 31.66;  // 6. the team roles (avatar hidden)
+  const S6 = 31.66, S6_END = 34.00;  // CTA
+
+  // Scene 1 — the six devs pop in on "équipe de six développeurs"
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, S1);
+  ["#dv-1", "#dv-2", "#dv-3", "#dv-4", "#dv-5", "#dv-6"].forEach((id, i) => {
+    tl.fromTo(id, { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 2.30 + i * 0.16);
+  });
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, S1_END - 0.3);
+
+  // Scene 2 — superpowers
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, S2);
+  tl.fromTo("#card-1", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, S2 + 0.15);
+  tl.fromTo("#br-1", { y: 34, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, S2 + 1.10);
+  tl.to("#br-1", { scale: 1.03, duration: 3.2, ease: "none" }, S2 + 1.90);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, S2_END - 0.3);
+
+  // Scene 3 — frontend-design
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, S3);
+  tl.fromTo("#card-2", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, S3 + 0.15);
+  tl.fromTo("#br-2", { y: 34, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, S3 + 0.85);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, S3_END - 0.3);
+
+  // Scene 4 — code review agents land on "bugs" (16.02) / "conventions" (16.96) / historique
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, S4);
+  tl.fromTo("#card-3", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, S4 + 0.15);
+  tl.fromTo("#ag-1", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.5)" }, 16.02);
+  tl.fromTo("#ag-2", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.5)" }, 16.60);
+  tl.fromTo("#ag-3", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.5)" }, 17.20);
+  tl.fromTo("#card-4", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, 18.14);
+  tl.to(".scene-4", { opacity: 0, duration: 0.3 }, S4_END - 0.3);
+
+  // Scene 5 — claude-mem
+  tl.to(".scene-5", { opacity: 1, duration: 0.3 }, S5);
+  tl.fromTo("#card-5", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, S5 + 0.15);
+  tl.fromTo("#br-3", { y: 34, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, S5 + 1.10);
+  tl.to("#br-3", { scale: 1.03, duration: 2.6, ease: "none" }, S5 + 1.80);
+  tl.to(".scene-5", { opacity: 0, duration: 0.3 }, S5_END - 0.3);
+
+  // Broll — the three roles land on "CEO / Release Manager / QA" (30.02 -> 31.16)
+  tl.to(".scene-broll", { opacity: 1, duration: 0.3 }, BR);
+  tl.to(".broll-top", { opacity: 1, duration: 0.35 }, BR + 0.2);
+  tl.fromTo("#ro-1", { x: -24 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 30.02);
+  tl.fromTo("#ro-2", { x: -24 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 30.42);
+  tl.fromTo("#ro-3", { x: -24 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 30.82);
+  tl.to(".scene-broll", { opacity: 0, duration: 0.3 }, BR_END - 0.3);
+
+  // Scene 6: CTA
+  tl.to(".scene-6", { opacity: 1, duration: 0.3 }, S6);
+  tl.to(".scene-6 .cta-keyword", { scale: 1.1, duration: 0.4 }, S6);
+
+  // Persistent avatar — hidden only during the broll
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, BR);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, BR_END);
+
+  // Avatar ring — finite ODD repeat per visible window
+  // window 1: 0 -> 27.28 => ceil(27.28/0.5)-1 = 54, even -> 53
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 53, yoyo: true }, 0);
+  // window 2: 31.66 -> 34.00 => ceil(2.34/0.5)-1 = 4, even -> 3
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 3, yoyo: true }, BR_END);
+
+  // Avatar orbit — 34s / 2.2s => repeat 15
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 15, ease: "none" }, 0);
+
+  // CTA beat
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, S6);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, ease: "none" }, S6);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.15 }, start);
+    tl.to(el, { opacity: 0, duration: 0.15 }, end - 0.15);
+  });
+
+  window.__timelines["autoboost-24-equipe"] = tl;
+</script>
+</body>
+</html>

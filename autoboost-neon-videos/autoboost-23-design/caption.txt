@@ -1,0 +1,11 @@
+Claude Code designe maintenant des sites de niveau pro.
+
+Et ça tient en deux installations :
+1. le skill ui-ux-pro-max — les vraies règles du design (palettes, typos, espacements, états d'interaction)
+2. le serveur MCP 21st.dev — une bibliothèque de composants d'interface
+
+Une fois les deux en place, tu décris ta page en une phrase et Claude sort la landing complète et responsive. Fini le site qui sent le template.
+
+Commente le mot DESIGN et je t'envoie la configuration complète.
+
+#claudecode #ia #webdesign #uiux #automatisation #freelance #devweb #nocode #intelligenceartificielle #sitewebpro

@@ -1,0 +1,4 @@
+autoboost-neon-videos/*/node_modules/
+autoboost-neon-videos/*/renders/
+autoboost-neon-videos/*/capture-*/
+autoboost-neon-videos/*/cap-*/
