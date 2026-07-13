@@ -376,3 +376,48 @@ Statut=Terminé).
   maintenant clairement dépassé ; si la base reste vide après le 15/07, il devient pertinent de
   le signaler explicitement à Tony dans une page dédiée plutôt que de continuer à ne trouver que
   des signaux n8n/Sheet.
+
+## 2026-07-13
+
+**Contexte** : 9e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress).
+`search_executions(status:["error"])` depuis le dernier check → 1 seule erreur (`S85QlXjhIO6nBvzY`
+avatar-webhook-v2, exec 64252, 02:35 UTC) : encore un test curl vide (`content-length: 0`,
+`audio`/`text` vides), suivi 1 minute après d'une exécution réussie (64253) — pattern déjà noté
+les 10/07, 11/07 (curl de test manuel, pas un bug réel). Aucune action nécessaire dessus.
+
+**Découverte + action** : au lieu de renvoyer une 3e relance email identique aux 07-10/07-12 (root
+cause déjà diagnostiqué mais jamais réparé), j'ai cette fois **corrigé directement la donnée
+cassée** : le Sheet de suivi Autoboost (`10BHHpGn4qPjlo_-OuGjdT7-LAYxdKfjg6SRKh_9Dags`, onglet
+"30 Vidéos") avait toujours, pour les lignes 8/9/10 (#7 Dashboard Notion, #8 Pinterest, #9 Content
+Ideas), le lien mort `previsualisation.automatisationboost.com` écrit par le workflow
+`FwAhWukWOqHMqNO3` le 09/07 — un domaine qui n'a jamais correspondu à une app réelle. Les vrais
+MP4 finaux (25-35s, commit `8245b78` du 09/07) étaient bien sur `origin/main` mais jamais reliés
+au Sheet. Créé et exécuté un workflow n8n ponctuel (`bKVfY08Txm5cgyWs`, Google Sheets natif,
+credential "Google Sheets account") qui remplace les 3 liens morts par les vrais liens
+`raw.githubusercontent.com/tonyPayetDev/hero-section/main/autoboost-neon-videos/.../renders/
+public_2026-07-09_18-09-38.mp4` (vérifiés HTTP 200 avant écriture). Relu le Sheet ensuite
+(exécution `y2GynBwW0g1YqSsP` #64256) pour confirmer que les 3 lignes sont bien mises à jour.
+Puis envoyé un nouvel email réel (workflow ponctuel `I4xHQCvpKXmpzsWj`, Gmail natif, labels Gmail
+retournés `SENT`+`INBOX` confirmés) avec les 3 liens fonctionnels et rappel de validation
+explicite ("OK #7"/"OK #8"/"OK #9") avant toute publication Blotato — toujours pas publié moi-même
+sur Blotato (pas de MCP Blotato, règle du 07-10 toujours en vigueur).
+
+**Page Notion créée** : "📹 Autoboost #7/#8/#9 — lien de prévisualisation cassé réparé dans le
+Sheet (root cause corrigé)" (id `39c5fda3-ad05-81fe-b1d4-c782f930798d`, Projet=Content, ROI=🔥5,
+Délégable IA=NO, Statut=Terminé).
+
+**Pattern à surveiller à l'avenir** :
+- Quand un même root cause est identifié plusieurs jours de suite sans être corrigé (ici : lien
+  mort dans le Sheet), NE PAS se contenter de renvoyer le même email de relance — écrire
+  directement la correction dans la source de vérité (ici via le node Google Sheets natif n8n,
+  `resource: sheet, operation: update, matchingColumns: ["row_number"]`, credential "Google Sheets
+  account" déjà configurée) quand c'est possible sans publier de contenu public. C'est un vrai "1%"
+  différenciant plutôt qu'une répétition à ROI décroissant.
+- Vérifier si le Sheet a été mis à jour manuellement par Tony (colonne "Statut Tournage" passée à
+  une valeur différente de "🟡 En attente validation"/"✅ Fait" sans action IA, ou "Date
+  Publication" contenant "(programmé IG + TikTok, ...)" comme les autres lignes réussies) avant de
+  renvoyer une nouvelle relance — ce format annoté indique une vraie planification Blotato réussie
+  (voir ligne #25 VOIX, programmée 2026-07-13), contrairement à "Programmé DATE" seul qui reste un
+  vœu non exécuté.
+- 9e jour sans tâche Notion délégable IA — le seuil de signalement explicite à Tony (évoqué le
+  07-12 pour "après le 15/07") reste d'actualité si la base reste vide 2 jours de plus.
