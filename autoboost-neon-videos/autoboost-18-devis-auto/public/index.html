@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Autoboost Neon Video — #18 Génération Devis Automatique</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Inter";
+        font-weight: 400;
+        font-display: block;
+        src: url(fonts/Inter-400-latin.woff2) format("woff2");
+      }
+      @font-face {
+        font-family: "Inter";
+        font-weight: 700;
+        font-display: block;
+        src: url(fonts/Inter-700-latin.woff2) format("woff2");
+      }
+
+      :root {
+        --bg: #060606;
+        --yellow: #ffe600;
+        --violet: #a855f7;
+        --orange: #ff8a3d;
+        --panel: #121212;
+        --panel-border: rgba(255, 230, 0, 0.25);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        font-family: "Inter", sans-serif;
+        color: #fff;
+      }
+
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1080px;
+        height: 1120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 64px;
+        text-align: center;
+      }
+
+      .kicker {
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--violet);
+        margin-bottom: 18px;
+      }
+
+      .headline {
+        font-size: 62px;
+        font-weight: 700;
+        line-height: 1.15;
+        margin: 0 0 28px;
+      }
+      .headline .hi { color: var(--yellow); }
+      .headline .hi-v { color: var(--violet); }
+      .headline .hi-o { color: var(--orange); }
+
+      .hook-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 999px;
+        padding: 14px 28px;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 40px;
+      }
+      .hook-tag .strike { color: var(--orange); text-decoration: line-through; opacity: 0.7; }
+      .hook-tag .arrow { color: var(--yellow); }
+      .hook-tag .now { color: var(--violet); }
+
+      .chat-card {
+        width: 800px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 20px;
+        padding: 26px 32px;
+        margin-top: 16px;
+        text-align: left;
+      }
+      .chat-row {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 11px 0;
+      }
+      .chat-row .ic { flex: none; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; color: var(--yellow); }
+      .chat-row .ic svg { width: 100%; height: 100%; }
+      .chat-bubble {
+        background: rgba(255, 230, 0, 0.08);
+        border: 1px solid var(--panel-border);
+        border-radius: 16px;
+        padding: 14px 20px;
+        font-size: 26px;
+        font-weight: 700;
+        color: #eee;
+        flex: 1;
+      }
+      .chat-row .status { margin-left: auto; color: var(--yellow); font-size: 22px; flex: none; }
+
+      .flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 980px;
+        margin-top: 20px;
+        position: relative;
+      }
+      .flow-node {
+        width: 148px;
+        height: 148px;
+        border-radius: 20px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: none;
+      }
+      .flow-node .ic { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--yellow); }
+      .flow-node .ic svg { width: 100%; height: 100%; }
+      .flow-node .lb { font-size: 18px; font-weight: 700; color: #ddd; }
+      .flow-arrow {
+        flex: 1;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.18);
+        position: relative;
+        margin: 0 6px;
+      }
+      .flow-arrow .pulse {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--yellow);
+        box-shadow: 0 0 18px 4px var(--yellow);
+        transform: translate(-50%, -50%);
+      }
+      .flow-panel {
+        margin-top: 36px;
+        width: 700px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 14px;
+        padding: 18px 24px;
+        font-size: 20px;
+        font-family: monospace;
+        color: var(--violet);
+        text-align: left;
+      }
+      .flow-panel .k { color: #888; }
+      .flow-panel .v { color: var(--yellow); }
+
+      .sov-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+      }
+      .sov-badge {
+        width: 660px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 999px;
+        padding: 22px 0;
+        font-size: 40px;
+        font-weight: 700;
+        color: #eee;
+      }
+      .sov-badge .strike { color: var(--orange); text-decoration: line-through; opacity: 0.65; }
+      .sov-badge .hi { color: var(--yellow); }
+      .sov-badge .hi-v { color: var(--violet); }
+
+      .cta-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+      }
+      .free-pill {
+        background: var(--orange);
+        color: #1a0d00;
+        font-weight: 700;
+        font-size: 30px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 12px 32px;
+        border-radius: 999px;
+      }
+      .cta-keyword {
+        font-size: 76px;
+        font-weight: 700;
+        color: var(--yellow);
+        text-shadow: 0 0 40px rgba(255, 230, 0, 0.55);
+      }
+      .cta-sub {
+        font-size: 32px;
+        font-weight: 700;
+        color: #eee;
+      }
+
+      .caption {
+        position: absolute;
+        top: 960px;
+        left: 0;
+        width: 1080px;
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 60px;
+      }
+      .caption .line {
+        font-size: 58px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+        color: #fff;
+        text-shadow:
+          -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+          -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000,
+          0 6px 18px rgba(0, 0, 0, 0.6);
+        white-space: nowrap;
+      }
+      .caption .line span.hot {
+        color: var(--yellow);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(255, 230, 0, 0.85);
+      }
+      .caption .line span.violet {
+        color: var(--violet);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(168, 85, 247, 0.85);
+      }
+      .caption .line span.orange {
+        color: var(--orange);
+        text-shadow:
+          -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+          0 0 24px rgba(255, 138, 61, 0.85);
+      }
+
+      #avatar-frame {
+        position: absolute;
+        bottom: 70px;
+        left: 50%;
+        width: 620px;
+        height: 620px;
+        margin-left: -310px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: var(--bg);
+        border: 5px solid var(--yellow);
+        box-shadow:
+          0 0 0 2px rgba(6, 6, 6, 0.9),
+          0 0 36px 4px rgba(255, 230, 0, 0.55),
+          0 0 90px 20px rgba(255, 230, 0, 0.22);
+      }
+      #avatar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 620px;
+        height: 780px;
+        transform: translate(-50%, -46%);
+        object-fit: cover;
+        object-position: center top;
+      }
+
+      #avatar-ring {
+        position: absolute;
+        bottom: 58px;
+        left: 50%;
+        width: 644px;
+        height: 644px;
+        margin-left: -322px;
+        border-radius: 50%;
+        border: 3px solid var(--yellow);
+        opacity: 0;
+        pointer-events: none;
+        box-shadow: 0 0 40px rgba(255, 230, 0, 0.35);
+      }
+
+      #avatar-orbit {
+        position: absolute;
+        bottom: 52px;
+        left: 50%;
+        width: 656px;
+        height: 656px;
+        margin-left: -328px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: conic-gradient(
+          from 0deg,
+          transparent 0deg,
+          transparent 280deg,
+          rgba(255, 230, 0, 0.12) 320deg,
+          var(--yellow) 353deg,
+          #fff8d6 360deg
+        );
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+        mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+        filter: drop-shadow(0 0 12px rgba(255, 230, 0, 0.9));
+      }
+
+      .scene-broll {
+        height: 1920px;
+        justify-content: flex-start;
+        padding-top: 220px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="autoboost-18-devis-auto" data-width="1080" data-height="1920" data-start="0" data-duration="34.50">
+
+      <!-- ============ SCENES (track 0) ============ -->
+
+      <section id="scene-1" class="scene clip" data-start="0" data-duration="5.24" data-track-index="0">
+        <div class="hook-tag">
+          <span class="strike">Devis à la main</span>
+          <span class="arrow">→</span>
+          <span class="now">100% auto</span>
+        </div>
+        <div class="headline">Combien de <span class="hi">temps perdu</span> chaque semaine sur tes devis ?</div>
+      </section>
+
+      <section id="scene-2" class="scene clip" data-start="5.24" data-duration="4.40" data-track-index="0">
+        <div class="kicker">Deux infos suffisent</div>
+        <div class="headline">Client + <span class="hi-v">besoins</span></div>
+        <div class="chat-card">
+          <div class="chat-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span>
+            <div class="chat-bubble">Client : Studio Martin</div>
+            <span class="status">saisi <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:0.85em;height:0.85em;vertical-align:-0.08em;display:inline-block;"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span>
+          </div>
+          <div class="chat-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.9L19 9.5l-4.9 1.8L12 16l-1.8-4.7L5 9.5l4.9-1.8z"/></svg></span>
+            <div class="chat-bubble">IA génère la proposition</div>
+            <span class="status">en cours <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:0.85em;height:0.85em;vertical-align:-0.08em;display:inline-block;"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-3" class="scene clip scene-broll" data-start="9.64" data-duration="10.30" data-track-index="0">
+        <div class="headline" style="font-size:44px;margin-bottom:16px;">Du client au <span class="hi-v">PDF envoyé</span></div>
+        <div class="flow">
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span><span class="lb">Client + besoins</span></div>
+          <div class="flow-arrow" id="arrow-1"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.9L19 9.5l-4.9 1.8L12 16l-1.8-4.7L5 9.5l4.9-1.8z"/></svg></span><span class="lb">IA génère</span></div>
+          <div class="flow-arrow" id="arrow-2"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/></svg></span><span class="lb">PDF pro</span></div>
+          <div class="flow-arrow" id="arrow-3"><span class="pulse"></span></div>
+          <div class="flow-node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></span><span class="lb">Envoi email</span></div>
+        </div>
+        <div class="flow-panel">
+          <div><span class="k">entrée:</span> <span class="v">nom client + besoins</span></div>
+          <div><span class="k">génération:</span> <span class="v">proposition PDF + branding</span></div>
+          <div><span class="k">livraison:</span> <span class="v">email automatique <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:0.85em;height:0.85em;vertical-align:-0.08em;display:inline-block;"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span></div>
+        </div>
+      </section>
+
+      <section id="scene-4" class="scene clip" data-start="19.94" data-duration="5.76" data-track-index="0">
+        <div class="sov-wrap">
+          <div class="sov-badge"><span class="strike">Plusieurs heures</span></div>
+          <div class="sov-badge">devient <span class="hi">quelques minutes</span></div>
+          <div class="sov-badge">Zéro <span class="hi-v">rédaction</span></div>
+        </div>
+      </section>
+
+      <section id="scene-5" class="scene clip" data-start="25.70" data-duration="8.80" data-track-index="0">
+        <div class="cta-card">
+          <div class="free-pill">Workflow gratuit</div>
+          <div class="cta-keyword">DEVIS</div>
+          <div class="cta-sub">Commente ce mot pour le récupérer</div>
+        </div>
+      </section>
+
+      <!-- ============ CAPTIONS (track 1) ============ -->
+
+      <div id="cap-1" class="caption clip" data-start="0" data-duration="1.12" data-track-index="1">
+        <div class="line">Combien de <span class="hot">temps</span></div>
+      </div>
+      <div id="cap-2" class="caption clip" data-start="1.12" data-duration="0.74" data-track-index="1">
+        <div class="line">tu perds <span class="hot">chaque</span></div>
+      </div>
+      <div id="cap-3" class="caption clip" data-start="1.86" data-duration="0.82" data-track-index="1">
+        <div class="line">semaine à <span class="hot">rédiger</span></div>
+      </div>
+      <div id="cap-4" class="caption clip" data-start="2.68" data-duration="0.7" data-track-index="1">
+        <div class="line">tes <span class="orange">devis</span> et</div>
+      </div>
+      <div id="cap-5" class="caption clip" data-start="3.38" data-duration="1.04" data-track-index="1">
+        <div class="line">propositions <span class="hot">commerciales</span> à</div>
+      </div>
+      <div id="cap-6" class="caption clip" data-start="4.42" data-duration="0.82" data-track-index="1">
+        <div class="line">la <span class="hot">main</span></div>
+      </div>
+      <div id="cap-7" class="caption clip" data-start="5.24" data-duration="0.66" data-track-index="1">
+        <div class="line">Ce <span class="hot">workflow</span> s'</div>
+      </div>
+      <div id="cap-8" class="caption clip" data-start="5.9" data-duration="0.68" data-track-index="1">
+        <div class="line">en occupe <span class="hot">entièrement</span></div>
+      </div>
+      <div id="cap-9" class="caption clip" data-start="6.58" data-duration="1.08" data-track-index="1">
+        <div class="line"><span class="hot">pour</span> toi Tu</div>
+      </div>
+      <div id="cap-10" class="caption clip" data-start="7.66" data-duration="0.78" data-track-index="1">
+        <div class="line">entres <span class="hot">juste</span> le</div>
+      </div>
+      <div id="cap-11" class="caption clip" data-start="8.44" data-duration="0.4" data-track-index="1">
+        <div class="line">nom du <span class="hot">client</span></div>
+      </div>
+      <div id="cap-12" class="caption clip" data-start="8.84" data-duration="0.58" data-track-index="1">
+        <div class="line">et ses <span class="hot">besoins</span></div>
+      </div>
+      <div id="cap-13" class="caption clip" data-start="9.64" data-duration="1.1" data-track-index="1">
+        <div class="line"><span class="violet">l'intelligence</span> artificielle</div>
+      </div>
+      <div id="cap-14" class="caption clip" data-start="10.74" data-duration="1.0" data-track-index="1">
+        <div class="line"><span class="violet">génère</span> une proposition</div>
+      </div>
+      <div id="cap-15" class="caption clip" data-start="11.74" data-duration="1.12" data-track-index="1">
+        <div class="line">commerciale <span class="hot">complète</span> et</div>
+      </div>
+      <div id="cap-16" class="caption clip" data-start="12.86" data-duration="1.38" data-track-index="1">
+        <div class="line"><span class="hot">professionnelle</span> mise en</div>
+      </div>
+      <div id="cap-17" class="caption clip" data-start="14.24" data-duration="0.6" data-track-index="1">
+        <div class="line"><span class="hot">page</span> en PDF</div>
+      </div>
+      <div id="cap-18" class="caption clip" data-start="14.84" data-duration="0.76" data-track-index="1">
+        <div class="line">avec ton <span class="violet">branding</span></div>
+      </div>
+      <div id="cap-19" class="caption clip" data-start="16.08" data-duration="0.28" data-track-index="1">
+        <div class="line">et <span class="hot">elle</span> est</div>
+      </div>
+      <div id="cap-20" class="caption clip" data-start="16.36" data-duration="1.14" data-track-index="1">
+        <div class="line">envoyée <span class="violet">automatiquement</span> par</div>
+      </div>
+      <div id="cap-21" class="caption clip" data-start="17.5" data-duration="0.66" data-track-index="1">
+        <div class="line">email au <span class="hot">client</span></div>
+      </div>
+      <div id="cap-22" class="caption clip" data-start="18.38" data-duration="0.28" data-track-index="1">
+        <div class="line"><span class="hot">sans</span> que tu</div>
+      </div>
+      <div id="cap-23" class="caption clip" data-start="18.66" data-duration="0.48" data-track-index="1">
+        <div class="line">touches à <span class="hot">rien</span></div>
+      </div>
+      <div id="cap-24" class="caption clip" data-start="19.94" data-duration="0.84" data-track-index="1">
+        <div class="line">Résultat des <span class="orange">devis</span></div>
+      </div>
+      <div id="cap-25" class="caption clip" data-start="20.78" data-duration="1.24" data-track-index="1">
+        <div class="line"><span class="hot">propres</span> cohérents et</div>
+      </div>
+      <div id="cap-26" class="caption clip" data-start="22.02" data-duration="0.64" data-track-index="1">
+        <div class="line">envoyés en <span class="hot">quelques</span></div>
+      </div>
+      <div id="cap-27" class="caption clip" data-start="22.66" data-duration="0.82" data-track-index="1">
+        <div class="line"><span class="hot">minutes</span> au lieu</div>
+      </div>
+      <div id="cap-28" class="caption clip" data-start="23.48" data-duration="0.66" data-track-index="1">
+        <div class="line">de plusieurs <span class="hot">heures</span></div>
+      </div>
+      <div id="cap-29" class="caption clip" data-start="24.14" data-duration="0.88" data-track-index="1">
+        <div class="line">perdues chaque <span class="hot">semaine</span></div>
+      </div>
+      <div id="cap-30" class="caption clip" data-start="25.7" data-duration="1.06" data-track-index="1">
+        <div class="line">Plusieurs <span class="hot">indépendants</span> l'</div>
+      </div>
+      <div id="cap-31" class="caption clip" data-start="26.76" data-duration="0.5" data-track-index="1">
+        <div class="line">utilisent déjà <span class="hot">pour</span></div>
+      </div>
+      <div id="cap-32" class="caption clip" data-start="27.26" data-duration="0.46" data-track-index="1">
+        <div class="line">gagner un <span class="hot">temps</span></div>
+      </div>
+      <div id="cap-33" class="caption clip" data-start="27.72" data-duration="1.22" data-track-index="1">
+        <div class="line"><span class="hot">précieux</span> Le workflow</div>
+      </div>
+      <div id="cap-34" class="caption clip" data-start="28.94" data-duration="1.18" data-track-index="1">
+        <div class="line">est gratuit Commente <span class="orange">DEVIS</span></div>
+      </div>
+      <div id="cap-35" class="caption clip" data-start="30.12" data-duration="0.7" data-track-index="1">
+        <div class="line">en <span class="hot">dessous</span></div>
+      </div>
+      <div id="cap-36" class="caption clip" data-start="30.82" data-duration="0.56" data-track-index="1">
+        <div class="line">de cette <span class="hot">vidéo</span></div>
+      </div>
+      <div id="cap-37" class="caption clip" data-start="31.38" data-duration="0.48" data-track-index="1">
+        <div class="line">et je te</div>
+      </div>
+      <div id="cap-38" class="caption clip" data-start="31.86" data-duration="0.48" data-track-index="1">
+        <div class="line"><span class="orange">l'envoie</span> tout</div>
+      </div>
+      <div id="cap-39" class="caption clip" data-start="32.34" data-duration="0.32" data-track-index="1">
+        <div class="line">de <span class="hot">suite</span></div>
+      </div>
+
+      <!-- ============ AVATAR (track 2) — circular neon frame, hidden during scene-3 broll ============ -->
+      <div id="avatar-frame">
+        <video
+          id="avatar"
+          src="assets/avatar-keyed.mp4"
+          data-start="0"
+          data-duration="34.50"
+          data-track-index="2"
+          data-layout-allow-overflow="true"
+          muted
+          playsinline
+        ></video>
+      </div>
+      <div id="avatar-ring" data-start="0" data-duration="34.50" data-track-index="3" class="clip"></div>
+      <div id="avatar-orbit" data-start="0" data-duration="34.50" data-track-index="4" class="clip"></div>
+
+      <!-- ============ AUDIO (track 10) ============ -->
+      <audio
+        id="voice"
+        src="assets/voice.mp3"
+        data-start="0"
+        data-duration="32.60"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <!-- ============ SOUND DESIGN (tracks 11-13) ============ -->
+      <audio
+        id="bgm"
+        src="assets/bgm-ascension.mp3"
+        data-start="0"
+        data-duration="34.50"
+        data-track-index="11"
+        data-volume="0.12"
+      ></audio>
+
+      <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="5.24" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="9.64" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="19.94" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="25.70" data-duration="1.38" data-track-index="12" data-volume="0.28"></audio>
+
+      <audio id="sfx-chime-1" src="assets/sfx-chime-v2.mp3" data-start="25.70" data-duration="0.9" data-track-index="13" data-volume="0.35"></audio>
+      <audio id="sfx-chime-2" src="assets/sfx-chime-v2.mp3" data-start="28.94" data-duration="1.07" data-track-index="13" data-volume="0.35"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const scenes = ["#scene-1", "#scene-2", "#scene-3", "#scene-4", "#scene-5"];
+      const sceneStarts = [0, 5.24, 9.64, 19.94, 25.70];
+      scenes.forEach((sel, i) => {
+        tl.from(sel, { y: 40, opacity: 0, duration: 0.45, ease: "power3.out" }, sceneStarts[i] + 0.05);
+      });
+
+      const captions = [
+        ["#cap-1", 0], ["#cap-2", 1.12], ["#cap-3", 1.86], ["#cap-4", 2.68],
+        ["#cap-5", 3.38], ["#cap-6", 4.42], ["#cap-7", 5.24], ["#cap-8", 5.9],
+        ["#cap-9", 6.58], ["#cap-10", 7.66], ["#cap-11", 8.44], ["#cap-12", 8.84],
+        ["#cap-13", 9.64], ["#cap-14", 10.74], ["#cap-15", 11.74], ["#cap-16", 12.86],
+        ["#cap-17", 14.24], ["#cap-18", 14.84], ["#cap-19", 16.08], ["#cap-20", 16.36],
+        ["#cap-21", 17.5], ["#cap-22", 18.38], ["#cap-23", 18.66], ["#cap-24", 19.94],
+        ["#cap-25", 20.78], ["#cap-26", 22.02], ["#cap-27", 22.66], ["#cap-28", 23.48],
+        ["#cap-29", 24.14], ["#cap-30", 25.7], ["#cap-31", 26.76], ["#cap-32", 27.26],
+        ["#cap-33", 27.72], ["#cap-34", 28.94], ["#cap-35", 30.12], ["#cap-36", 30.82],
+        ["#cap-37", 31.38], ["#cap-38", 31.86], ["#cap-39", 32.34],
+      ];
+      captions.forEach(([sel, t]) => {
+        tl.from(sel + " .line", { scale: 0.85, opacity: 0, duration: 0.18, ease: "back.out(2)" }, t + 0.02);
+      });
+
+      // Scene 2 chat rows stagger in
+      tl.from("#scene-2 .chat-row", { x: 30, opacity: 0, duration: 0.35, stagger: 0.15, ease: "power2.out" }, 5.54);
+
+      // Scene 3 automation flow (broll, fullscreen)
+      tl.from("#scene-3 .flow-node", { scale: 0.8, opacity: 0, duration: 0.3, stagger: 0.08, ease: "back.out(2)" }, 9.76);
+      tl.fromTo("#arrow-1 .pulse", { left: "0%" }, { left: "100%", duration: 1.9, ease: "power1.inOut", repeat: 1 }, 9.95);
+      tl.fromTo("#arrow-2 .pulse", { left: "0%" }, { left: "100%", duration: 2.3, ease: "power1.inOut", repeat: 1 }, 13.75);
+      tl.fromTo("#arrow-3 .pulse", { left: "0%" }, { left: "100%", duration: 1.9, ease: "power1.inOut", repeat: 1 }, 18.35);
+      tl.from("#scene-3 .flow-panel", { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" }, 13.20);
+
+      // Scene 3 = fullscreen broll beat: avatar hidden
+      tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, 9.64);
+      tl.set(["#avatar-frame", "#avatar-orbit"], { opacity: 0 }, 9.94);
+      tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 19.94);
+      tl.set(["#avatar-frame", "#avatar-orbit"], { opacity: 1 }, 20.24);
+
+      // Avatar neon ring — continuous breathing pulse whenever the avatar is on screen.
+      tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 17, yoyo: true }, 0);
+      tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 13, yoyo: true }, 19.94);
+
+      // Avatar neon orbit — spinning comet-head ring, continuously rotated (bounded repeat).
+      tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 3, ease: "none" }, 0);
+      tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 6, ease: "none" }, 19.94);
+
+      // Scene 4 comparison badges stagger in
+      tl.from("#scene-4 .sov-badge", { scale: 0.85, opacity: 0, duration: 0.35, stagger: 0.18, ease: "back.out(2)" }, 20.07);
+
+      // Scene 5 CTA — avatar ring pulse + keyword glow beat
+      tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 25.70);
+      tl.to("#avatar-ring", { rotation: 360, duration: 8.80, ease: "none" }, 25.70);
+      tl.from(".cta-keyword", { scale: 0.7, opacity: 0, duration: 0.4, ease: "back.out(2.5)" }, 26.00);
+
+      window.__timelines["autoboost-18-devis-auto"] = tl;
+    </script>
+  </body>
+</html>
