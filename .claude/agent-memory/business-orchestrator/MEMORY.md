@@ -421,3 +421,56 @@ Délégable IA=NO, Statut=Terminé).
   vœu non exécuté.
 - 9e jour sans tâche Notion délégable IA — le seuil de signalement explicite à Tony (évoqué le
   07-12 pour "après le 15/07") reste d'actualité si la base reste vide 2 jours de plus.
+
+## 2026-07-14
+
+**Contexte** : 10e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress).
+`search_executions(status:["error"])` depuis 2026-07-13T16:38 → 2 résultats, `S85QlXjhIO6nBvzY`
+(Avatar Webhook v2), exécutions 64336/64337 à 20:47:15 et 20:47:46 — **cette fois PAS le pattern
+"curl de test vide"** déjà vu les 10/07-13/07 : payload de production réel (texte réel, userEmail
+Tony, requête envoyée depuis la campagne Instagram/TikTok "Commente STUDIO" en cours), erreur
+`400 - Insufficient credits. Please top up your account to continue.` sur le nœud "Qwen3 Voice
+Clone" (WaveSpeed). Vérifié que le pipeline avait fonctionné normalement plus tôt dans la journée
+(6 succès entre 05:16 et 06:39) — donc le compte WaveSpeed est tombé à court de crédits en cours
+de journée, en pleine campagne active, PAS un bug de code.
+
+**Root cause** : compte WaveSpeed (crédits, facturation) à zéro. Aucun accès facturation dans
+cette session — impossible de recharger moi-même. Root cause réel = action humaine requise
+(carte bancaire/facturation), pas un bug corrigible par du code.
+
+**Action prise** : plutôt que de me contenter d'un simple constat, j'ai rendu le pipeline
+résilient à ce mode de panne (et aux futurs échecs similaires de l'appel WaveSpeed direct, ex.
+API down) : `update_workflow` sur `S85QlXjhIO6nBvzY` — `setNodeSettings` (`onError:
+continueErrorOutput`) sur le nœud "Qwen3 Voice Clone", nouvelle connexion sortie-erreur → nœud
+existant "Respond Error", `responseBody` de "Respond Error" généralisé pour couvrir à la fois le
+timeout de polling (cas déjà géré) et une erreur directe de l'appel WaveSpeed (nouveau cas).
+Workflow publié (`activeVersionId c5157201-2a71-4b72-a0c7-dbce0d77c9e7`). **Testé en conditions
+réelles** : `execute_workflow` (mode production, id `64366`) contre la même erreur "Insufficient
+credits" toujours active au moment du test → statut d'exécution passé de `error` à `success`,
+réponse JSON claire renvoyée au lieu d'un plantage. Résultat concret : le webhook ne renverra
+plus un crash opaque et ne polluera plus `search_executions(status:["error"])` avec ce type
+d'échec (important pour les runs futurs de cet agent — ne pas re-diagnostiquer ce même signal
+comme "nouveau bug" si de futures erreurs "Insufficient credits" réapparaissent en `status:
+error` malgré ce fix : vérifier d'abord si `Respond Error` a bien été atteint avant de conclure
+à une régression).
+
+**Page Notion créée** : "🐛 Workflow n8n corrigé — Avatar Webhook v2 (WaveSpeed à court de
+crédits, pipeline lead-gen bloqué)" (id `39d5fda3-ad05-8155-aaa7-f6350ef07490`, Projet=Content,
+ROI=🔥5, Délégable IA=NO, Statut=Terminé). Notification push envoyée à Tony (seule action
+possible pour lui : recharger https://wavespeed.ai — accès facturation hors périmètre IA).
+
+**Pattern à surveiller à l'avenir** :
+- Nouveau type de signal à distinguer sur `S85QlXjhIO6nBvzY` : erreurs avec payload de
+  production réel (texte long, userEmail rempli) = vraie panne business (ex. crédits API,
+  panne fournisseur) ; erreurs avec `content-length: 0` / `curl` en user-agent = test manuel,
+  pas actionnable (pattern déjà noté 10/07-13/07). Toujours lire le payload complet
+  (`includeData: true` sur `get_execution`) avant de trancher, pas juste le statut.
+- Root cause "crédits API épuisés" (WaveSpeed, ou potentiellement OpenAI/autres APIs payantes
+  utilisées par les pipelines vidéo) restera récurrente tant que Tony n'a pas de recharge
+  automatique / alerte de solde faible côté fournisseur — si ça se reproduit, envisager de
+  suggérer à Tony un monitoring de solde proactif (si l'API du fournisseur l'expose) plutôt que
+  de découvrir la panne après coup à chaque fois.
+- 10e jour sans tâche Notion délégable IA — le seuil de signalement explicite à Tony (évoqué le
+  07-12 pour "après le 15/07") est quasiment atteint ; si la base reste vide demain (07-15), le
+  signaler explicitement dans une page dédiée plutôt que de continuer à ne trouver que des
+  signaux n8n.
