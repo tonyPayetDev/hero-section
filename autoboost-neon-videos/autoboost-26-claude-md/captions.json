@@ -1,0 +1,220 @@
+{
+  "duration": 32.808,
+  "captions": [
+    {
+      "text": "Le créateur de",
+      "start": 0.48,
+      "end": 1.05
+    },
+    {
+      "text": "Claude Code vient",
+      "start": 1.05,
+      "end": 1.77
+    },
+    {
+      "text": "de partager son",
+      "start": 1.77,
+      "end": 2.4
+    },
+    {
+      "text": "fichier de règles",
+      "start": 2.4,
+      "end": 3.12
+    },
+    {
+      "text": "personnel.",
+      "start": 3.12,
+      "end": 3.55
+    },
+    {
+      "text": "Quatre règles.",
+      "start": 3.55,
+      "end": 4.64
+    },
+    {
+      "text": "Et la troisième",
+      "start": 4.64,
+      "end": 5.71
+    },
+    {
+      "text": "change tout.",
+      "start": 5.71,
+      "end": 6.19
+    },
+    {
+      "text": "Claude lit ce",
+      "start": 6.19,
+      "end": 7.16
+    },
+    {
+      "text": "fichier à chaque",
+      "start": 7.16,
+      "end": 7.83
+    },
+    {
+      "text": "nouvelle session.",
+      "start": 7.83,
+      "end": 8.55
+    },
+    {
+      "text": "Règle une: le",
+      "start": 8.55,
+      "end": 9.45
+    },
+    {
+      "text": "plan d'abord.",
+      "start": 9.45,
+      "end": 9.93
+    },
+    {
+      "text": "Avant de coder,",
+      "start": 9.93,
+      "end": 10.97
+    },
+    {
+      "text": "il écrit le",
+      "start": 10.97,
+      "end": 11.4
+    },
+    {
+      "text": "plan.",
+      "start": 11.4,
+      "end": 11.59
+    },
+    {
+      "text": "Si ça dérape,",
+      "start": 11.59,
+      "end": 12.07
+    },
+    {
+      "text": "il s'arrête et",
+      "start": 12.07,
+      "end": 12.93
+    },
+    {
+      "text": "il refait le",
+      "start": 12.93,
+      "end": 13.41
+    },
+    {
+      "text": "plan.",
+      "start": 13.41,
+      "end": 13.6
+    },
+    {
+      "text": "Règle deux: déléguer",
+      "start": 13.6,
+      "end": 14.84
+    },
+    {
+      "text": "aux sous-agents.",
+      "start": 14.84,
+      "end": 15.46
+    },
+    {
+      "text": "Le travail complexe",
+      "start": 15.46,
+      "end": 16.64
+    },
+    {
+      "text": "part ailleurs,",
+      "start": 16.64,
+      "end": 17.22
+    },
+    {
+      "text": "le contexte principal",
+      "start": 17.22,
+      "end": 18.13
+    },
+    {
+      "text": "reste propre.",
+      "start": 18.13,
+      "end": 18.66
+    },
+    {
+      "text": "Règle trois: la",
+      "start": 18.66,
+      "end": 19.24
+    },
+    {
+      "text": "boucle d'auto-amélioration.",
+      "start": 19.24,
+      "end": 21.14
+    },
+    {
+      "text": "Chaque erreur devient",
+      "start": 21.14,
+      "end": 22.61
+    },
+    {
+      "text": "une règle écrite.",
+      "start": 22.61,
+      "end": 23.29
+    },
+    {
+      "text": "La session suivante",
+      "start": 23.29,
+      "end": 24.57
+    },
+    {
+      "text": "la lit.",
+      "start": 24.57,
+      "end": 24.81
+    },
+    {
+      "text": "Le taux d'erreur",
+      "start": 24.81,
+      "end": 25.77
+    },
+    {
+      "text": "s'effondre.",
+      "start": 25.77,
+      "end": 26.2
+    },
+    {
+      "text": "Règle quatre: prouver",
+      "start": 26.2,
+      "end": 27.64
+    },
+    {
+      "text": "que ça marche.",
+      "start": 27.64,
+      "end": 28.17
+    },
+    {
+      "text": "Jamais de tâche",
+      "start": 28.17,
+      "end": 29.13
+    },
+    {
+      "text": "terminée sans tests",
+      "start": 29.13,
+      "end": 29.94
+    },
+    {
+      "text": "lancés.",
+      "start": 29.94,
+      "end": 30.23
+    },
+    {
+      "text": "Commente le mot",
+      "start": 30.23,
+      "end": 31.22
+    },
+    {
+      "text": "RÈGLES et je",
+      "start": 31.22,
+      "end": 31.7
+    },
+    {
+      "text": "t'envoie le fichier",
+      "start": 31.7,
+      "end": 32.47
+    },
+    {
+      "text": "complet.",
+      "start": 32.47,
+      "end": 32.81
+    }
+  ]
+}

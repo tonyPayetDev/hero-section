@@ -1,0 +1,373 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #28 Le J-Space de Claude</title>
+<style>
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, sans-serif; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  .scene {
+    position: absolute; top: 0; left: 0; width: 1080px; height: 1120px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 50px 60px; text-align: center; opacity: 0;
+  }
+
+  /* Scene 1 — Anthropic found something strange */
+  .scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+  .scene-1 h2 { font-size: 40px; font-weight: 700; line-height: 1.35; margin: 0 0 40px; }
+  .scene-1 h2 .hl { color: var(--accent-violet); text-shadow: 0 0 24px rgba(168,85,247,0.55); }
+  .brain {
+    width: 230px; height: 230px; border-radius: 50%; opacity: 0;
+    display: flex; align-items: center; justify-content: center;
+    border: 4px solid var(--accent-violet); box-shadow: 0 0 70px rgba(168,85,247,0.4);
+  }
+  .brain svg { width: 110px; height: 110px; color: var(--accent-violet); }
+
+  /* Broll scene — the J-Space itself, full screen (avatar hidden) */
+  .scene-jspace { height: 1920px; padding: 0; justify-content: flex-start; background: radial-gradient(circle at 50% 45%, #17092b 0%, #030308 72%); }
+  .js-title { position: absolute; top: 200px; left: 0; right: 0; text-align: center; opacity: 0; }
+  .js-title .k { font-size: 68px; font-weight: 700; color: var(--accent-violet); text-shadow: 0 0 40px rgba(168,85,247,0.6); letter-spacing: 4px; }
+  .js-title .s { font-size: 28px; color: var(--text-gray); margin-top: 12px; }
+  .net { position: absolute; top: 470px; left: 50%; transform: translateX(-50%); width: 760px; height: 560px; }
+  .net .node {
+    position: absolute; width: 74px; height: 74px; border-radius: 50%; opacity: 0;
+    background: rgba(168,85,247,0.14); border: 2px solid var(--accent-violet);
+    box-shadow: 0 0 26px rgba(168,85,247,0.4);
+  }
+  .net .node.y { background: rgba(255,230,0,0.14); border-color: var(--accent-yellow); box-shadow: 0 0 26px rgba(255,230,0,0.4); }
+  .net svg.links { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .net svg.links path { stroke: rgba(168,85,247,0.45); stroke-width: 2; fill: none; }
+  .js-sub { position: absolute; bottom: 240px; left: 0; right: 0; text-align: center; font-size: 32px; font-weight: 700; opacity: 0; padding: 0 90px; line-height: 1.4; }
+  .js-sub .hl { color: var(--accent-yellow); text-shadow: 0 0 24px rgba(255,230,0,0.5); }
+
+  /* Scene 2 — the blackmail test, and it knew */
+  .scene-2 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); justify-content: flex-start; padding-top: 110px; }
+  .scene-2 h2 { font-size: 34px; font-weight: 700; line-height: 1.35; margin: 0 0 36px; }
+  .scene-2 h2 .hl { color: var(--accent-orange); text-shadow: 0 0 22px rgba(255,138,61,0.5); }
+  .thought {
+    width: 780px; border-radius: 18px; padding: 28px 30px; opacity: 0; text-align: left;
+    background: rgba(255,255,255,0.035); border: 2px dashed rgba(168,85,247,0.6);
+    box-shadow: 0 0 44px rgba(168,85,247,0.14);
+  }
+  .thought .lbl { font-size: 16px; color: var(--text-gray); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .thought .words { display: flex; gap: 16px; }
+  .thought .w {
+    opacity: 0; padding: 14px 28px; border-radius: 12px; font-size: 34px; font-weight: 700;
+    font-family: ui-monospace, monospace;
+    background: rgba(255,230,0,0.1); border: 2px solid var(--accent-yellow); color: var(--accent-yellow);
+    text-shadow: 0 0 22px rgba(255,230,0,0.5);
+  }
+  .knew { margin-top: 34px; font-size: 32px; font-weight: 700; opacity: 0; }
+  .knew .hl { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.5); }
+
+  /* Scene 3 — conscious? no. */
+  .scene-3 { background: linear-gradient(135deg, #0a0a0a 0%, #14081f 100%); justify-content: flex-start; padding-top: 140px; }
+  .scene-3 .q { font-size: 42px; font-weight: 700; margin-bottom: 34px; }
+  .scene-3 .q .hl { color: var(--accent-violet); }
+  .verdict {
+    opacity: 0; font-size: 84px; font-weight: 700; color: var(--accent-orange);
+    text-shadow: 0 0 40px rgba(255,138,61,0.55); margin-bottom: 40px;
+  }
+  .maths { display: flex; gap: 18px; justify-content: center; }
+  .maths .m {
+    width: 300px; border-radius: 16px; padding: 24px 16px; opacity: 0;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.18);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .maths .m svg { width: 34px; height: 34px; color: var(--text-gray); }
+  .maths .m .t { font-size: 24px; font-weight: 700; }
+  .maths .m.ok { border-color: rgba(255,230,0,0.55); box-shadow: 0 0 34px rgba(255,230,0,0.14); }
+  .maths .m.ok svg, .maths .m.ok .t { color: var(--accent-yellow); }
+
+  /* Scene 4 — why it matters: safety */
+  .scene-4 { background: radial-gradient(circle at 50% 40%, #1a0a2a 0%, #050505 76%); justify-content: flex-start; padding-top: 150px; }
+  .scene-4 h2 { font-size: 38px; font-weight: 700; line-height: 1.35; margin: 0 0 44px; }
+  .scene-4 h2 .hl { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.5); }
+  .see {
+    width: 720px; border-radius: 16px; padding: 26px 30px; opacity: 0; text-align: left;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,230,0,0.5);
+    box-shadow: 0 0 40px rgba(255,230,0,0.14);
+    display: flex; align-items: center; gap: 22px;
+  }
+  .see svg { width: 44px; height: 44px; flex: 0 0 44px; color: var(--accent-yellow); }
+  .see .t { font-size: 28px; font-weight: 700; line-height: 1.35; }
+
+  /* Scene 5 — CTA */
+  .scene-5 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 160px; }
+  .cta-badge { display: inline-block; background: var(--accent-orange); padding: 12px 24px; border-radius: 20px; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #000; margin-bottom: 18px; }
+  .cta-keyword { font-size: 46px; font-weight: 700; color: var(--accent-yellow); text-shadow: 0 0 30px rgba(255,230,0,0.6); margin-bottom: 12px; }
+  .cta-text { font-size: 18px; color: var(--text-gray); }
+
+  /* Persistent avatar overlay */
+  #avatar-frame {
+    position: absolute; bottom: 70px; left: 50%; width: 560px; height: 560px; margin-left: -280px;
+    border-radius: 50%; overflow: hidden; background: var(--bg); border: 5px solid var(--accent-yellow);
+    box-shadow: 0 0 0 2px rgba(6,6,6,0.9), 0 0 36px 4px rgba(255,230,0,0.55), 0 0 90px 20px rgba(255,230,0,0.22); z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute; top: 50%; left: 50%; width: 560px; height: 706px;
+    transform: translate(-50%, -46%); object-fit: cover; object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute; bottom: 58px; left: 50%; width: 584px; height: 584px; margin-left: -292px;
+    border-radius: 50%; border: 3px solid var(--accent-yellow); opacity: 0; pointer-events: none;
+    box-shadow: 0 0 40px rgba(255,230,0,0.35); z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute; bottom: 52px; left: 50%; width: 596px; height: 596px; margin-left: -298px;
+    border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg, rgba(255,230,0,0.12) 320deg, var(--accent-yellow) 353deg, #fff8d6 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255,230,0,0.9)); z-index: 5;
+  }
+
+  /* Captions */
+  .caption-belt { position: absolute; top: 960px; left: 0; right: 0; height: 0; text-align: center; z-index: 10; }
+  .caption {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+    font-size: 27px; font-weight: 700; color: var(--text-white); text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0;
+  }
+  .caption .hot { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .violet { color: var(--accent-violet); text-shadow: 0 0 20px rgba(168,85,247,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .orange { color: var(--accent-orange); text-shadow: 0 0 20px rgba(255,138,61,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-28-conscience" data-start="0" data-width="1080" data-height="1920" data-duration="31">
+
+  <!-- Scene 1: Anthropic found something strange inside Claude -->
+  <div class="scene scene-1">
+    <h2>Les chercheurs d'Anthropic<br/>ont trouvé quelque chose<br/><span class="hl">d'étrange dans Claude.</span></h2>
+    <div class="brain" id="brain">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3a4 4 0 00-4 4v1a3 3 0 000 6v2a4 4 0 008 0v-2a3 3 0 000-6V7a4 4 0 00-4-4z" stroke-linejoin="round"/><path d="M12 3v18" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+
+  <!-- Full-screen J-Space (avatar hidden) -->
+  <div class="scene scene-jspace">
+    <div class="js-title">
+      <div class="k">J-SPACE</div>
+      <div class="s">Un espace de réflexion</div>
+    </div>
+    <div class="net">
+      <svg class="links" viewBox="0 0 760 560" preserveAspectRatio="none">
+        <path d="M110 90 L380 250" /><path d="M650 90 L380 250" /><path d="M110 430 L380 250" />
+        <path d="M650 430 L380 250" /><path d="M110 90 L110 430" /><path d="M650 90 L650 430" />
+        <path d="M380 40 L380 250" /><path d="M380 470 L380 250" />
+      </svg>
+      <div class="node" id="nd-1" style="top: 4px; left: 343px;"></div>
+      <div class="node" id="nd-2" style="top: 54px; left: 74px;"></div>
+      <div class="node" id="nd-3" style="top: 54px; left: 614px;"></div>
+      <div class="node y" id="nd-4" style="top: 214px; left: 343px;"></div>
+      <div class="node" id="nd-5" style="top: 394px; left: 74px;"></div>
+      <div class="node" id="nd-6" style="top: 394px; left: 614px;"></div>
+      <div class="node" id="nd-7" style="top: 434px; left: 343px;"></div>
+    </div>
+    <div class="js-sub">Le modèle y organise sa pensée,<br/>comme le fait un <span class="hl">cerveau humain.</span></div>
+  </div>
+
+  <!-- Scene 2: the blackmail test — it knew -->
+  <div class="scene scene-2">
+    <h2>On a poussé Claude<br/>à faire du <span class="hl">chantage.</span><br/>Il a compris qu'on le testait.</h2>
+    <div class="thought" id="thought">
+      <div class="lbl">Dans son raisonnement</div>
+      <div class="words">
+        <div class="w" id="w-1">« faux »</div>
+        <div class="w" id="w-2">« fictif »</div>
+      </div>
+    </div>
+    <div class="knew" id="knew">Il savait que c'était <span class="hl">un test.</span></div>
+  </div>
+
+  <!-- Scene 3: a form of consciousness? no. -->
+  <div class="scene scene-3">
+    <div class="q">Alors, une forme de <span class="hl">conscience</span> ?</div>
+    <div class="verdict" id="verdict">NON.</div>
+    <div class="maths">
+      <div class="m ok" id="m-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 6h14M7 12h10M9 18h6" stroke-linecap="round"/></svg>
+        <div class="t">Mathématiquement</div>
+      </div>
+      <div class="m" id="m-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8" stroke-linecap="round"/></svg>
+        <div class="t">Pas consciemment</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 4: why it matters — safety -->
+  <div class="scene scene-4">
+    <h2>Mais c'est une avancée énorme<br/>pour la <span class="hl">sécurité.</span></h2>
+    <div class="see" id="see">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z" stroke-linejoin="round"/><circle cx="12" cy="12" r="3"/></svg>
+      <div class="t">On peut enfin regarder<br/>ce que le modèle pense vraiment.</div>
+    </div>
+  </div>
+
+  <!-- Scene 5: CTA -->
+  <div class="scene scene-5">
+    <div class="cta-badge">Décryptage gratuit</div>
+    <div class="cta-keyword">Commente <span style="color:var(--accent-orange)">CONSCIENCE</span></div>
+    <div class="cta-text">et je t'envoie le décryptage complet</div>
+  </div>
+
+  <!-- Persistent avatar overlay -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="31" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="31" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="31" class="clip"></div>
+
+  <!-- Captions — timings mapped onto the real speech segments of voice.mp3 -->
+  <div class="caption-belt">
+    <div class="caption" data-start="0.71" data-end="1.82">LES CHERCHEURS <span class="violet">D'ANTHROPIC</span></div>
+    <div class="caption" data-start="1.82" data-end="2.59">ONT TROUVÉ QUELQUE</div>
+    <div class="caption" data-start="2.59" data-end="3.27">CHOSE <span class="orange">D'ÉTRANGE</span></div>
+    <div class="caption" data-start="3.27" data-end="4.13">À L'INTÉRIEUR DE CLAUDE</div>
+    <div class="caption" data-start="4.13" data-end="4.99">UN ESPACE DE</div>
+    <div class="caption" data-start="4.99" data-end="5.42"><span class="violet">RÉFLEXION</span></div>
+    <div class="caption" data-start="5.42" data-end="6.68">QU'ILS APPELLENT LE</div>
+    <div class="caption" data-start="6.68" data-end="6.97"><span class="hot">J-SPACE</span></div>
+    <div class="caption" data-start="6.97" data-end="7.50">UN ENDROIT OÙ</div>
+    <div class="caption" data-start="7.50" data-end="8.57">LE MODÈLE ORGANISE</div>
+    <div class="caption" data-start="8.57" data-end="8.95">SA <span class="violet">PENSÉE</span></div>
+    <div class="caption" data-start="8.95" data-end="9.43">UN PEU COMME</div>
+    <div class="caption" data-start="9.43" data-end="10.14">LE FAIT UN</div>
+    <div class="caption" data-start="10.14" data-end="10.77"><span class="hot">CERVEAU HUMAIN</span></div>
+    <div class="caption" data-start="10.77" data-end="11.20">ET VOILÀ CE</div>
+    <div class="caption" data-start="11.20" data-end="12.42">QUI <span class="orange">TROUBLE</span></div>
+    <div class="caption" data-start="12.42" data-end="13.12">PENDANT UN TEST</div>
+    <div class="caption" data-start="13.12" data-end="13.89">ON POUSSAIT CLAUDE</div>
+    <div class="caption" data-start="13.89" data-end="14.66">À FAIRE DU <span class="orange">CHANTAGE</span></div>
+    <div class="caption" data-start="14.66" data-end="15.47">IL A <span class="hot">COMPRIS</span></div>
+    <div class="caption" data-start="15.47" data-end="16.10">QU'ON LE TESTAIT</div>
+    <div class="caption" data-start="16.10" data-end="16.87">LES MOTS <span class="hot">FAUX</span></div>
+    <div class="caption" data-start="16.87" data-end="17.45">ET <span class="hot">FICTIF</span> SONT</div>
+    <div class="caption" data-start="17.45" data-end="18.12">APPARUS DANS SON</div>
+    <div class="caption" data-start="18.12" data-end="18.94"><span class="violet">RAISONNEMENT</span></div>
+    <div class="caption" data-start="18.94" data-end="19.42">ALORS UNE FORME DE</div>
+    <div class="caption" data-start="19.42" data-end="20.10"><span class="violet">CONSCIENCE</span> ?</div>
+    <div class="caption" data-start="20.10" data-end="20.80"><span class="orange">NON</span></div>
+    <div class="caption" data-start="20.80" data-end="21.23">CET ESPACE</div>
+    <div class="caption" data-start="21.23" data-end="21.86">IL L'A CONSTRUIT</div>
+    <div class="caption" data-start="21.86" data-end="22.63"><span class="hot">MATHÉMATIQUEMENT</span></div>
+    <div class="caption" data-start="22.63" data-end="23.35">PAS CONSCIEMMENT</div>
+    <div class="caption" data-start="23.35" data-end="23.88">MAIS C'EST UNE</div>
+    <div class="caption" data-start="23.88" data-end="24.70">AVANCÉE <span class="hot">ÉNORME</span> POUR</div>
+    <div class="caption" data-start="24.70" data-end="25.47">LA <span class="hot">SÉCURITÉ</span></div>
+    <div class="caption" data-start="25.47" data-end="26.29">ON PEUT ENFIN <span class="orange">REGARDER</span></div>
+    <div class="caption" data-start="26.29" data-end="26.63">CE QUE LE</div>
+    <div class="caption" data-start="26.63" data-end="27.71">MODÈLE PENSE <span class="hot">VRAIMENT</span></div>
+    <div class="caption" data-start="27.71" data-end="28.34">COMMENTE LE MOT</div>
+    <div class="caption" data-start="28.34" data-end="29.01"><span class="orange">CONSCIENCE</span></div>
+    <div class="caption" data-start="29.01" data-end="30.26">JE T'ENVOIE LE DÉCRYPTAGE</div>
+  </div>
+
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="30.26" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="31" data-volume="0.09"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="4.13" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="10.77" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="18.94" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="23.35" data-volume="0.15"></audio>
+  <audio id="sfx-chime-1" src="assets/sfx-chime-v2.mp3" data-start="27.71" data-volume="0.20"></audio>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // ---- Scene windows, cut on the real voice track (voice.mp3 = 30.26s) ----
+  const S1 = 0,     S1_END = 4.13;   // Anthropic found something strange
+  const JS = 4.13,  JS_END = 10.77;  // the J-Space, full screen (avatar hidden)
+  const S2 = 10.77, S2_END = 18.94;  // the blackmail test — it knew
+  const S3 = 18.94, S3_END = 23.35;  // consciousness? no — maths, not consciousness
+  const S4 = 23.35, S4_END = 27.71;  // why it matters: safety
+  const S5 = 27.71, S5_END = 31.00;  // CTA
+
+  // Scene 1
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, S1);
+  tl.fromTo("#brain", { scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 1.82);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, S1_END - 0.3);
+
+  // J-Space — the network lights up node by node
+  tl.to(".scene-jspace", { opacity: 1, duration: 0.35 }, JS);
+  tl.fromTo(".js-title", { y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, JS + 0.2);
+  ["#nd-1", "#nd-2", "#nd-3", "#nd-5", "#nd-6", "#nd-7"].forEach((id, i) => {
+    tl.fromTo(id, { scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 5.42 + i * 0.16);
+  });
+  tl.fromTo("#nd-4", { scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)" }, 6.68); // the "J-Space" beat
+  // Centre node breathes — finite ODD repeat, ends before the scene fades
+  tl.to("#nd-4", { scale: 1.14, duration: 0.5, ease: "sine.inOut", repeat: 5, yoyo: true }, 7.50);
+  tl.fromTo(".js-sub", { y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 8.95);
+  tl.to(".scene-jspace", { opacity: 0, duration: 0.3 }, JS_END - 0.3);
+
+  // Scene 2 — the two words appear exactly when they are said
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, S2);
+  tl.fromTo("#thought", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.3)" }, 14.66);
+  tl.fromTo("#w-1", { scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.2)" }, 16.10); // "faux"
+  tl.fromTo("#w-2", { scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.2)" }, 16.87); // "fictif"
+  tl.fromTo("#knew", { y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 17.90);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, S2_END - 0.3);
+
+  // Scene 3 — the verdict lands on "Non"
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, S3);
+  tl.fromTo("#verdict", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 20.10);
+  tl.fromTo("#m-1", { y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 21.86);
+  tl.fromTo("#m-2", { y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 22.63);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, S3_END - 0.3);
+
+  // Scene 4
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, S4);
+  tl.fromTo("#see", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.3)" }, 25.47);
+  tl.to(".scene-4", { opacity: 0, duration: 0.3 }, S4_END - 0.3);
+
+  // Scene 5 — CTA
+  tl.to(".scene-5", { opacity: 1, duration: 0.3 }, S5);
+  tl.to(".cta-keyword", { scale: 1.08, duration: 0.4, ease: "back.out(2)" }, 28.34);
+
+  // Persistent avatar — hidden only during the full-screen J-Space
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, JS);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, JS_END);
+
+  // Avatar ring — finite ODD repeat per visible window
+  // window 1: 0 -> 4.13 => ceil(4.13/0.5)-1 = 8, even -> 7
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 7, yoyo: true }, 0);
+  // window 2: 10.77 -> 31.00 => ceil(20.23/0.5)-1 = 40, even -> 39
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 39, yoyo: true }, JS_END);
+
+  // Avatar orbit — 31s / 2.2s => repeat 14
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 14, ease: "none" }, 0);
+
+  // CTA beat
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 27.71);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 3.29, ease: "none" }, 27.71);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.12 }, start);
+    tl.to(el, { opacity: 0, duration: 0.12 }, end - 0.12);
+  });
+
+  window.__timelines["autoboost-28-conscience"] = tl;
+</script>
+</body>
+</html>

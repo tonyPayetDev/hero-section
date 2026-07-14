@@ -1,0 +1,502 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #26 Le CLAUDE.md du créateur de Claude Code</title>
+<style>
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, sans-serif; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  .scene {
+    position: absolute; top: 0; left: 0; width: 1080px; height: 1120px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 50px 60px; text-align: center; opacity: 0;
+  }
+
+  /* Shared: the numbered rule card */
+  .rule {
+    width: 820px; border-radius: 18px; padding: 28px 32px; opacity: 0;
+    background: rgba(255,255,255,0.035); border: 2px solid rgba(255,230,0,0.5);
+    box-shadow: 0 0 44px rgba(255,230,0,0.14);
+    display: flex; align-items: center; gap: 24px; text-align: left;
+  }
+  .rule .n {
+    width: 58px; height: 58px; flex: 0 0 58px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-yellow); color: #000; font-size: 28px; font-weight: 700;
+  }
+  .rule .rn { font-size: 32px; font-weight: 700; }
+  .rule .rs { font-size: 18px; color: var(--text-gray); margin-top: 5px; }
+  .rule.violet { border-color: rgba(168,85,247,0.55); box-shadow: 0 0 44px rgba(168,85,247,0.16); }
+  .rule.violet .n { background: var(--accent-violet); }
+
+  /* Scene 1 — the file itself */
+  .scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+  .scene-1 h2 { font-size: 36px; font-weight: 700; line-height: 1.35; margin: 0 0 36px; }
+  .scene-1 h2 .hl { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.5); }
+  .file {
+    width: 620px; border-radius: 14px; overflow: hidden; opacity: 0;
+    border: 2px solid rgba(255,255,255,0.16); background: #0d0d0d;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.7), 0 0 50px rgba(255,230,0,0.12);
+  }
+  .file .bar { height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 16px; background: #141414; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .file .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .file .d1 { background: #ff5f57; } .file .d2 { background: #febc2e; } .file .d3 { background: #28c840; }
+  .file .fname { margin-left: 12px; font-family: ui-monospace, monospace; font-size: 16px; color: var(--accent-yellow); letter-spacing: 1px; }
+  .file .body { padding: 22px 24px; text-align: left; font-family: ui-monospace, monospace; font-size: 19px; line-height: 1.9; color: var(--text-gray); }
+  .file .body .k { color: var(--accent-violet); }
+  .badge4 {
+    margin-top: 28px; opacity: 0; display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 26px; border-radius: 30px; background: rgba(255,138,61,0.14); border: 2px solid var(--accent-orange);
+  }
+  .badge4 .t { font-size: 24px; font-weight: 700; color: var(--accent-orange); letter-spacing: 1px; }
+
+  /* Scene 2 — read on every session */
+  .scene-2 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); justify-content: flex-start; padding-top: 150px; }
+  .scene-2 h2 { font-size: 38px; font-weight: 700; line-height: 1.35; margin: 0 0 44px; }
+  .scene-2 h2 .hl { color: var(--accent-violet); text-shadow: 0 0 22px rgba(168,85,247,0.5); }
+  .sessions { display: flex; align-items: center; gap: 16px; }
+  .sessions .s {
+    width: 150px; border-radius: 14px; padding: 22px 12px; opacity: 0;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,230,0,0.45);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .sessions .s svg { width: 30px; height: 30px; color: var(--accent-yellow); }
+  .sessions .s .t { font-size: 16px; font-weight: 700; }
+
+  /* Scenes 3/4/5 — one rule each */
+  .scene-3 { background: linear-gradient(135deg, #0a0a0a 0%, #12081f 100%); justify-content: flex-start; padding-top: 130px; }
+  .scene-4 { background: radial-gradient(circle at 50% 38%, #12081f 0%, #050505 76%); justify-content: flex-start; padding-top: 130px; }
+  .scene-5 { background: linear-gradient(135deg, #0a0a0a 0%, #14081f 100%); justify-content: flex-start; padding-top: 120px; }
+
+  /* Scene 3 detail — plan first */
+  .steps { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 34px; }
+  .steps .st {
+    width: 210px; border-radius: 14px; padding: 20px 12px; opacity: 0;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,230,0,0.4);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .steps .st svg { width: 30px; height: 30px; color: var(--accent-yellow); }
+  .steps .st .t { font-size: 19px; font-weight: 700; }
+  .steps .ar { opacity: 0; }
+  .steps .ar svg { width: 30px; height: 30px; color: var(--text-gray); }
+
+  /* Scene 4 detail — subagents */
+  .agents { display: flex; justify-content: center; gap: 16px; margin-top: 34px; }
+  .agents .a {
+    width: 170px; border-radius: 14px; padding: 20px 12px; opacity: 0;
+    background: rgba(255,255,255,0.03); border: 2px solid rgba(168,85,247,0.45);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .agents .a svg { width: 28px; height: 28px; color: var(--accent-violet); }
+  .agents .a .t { font-size: 17px; font-weight: 700; }
+  .clean { margin-top: 26px; font-size: 24px; opacity: 0; color: var(--accent-yellow); font-weight: 700; }
+
+  /* Scene 5 detail — the self-improvement loop (the rule that changes everything) */
+  .loop { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 34px; }
+  .loop .lb {
+    width: 230px; border-radius: 14px; padding: 22px 12px; opacity: 0;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,138,61,0.5);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    box-shadow: 0 0 30px rgba(255,138,61,0.12);
+  }
+  .loop .lb svg { width: 32px; height: 32px; color: var(--accent-orange); }
+  .loop .lb .t { font-size: 20px; font-weight: 700; }
+  .loop .ar { opacity: 0; }
+  .loop .ar svg { width: 30px; height: 30px; color: var(--text-gray); }
+  .fall { margin-top: 30px; opacity: 0; display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .fall svg { width: 34px; height: 34px; color: var(--accent-yellow); }
+  .fall .t { font-size: 28px; font-weight: 700; }
+  .fall .t .hl { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.5); }
+
+  /* Broll — rule 4: prove it works (avatar hidden) */
+  .scene-broll { height: 1920px; padding: 0; justify-content: flex-start; background: #000; }
+  #broll { position: absolute; top: 0; left: 0; width: 1080px; height: 1920px; object-fit: cover; filter: brightness(0.34); }
+  .broll-shade { position: absolute; left: 0; right: 0; bottom: 0; height: 1300px; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 45%, #000 100%); }
+  .broll-rule { position: absolute; top: 190px; left: 50%; transform: translateX(-50%); opacity: 0; }
+  .broll-checks { position: absolute; top: 420px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .broll-checks .c {
+    width: 560px; border-radius: 14px; padding: 20px 26px; opacity: 0;
+    background: rgba(0,0,0,0.55); border: 2px solid rgba(255,230,0,0.45);
+    display: flex; align-items: center; gap: 16px; text-align: left;
+  }
+  .broll-checks .c svg { width: 26px; height: 26px; flex: 0 0 26px; color: var(--accent-yellow); }
+  .broll-checks .c .t { font-size: 24px; font-weight: 700; }
+
+  /* Scene 6 — CTA */
+  .scene-6 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 160px; }
+  .cta-badge { display: inline-block; background: var(--accent-orange); padding: 12px 24px; border-radius: 20px; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #000; margin-bottom: 18px; }
+  .cta-keyword { font-size: 50px; font-weight: 700; color: var(--accent-yellow); text-shadow: 0 0 30px rgba(255,230,0,0.6); margin-bottom: 12px; }
+  .cta-text { font-size: 18px; color: var(--text-gray); }
+
+  /* Persistent avatar overlay */
+  #avatar-frame {
+    position: absolute; bottom: 70px; left: 50%; width: 560px; height: 560px; margin-left: -280px;
+    border-radius: 50%; overflow: hidden; background: var(--bg); border: 5px solid var(--accent-yellow);
+    box-shadow: 0 0 0 2px rgba(6,6,6,0.9), 0 0 36px 4px rgba(255,230,0,0.55), 0 0 90px 20px rgba(255,230,0,0.22); z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute; top: 50%; left: 50%; width: 560px; height: 706px;
+    transform: translate(-50%, -46%); object-fit: cover; object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute; bottom: 58px; left: 50%; width: 584px; height: 584px; margin-left: -292px;
+    border-radius: 50%; border: 3px solid var(--accent-yellow); opacity: 0; pointer-events: none;
+    box-shadow: 0 0 40px rgba(255,230,0,0.35); z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute; bottom: 52px; left: 50%; width: 596px; height: 596px; margin-left: -298px;
+    border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg, rgba(255,230,0,0.12) 320deg, var(--accent-yellow) 353deg, #fff8d6 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255,230,0,0.9)); z-index: 5;
+  }
+
+  /* Captions */
+  .caption-belt { position: absolute; top: 960px; left: 0; right: 0; height: 0; text-align: center; z-index: 10; }
+  .caption {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+    font-size: 27px; font-weight: 700; color: var(--text-white); text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0;
+  }
+  .caption .hot { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .violet { color: var(--accent-violet); text-shadow: 0 0 20px rgba(168,85,247,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .orange { color: var(--accent-orange); text-shadow: 0 0 20px rgba(255,138,61,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-26-claude-md" data-start="0" data-width="1080" data-height="1920" data-duration="33">
+
+  <!-- Scene 1: the file -->
+  <div class="scene scene-1">
+    <h2>Le créateur de Claude Code<br/>a partagé son <span class="hl">fichier de règles.</span></h2>
+    <div class="file" id="file">
+      <div class="bar">
+        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+        <div class="fname">CLAUDE.md</div>
+      </div>
+      <div class="body">
+        <span class="k">1.</span> Le plan d'abord<br/>
+        <span class="k">2.</span> Déléguer aux sous-agents<br/>
+        <span class="k">3.</span> La boucle d'auto-amélioration<br/>
+        <span class="k">4.</span> Prouver que ça marche
+      </div>
+    </div>
+    <div class="badge4" id="badge4">
+      <div class="t">Et la 3e change tout</div>
+    </div>
+  </div>
+
+  <!-- Scene 2: read at every session -->
+  <div class="scene scene-2">
+    <h2>Claude le lit<br/><span class="hl">à chaque session.</span></h2>
+    <div class="sessions">
+      <div class="s" id="ss-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke-linecap="round"/></svg>
+        <div class="t">Session 1</div>
+      </div>
+      <div class="s" id="ss-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke-linecap="round"/></svg>
+        <div class="t">Session 2</div>
+      </div>
+      <div class="s" id="ss-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke-linecap="round"/></svg>
+        <div class="t">Session 3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3: rule 1 — plan first -->
+  <div class="scene scene-3">
+    <div class="rule" id="r1">
+      <div class="n">1</div>
+      <div>
+        <div class="rn">Le plan d'abord</div>
+        <div class="rs">Avant d'écrire une ligne de code</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="st" id="st-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z" stroke-linejoin="round"/><path d="M8 9h8M8 13h6" stroke-linecap="round"/></svg>
+        <div class="t">Écrit le plan</div>
+      </div>
+      <div class="ar" id="sa-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="st" id="st-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">Code ensuite</div>
+      </div>
+      <div class="ar" id="sa-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0113.7-5.7L20 8" stroke-linecap="round"/><path d="M20 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="st" id="st-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v10M12 17v1" stroke-linecap="round"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="t">Ça dérape ? Replan</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 4: rule 2 — subagents -->
+  <div class="scene scene-4">
+    <div class="rule violet" id="r2">
+      <div class="n">2</div>
+      <div>
+        <div class="rn">Déléguer aux sous-agents</div>
+        <div class="rs">Le complexe part ailleurs</div>
+      </div>
+    </div>
+    <div class="agents">
+      <div class="a" id="ag-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M9 13h.01M15 13h.01" stroke-linecap="round"/></svg>
+        <div class="t">Sous-agent</div>
+      </div>
+      <div class="a" id="ag-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M9 13h.01M15 13h.01" stroke-linecap="round"/></svg>
+        <div class="t">Sous-agent</div>
+      </div>
+      <div class="a" id="ag-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M9 13h.01M15 13h.01" stroke-linecap="round"/></svg>
+        <div class="t">Sous-agent</div>
+      </div>
+    </div>
+    <div class="clean" id="clean">Le contexte principal reste propre</div>
+  </div>
+
+  <!-- Scene 5: rule 3 — the self-improvement loop -->
+  <div class="scene scene-5">
+    <div class="rule" id="r3">
+      <div class="n">3</div>
+      <div>
+        <div class="rn">La boucle d'auto-amélioration</div>
+        <div class="rs">La règle qui change tout</div>
+      </div>
+    </div>
+    <div class="loop">
+      <div class="lb" id="lb-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16v1" stroke-linecap="round"/></svg>
+        <div class="t">Une erreur</div>
+      </div>
+      <div class="ar" id="la-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="lb" id="lb-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke-linecap="round"/></svg>
+        <div class="t">Devient une règle</div>
+      </div>
+      <div class="ar" id="la-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="lb" id="lb-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12a8 8 0 0113.7-5.7L20 8" stroke-linecap="round"/><path d="M20 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 01-13.7 5.7L4 16" stroke-linecap="round"/><path d="M4 20v-4h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">La session suivante la lit</div>
+      </div>
+    </div>
+    <div class="fall" id="fall">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6l7 8 3-3 6 7" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 18h-5M20 18v-5" stroke-linecap="round"/></svg>
+      <div class="t">Le taux d'erreur <span class="hl">s'effondre</span></div>
+    </div>
+  </div>
+
+  <!-- Broll: rule 4 — prove it works (avatar hidden) -->
+  <div class="scene scene-broll">
+    <video id="broll" src="assets/broll-working.mp4" data-start="26.20" data-duration="4.03" muted playsinline></video>
+    <div class="broll-shade"></div>
+    <div class="broll-rule">
+      <div class="rule" id="r4" style="width: 760px;">
+        <div class="n">4</div>
+        <div>
+          <div class="rn">Prouver que ça marche</div>
+          <div class="rs">Jamais terminé sans preuve</div>
+        </div>
+      </div>
+    </div>
+    <div class="broll-checks">
+      <div class="c" id="ck-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">Tests lancés</div>
+      </div>
+      <div class="c" id="ck-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">Logs vérifiés</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 6: CTA -->
+  <div class="scene scene-6">
+    <div class="cta-badge">Fichier complet gratuit</div>
+    <div class="cta-keyword">Commente <span style="color:var(--accent-orange)">RÈGLES</span></div>
+    <div class="cta-text">et je t'envoie le fichier à copier-coller</div>
+  </div>
+
+  <!-- Persistent avatar overlay -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="33" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="33" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="33" class="clip"></div>
+
+  <!-- Captions — timings mapped onto the real speech segments of voice.mp3 -->
+  <div class="caption-belt">
+    <div class="caption" data-start="0.48" data-end="1.05">LE CRÉATEUR DE</div>
+    <div class="caption" data-start="1.05" data-end="1.77"><span class="violet">CLAUDE CODE</span> VIENT</div>
+    <div class="caption" data-start="1.77" data-end="2.40">DE PARTAGER SON</div>
+    <div class="caption" data-start="2.40" data-end="3.12">FICHIER DE <span class="hot">RÈGLES</span></div>
+    <div class="caption" data-start="3.12" data-end="3.55">PERSONNEL</div>
+    <div class="caption" data-start="3.55" data-end="4.64"><span class="hot">QUATRE RÈGLES</span></div>
+    <div class="caption" data-start="4.64" data-end="5.71">ET LA TROISIÈME</div>
+    <div class="caption" data-start="5.71" data-end="6.19"><span class="orange">CHANGE TOUT</span></div>
+    <div class="caption" data-start="6.19" data-end="7.16">CLAUDE LIT CE</div>
+    <div class="caption" data-start="7.16" data-end="7.83">FICHIER À CHAQUE</div>
+    <div class="caption" data-start="7.83" data-end="8.55">NOUVELLE <span class="violet">SESSION</span></div>
+    <div class="caption" data-start="8.55" data-end="9.45">RÈGLE UNE</div>
+    <div class="caption" data-start="9.45" data-end="9.93">LE <span class="hot">PLAN D'ABORD</span></div>
+    <div class="caption" data-start="9.93" data-end="10.97">AVANT DE CODER</div>
+    <div class="caption" data-start="10.97" data-end="11.59">IL ÉCRIT LE PLAN</div>
+    <div class="caption" data-start="11.59" data-end="12.07">SI ÇA <span class="orange">DÉRAPE</span></div>
+    <div class="caption" data-start="12.07" data-end="12.93">IL S'ARRÊTE ET</div>
+    <div class="caption" data-start="12.93" data-end="13.60">IL <span class="hot">REFAIT LE PLAN</span></div>
+    <div class="caption" data-start="13.60" data-end="14.84">RÈGLE DEUX</div>
+    <div class="caption" data-start="14.84" data-end="15.46">DÉLÉGUER AUX <span class="violet">SOUS-AGENTS</span></div>
+    <div class="caption" data-start="15.46" data-end="16.64">LE TRAVAIL COMPLEXE</div>
+    <div class="caption" data-start="16.64" data-end="17.22">PART AILLEURS</div>
+    <div class="caption" data-start="17.22" data-end="18.13">LE CONTEXTE PRINCIPAL</div>
+    <div class="caption" data-start="18.13" data-end="18.66">RESTE <span class="hot">PROPRE</span></div>
+    <div class="caption" data-start="18.66" data-end="19.24">RÈGLE TROIS</div>
+    <div class="caption" data-start="19.24" data-end="21.14">LA BOUCLE <span class="orange">D'AUTO-AMÉLIORATION</span></div>
+    <div class="caption" data-start="21.14" data-end="22.61">CHAQUE <span class="hot">ERREUR</span> DEVIENT</div>
+    <div class="caption" data-start="22.61" data-end="23.29">UNE RÈGLE ÉCRITE</div>
+    <div class="caption" data-start="23.29" data-end="24.57">LA SESSION SUIVANTE</div>
+    <div class="caption" data-start="24.57" data-end="24.81">LA LIT</div>
+    <div class="caption" data-start="24.81" data-end="25.77">LE TAUX D'ERREUR</div>
+    <div class="caption" data-start="25.77" data-end="26.20"><span class="hot">S'EFFONDRE</span></div>
+    <div class="caption" data-start="26.20" data-end="27.64">RÈGLE QUATRE</div>
+    <div class="caption" data-start="27.64" data-end="28.17"><span class="orange">PROUVER</span> QUE ÇA MARCHE</div>
+    <div class="caption" data-start="28.17" data-end="29.13">JAMAIS DE TÂCHE</div>
+    <div class="caption" data-start="29.13" data-end="30.23">TERMINÉE SANS <span class="hot">TESTS</span></div>
+    <div class="caption" data-start="30.23" data-end="31.22">COMMENTE LE MOT</div>
+    <div class="caption" data-start="31.22" data-end="31.90"><span class="orange">RÈGLES</span></div>
+    <div class="caption" data-start="31.90" data-end="32.81">JE T'ENVOIE LE FICHIER</div>
+  </div>
+
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32.81" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="33" data-volume="0.09"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="8.55" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="13.60" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="18.66" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="26.20" data-volume="0.15"></audio>
+  <audio id="sfx-chime-1" src="assets/sfx-chime-v2.mp3" data-start="30.23" data-volume="0.20"></audio>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // ---- Scene windows, cut on the real voice track (voice.mp3 = 32.81s) ----
+  const S1 = 0,     S1_END = 6.19;   // the file + "the 3rd changes everything"
+  const S2 = 6.19,  S2_END = 8.55;   // read at every session
+  const S3 = 8.55,  S3_END = 13.60;  // rule 1 — plan first
+  const S4 = 13.60, S4_END = 18.66;  // rule 2 — subagents
+  const S5 = 18.66, S5_END = 26.20;  // rule 3 — the loop
+  const BR = 26.20, BR_END = 30.23;  // rule 4 — prove it (broll, avatar hidden)
+  const S6 = 30.23, S6_END = 33.00;  // CTA
+
+  // Scene 1
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, S1);
+  tl.fromTo("#file", { y: 26, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.3)" }, 1.05);
+  tl.fromTo("#badge4", { y: 12, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, 4.64);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, S1_END - 0.3);
+
+  // Scene 2 — the sessions pop one by one
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, S2);
+  tl.fromTo("#ss-1", { scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 7.16);
+  tl.fromTo("#ss-2", { scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 7.50);
+  tl.fromTo("#ss-3", { scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 7.83);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, S2_END - 0.3);
+
+  // Scene 3 — rule 1
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, S3);
+  tl.fromTo("#r1", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, S3 + 0.15);
+  tl.fromTo("#st-1", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.6)" }, 9.93);
+  tl.fromTo("#sa-1", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25 }, 10.60);
+  tl.fromTo("#st-2", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.6)" }, 10.97);
+  tl.fromTo("#sa-2", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25 }, 11.75);
+  tl.fromTo("#st-3", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.6)" }, 12.07);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, S3_END - 0.3);
+
+  // Scene 4 — rule 2
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, S4);
+  tl.fromTo("#r2", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, S4 + 0.15);
+  tl.fromTo("#ag-1", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.6)" }, 15.46);
+  tl.fromTo("#ag-2", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.6)" }, 15.90);
+  tl.fromTo("#ag-3", { y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.6)" }, 16.30);
+  tl.fromTo("#clean", { y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 17.22);
+  tl.to(".scene-4", { opacity: 0, duration: 0.3 }, S4_END - 0.3);
+
+  // Scene 5 — rule 3, the loop builds as the sentence lands
+  tl.to(".scene-5", { opacity: 1, duration: 0.3 }, S5);
+  tl.fromTo("#r3", { y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, S5 + 0.15);
+  tl.fromTo("#lb-1", { y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 21.14);
+  tl.fromTo("#la-1", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25 }, 22.20);
+  tl.fromTo("#lb-2", { y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 22.61);
+  tl.fromTo("#la-2", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25 }, 23.05);
+  tl.fromTo("#lb-3", { y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 23.29);
+  tl.fromTo("#fall", { y: 12, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 25.15);
+  tl.to(".scene-5", { opacity: 0, duration: 0.3 }, S5_END - 0.3);
+
+  // Broll — rule 4
+  tl.to(".scene-broll", { opacity: 1, duration: 0.3 }, BR);
+  tl.fromTo("#r4", { y: 18, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, BR + 0.2);
+  tl.fromTo("#ck-1", { x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 29.13);
+  tl.fromTo("#ck-2", { x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 29.55);
+  tl.to(".scene-broll", { opacity: 0, duration: 0.3 }, BR_END - 0.3);
+
+  // Scene 6 — CTA
+  tl.to(".scene-6", { opacity: 1, duration: 0.3 }, S6);
+  tl.to(".cta-keyword", { scale: 1.1, duration: 0.4, ease: "back.out(2)" }, 31.22);
+
+  // Persistent avatar — hidden only during the broll
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, BR);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, BR_END);
+
+  // Avatar ring — finite ODD repeat per visible window
+  // window 1: 0 -> 26.20 => ceil(26.20/0.5)-1 = 52, even -> 51
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 51, yoyo: true }, 0);
+  // window 2: 30.23 -> 33.00 => ceil(2.77/0.5)-1 = 5 (odd)
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 5, yoyo: true }, BR_END);
+
+  // Avatar orbit — 33s / 2.2s => repeat 14
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 14, ease: "none" }, 0);
+
+  // CTA beat
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 30.23);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.77, ease: "none" }, 30.23);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.12 }, start);
+    tl.to(el, { opacity: 0, duration: 0.12 }, end - 0.12);
+  });
+
+  window.__timelines["autoboost-26-claude-md"] = tl;
+</script>
+</body>
+</html>

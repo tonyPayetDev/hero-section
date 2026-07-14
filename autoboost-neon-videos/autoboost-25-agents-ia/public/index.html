@@ -1,0 +1,453 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon Video — #25 Agents IA / Grandes Écoles</title>
+<style>
+  :root {
+    --bg: #000;
+    --accent-yellow: #FFE600;
+    --accent-violet: #A855F7;
+    --accent-orange: #FF8A3D;
+    --text-white: #fff;
+    --text-gray: #a0a0a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, -apple-system, sans-serif; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  .scene {
+    position: absolute; top: 0; left: 0; width: 1080px; height: 1120px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 50px 60px; text-align: center; opacity: 0;
+  }
+
+  /* Scene 1 — the Les Echos headline */
+  .scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+  .press {
+    width: 860px; border-radius: 18px; padding: 34px 38px; opacity: 0; text-align: left;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,230,0,0.5);
+    box-shadow: 0 0 50px rgba(255,230,0,0.14);
+  }
+  .press .src { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .press .src .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-yellow); }
+  .press .src .name { font-size: 18px; font-weight: 700; letter-spacing: 2px; color: var(--accent-yellow); text-transform: uppercase; }
+  .press .head { font-size: 40px; font-weight: 700; line-height: 1.32; }
+  .press .head .hl { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.5); }
+
+  /* Scene 2 — the recruiter demand */
+  .scene-2 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); justify-content: flex-start; padding-top: 120px; }
+  .scene-2 h2 { font-size: 40px; font-weight: 700; line-height: 1.35; margin: 0 0 46px; }
+  .scene-2 h2 .hl { color: var(--accent-violet); text-shadow: 0 0 24px rgba(168,85,247,0.55); }
+  .duo { display: flex; align-items: center; gap: 30px; }
+  .duo .p {
+    width: 220px; border-radius: 16px; padding: 26px 18px; opacity: 0;
+    background: rgba(255,255,255,0.035); border: 2px solid rgba(255,230,0,0.45);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .duo .p svg { width: 42px; height: 42px; color: var(--accent-yellow); }
+  .duo .p .t { font-size: 22px; font-weight: 700; }
+  .duo .arrow { opacity: 0; }
+  .duo .arrow svg { width: 54px; height: 54px; color: var(--accent-orange); }
+
+  /* Broll — building an agent live (avatar hidden) */
+  .scene-broll { height: 1920px; padding: 0; justify-content: flex-start; background: #000; }
+  #broll { position: absolute; top: 0; left: 0; width: 1080px; height: 1920px; object-fit: cover; filter: brightness(0.34); }
+  .broll-shade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 1300px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 45%, #000 100%);
+  }
+  .broll-top { position: absolute; top: 210px; left: 0; right: 0; text-align: center; font-size: 40px; font-weight: 700; opacity: 0; padding: 0 90px; line-height: 1.35; }
+  .broll-top .hl { color: var(--accent-yellow); text-shadow: 0 0 24px rgba(255,230,0,0.5); }
+  .live {
+    position: absolute; top: 400px; left: 50%; transform: translateX(-50%); opacity: 0;
+    display: flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 30px;
+    background: rgba(255,138,61,0.14); border: 2px solid var(--accent-orange);
+  }
+  .live .pulse { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-orange); }
+  .live .t { font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-orange); }
+
+  /* Scene 3 — the schools adapt */
+  .scene-3 { background: linear-gradient(135deg, #0a0a0a 0%, #12081f 100%); justify-content: flex-start; padding-top: 130px; }
+  .scene-3 h2 { font-size: 38px; font-weight: 700; line-height: 1.35; margin: 0 0 40px; }
+  .scene-3 h2 .hl { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.5); }
+  .prog { display: flex; flex-direction: column; gap: 16px; width: 700px; }
+  .prog .row {
+    display: flex; align-items: center; gap: 18px; opacity: 0; text-align: left;
+    border-radius: 14px; padding: 20px 26px;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(168,85,247,0.45);
+    box-shadow: 0 0 30px rgba(168,85,247,0.12);
+  }
+  .prog .row svg { width: 28px; height: 28px; flex: 0 0 28px; color: var(--accent-violet); }
+  .prog .row .t { font-size: 25px; font-weight: 700; }
+  .prog .row .old { color: var(--text-gray); text-decoration: line-through; font-weight: 400; }
+
+  /* Scene 4 — nobody explained it */
+  .scene-4 { background: radial-gradient(circle at 50% 42%, #1a0a2a 0%, #050505 76%); }
+  .scene-4 .q {
+    width: 200px; height: 200px; border-radius: 50%; opacity: 0; margin-bottom: 40px;
+    display: flex; align-items: center; justify-content: center;
+    border: 4px solid var(--accent-orange); box-shadow: 0 0 60px rgba(255,138,61,0.35);
+    font-size: 110px; font-weight: 700; color: var(--accent-orange);
+  }
+  .scene-4 h2 { font-size: 40px; font-weight: 700; line-height: 1.35; margin: 0; }
+  .scene-4 h2 .hl { color: var(--accent-orange); text-shadow: 0 0 24px rgba(255,138,61,0.5); }
+
+  /* Scene 5 — THE schema: model -> tools -> loop */
+  .scene-5 { background: linear-gradient(135deg, #0a0a0a 0%, #14081f 100%); justify-content: flex-start; padding-top: 110px; }
+  .scene-5 h2 { font-size: 34px; font-weight: 700; margin: 0 0 44px; }
+  .scene-5 h2 .hl { color: var(--accent-yellow); }
+  .flow { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .flow .box {
+    width: 250px; border-radius: 16px; padding: 26px 16px; opacity: 0;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,230,0,0.5);
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    box-shadow: 0 0 34px rgba(255,230,0,0.12);
+  }
+  .flow .box svg { width: 46px; height: 46px; color: var(--accent-yellow); }
+  .flow .box .t { font-size: 26px; font-weight: 700; }
+  .flow .box .s { font-size: 15px; color: var(--text-gray); line-height: 1.4; }
+  .flow .box.violet { border-color: rgba(168,85,247,0.55); box-shadow: 0 0 34px rgba(168,85,247,0.14); }
+  .flow .box.violet svg { color: var(--accent-violet); }
+  .flow .box.orange { border-color: rgba(255,138,61,0.55); box-shadow: 0 0 34px rgba(255,138,61,0.14); }
+  .flow .box.orange svg { color: var(--accent-orange); }
+  .flow .ar { opacity: 0; }
+  .flow .ar svg { width: 34px; height: 34px; color: var(--text-gray); }
+  .loopback { margin-top: 26px; opacity: 0; display: flex; align-items: center; gap: 12px; }
+  .loopback svg { width: 30px; height: 30px; color: var(--accent-orange); }
+  .loopback .t { font-size: 20px; color: var(--accent-orange); font-weight: 700; letter-spacing: 1px; }
+  .nomore { margin-top: 30px; font-size: 30px; font-weight: 700; opacity: 0; }
+  .nomore .hl { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.5); }
+
+  /* Scene 6 — the guide + CTA */
+  .scene-6 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 120px; }
+  .guide {
+    width: 620px; border-radius: 18px; padding: 30px; opacity: 0; margin-bottom: 34px;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,230,0,0.5);
+    box-shadow: 0 0 46px rgba(255,230,0,0.16); text-align: left;
+  }
+  .guide .gt { font-size: 30px; font-weight: 700; margin-bottom: 16px; }
+  .guide .gt .hl { color: var(--accent-yellow); }
+  .guide .li { display: flex; align-items: center; gap: 12px; font-size: 20px; color: var(--text-gray); margin-top: 10px; }
+  .guide .li svg { width: 20px; height: 20px; flex: 0 0 20px; color: var(--accent-yellow); }
+  .cta-badge {
+    display: inline-block; background: var(--accent-orange); padding: 12px 24px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #000; margin-bottom: 18px;
+  }
+  .cta-keyword { font-size: 50px; font-weight: 700; color: var(--accent-yellow); text-shadow: 0 0 30px rgba(255,230,0,0.6); margin-bottom: 12px; }
+  .cta-text { font-size: 18px; color: var(--text-gray); }
+
+  /* Persistent avatar overlay */
+  #avatar-frame {
+    position: absolute; bottom: 70px; left: 50%; width: 560px; height: 560px; margin-left: -280px;
+    border-radius: 50%; overflow: hidden; background: var(--bg); border: 5px solid var(--accent-yellow);
+    box-shadow: 0 0 0 2px rgba(6,6,6,0.9), 0 0 36px 4px rgba(255,230,0,0.55), 0 0 90px 20px rgba(255,230,0,0.22); z-index: 5;
+  }
+  #avatar-frame video {
+    position: absolute; top: 50%; left: 50%; width: 560px; height: 706px;
+    transform: translate(-50%, -46%); object-fit: cover; object-position: center top;
+  }
+  #avatar-ring {
+    position: absolute; bottom: 58px; left: 50%; width: 584px; height: 584px; margin-left: -292px;
+    border-radius: 50%; border: 3px solid var(--accent-yellow); opacity: 0; pointer-events: none;
+    box-shadow: 0 0 40px rgba(255,230,0,0.35); z-index: 5;
+  }
+  #avatar-orbit {
+    position: absolute; bottom: 52px; left: 50%; width: 596px; height: 596px; margin-left: -298px;
+    border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0deg, transparent 280deg, rgba(255,230,0,0.12) 320deg, var(--accent-yellow) 353deg, #fff8d6 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 8px));
+    filter: drop-shadow(0 0 12px rgba(255,230,0,0.9)); z-index: 5;
+  }
+
+  /* Captions */
+  .caption-belt { position: absolute; top: 960px; left: 0; right: 0; height: 0; text-align: center; z-index: 10; }
+  .caption {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+    font-size: 27px; font-weight: 700; color: var(--text-white); text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+    opacity: 0;
+  }
+  .caption .hot { color: var(--accent-yellow); text-shadow: 0 0 20px rgba(255,230,0,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .violet { color: var(--accent-violet); text-shadow: 0 0 20px rgba(168,85,247,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .orange { color: var(--accent-orange); text-shadow: 0 0 20px rgba(255,138,61,0.8), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-25-agents-ia" data-start="0" data-width="1080" data-height="1920" data-duration="34">
+
+  <!-- Scene 1: the headline -->
+  <div class="scene scene-1">
+    <div class="press" id="press">
+      <div class="src"><div class="dot"></div><div class="name">Les Echos</div></div>
+      <div class="head">L'entretien d'embauche<br/>des ingénieurs <span class="hl">change.</span></div>
+    </div>
+  </div>
+
+  <!-- Scene 2: the recruiter's new test -->
+  <div class="scene scene-2">
+    <h2>« On demandera au candidat<br/>de créer un <span class="hl">agent IA.</span> »</h2>
+    <div class="duo">
+      <div class="p" id="p-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0114 0" stroke-linecap="round"/></svg>
+        <div class="t">Recruteur</div>
+      </div>
+      <div class="arrow" id="ar-0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="p" id="p-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">Candidat</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Broll: he builds it live in front of the recruiter (avatar hidden) -->
+  <div class="scene scene-broll">
+    <video id="broll" src="assets/broll-working.mp4" data-start="9.37" data-duration="4.34" muted playsinline></video>
+    <div class="broll-shade"></div>
+    <div class="broll-top">Tu construis l'agent<br/><span class="hl">devant le recruteur.</span></div>
+    <div class="live" id="live">
+      <div class="pulse"></div>
+      <div class="t">En direct</div>
+    </div>
+  </div>
+
+  <!-- Scene 3: the schools rewrite their programmes -->
+  <div class="scene scene-3">
+    <h2>Les écoles réécrivent<br/>déjà leurs <span class="hl">programmes.</span></h2>
+    <div class="prog">
+      <div class="row" id="pr-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4L2 9l10 5 10-5z" stroke-linejoin="round"/><path d="M6 11.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5" stroke-linecap="round"/></svg>
+        <div class="t">Grandes écoles</div>
+      </div>
+      <div class="row" id="pr-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke-linecap="round"/></svg>
+        <div class="t"><span class="old">Théorie</span> → Agents IA</div>
+      </div>
+      <div class="row" id="pr-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 20h18M6 20V10M12 20V4M18 20v-7" stroke-linecap="round"/></svg>
+        <div class="t">Attentes des employeurs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 4: nobody ever explained how -->
+  <div class="scene scene-4">
+    <div class="q" id="qmark">?</div>
+    <h2>Personne ne t'a expliqué<br/>comment on en <span class="hl">crée un.</span></h2>
+  </div>
+
+  <!-- Scene 5: the schema — model, tools, loop -->
+  <div class="scene scene-5">
+    <h2>Un agent, c'est <span class="hl">trois choses.</span></h2>
+    <div class="flow">
+      <div class="box" id="fb-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a4 4 0 00-4 4v1a3 3 0 000 6v2a4 4 0 008 0v-2a3 3 0 000-6V7a4 4 0 00-4-4z" stroke-linejoin="round"/></svg>
+        <div class="t">Le modèle</div>
+        <div class="s">Il décide<br/>quoi faire</div>
+      </div>
+      <div class="ar" id="fa-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="box violet" id="fb-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14.5 5.5a4 4 0 015.2 5.2l-8.3 8.3-4-4 8.3-8.3z" stroke-linejoin="round"/><path d="M4 20l3-1" stroke-linecap="round"/></svg>
+        <div class="t">Les outils</div>
+        <div class="s">Ce qu'il peut<br/>appeler</div>
+      </div>
+      <div class="ar" id="fa-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="box orange" id="fb-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12a8 8 0 0113.7-5.7L20 8" stroke-linecap="round"/><path d="M20 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 01-13.7 5.7L4 16" stroke-linecap="round"/><path d="M4 20v-4h4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">La boucle</div>
+        <div class="s">Il recommence<br/>jusqu'au bout</div>
+      </div>
+    </div>
+    <div class="loopback" id="loopback">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 0113.7-5.7" stroke-linecap="round"/><path d="M20 4v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="t">Tant qu'il demande un outil</div>
+    </div>
+    <div class="nomore" id="nomore"><span class="hl">Rien de plus.</span></div>
+  </div>
+
+  <!-- Scene 6: the guide + CTA -->
+  <div class="scene scene-6">
+    <div class="guide" id="guide">
+      <div class="gt">Le guide <span class="hl">créer un agent</span></div>
+      <div class="li">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Le code copiable, de zéro
+      </div>
+      <div class="li">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        La boucle expliquée ligne par ligne
+      </div>
+      <div class="li">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Les pièges vus en production
+      </div>
+    </div>
+    <div class="cta-badge">Guide gratuit</div>
+    <div class="cta-keyword">Commente <span style="color:var(--accent-orange)">GUIDE</span></div>
+    <div class="cta-text">et je te l'envoie</div>
+  </div>
+
+  <!-- Persistent avatar overlay -->
+  <div id="avatar-frame">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="34" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" data-start="0" data-duration="34" class="clip"></div>
+  <div id="avatar-orbit" data-start="0" data-duration="34" class="clip"></div>
+
+  <!-- Captions — text from narration, timings mapped onto the real speech segments of voice.mp3 -->
+  <div class="caption-belt">
+    <div class="caption" data-start="1.06" data-end="1.67"><span class="hot">LES ECHOS</span> VIENT</div>
+    <div class="caption" data-start="1.67" data-end="2.05">DE LE DIRE</div>
+    <div class="caption" data-start="2.05" data-end="3.09">DANS LES GRANDES</div>
+    <div class="caption" data-start="3.09" data-end="3.72"><span class="violet">ÉCOLES</span></div>
+    <div class="caption" data-start="3.72" data-end="4.75">L'ENTRETIEN D'EMBAUCHE DES</div>
+    <div class="caption" data-start="4.75" data-end="5.50">INGÉNIEURS <span class="hot">CHANGE</span></div>
+    <div class="caption" data-start="5.50" data-end="6.78">SI ON RECRUTE</div>
+    <div class="caption" data-start="6.78" data-end="7.30">UN INGÉNIEUR</div>
+    <div class="caption" data-start="7.30" data-end="8.24">ON DEMANDERA AU</div>
+    <div class="caption" data-start="8.24" data-end="8.94">CANDIDAT DE <span class="hot">CRÉER</span></div>
+    <div class="caption" data-start="8.94" data-end="9.37">UN <span class="violet">AGENT IA</span></div>
+    <div class="caption" data-start="9.37" data-end="10.84">FINI LES QUESTIONS</div>
+    <div class="caption" data-start="10.84" data-end="11.49"><span class="orange">THÉORIQUES</span></div>
+    <div class="caption" data-start="11.87" data-end="12.45">TU <span class="hot">CONSTRUIS</span> UN</div>
+    <div class="caption" data-start="12.45" data-end="12.91">AGENT EN DIRECT</div>
+    <div class="caption" data-start="12.91" data-end="13.71">DEVANT LE RECRUTEUR</div>
+    <div class="caption" data-start="13.71" data-end="15.16">LES ÉCOLES <span class="violet">RÉÉCRIVENT</span></div>
+    <div class="caption" data-start="15.16" data-end="16.05">DÉJÀ LEURS PROGRAMMES</div>
+    <div class="caption" data-start="16.05" data-end="16.66">POUR COLLER AUX</div>
+    <div class="caption" data-start="16.66" data-end="18.09">ATTENTES DES <span class="hot">EMPLOYEURS</span></div>
+    <div class="caption" data-start="18.09" data-end="18.52">LE <span class="orange">SOUCI</span> ?</div>
+    <div class="caption" data-start="18.95" data-end="19.69">PERSONNE NE T'A</div>
+    <div class="caption" data-start="19.69" data-end="20.49"><span class="hot">EXPLIQUÉ</span> COMMENT ON</div>
+    <div class="caption" data-start="20.49" data-end="21.28">EN CRÉE UN</div>
+    <div class="caption" data-start="21.28" data-end="21.66">POURTANT</div>
+    <div class="caption" data-start="21.66" data-end="22.08">UN <span class="violet">AGENT IA</span></div>
+    <div class="caption" data-start="22.08" data-end="22.78">C'EST <span class="hot">TROIS CHOSES</span></div>
+    <div class="caption" data-start="22.78" data-end="23.53">UN <span class="hot">MODÈLE</span></div>
+    <div class="caption" data-start="23.53" data-end="24.47">DES <span class="violet">OUTILS</span> QU'IL</div>
+    <div class="caption" data-start="24.47" data-end="24.98">PEUT APPELER</div>
+    <div class="caption" data-start="24.98" data-end="25.89">ET UNE <span class="orange">BOUCLE</span></div>
+    <div class="caption" data-start="25.89" data-end="26.50">QUI DÉCIDE QUOI</div>
+    <div class="caption" data-start="26.50" data-end="27.55">FAIRE ENSUITE</div>
+    <div class="caption" data-start="27.55" data-end="28.02"><span class="hot">RIEN DE PLUS</span></div>
+    <div class="caption" data-start="28.02" data-end="28.86">J'AI ÉCRIT UN</div>
+    <div class="caption" data-start="28.86" data-end="29.56"><span class="hot">GUIDE COMPLET</span> QUI</div>
+    <div class="caption" data-start="29.56" data-end="30.07">T'APPREND À EN</div>
+    <div class="caption" data-start="30.07" data-end="30.68">CRÉER UN DE ZÉRO</div>
+    <div class="caption" data-start="30.68" data-end="31.70">COMMENTE LE MOT</div>
+    <div class="caption" data-start="31.70" data-end="32.40"><span class="orange">GUIDE</span></div>
+    <div class="caption" data-start="32.40" data-end="33.53">JE TE L'ENVOIE</div>
+  </div>
+
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="33.53" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="34" data-volume="0.09"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="5.50" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="9.37" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="13.71" data-volume="0.15"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="21.28" data-volume="0.15"></audio>
+  <audio id="sfx-chime-1" src="assets/sfx-chime-v2.mp3" data-start="30.68" data-volume="0.20"></audio>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // ---- Scene windows, cut on the real voice track (voice.mp3 = 33.53s) ----
+  const S1 = 0,     S1_END = 5.50;   // Les Echos headline
+  const S2 = 5.50,  S2_END = 9.37;   // the recruiter's demand
+  const BR = 9.37,  BR_END = 13.71;  // broll — built live (avatar hidden)
+  const S3 = 13.71, S3_END = 18.09;  // schools rewrite their programmes
+  const S4 = 18.09, S4_END = 21.28;  // nobody explained how
+  const S5 = 21.28, S5_END = 28.02;  // the schema: model -> tools -> loop
+  const S6 = 28.02, S6_END = 34.00;  // the guide + CTA
+
+  // Scene 1
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, S1);
+  tl.fromTo("#press", { y: 26, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.3)" }, 0.9);
+  tl.to("#press", { scale: 1.02, duration: 3.4, ease: "none" }, 1.8);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, S1_END - 0.3);
+
+  // Scene 2 — the two roles land on "recrute" / "candidat"
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, S2);
+  tl.fromTo("#p-1", { y: 16, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 6.78);
+  tl.fromTo("#ar-0", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 7.30);
+  tl.fromTo("#p-2", { y: 16, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 8.24);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, S2_END - 0.3);
+
+  // Broll
+  tl.to(".scene-broll", { opacity: 1, duration: 0.3 }, BR);
+  tl.to(".broll-top", { opacity: 1, duration: 0.35 }, BR + 0.2);
+  tl.fromTo("#live", { y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 11.87);
+  // Recording dot — finite ODD repeat inside the broll window (2.5s / 0.5s tween)
+  tl.to("#live .pulse", { opacity: 0.25, duration: 0.5, ease: "sine.inOut", repeat: 3, yoyo: true }, 11.87);
+  tl.to(".scene-broll", { opacity: 0, duration: 0.3 }, BR_END - 0.3);
+
+  // Scene 3 — the three rows land as the sentence lands
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, S3);
+  tl.fromTo("#pr-1", { x: -22 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 15.16);
+  tl.fromTo("#pr-2", { x: -22 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 15.80);
+  tl.fromTo("#pr-3", { x: -22 }, { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, 16.66);
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, S3_END - 0.3);
+
+  // Scene 4
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, S4);
+  tl.fromTo("#qmark", { scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, S4 + 0.15);
+  tl.to(".scene-4", { opacity: 0, duration: 0.3 }, S4_END - 0.3);
+
+  // Scene 5 — each box lands on its own word
+  tl.to(".scene-5", { opacity: 1, duration: 0.3 }, S5);
+  tl.fromTo("#fb-1", { y: 20, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, 22.78); // "un modèle"
+  tl.fromTo("#fa-1", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25 }, 23.35);
+  tl.fromTo("#fb-2", { y: 20, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, 23.53); // "des outils"
+  tl.fromTo("#fa-2", { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25 }, 24.75);
+  tl.fromTo("#fb-3", { y: 20, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, 24.98); // "et une boucle"
+  tl.fromTo("#loopback", { y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 25.89);
+  tl.fromTo("#nomore", { scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 27.55); // "rien de plus"
+  tl.to(".scene-5", { opacity: 0, duration: 0.3 }, S5_END - 0.3);
+
+  // Scene 6 — guide, then the CTA beat
+  tl.to(".scene-6", { opacity: 1, duration: 0.3 }, S6);
+  tl.fromTo("#guide", { y: 24, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.3)" }, S6 + 0.15);
+  tl.to(".cta-keyword", { scale: 1.1, duration: 0.4, ease: "back.out(2)" }, 31.70);
+
+  // Persistent avatar — hidden only during the broll
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 0, duration: 0.3, ease: "power2.out" }, BR);
+  tl.to(["#avatar-frame", "#avatar-orbit"], { opacity: 1, duration: 0.3, ease: "power2.out" }, BR_END);
+
+  // Avatar ring — finite ODD repeat per visible window (repeat+1 must be even
+  // so the ring settles back to opacity 0 before the broll hides it)
+  // window 1: 0 -> 9.37  => ceil(9.37/0.5)-1 = 18, even -> 17
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 17, yoyo: true }, 0);
+  // window 2: 13.71 -> 34.00 => ceil(20.29/0.5)-1 = 40, even -> 39
+  tl.to("#avatar-ring", { opacity: 0.8, scale: 1.06, duration: 0.5, ease: "sine.inOut", repeat: 39, yoyo: true }, BR_END);
+
+  // Avatar orbit — 34s / 2.2s => repeat 15
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 15, ease: "none" }, 0);
+
+  // CTA beat
+  tl.to("#avatar-ring", { opacity: 1, scale: 1.08, duration: 0.5, ease: "power2.out" }, 30.68);
+  tl.to("#avatar-orbit", { rotation: "+=360", duration: 3.3, ease: "none" }, 30.68);
+
+  // Captions
+  tl.to(".caption", { opacity: 0, duration: 0 }, 0);
+  document.querySelectorAll(".caption").forEach((el) => {
+    const start = parseFloat(el.dataset.start || 0);
+    const end = parseFloat(el.dataset.end || start + 0.7);
+    tl.to(el, { opacity: 1, duration: 0.12 }, start);
+    tl.to(el, { opacity: 0, duration: 0.12 }, end - 0.12);
+  });
+
+  window.__timelines["autoboost-25-agents-ia"] = tl;
+</script>
+</body>
+</html>

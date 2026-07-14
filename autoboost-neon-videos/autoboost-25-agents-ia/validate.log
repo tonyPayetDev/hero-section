@@ -1,0 +1,2764 @@
+[StaticGuard] Invalid HyperFrame contract: <div> uses data-end without data-duration. Use data-duration in source HTML.; <div> has timing attributes but no class="clip". The element will be visible for the entire composition instead of only during its scheduled time range.; Font family used without @font-face declaration: -apple-system. These are not in the auto-resolved font list, so the renderer cannot supply them automatically. Text will fall back to a generic font, producing incorrect typography in the video.
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "contrast": [
+    {
+      "time": 3.4,
+      "selector": "div.name",
+      "text": "Les Echos",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.head",
+      "text": "L'entretien d'embauchedes ingénieurs change.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "change.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "h2",
+      "text": "« On demandera au candidatde créer un agent IA. »",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "agent IA.",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Recruteur",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Candidat",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "devant le recruteur.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "En direct",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "h2",
+      "text": "Les écoles réécriventdéjà leurs programmes.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "programmes.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Grandes écoles",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Théorie → Agents IA",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.old",
+      "text": "Théorie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Attentes des employeurs",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "h2",
+      "text": "Personne ne t'a expliquécomment on en crée un.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "crée un.",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "h2",
+      "text": "Un agent, c'est trois choses.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "trois choses.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Le modèle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.s",
+      "text": "Il décidequoi faire",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Les outils",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.s",
+      "text": "Ce qu'il peutappeler",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "La boucle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.s",
+      "text": "Il recommencejusqu'au bout",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.t",
+      "text": "Tant qu'il demande un outil",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "Rien de plus.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.gt",
+      "text": "Le guide créer un agent",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hl",
+      "text": "créer un agent",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.li",
+      "text": "Le code copiable, de zéro",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.li",
+      "text": "La boucle expliquée ligne par ligne",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.li",
+      "text": "Les pièges vus en production",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.cta-badge",
+      "text": "Guide gratuit",
+      "ratio": 1,
+      "wcagAA": false,
+      "large": false,
+      "fg": "rgb(0,0,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.cta-keyword",
+      "text": "Commente GUIDE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "div.cta-text",
+      "text": "et je te l'envoie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "LES ECHOS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.violet",
+      "text": "ÉCOLES",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "CHANGE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "CRÉER",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.orange",
+      "text": "THÉORIQUES",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "CONSTRUIS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.violet",
+      "text": "RÉÉCRIVENT",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "EMPLOYEURS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.orange",
+      "text": "SOUCI",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "EXPLIQUÉ",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "TROIS CHOSES",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "MODÈLE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.violet",
+      "text": "OUTILS",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.orange",
+      "text": "BOUCLE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "RIEN DE PLUS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.hot",
+      "text": "GUIDE COMPLET",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 3.4,
+      "selector": "span.orange",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.name",
+      "text": "Les Echos",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.head",
+      "text": "L'entretien d'embauchedes ingénieurs change.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "change.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "h2",
+      "text": "« On demandera au candidatde créer un agent IA. »",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "agent IA.",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Recruteur",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Candidat",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "devant le recruteur.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "En direct",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "h2",
+      "text": "Les écoles réécriventdéjà leurs programmes.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "programmes.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Grandes écoles",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Théorie → Agents IA",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.old",
+      "text": "Théorie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Attentes des employeurs",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "h2",
+      "text": "Personne ne t'a expliquécomment on en crée un.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "crée un.",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "h2",
+      "text": "Un agent, c'est trois choses.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "trois choses.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Le modèle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.s",
+      "text": "Il décidequoi faire",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Les outils",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.s",
+      "text": "Ce qu'il peutappeler",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "La boucle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.s",
+      "text": "Il recommencejusqu'au bout",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.t",
+      "text": "Tant qu'il demande un outil",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "Rien de plus.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.gt",
+      "text": "Le guide créer un agent",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hl",
+      "text": "créer un agent",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.li",
+      "text": "Le code copiable, de zéro",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.li",
+      "text": "La boucle expliquée ligne par ligne",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.li",
+      "text": "Les pièges vus en production",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.cta-badge",
+      "text": "Guide gratuit",
+      "ratio": 1,
+      "wcagAA": false,
+      "large": false,
+      "fg": "rgb(0,0,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.cta-keyword",
+      "text": "Commente GUIDE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "div.cta-text",
+      "text": "et je te l'envoie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "LES ECHOS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.violet",
+      "text": "ÉCOLES",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "CHANGE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "CRÉER",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.orange",
+      "text": "THÉORIQUES",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "CONSTRUIS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.violet",
+      "text": "RÉÉCRIVENT",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "EMPLOYEURS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.orange",
+      "text": "SOUCI",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "EXPLIQUÉ",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "TROIS CHOSES",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "MODÈLE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.violet",
+      "text": "OUTILS",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.orange",
+      "text": "BOUCLE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "RIEN DE PLUS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.hot",
+      "text": "GUIDE COMPLET",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 10.2,
+      "selector": "span.orange",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.name",
+      "text": "Les Echos",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.head",
+      "text": "L'entretien d'embauchedes ingénieurs change.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "change.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "h2",
+      "text": "« On demandera au candidatde créer un agent IA. »",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "agent IA.",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Recruteur",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Candidat",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "devant le recruteur.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "En direct",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "h2",
+      "text": "Les écoles réécriventdéjà leurs programmes.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "programmes.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Grandes écoles",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Théorie → Agents IA",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.old",
+      "text": "Théorie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Attentes des employeurs",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "h2",
+      "text": "Personne ne t'a expliquécomment on en crée un.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "crée un.",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "h2",
+      "text": "Un agent, c'est trois choses.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "trois choses.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Le modèle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.s",
+      "text": "Il décidequoi faire",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Les outils",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.s",
+      "text": "Ce qu'il peutappeler",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "La boucle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.s",
+      "text": "Il recommencejusqu'au bout",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.t",
+      "text": "Tant qu'il demande un outil",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "Rien de plus.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.gt",
+      "text": "Le guide créer un agent",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hl",
+      "text": "créer un agent",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.li",
+      "text": "Le code copiable, de zéro",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.li",
+      "text": "La boucle expliquée ligne par ligne",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.li",
+      "text": "Les pièges vus en production",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.cta-badge",
+      "text": "Guide gratuit",
+      "ratio": 1,
+      "wcagAA": false,
+      "large": false,
+      "fg": "rgb(0,0,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.cta-keyword",
+      "text": "Commente GUIDE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "div.cta-text",
+      "text": "et je te l'envoie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "LES ECHOS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.violet",
+      "text": "ÉCOLES",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "CHANGE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "CRÉER",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.orange",
+      "text": "THÉORIQUES",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "CONSTRUIS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.violet",
+      "text": "RÉÉCRIVENT",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "EMPLOYEURS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.orange",
+      "text": "SOUCI",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "EXPLIQUÉ",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "TROIS CHOSES",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "MODÈLE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.violet",
+      "text": "OUTILS",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.orange",
+      "text": "BOUCLE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "RIEN DE PLUS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.hot",
+      "text": "GUIDE COMPLET",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 17,
+      "selector": "span.orange",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.name",
+      "text": "Les Echos",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.head",
+      "text": "L'entretien d'embauchedes ingénieurs change.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "change.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "h2",
+      "text": "« On demandera au candidatde créer un agent IA. »",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "agent IA.",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Recruteur",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Candidat",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "devant le recruteur.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "En direct",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "h2",
+      "text": "Les écoles réécriventdéjà leurs programmes.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "programmes.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Grandes écoles",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Théorie → Agents IA",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.old",
+      "text": "Théorie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Attentes des employeurs",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "h2",
+      "text": "Personne ne t'a expliquécomment on en crée un.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "crée un.",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "h2",
+      "text": "Un agent, c'est trois choses.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "trois choses.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Le modèle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.s",
+      "text": "Il décidequoi faire",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Les outils",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.s",
+      "text": "Ce qu'il peutappeler",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "La boucle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.s",
+      "text": "Il recommencejusqu'au bout",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.t",
+      "text": "Tant qu'il demande un outil",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "Rien de plus.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.gt",
+      "text": "Le guide créer un agent",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hl",
+      "text": "créer un agent",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.li",
+      "text": "Le code copiable, de zéro",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.li",
+      "text": "La boucle expliquée ligne par ligne",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.li",
+      "text": "Les pièges vus en production",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.cta-badge",
+      "text": "Guide gratuit",
+      "ratio": 1,
+      "wcagAA": false,
+      "large": false,
+      "fg": "rgb(0,0,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.cta-keyword",
+      "text": "Commente GUIDE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "div.cta-text",
+      "text": "et je te l'envoie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "LES ECHOS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.violet",
+      "text": "ÉCOLES",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "CHANGE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "CRÉER",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.orange",
+      "text": "THÉORIQUES",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "CONSTRUIS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.violet",
+      "text": "RÉÉCRIVENT",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "EMPLOYEURS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.orange",
+      "text": "SOUCI",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "EXPLIQUÉ",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "TROIS CHOSES",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "MODÈLE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.violet",
+      "text": "OUTILS",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.orange",
+      "text": "BOUCLE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "RIEN DE PLUS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.hot",
+      "text": "GUIDE COMPLET",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 23.8,
+      "selector": "span.orange",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.name",
+      "text": "Les Echos",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.head",
+      "text": "L'entretien d'embauchedes ingénieurs change.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "change.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "h2",
+      "text": "« On demandera au candidatde créer un agent IA. »",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "agent IA.",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Recruteur",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Candidat",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "devant le recruteur.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "En direct",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "h2",
+      "text": "Les écoles réécriventdéjà leurs programmes.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "programmes.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Grandes écoles",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Théorie → Agents IA",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.old",
+      "text": "Théorie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Attentes des employeurs",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "h2",
+      "text": "Personne ne t'a expliquécomment on en crée un.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "crée un.",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "h2",
+      "text": "Un agent, c'est trois choses.",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "trois choses.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Le modèle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.s",
+      "text": "Il décidequoi faire",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Les outils",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.s",
+      "text": "Ce qu'il peutappeler",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "La boucle",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.s",
+      "text": "Il recommencejusqu'au bout",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.t",
+      "text": "Tant qu'il demande un outil",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "Rien de plus.",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.gt",
+      "text": "Le guide créer un agent",
+      "ratio": 21,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,255,255)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hl",
+      "text": "créer un agent",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.li",
+      "text": "Le code copiable, de zéro",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.li",
+      "text": "La boucle expliquée ligne par ligne",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.li",
+      "text": "Les pièges vus en production",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.cta-badge",
+      "text": "Guide gratuit",
+      "ratio": 1,
+      "wcagAA": false,
+      "large": false,
+      "fg": "rgb(0,0,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.cta-keyword",
+      "text": "Commente GUIDE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "div.cta-text",
+      "text": "et je te l'envoie",
+      "ratio": 8.03,
+      "wcagAA": true,
+      "large": false,
+      "fg": "rgb(160,160,160)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "LES ECHOS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.violet",
+      "text": "ÉCOLES",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "CHANGE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "CRÉER",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.orange",
+      "text": "THÉORIQUES",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "CONSTRUIS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.violet",
+      "text": "RÉÉCRIVENT",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "EMPLOYEURS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.orange",
+      "text": "SOUCI",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "EXPLIQUÉ",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.violet",
+      "text": "AGENT IA",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "TROIS CHOSES",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "MODÈLE",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.violet",
+      "text": "OUTILS",
+      "ratio": 5.31,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(168,85,247)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.orange",
+      "text": "BOUCLE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "RIEN DE PLUS",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.hot",
+      "text": "GUIDE COMPLET",
+      "ratio": 16.57,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,230,0)",
+      "bg": "rgb(0,0,0)"
+    },
+    {
+      "time": 30.6,
+      "selector": "span.orange",
+      "text": "GUIDE",
+      "ratio": 8.95,
+      "wcagAA": true,
+      "large": true,
+      "fg": "rgb(255,138,61)",
+      "bg": "rgb(0,0,0)"
+    }
+  ],
+  "contrastFailures": 5,
+  "_meta": {
+    "version": "0.7.5",
+    "latestVersion": "0.7.57",
+    "updateAvailable": true
+  }
+}
