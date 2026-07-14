@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veille IA & Automatisation — Semaine du 14 juillet 2026</title>
+  <meta name="description" content="Les 6 actualités IA et automatisation qui vont impacter votre business cette semaine : ChatGPT Work, Claude Sonnet 5, n8n Canvas UI, Claude Science, l'essor des agents IA et les stats freelance 2026." />
+  <meta property="og:title" content="Veille IA & Automatisation — 14 juillet 2026" />
+  <meta property="og:description" content="ChatGPT Work, Claude Sonnet 5, n8n Canvas UI... Décryptage de la semaine IA pour freelances et entrepreneurs." />
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --border: #2a2a38;
+      --accent: #7c6fff;
+      --accent-light: #a594ff;
+      --text: #e8e8f0;
+      --muted: #8888a8;
+      --tag-bg: #1e1e2e;
+      --green: #4ade80;
+      --yellow: #fbbf24;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1030 0%, #0f1a2e 50%, #0a0f1a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 24px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 300px;
+      background: radial-gradient(ellipse, rgba(124,111,255,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .date-badge {
+      display: inline-block;
+      background: rgba(124,111,255,0.15);
+      border: 1px solid rgba(124,111,255,0.4);
+      color: var(--accent-light);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p.intro {
+      max-width: 640px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-light);
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Section titles ── */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── News Cards ── */
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .news-card:hover {
+      border-color: rgba(124,111,255,0.4);
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+    }
+    .tag.openai { border-color: #10a37f55; color: #10a37f; }
+    .tag.anthropic { border-color: #d4890055; color: #f0a030; }
+    .tag.n8n { border-color: #ea468555; color: #ea4685; }
+    .tag.freelance { border-color: var(--accent); color: var(--accent-light); }
+    .tag.make { border-color: #5865f255; color: #7289da; }
+    .tag.science { border-color: #4ade8055; color: var(--green); }
+    .card-date {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+    .news-card h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .news-card p {
+      color: var(--muted);
+      font-size: 0.93rem;
+      margin-bottom: 12px;
+    }
+    .highlight-box {
+      background: rgba(124,111,255,0.07);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 12px 0;
+      font-size: 0.88rem;
+      color: var(--accent-light);
+    }
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-top: 4px;
+      transition: color 0.15s;
+    }
+    .source-link:hover { color: var(--accent-light); }
+    .source-link::before { content: '↗'; }
+
+    /* ── Impact block ── */
+    .impact-section {
+      background: linear-gradient(135deg, rgba(124,111,255,0.08) 0%, rgba(30,30,60,0.4) 100%);
+      border: 1px solid rgba(124,111,255,0.25);
+      border-radius: 16px;
+      padding: 32px;
+      margin-top: 40px;
+    }
+    .impact-section h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .impact-section .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    .insight {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .insight-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .insight-content h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .insight-content p {
+      font-size: 0.87rem;
+      color: var(--muted);
+    }
+    .stat-highlight {
+      display: inline-block;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 40px 16px 32px; }
+      main { padding: 28px 16px 60px; }
+      .news-card { padding: 20px 18px; }
+      .stats-row { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="date-badge">Veille IA • 14 juillet 2026</div>
+  <h1>Les 6 actus IA qui changent<br>la donne cette semaine</h1>
+  <p class="intro">GPT-5.6, Claude Sonnet 5, n8n Canvas UI — une semaine explosive. Voici ce que les freelances et entrepreneurs doivent retenir.</p>
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Actus analysées</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">84%</div>
+      <div class="stat-label">Freelances sur IA</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">8,1h</div>
+      <div class="stat-label">Gagnées/sem. en moy.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">35+</div>
+      <div class="stat-label">Nouveaux nœuds n8n</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <p class="section-label">Actualités de la semaine</p>
+
+  <!-- Card 1: ChatGPT Work -->
+  <article class="news-card">
+    <div class="card-meta">
+      <span class="tag openai">OpenAI</span>
+      <span class="tag">Agent</span>
+      <span class="card-date">9 juillet 2026</span>
+    </div>
+    <h2>ChatGPT Work : l'agent qui livre du travail fini</h2>
+    <p>
+      OpenAI a lancé <strong>GPT-5.6</strong> et son agent <strong>ChatGPT Work</strong> le 9 juillet.
+      Disponible en trois déclinaisons (Sol, Terra, Luna), GPT-5.6 alimente un agent capable de travailler
+      en autonomie pendant des heures sur des projets complexes — collecte d'info cross-apps, production
+      de documents, feuilles de calcul, présentations ou applications web complètes.
+    </p>
+    <div class="highlight-box">
+      ChatGPT Work inclut le <strong>multi-agent</strong> (sous-agents parallèles) et le <strong>Computer Use</strong>
+      — l'IA peut cliquer, taper et déplacer des fichiers sur votre machine.
+    </div>
+    <p>Accessible aux abonnés Pro, Enterprise et Edu ; arrivée imminente pour Plus et Business.</p>
+    <a class="source-link" href="https://www.lebigdata.fr/openai-lance-chatgpt-work-un-nouvel-agent-ia-booste-a-gpt-5-6" target="_blank" rel="noopener">LeBigData — ChatGPT Work & GPT-5.6</a>
+  </article>
+
+  <!-- Card 2: Claude Sonnet 5 + Cowork Mobile -->
+  <article class="news-card">
+    <div class="card-meta">
+      <span class="tag anthropic">Anthropic</span>
+      <span class="tag">Claude</span>
+      <span class="card-date">7–9 juillet 2026</span>
+    </div>
+    <h2>Claude Sonnet 5 + Cowork arrive sur mobile et web</h2>
+    <p>
+      Lancé le 1er juillet, <strong>Claude Sonnet 5</strong> est le nouveau modèle phare d'Anthropic optimisé
+      pour les capacités agentiques. Dans la foulée, Anthropic déploie <strong>Claude Cowork</strong> sur
+      mobile et navigateur (bêta Max), avec une nouveauté clé : les tâches continuent à tourner même
+      ordinateur fermé, et les fichiers générés suivent l'utilisateur entre desktop, web et mobile.
+    </p>
+    <div class="highlight-box">
+      La nouveauté <strong>Claude Reflect</strong> (bêta) offre un tableau de bord analytique de vos
+      interactions sur 1 à 12 mois — disponible pour les utilisateurs gratuits, Pro et Max avec mémoire activée.
+    </div>
+    <a class="source-link" href="https://www.fingerlakes1.com/2026/07/09/claude-cowork-ai-agent-launches-as-anthropic-expands-ai-assistant-to-cloud-and-mobile/" target="_blank" rel="noopener">Fingerlakes1 — Claude Cowork Mobile</a>
+  </article>
+
+  <!-- Card 3: n8n Canvas UI + 35 nœuds -->
+  <article class="news-card">
+    <div class="card-meta">
+      <span class="tag n8n">n8n</span>
+      <span class="tag">Automation</span>
+      <span class="card-date">Juillet 2026</span>
+    </div>
+    <h2>n8n : Canvas UI spatiale + 35 nouveaux nœuds IA</h2>
+    <p>
+      n8n dépasse un tournant majeur en 2026 : une <strong>nouvelle interface Canvas</strong> remplace le
+      builder plat par un espace spatial avec clusters de nœuds groupés, bien plus lisible pour les
+      workflows complexes. Le nœud <strong>AI Agent</strong> a été entièrement reconstruit avec tool calling
+      structuré, 4 backends de mémoire et des portes d'approbation humaine pour les pipelines multi-agents.
+    </p>
+    <div class="highlight-box">
+      <strong>35+ nouveaux nœuds</strong> ajoutés de janvier à juin 2026 : Anthropic Claude, Google Gemini,
+      Perplexity, ElevenLabs, Groq — et un nœud <em>AI Transform</em> pour transformer des données en langage naturel.
+    </div>
+    <p>La gestion d'erreurs évolue aussi : retry par nœud avec backoff exponentiel et branche d'erreur dédiée.</p>
+    <a class="source-link" href="https://www.softomatesolutions.com/blog/n8n-updates-2026-whats-new/" target="_blank" rel="noopener">Softomate — n8n Updates 2026</a>
+  </article>
+
+  <!-- Card 4: Claude Science -->
+  <article class="news-card">
+    <div class="card-meta">
+      <span class="tag science">Science</span>
+      <span class="tag anthropic">Anthropic</span>
+      <span class="card-date">1–4 juillet 2026</span>
+    </div>
+    <h2>Claude Science : un workbench multi-agents pour chercheurs</h2>
+    <p>
+      Anthropic lance <strong>Claude Science</strong> en bêta (Pro, Max, Team, Enterprise), un environnement
+      de recherche scientifique pré-configuré pour la génomique, la protéomique, la biologie structurale
+      et la cheminformatique — connecté à plus de <strong>60 bases de données scientifiques</strong>.
+    </p>
+    <div class="highlight-box">
+      Intégration native avec <strong>NVIDIA BioNeMo</strong> (Evo 2, Boltz-2, OpenFold3). Visualisation
+      native de protéines et molécules. Résultats reproductibles et tracés au code source.
+    </div>
+    <p>
+      Programme de grants : jusqu'à 30 000 $ de crédits pour 50 projets. Candidatures ouvertes jusqu'au 15 juillet.
+    </p>
+    <a class="source-link" href="https://www.marktechpost.com/2026/07/04/anthropic-launches-claude-science-beta/" target="_blank" rel="noopener">MarkTechPost — Claude Science Beta</a>
+  </article>
+
+  <!-- Card 5: Make.com + Zapier AI -->
+  <article class="news-card">
+    <div class="card-meta">
+      <span class="tag make">Make / Zapier</span>
+      <span class="tag">No-Code</span>
+      <span class="card-date">Juillet 2026</span>
+    </div>
+    <h2>Make et Zapier accélèrent sur l'orchestration IA</h2>
+    <p>
+      Make pousse fort sur les <strong>agents IA visuels</strong> et l'orchestration de systèmes
+      business complexes, avec un passage aux crédits à la place des abonnements mensuels simples.
+      Zapier se repositionne comme une plateforme complète : chatbots, agents, guardrails — le tout
+      sur 9 000+ apps et 66 000+ triggers.
+    </p>
+    <div class="highlight-box">
+      Les trois plateformes (Zapier, Make, n8n) proposent désormais des connexions natives
+      à <strong>OpenAI, Anthropic et Google Gemini</strong>, avec des templates de workflows d'agents IA prêts à l'emploi.
+    </div>
+    <a class="source-link" href="https://medium.com/@automation.labs/zapier-vs-make-vs-n8n-in-2026-where-ai-agents-actually-fit-1edbbeff85f3" target="_blank" rel="noopener">Medium — Zapier vs Make vs n8n in 2026</a>
+  </article>
+
+  <!-- Card 6: Freelance Stats 2026 -->
+  <article class="news-card">
+    <div class="card-meta">
+      <span class="tag freelance">Freelance</span>
+      <span class="tag">Stats 2026</span>
+      <span class="card-date">Juillet 2026</span>
+    </div>
+    <h2>84 % des freelances utilisent l'IA — et économisent 8h/semaine</h2>
+    <p>
+      Le <em>Freelancer Kompass 2026</em> est sans appel : <strong>84 % des freelances</strong> utilisent
+      régulièrement des outils IA — contre seulement 41 % en 2023. En moyenne, les freelancers IA
+      économisent <strong>8,1 heures par semaine</strong> et 64 % d'entre eux mesurent une hausse
+      concrète de productivité.
+    </p>
+    <div class="highlight-box">
+      Un stack solo type coûte <strong>20 à 200 $/mois</strong> selon les outils et volumes.
+      L'hyperautomation — connecter plusieurs outils pour automatiser des processus complets —
+      devient la norme, pas l'exception.
+    </div>
+    <a class="source-link" href="https://www.jobbers.io/how-to-use-ai-agents-to-run-your-freelance-business-the-2026-automation-playbook/" target="_blank" rel="noopener">Jobbers.io — 2026 Freelance Automation Playbook</a>
+  </article>
+
+  <!-- Impact / Analyse -->
+  <section class="impact-section">
+    <h2>Mon analyse : ce que ça change pour vous</h2>
+    <p class="subtitle">Freelances, consultants, solopreneurs — voici les implications concrètes de cette semaine.</p>
+
+    <div class="insight">
+      <div class="insight-icon">⚡</div>
+      <div class="insight-content">
+        <h3>Les agents travaillent en votre absence — enfin pour de vrai</h3>
+        <p>
+          Claude Cowork qui continue les tâches ordinateur fermé et ChatGPT Work qui produit des livrables
+          en autonomie, c'est un basculement : on passe de l'IA comme assistant à l'IA comme collaborateur
+          asynchrone. En pratique, vous pouvez confier la rédaction d'un rapport, l'analyse d'un fichier
+          ou la création d'une présentation et récupérer le résultat — comme avec un junior fiable.
+        </p>
+      </div>
+    </div>
+
+    <div class="insight">
+      <div class="insight-icon">🔧</div>
+      <div class="insight-content">
+        <h3>n8n devient le cockpit central de votre business automatisé</h3>
+        <p>
+          Avec 35 nouveaux nœuds IA, le Canvas spatial et les portes d'approbation humaine, n8n n'est plus
+          un outil pour développeurs — c'est une plateforme d'orchestration entreprise accessible aux
+          freelances. Si vous n'avez pas encore de workflow n8n reliant votre CRM, votre facturation
+          et vos outils IA, la fenêtre d'avantage concurrentiel commence à se fermer.
+        </p>
+      </div>
+    </div>
+
+    <div class="insight">
+      <div class="insight-icon">📈</div>
+      <div class="insight-content">
+        <h3><span class="stat-highlight">+43 points</span> d'adoption IA en 3 ans — le marché n'attend plus</h3>
+        <p>
+          Passer de 41 % à 84 % d'adoption IA chez les freelances en 3 ans, c'est un tsunami.
+          Si votre offre de service n'intègre pas l'automatisation comme argument différenciant,
+          vous êtes en train de perdre du terrain tarifaire sur vos concurrents. La bonne nouvelle :
+          8h/semaine récupérées = 1 jour de plus à facturer, ou une meilleure qualité de vie.
+          Le ROI se calcule en semaines.
+        </p>
+      </div>
+    </div>
+
+    <div class="insight">
+      <div class="insight-icon">🎯</div>
+      <div class="insight-content">
+        <h3>Spécialisez votre stack, ne courez pas après chaque outil</h3>
+        <p>
+          GPT-5.6, Claude Sonnet 5, Make, n8n, Zapier — le risque est de disperser son énergie.
+          Mon conseil : choisissez <strong>un orchestrateur</strong> (n8n pour la puissance, Make pour
+          la visualité) + <strong>un LLM principal</strong> (Claude pour les agents longs, GPT-5.6 pour
+          les livrables finaux) et maîtrisez-les à fond avant de greffer les autres.
+          La profondeur bat la largeur en 2026.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    Article généré le <strong>14 juillet 2026</strong> par
+    <a href="https://automatisationboost.com" target="_blank" rel="noopener">AutomationBoost</a> —
+    veille IA & automatisation pour freelances et entrepreneurs.
+  </p>
+  <p style="margin-top:8px;">Sources : OpenAI, Anthropic, n8n Blog, Freelancer Kompass 2026, LeBigData, MarkTechPost.</p>
+</footer>
+
+</body>
+</html>
