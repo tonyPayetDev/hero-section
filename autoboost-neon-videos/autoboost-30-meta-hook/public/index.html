@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Autoboost Neon — #30 Meta ads sans agence (style jb.roy_)</title>
+<style>
+  :root {
+    --bg: #000; --accent-yellow: #FFE600; --accent-violet: #A855F7; --accent-orange: #FF8A3D;
+    --text-white: #fff; --text-gray: #a0a0a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text-white); font-family: system-ui, sans-serif; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+
+  .scene {
+    position: absolute; top: 0; left: 0; width: 1080px; height: 1920px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 90px 70px; text-align: center; opacity: 0;
+  }
+  .kicker { font-size: 26px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-gray); margin-bottom: 30px; }
+
+  .scene-1 { background: radial-gradient(circle at 50% 34%, #1a0a2a 0%, #050505 74%); }
+  .scene-1 h2 { font-size: 46px; font-weight: 700; line-height: 1.3; margin: 0 0 46px; }
+  .invoice { width: 780px; border-radius: 22px; padding: 40px 44px; opacity: 0; text-align: left;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,138,61,0.55); box-shadow: 0 0 60px rgba(255,138,61,0.2); }
+  .invoice .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .invoice .who { font-size: 26px; font-weight: 700; color: var(--text-gray); letter-spacing: 1px; text-transform: uppercase; }
+  .invoice .amount { font-size: 72px; font-weight: 700; color: var(--accent-orange); text-shadow: 0 0 34px rgba(255,138,61,0.55); }
+  .invoice .per { font-size: 24px; color: var(--text-gray); }
+  .invoice .line { height: 2px; background: rgba(255,255,255,0.12); margin: 22px 0; }
+  .invoice .item { display: flex; align-items: center; gap: 14px; font-size: 25px; color: var(--text-gray); margin-top: 12px; }
+  .invoice .item svg { width: 24px; height: 24px; flex: 0 0 24px; color: var(--accent-orange); }
+  .cheap { margin-top: 40px; opacity: 0; font-size: 40px; font-weight: 700; line-height: 1.3; }
+  .cheap .hl { color: var(--accent-yellow); text-shadow: 0 0 26px rgba(255,230,0,0.55); }
+
+  .scene-2 { background: linear-gradient(150deg, #0a0a0a 0%, #14081f 100%); }
+  .platmk { display: flex; gap: 26px; margin-bottom: 46px; opacity: 0; }
+  .platmk .p { width: 150px; height: 150px; border-radius: 26px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(168,85,247,0.5); box-shadow: 0 0 34px rgba(168,85,247,0.16); }
+  .platmk .p svg { width: 74px; height: 74px; color: var(--accent-violet); }
+  .scene-2 h2 { font-size: 44px; font-weight: 700; line-height: 1.32; margin: 0 0 30px; }
+  .scene-2 h2 .hl { color: var(--accent-orange); text-shadow: 0 0 22px rgba(255,138,61,0.5); }
+  .blindbox { opacity: 0; font-size: 30px; color: var(--text-gray); line-height: 1.4; max-width: 720px; }
+  .blindbox .hl { color: var(--accent-yellow); }
+
+  .scene-3 { background: radial-gradient(circle at 50% 32%, #12081f 0%, #050505 76%); justify-content: flex-start; padding-top: 150px; }
+  .prompt { width: 860px; border-radius: 16px; overflow: hidden; opacity: 0; margin-bottom: 40px;
+    border: 2px solid rgba(255,255,255,0.18); background: #0d0d0d; box-shadow: 0 24px 70px rgba(0,0,0,0.7), 0 0 50px rgba(255,230,0,0.12); }
+  .prompt .bar { height: 44px; display: flex; align-items: center; gap: 9px; padding: 0 18px; background: #141414; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .prompt .bar .app { margin-left: 12px; font-size: 18px; color: var(--text-gray); letter-spacing: 1px; }
+  .prompt .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .prompt .d1 { background: #ff5f57; } .prompt .d2 { background: #febc2e; } .prompt .d3 { background: #28c840; }
+  .prompt .body { padding: 28px 30px; text-align: left; font-family: ui-monospace, monospace; font-size: 25px; line-height: 1.6; color: var(--accent-yellow); }
+  .prompt .body .cur { display: inline-block; width: 12px; height: 26px; background: var(--accent-yellow); vertical-align: -4px; margin-left: 2px; }
+  .feats { display: flex; flex-direction: column; gap: 16px; width: 800px; }
+  .feats .f { display: flex; align-items: center; gap: 20px; opacity: 0; text-align: left; border-radius: 16px; padding: 22px 28px;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(168,85,247,0.5); box-shadow: 0 0 30px rgba(168,85,247,0.1); }
+  .feats .f svg.ic { width: 30px; height: 30px; flex: 0 0 30px; color: var(--accent-violet); }
+  .feats .f .t { font-size: 28px; font-weight: 700; }
+  .feats .f .chk { margin-left: auto; width: 30px; height: 30px; color: var(--accent-yellow); opacity: 0; }
+  .feats .f.wa { border-color: rgba(255,230,0,0.55); }
+  .feats .f.wa svg.ic { color: var(--accent-yellow); }
+
+  .scene-4 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); justify-content: flex-start; padding-top: 150px; }
+  .scene-4 h2 { font-size: 44px; font-weight: 700; line-height: 1.3; margin: 0 0 20px; }
+  .scene-4 h2 .hl { color: var(--accent-violet); text-shadow: 0 0 22px rgba(168,85,247,0.5); }
+  .nocode { display: inline-flex; align-items: center; gap: 14px; padding: 14px 30px; border-radius: 30px; margin-bottom: 40px; opacity: 0;
+    background: rgba(168,85,247,0.14); border: 2px solid var(--accent-violet); }
+  .nocode svg { width: 28px; height: 28px; color: var(--accent-violet); }
+  .nocode .t { font-size: 26px; font-weight: 700; letter-spacing: 1px; color: var(--accent-violet); text-transform: uppercase; }
+  .build { width: 860px; border-radius: 16px; overflow: hidden; opacity: 0; border: 2px solid rgba(255,230,0,0.5); background: #0d0d0d; box-shadow: 0 0 50px rgba(255,230,0,0.16); }
+  .build .bar { height: 44px; display: flex; align-items: center; padding: 0 18px; background: #141414; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 18px; color: var(--text-gray); letter-spacing: 1px; }
+  .build .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 26px; }
+  .build .cell { height: 118px; border-radius: 12px; background: rgba(255,230,0,0.07); border: 1px solid rgba(255,230,0,0.3); opacity: 0; display: flex; align-items: center; justify-content: center; }
+  .build .cell svg { width: 34px; height: 34px; color: var(--accent-yellow); }
+  .glowflash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, rgba(255,230,0,0.35), transparent 60%); opacity: 0; pointer-events: none; }
+
+  .scene-5 { background: radial-gradient(circle at 50% 40%, #1a0a2a 0%, #050505 78%); }
+  .cta-badge { display: inline-block; background: var(--accent-orange); padding: 14px 30px; border-radius: 22px; font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #000; margin-bottom: 30px; opacity: 0; }
+  .cta-keyword { font-size: 92px; font-weight: 800; color: #fff; margin-bottom: 20px; opacity: 0; line-height: 1; }
+  .cta-keyword b { color: var(--accent-yellow); text-shadow: 0 0 40px rgba(255,230,0,0.7); }
+  .cta-sub { font-size: 34px; color: var(--text-white); opacity: 0; margin-bottom: 46px; }
+  .cta-follow { display: inline-flex; align-items: center; gap: 16px; padding: 22px 44px; border-radius: 40px; opacity: 0;
+    background: var(--accent-yellow); color: #000; font-size: 32px; font-weight: 800; box-shadow: 0 0 50px rgba(255,230,0,0.4); }
+  .cta-follow svg { width: 34px; height: 34px; }
+
+  .caption-belt { position: absolute; top: 1360px; left: 0; right: 0; height: 0; text-align: center; z-index: 10; }
+  .caption { position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+    font-size: 42px; font-weight: 800; color: var(--text-white); text-transform: uppercase; letter-spacing: 2px; line-height: 1.1;
+    text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; opacity: 0; }
+  .caption .hot { color: var(--accent-yellow); text-shadow: 0 0 22px rgba(255,230,0,0.85), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .violet { color: var(--accent-violet); text-shadow: 0 0 22px rgba(168,85,247,0.85), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+  .caption .orange { color: var(--accent-orange); text-shadow: 0 0 22px rgba(255,138,61,0.85), -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000; }
+
+  audio { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-30-meta-hook" data-start="0" data-width="1080" data-height="1920" data-duration="32.3">
+
+  <!-- Scene 1: agency invoice -->
+  <div class="scene scene-1">
+    <div class="kicker">Pubs Meta</div>
+    <h2>Ce que l'agence te facture<br/>chaque mois.</h2>
+    <div class="invoice" id="invoice">
+      <div class="top">
+        <div class="who">Agence</div>
+        <div><span class="amount">3 000 €</span><span class="per">/ mois</span></div>
+      </div>
+      <div class="line"></div>
+      <div class="item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12h6" stroke-linecap="round"/></svg>Gestion des campagnes Facebook</div>
+      <div class="item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12h6" stroke-linecap="round"/></svg>Gestion des campagnes Instagram</div>
+    </div>
+    <div class="cheap" id="cheap">L'IA le fait pour <span class="hl">presque rien.</span></div>
+  </div>
+
+  <!-- Scene 2: everyone knows, nobody can + agency blind -->
+  <div class="scene scene-2">
+    <div class="platmk" id="platmk">
+      <div class="p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="9" height="16" rx="1"/><path d="M14 4h3a1 1 0 011 1v3h-4zM13 4v16M13 12h4" stroke-linecap="round"/></svg></div>
+      <div class="p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+    </div>
+    <h2>Tout le monde sait<br/>qu'il faut en faire.<br/><span class="hl">Personne ne sait le faire.</span></h2>
+    <div class="blindbox" id="blindbox">Alors tu payes une agence — sans jamais savoir ce qu'elle fait de <span class="hl">ton argent.</span></div>
+  </div>
+
+  <!-- Scene 3: Emergent builds your platform -->
+  <div class="scene scene-3">
+    <div class="prompt" id="prompt">
+      <div class="bar"><div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="app">emergent.sh</div></div>
+      <div class="body">&gt; Construis-moi une plateforme<br/>&nbsp;&nbsp;de pubs Meta<span class="cur"></span></div>
+    </div>
+    <div class="feats">
+      <div class="f" id="ft-1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.2"/><path d="M3 19a6 6 0 0112 0M15 19a5 5 0 016-2" stroke-linecap="round"/></svg><div class="t">Crée les audiences</div><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="f" id="ft-2"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h9" stroke-linecap="round"/></svg><div class="t">Lance les campagnes</div><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="f" id="ft-3"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 20h18M6 20V9M12 20V4M18 20v-8" stroke-linecap="round"/></svg><div class="t">Analyse les résultats</div><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="f wa" id="ft-4"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19l1.2-3.6A7.5 7.5 0 1112 19.5 7.6 7.6 0 018.4 18.6L4 19z" stroke-linejoin="round"/></svg><div class="t">Leads envoyés sur WhatsApp</div><svg class="chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12.5l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+
+  <!-- Scene 4: no code, builds in front of you -->
+  <div class="scene scene-4">
+    <div class="nocode" id="nocode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L20 4" stroke-linecap="round"/></svg><div class="t">Zéro ligne de code</div></div>
+    <h2>Elle se construit<br/><span class="hl">devant toi.</span></h2>
+    <div class="build" id="build">
+      <div class="bar">ta-plateforme-meta / dashboard</div>
+      <div class="grid">
+        <div class="cell" id="c-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 18h18M6 18V8M12 18V4M18 18v-7" stroke-linecap="round"/></svg></div>
+        <div class="cell" id="c-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2" stroke-linecap="round"/></svg></div>
+        <div class="cell" id="c-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16v11H4z" stroke-linejoin="round"/><path d="M8 12h8" stroke-linecap="round"/></svg></div>
+        <div class="cell" id="c-4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="9" r="3"/><path d="M3 19a6 6 0 0112 0" stroke-linecap="round"/></svg></div>
+        <div class="cell" id="c-5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z" stroke-linejoin="round"/></svg></div>
+        <div class="cell" id="c-6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19l1.2-3.6A7.5 7.5 0 1112 19.5 7.6 7.6 0 018.4 18.6L4 19z" stroke-linejoin="round"/></svg></div>
+      </div>
+    </div>
+    <div class="glowflash" id="glowflash"></div>
+  </div>
+
+  <!-- Scene 5: CTA -->
+  <div class="scene scene-5">
+    <div class="cta-badge" id="cta-badge">Lien gratuit</div>
+    <div class="cta-keyword" id="cta-keyword">Commente <b>META</b></div>
+    <div class="cta-sub" id="cta-sub">et je t'envoie le lien</div>
+    <div class="cta-follow" id="cta-follow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      Seulement si tu me suis
+    </div>
+  </div>
+
+  <div class="caption-belt" id="capbelt"></div>
+
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32.18" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm-ascension.mp3" data-start="0" data-duration="32.3" data-volume="0.09"></audio>
+  <audio id="sfx-whoosh-1" src="assets/sfx-whoosh-v2.mp3" data-start="5.65" data-volume="0.16"></audio>
+  <audio id="sfx-whoosh-2" src="assets/sfx-whoosh-v2.mp3" data-start="15.29" data-volume="0.16"></audio>
+  <audio id="sfx-pop-1" src="assets/sfx-whoosh-v2.mp3" data-start="17.2" data-volume="0.09"></audio>
+  <audio id="sfx-pop-2" src="assets/sfx-whoosh-v2.mp3" data-start="18.2" data-volume="0.09"></audio>
+  <audio id="sfx-pop-3" src="assets/sfx-whoosh-v2.mp3" data-start="19.2" data-volume="0.09"></audio>
+  <audio id="sfx-pop-4" src="assets/sfx-whoosh-v2.mp3" data-start="20.2" data-volume="0.09"></audio>
+  <audio id="sfx-whoosh-3" src="assets/sfx-whoosh-v2.mp3" data-start="21.97" data-volume="0.16"></audio>
+  <audio id="sfx-chime-1" src="assets/sfx-chime-v2.mp3" data-start="26.2" data-volume="0.20"></audio>
+  <audio id="sfx-whoosh-4" src="assets/sfx-whoosh-v2.mp3" data-start="27.62" data-volume="0.16"></audio>
+  <audio id="sfx-chime-2" src="assets/sfx-chime-v2.mp3" data-start="28.5" data-volume="0.20"></audio>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  const S1=0, S1E=5.65;
+  const S2=5.65, S2E=15.29;
+  const S3=15.29, S3E=21.97;
+  const S4=21.97, S4E=27.62;
+  const S5=27.62, S5E=32.3;
+
+  // Scene 1
+  tl.to(".scene-1", { opacity: 1, duration: 0.3 }, S1);
+  tl.fromTo("#invoice", { y: 30, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.3)" }, 0.7);
+  tl.fromTo("#cheap", { y: 14, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 3.1);
+  tl.to(".scene-1", { opacity: 0, duration: 0.3 }, S1E - 0.3);
+
+  // Scene 2
+  tl.to(".scene-2", { opacity: 1, duration: 0.3 }, S2);
+  tl.fromTo("#platmk", { y: 20, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, S2 + 0.2);
+  tl.fromTo("#blindbox", { y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 11.4);
+  tl.to(".scene-2", { opacity: 0, duration: 0.3 }, S2E - 0.3);
+
+  // Scene 3 — prompt then features land with checkmark pop
+  tl.to(".scene-3", { opacity: 1, duration: 0.3 }, S3);
+  tl.fromTo("#prompt", { y: 22, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.3)" }, S3 + 0.1);
+  [["#ft-1",17.2],["#ft-2",18.2],["#ft-3",19.2],["#ft-4",20.2]].forEach(function(p){
+    tl.fromTo(p[0], { x: -26 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, p[1]);
+    tl.to(p[0] + " .chk", { opacity: 1, duration: 0.2, ease: "back.out(2)" }, p[1] + 0.3);
+  });
+  tl.to(".scene-3", { opacity: 0, duration: 0.3 }, S3E - 0.3);
+
+  // Scene 4 — dashboard assembles cell by cell, glow reveal
+  tl.to(".scene-4", { opacity: 1, duration: 0.3 }, S4);
+  tl.fromTo("#nocode", { y: 12, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(2)" }, S4 + 0.1);
+  tl.fromTo("#build", { y: 22, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.3)" }, 23.9);
+  ["#c-1","#c-2","#c-3","#c-4","#c-5","#c-6"].forEach(function(id,i){
+    tl.fromTo(id, { scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2.2)" }, 25.0 + i * 0.22);
+  });
+  tl.fromTo("#glowflash", { opacity: 0 }, { opacity: 0.9, duration: 0.16, ease: "power2.out" }, 26.2);
+  tl.to("#glowflash", { opacity: 0, duration: 0.5, ease: "power2.in" }, 26.4);
+  tl.to(".scene-4", { opacity: 0, duration: 0.3 }, S4E - 0.3);
+
+  // Scene 5 — CTA punch
+  tl.to(".scene-5", { opacity: 1, duration: 0.3 }, S5);
+  tl.fromTo("#cta-badge", { y: 14 }, { opacity: 1, y: 0, duration: 0.35 }, S5 + 0.15);
+  tl.fromTo("#cta-keyword", { scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)" }, 28.5);
+  tl.to("#cta-keyword", { scale: 1.06, duration: 0.3, yoyo: true, repeat: 1, ease: "sine.inOut" }, 29.0);
+  tl.fromTo("#cta-sub", { y: 10 }, { opacity: 1, y: 0, duration: 0.35 }, 29.6);
+  tl.fromTo("#cta-follow", { y: 16, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, 31.0);
+
+  // Captions (word-by-word, timed on the 32.18s voice track)
+  const CAPS = [
+    [0.3,1.0,"CE QUE LES"],
+    [1.0,2.0,"AGENCES TE <span class='orange'>FACTURENT</span>"],
+    [2.0,3.1,"<span class='hot'>3000 €</span> PAR MOIS"],
+    [3.1,4.0,"L'IA LE FAIT"],
+    [4.0,5.35,"POUR <span class='hot'>PRESQUE RIEN</span>"],
+    [5.65,6.7,"LES PUBS <span class='violet'>META</span>"],
+    [6.7,7.9,"TOUT LE MONDE SAIT"],
+    [7.9,9.0,"QU'IL FAUT EN FAIRE"],
+    [9.0,9.7,"MAIS PERSONNE"],
+    [9.7,10.97,"NE SAIT LE <span class='orange'>FAIRE</span>"],
+    [11.27,12.2,"ALORS TU PAYES"],
+    [12.2,12.9,"UNE <span class='orange'>AGENCE</span>"],
+    [12.9,13.9,"SANS JAMAIS SAVOIR"],
+    [13.9,14.5,"CE QU'ELLE FAIT"],
+    [14.5,15.29,"DE TON <span class='hot'>ARGENT</span>"],
+    [15.29,16.3,"AVEC <span class='violet'>EMERGENT</span>"],
+    [16.3,17.2,"TA PROPRE <span class='hot'>PLATEFORME</span>"],
+    [17.2,18.2,"CRÉE LES <span class='violet'>AUDIENCES</span>"],
+    [18.2,19.2,"LANCE LES <span class='violet'>CAMPAGNES</span>"],
+    [19.2,20.2,"ANALYSE LES <span class='violet'>RÉSULTATS</span>"],
+    [20.2,21.67,"LEADS SUR <span class='hot'>WHATSAPP</span>"],
+    [21.97,22.9,"SANS UNE LIGNE"],
+    [22.9,23.83,"DE <span class='violet'>CODE</span>"],
+    [24.13,25.2,"ET LE PLUS <span class='hot'>FOU</span>"],
+    [25.2,26.2,"ELLE SE CONSTRUIT"],
+    [26.2,27.4,"<span class='hot'>DEVANT TOI</span>"],
+    [27.62,28.5,"COMMENTE LE MOT"],
+    [28.5,29.5,"<span class='orange'>META</span>"],
+    [29.5,30.81,"JE T'ENVOIE LE <span class='hot'>LIEN</span>"],
+    [31.06,31.7,"SEULEMENT SI TU"],
+    [31.7,32.18,"ME <span class='hot'>SUIS</span>"]
+  ];
+  const belt = document.getElementById("capbelt");
+  CAPS.forEach(function(c){
+    const el = document.createElement("div");
+    el.className = "caption"; el.innerHTML = c[2];
+    belt.appendChild(el);
+    tl.to(el, { opacity: 1, duration: 0.1 }, c[0]);
+    tl.to(el, { opacity: 0, duration: 0.1 }, c[1] - 0.1);
+  });
+
+  window.__timelines["autoboost-30-meta-hook"] = tl;
+</script>
+</body>
+</html>
