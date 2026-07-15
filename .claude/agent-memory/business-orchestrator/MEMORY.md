@@ -474,3 +474,51 @@ possible pour lui : recharger https://wavespeed.ai — accès facturation hors p
   07-12 pour "après le 15/07") est quasiment atteint ; si la base reste vide demain (07-15), le
   signaler explicitement dans une page dédiée plutôt que de continuer à ne trouver que des
   signaux n8n.
+
+## 2026-07-15
+
+**Contexte** : 12e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress).
+`search_executions(status:["error"])` depuis 2026-07-14T20:47:46Z → 0 résultat (le fix WaveSpeed
+`Respond Error` du 07-14 tient, plus aucun crash). GitHub : 0 issue, 0 PR ouverte. Blog veille IA :
+dernier article 07-14, pas en retard (footer n'annonce plus de date précise, à surveiller si ça
+devient la norme).
+
+**Découverte** : lecture du Sheet de suivi Autoboost (`SI49NTVLadhUzgIe`, one-off créé le 07-14) →
+les lignes #19 (Génération Proposition Complète / DEVIS, row 20) et #20 (Analyse Google / SEO,
+row 21) avaient encore le lien mort `previsualisation.automatisationboost.com/devis-auto` et
+`/analyse-seo` — exactement le root cause déjà identifié et corrigé le 13/07 pour #7/#8/#9, mais
+réapparu sur 2 nouvelles vidéos produites la même semaine (commit `2480721`, 13/07). Date de
+publication programmée le 13/07 pour les deux → 2 jours de retard.
+
+**Piège évité** : au moment du check initial, `git log -1 origin/main` local montrait `fd721e6`
+(en retard de 14 commits sur HEAD), ce qui aurait pu faire croire à un push manquant. Un
+`git fetch origin main` a confirmé que le commit `2480721` (avec les vrais rendus #18/#19) était
+bien poussé — pattern déjà documenté le 07-10, confirmé une 2e fois : toujours fetch avant de
+conclure à un problème de push.
+
+**Action prise** : vérifié HTTP 200 sur les 2 vrais MP4 GitHub raw
+(`autoboost-18-devis-auto/public/renders/devis-auto-FINAL.mp4`,
+`autoboost-19-analyse-google-seo/public/renders/analyse-seo-FINAL.mp4`). Créé + exécuté un
+workflow n8n ponctuel (`JZTLehfllgTtuoNa`, Google Sheets natif, credential "Google Sheets
+account") qui remplace les 2 liens morts dans le Sheet — relu ensuite pour confirmer (rows 20/21
+à jour). Envoyé un email réel via Gmail natif (`aWmYTO3N9HjPcXI3`, labels Gmail `SENT`+`INBOX`
+confirmés) redemandant validation explicite ("OK #19"/"OK #20") avant toute publication Blotato.
+Pas de publication Blotato faite par l'IA (règle du 07-10 toujours en vigueur).
+
+**Page Notion créée** : "📹 Autoboost #19/#20 — lien de prévisualisation mort réparé (Devis + SEO,
+root cause récurrent corrigé)" (id `39e5fda3-ad05-81a9-8eb4-e2929574dfef`, Projet=Content,
+ROI=🔥5, Délégable IA=NO, Statut=Terminé).
+
+**Pattern à surveiller à l'avenir** :
+- Le root cause "lien previsualisation.automatisationboost.com mort" a maintenant touché 5 vidéos
+  en 2 occurrences distinctes (#7/#8/#9 le 13/07, #19/#20 le 15/07) — ce domaine ne correspond
+  toujours à aucune app déployée. Si un 3e groupe de vidéos réapparaît avec ce même lien mort, il
+  devient pertinent de suggérer à Tony de retirer cette étape du pipeline de génération (au lieu
+  d'écrire une URL de preview aspirationnelle) plutôt que de continuer les correctifs au cas par
+  cas.
+- 12e jour sans tâche Notion délégable IA — le seuil de signalement explicite (évoqué le 07-12
+  pour "après le 15/07", puis le 07-14 pour "si vide demain 07-15") est maintenant dépassé sans
+  avoir été traité en tant que tel deux jours de suite car un signal n8n/Sheet plus concret et
+  actionnable est apparu à chaque fois. Si la base reste vide après le 17/07 SANS qu'aucun autre
+  signal business ne se présente, signaler explicitement à Tony plutôt que de continuer à
+  compter les jours indéfiniment.
