@@ -522,3 +522,61 @@ ROI=🔥5, Délégable IA=NO, Statut=Terminé).
   actionnable est apparu à chaque fois. Si la base reste vide après le 17/07 SANS qu'aucun autre
   signal business ne se présente, signaler explicitement à Tony plutôt que de continuer à
   compter les jours indéfiniment.
+
+## 2026-07-16
+
+**Contexte** : 13e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress) —
+requête SQL confirmée 0 résultat. `search_executions(status:["error"])` depuis 2026-07-15T00:00 →
+10 résultats (vs 0 la veille), répartis sur 4 workflows différents.
+
+**Découverte** : root cause commune identifiée après lecture des payloads complets (`includeData:
+true`) — le compte OpenAI "OpenAi account TP" (credential `aJUfJkarEgt23LAZ`) est à court de
+crédits (`429 insufficient_quota`), touchant :
+1. `S85QlXjhIO6nBvzY` ([Avatar AI] Webhook v2) — nœud "Whisper Transcription" : 4 échecs le 15/07
+   05h20-05h50, **payload de production réel** (voixUrl + description réels, pas un test curl) →
+   plantait tout le webhook alors que la voix (WaveSpeed) était déjà générée avec succès.
+2. `6InNNRjMJxiteEkV` (webhook `/webhook/tts-gen`, fallback TTS documenté dans CLAUDE.md) — nœud
+   "OpenAI TTS" : 2 échecs le 15/07 21h01-21h02, mais payload = `curl` de test manuel ("Test de
+   voix off automatique."), pas de la prod — moins urgent.
+3. `0gXePyjWIVUaKret` et `lIW4aCR023ZLCd3V` — exécutions manuelles (mode `manual`), un échec
+   "Download Audio" avec `URL parameter must be a string, got undefined" (poll trop tôt, pas lié
+   au quota OpenAI) — non actionné aujourd'hui, hors périmètre de la tâche du jour, à surveiller
+   si ça se reproduit en production.
+
+**Action prise** : exactement le même pattern de résilience que le fix WaveSpeed du 07-14, mais
+sur un nœud différent (Whisper, pas Qwen3 Voice Clone) et un fournisseur différent (OpenAI, pas
+WaveSpeed). `update_workflow` sur `S85QlXjhIO6nBvzY` (3 opérations atomiques) : `setNodeSettings`
+(`onError: continueErrorOutput`) sur "Whisper Transcription" ; nouvelle connexion sortie-erreur →
+"Format Transcripts" ; code de "Format Transcripts" étendu pour gérer le cas où `words` ET `text`
+sont absents (échec Whisper) en renvoyant `transcripts: []` (audio livré sans sous-titres brûlés
+plutôt que crash). Workflow publié (`activeVersionId 82c73a31-5955-48df-9cb7-5d11b59df066`).
+**Testé en conditions réelles** : `execute_workflow` (mode production, id `64580`, même payload
+shape que la prod) → la même erreur `insufficient_quota` s'est reproduite sur Whisper, mais
+l'exécution est passée de `error` à **`success`**, `Respond to Webhook` a bien renvoyé
+`{transcripts: [], voiceUrl: "..."}` au lieu de planter. Pas touché à `6InNNRjMJxiteEkV`
+aujourd'hui (moins urgent, payload de test uniquement, et règle "une seule tâche par jour") — si
+ce webhook reçoit un vrai payload de prod avec la même erreur, appliquer le même pattern
+(`onError: continueErrorOutput` sur "OpenAI TTS" + fallback gracieux) au prochain run.
+
+**Page Notion créée** : "🐛 Workflow n8n corrigé — Avatar Webhook v2 résilient au quota OpenAI
+épuisé (Whisper Transcription)" (id `39f5fda3-ad05-81ab-be23-e470056aa2d9`, Projet=Content,
+ROI=🔥5, Délégable IA=NO, Statut=Terminé). Notification push envoyée à Tony (seule action
+possible pour lui : recharger https://platform.openai.com/settings/billing — accès facturation
+hors périmètre IA, root cause identique en substance au pattern WaveSpeed du 07-14).
+
+**Pattern à surveiller à l'avenir** :
+- Nouveau cas confirmé du pattern "API tierce à court de crédits → plutôt que relancer un
+  diagnostic, rendre le nœud concerné résilient (`onError: continueErrorOutput` + fallback
+  dégradé mais fonctionnel) puis notifier Tony pour la recharge, qui reste hors périmètre IA".
+  Déjà vu 2 fois (WaveSpeed 07-14, OpenAI 07-16) sur 2 fournisseurs différents du même pipeline
+  avatar-reel — si un 3e nœud du même pipeline (ex. FFmpeg service, autre appel OpenAI) tombe en
+  panne pour la même raison "crédits épuisés", il devient pertinent de proposer à Tony un
+  monitoring de solde proactif multi-fournisseurs plutôt que des correctifs au cas par cas.
+- Bien distinguer AVANT d'agir : payload de production réel (texte réel, `voixUrl`/`avatarUrl`
+  remplis) = signal actionnable ; payload avec `user-agent: curl` et texte de test générique
+  ("Test de ...") = test manuel de Tony, pas un bug à corriger en urgence (pattern déjà noté
+  10/07-15/07, reconfirmé aujourd'hui sur `6InNNRjMJxiteEkV`).
+- 13e jour sans tâche Notion délégable IA — le seuil de signalement explicite (repoussé plusieurs
+  fois faute d'avoir un signal n8n plus concret à traiter) est maintenant nettement dépassé ;
+  si la base reste vide ET qu'aucun signal n8n/business concret n'apparaît lors d'un prochain run,
+  il faut le signaler explicitement à Tony au lieu de continuer à repousser indéfiniment.
