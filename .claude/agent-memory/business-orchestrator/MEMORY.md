@@ -580,3 +580,51 @@ hors périmètre IA, root cause identique en substance au pattern WaveSpeed du 0
   fois faute d'avoir un signal n8n plus concret à traiter) est maintenant nettement dépassé ;
   si la base reste vide ET qu'aucun signal n8n/business concret n'apparaît lors d'un prochain run,
   il faut le signaler explicitement à Tony au lieu de continuer à repousser indéfiniment.
+
+## 2026-07-17
+
+**Contexte** : 14e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress,
+et vérifié aussi tous statuts confondus via `GROUP BY Statut`). `search_executions(status:
+["error"])` depuis 2026-07-16T20:47:46Z (fin du dernier check) → **0 résultat** : première
+journée totalement propre côté n8n depuis ~2 semaines (une erreur actionnable ou non était
+systématiquement présente du 07-05 au 07-16). Le seul résultat trouvé dans une fenêtre de
+recherche trop large initiale (execution 64719, `6InNNRjMJxiteEkV`, 17:17 le 16/07) était un
+simple test curl (`{"ping":1}`) déjà couvert par le check de la veille — pas un nouveau signal.
+GitHub `tonyPayetDev/hero-section` : 0 issue, 0 PR ouverte. Git log 7 jours : activité normale
+(Autoboost Neon Video #21-23 en finalisation, blog veille IA à jour au 16/07, cadence normale).
+
+**Vérification approfondie faite (nouveau pas franchi aujourd'hui)** : plutôt que de me
+contenter du filtre `Délégable IA=vrai`, j'ai lu ~35 tâches en `Statut IN ('Top Priorité 🚀',
+'A délèguer | D', 'Deleguer')` pour vérifier qu'aucune n'était mal étiquetée. Confirmé : toutes
+sont du travail intrinsèquement humain (prospection WhatsApp/appels, closing, rituels sport/
+discipline, décisions stratégiques) — correctement exclues, aucune ne devrait passer en
+Délégable IA=vrai. Cela ferme la question "est-ce que je rate des tâches mal taguées ?"
+soulevée implicitement les jours précédents.
+
+**Action prise** : aucune tâche exécutée — signal RAS confirmé sur tous les fronts (Notion,
+n8n, GitHub, git log). Le seuil de signalement explicite à Tony, évoqué et repoussé les 07-12,
+07-14, 07-15, 07-16 (faute d'un signal n8n plus concret à traiter chaque jour), est cette fois
+appliqué pour de bon : page Notion créée avec une section dédiée recommandant à Tony de
+qualifier explicitement quelques tâches "Délégable IA"=vrai s'il veut que cet agent continue à
+avoir du vrai travail exécutable, plutôt que de dépendre uniquement de l'apparition d'un bug
+n8n ce jour-là.
+
+**Page Notion créée** : "✅ RAS — 17 juillet 2026 (+ suggestion : file Délégable IA vide depuis
+14 jours)" (id `3a05fda3-ad05-815c-8bdd-eee80edf7b20`, Projet=ORGANISATION, Statut=Terminé 🙌).
+Pas de notification push envoyée — rien de cassé, rien d'urgent à traiter aujourd'hui, la
+consigne de notification favorise le silence quand tout est sain (règle déjà appliquée le
+07-06/07-08 pour des jours RAS similaires).
+
+**Pattern à surveiller à l'avenir** :
+- Si la base Notion reste vide de tâches délégables ET qu'aucun nouveau signal n8n/business
+  n'apparaît les prochains jours, il n'est plus nécessaire de répéter l'audit exhaustif des
+  tâches "Top Priorité"/"A délèguer" à chaque run — c'est fait et confirmé aujourd'hui (aucune
+  tâche mal étiquetée). Se concentrer sur `search_executions(status:["error"])` en priorité et
+  ne refaire l'échantillonnage manuel que si Tony ajoute de nouvelles tâches dans ces statuts.
+- Si Tony répond à la suggestion du jour en qualifiant des tâches "Délégable IA"=vrai, ce sera
+  visible dès le prochain run via la requête SQL standard — vérifier en premier avant de
+  répéter la suggestion.
+- Toujours utiliser `startedAfter` = timestamp exact de fin du dernier check (trouvable dans
+  cette mémoire) plutôt qu'un simple "depuis minuit" pour `search_executions` — évite de
+  re-analyser des erreurs déjà traitées la veille (piège rencontré aujourd'hui avec l'exécution
+  64719, déjà couverte par le check du 07-16 mais réapparue dans une fenêtre trop large).
