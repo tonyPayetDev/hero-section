@@ -628,3 +628,68 @@ consigne de notification favorise le silence quand tout est sain (règle déjà 
   cette mémoire) plutôt qu'un simple "depuis minuit" pour `search_executions` — évite de
   re-analyser des erreurs déjà traitées la veille (piège rencontré aujourd'hui avec l'exécution
   64719, déjà couverte par le check du 07-16 mais réapparue dans une fenêtre trop large).
+
+## 2026-07-18
+
+**Contexte** : 16e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress),
+requête SQL confirmée 0 résultat. Aucune nouvelle page créée dans la base depuis le 17/07 (vérifié
+via `createdTime > 2026-07-17T00:00:00Z` → 0 résultat) — Tony n'a pas encore répondu à la
+suggestion du 07-17 de qualifier des tâches en Délégable IA=vrai.
+
+**Vérification n8n** : `search_executions(status:["error"])` depuis 2026-07-17T00:00:00Z → 2
+résultats.
+1. `6InNNRjMJxiteEkV` (webhook `/webhook/tts-gen`) — 17/07 13h06 UTC, nœud "OpenAI TTS",
+   `insufficient_quota`. Payload = `curl/7.88.1`, body vide (`{}`) → test manuel de Tony, pas de
+   la prod. Pattern déjà documenté le 07-16 (bien distinguer payload de test vs prod avant
+   d'agir) — non actionné, cohérent avec la règle "une seule tâche par jour" et absence de
+   signal de prod.
+2. `Upi6aFi0KYo49gn7` (🍽️ FoodBoost — Post quotidien auto, **nouveau workflow créé le 16/07**,
+   schedule trigger quotidien, poste un carrousel Instagram ou une vidéo conseil via Blotato) —
+   17/07 06h00 UTC, erreur "Carrousel incomplet : 1/3 images uploadées sur Blotato" levée par le
+   nœud code "📦 Assembler le carrousel". Root cause identifiée par lecture du workflow + de
+   l'exécution complète (`includeData: true`, comptage des runs par nœud) : le nœud "🔍 Statut
+   image" interroge `$("🎨 Créer tâche image").last().json.data.taskId` — donc **toujours le
+   taskId du dernier slide créé (le 3e)**, jamais le taskId propre à chaque item — combiné au
+   fait que le nœud de boucle "🔁 Boucle slides" (splitInBatches batchSize=1) n'apparaît PAS du
+   tout dans les runData de l'exécution en échec : les 3 slides sont traités en un seul batch
+   parallèle au lieu d'un par un séquentiellement comme le nom du nœud le laisse penser. Résultat
+   observé : sur les 3 items en cours de polling, un seul a fini par atteindre "🔗 URL image" →
+   "☁️ Upload Blotato" avant que "📦 Assembler" ne s'exécute avec seulement 1 item et lève
+   l'erreur — les 2 autres items étaient encore en boucle de retry (nœud "⏳ Patienter 20 s" /
+   "🔍 Statut image" / "⚠️ Abandon ?") au moment où "📦 Assembler" a déjà consommé les données
+   disponibles. **Pas d'action prise sur ce bug** : en comparant `workflow.updatedAt`
+   (2026-07-17T13:12:11Z) au timestamp de l'échec (06:00:38Z) et à l'historique des exécutions
+   (`search_executions(workflowId: "Upi6aFi0KYo49gn7")`), le workflow a déjà été corrigé et
+   republié le jour même à 13h12 UTC (par Tony ou une session précédente, hors de cette mémoire)
+   — confirmé par une exécution manuelle réussie à 13h12 UTC le 17/07 et surtout par l'exécution
+   planifiée du **18/07 06h00 UTC (id 65068), terminée en succès** (branche "conseil"/vidéo ce
+   jour-là, `lastNodeExecuted: "📤 Programmer vidéo IG"`). Rien à corriger aujourd'hui.
+
+**GitHub** `tonyPayetDev/hero-section` : 0 issue, 0 PR ouverte. **Git log 7 jours** : activité
+normale (Autoboost Neon Video #24 en cours). **Blog veille IA** : dernier article 16/07, cadence
+habituelle 2-6 jours entre articles — pas de retard identifiable, ne pas traiter comme un signal
+tant que le rythme reste dans cette fourchette.
+
+**Action prise** : aucune — signal RAS confirmé (Notion vide, n8n sans nouveau bug actionnable,
+GitHub propre, cadence projet normale). Page Notion créée : "✅ RAS — 18 juillet 2026" (id
+`3a15fda3-ad05-8146-8caa-ee88b75b4dcb`, Projet=ORGANISATION, Statut=Terminé 🙌). Pas de
+notification push envoyée (rien de cassé ni d'urgent, cf. règle du silence sur jour RAS déjà
+appliquée le 07-06/07-08/07-17).
+
+**Pattern à surveiller à l'avenir** :
+- Le bug FoodBoost (`.last()` sur le mauvais nœud pour récupérer un taskId + boucle
+  `splitInBatches` bypassée) est un pattern de bug classique dans les pipelines n8n "créer tâche
+  async → poll → agréger N résultats en parallèle" de Tony (même famille que le pipeline avatar
+  vu le 07-14/07-16, mais différent : ici c'est une erreur de câblage/référence d'item, pas un
+  quota fournisseur). Si un 2e workflow du même genre (poll + agrégation multi-items) casse pour
+  une raison similaire, il devient pertinent de proposer à Tony un nœud/pattern réutilisable de
+  "poll générique avec taskId par item" plutôt que de corriger au cas par cas à chaque nouveau
+  pipeline créé.
+- Toujours comparer `workflow.updatedAt` au timestamp de l'échec ET relire l'historique complet
+  des exécutions (`search_executions(workflowId: ...)`) avant de proposer un fix — un tiers
+  (Tony ou une session précédente) peut avoir déjà corrigé le problème entre le moment de
+  l'échec et le moment du check ; piège évité aujourd'hui de justesse sur FoodBoost.
+- 16e jour sans tâche Notion délégable IA, toujours sans réponse de Tony à la suggestion du
+  07-17. Ne pas répéter la suggestion à chaque run (déjà faite le 07-17) — se contenter de
+  vérifier si une nouvelle tâche est apparue (`createdTime` récent) avant de conclure à nouveau
+  au silence.
