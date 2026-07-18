@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veille IA & Automatisation — 18 juillet 2026</title>
+  <meta name="description" content="Les 6 actualités IA et automatisation les plus importantes de la semaine : ChatGPT Work, GPT-5.6, Claude for Teachers, n8n Canvas, Make AI Agents, et l'essor du freelance IA." />
+  <meta name="author" content="Tony Payet — AutomationBoost" />
+  <meta name="date" content="2026-07-18" />
+  <style>
+    :root {
+      --bg: #0e0f14;
+      --surface: #16181f;
+      --border: #2a2d3a;
+      --accent: #7c6ef7;
+      --accent2: #5bc8f5;
+      --text: #e2e4ef;
+      --muted: #8b8fa8;
+      --tag-bg: #1e2235;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1a1042 0%, #0e1528 50%, #0a1a1a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--tag-bg);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .3rem .9rem;
+      border-radius: 2rem;
+      margin-bottom: 1.2rem;
+    }
+    .header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      margin-bottom: .8rem;
+    }
+    .header h1 span { color: var(--accent); }
+    .header .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .meta-row span { display: flex; align-items: center; gap: .35rem; }
+
+    /* LAYOUT */
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    /* INTRO */
+    .intro {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 3rem;
+      font-size: .97rem;
+      color: var(--muted);
+    }
+    .intro strong { color: var(--text); }
+
+    /* SECTION TITLE */
+    .section-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .5rem;
+    }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 2rem;
+      padding-bottom: .8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* NEWS CARDS */
+    .news-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 1.6rem;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: .9rem;
+    }
+    .card-number {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .card-meta { flex: 1; }
+    .card-category {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: .3rem;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .card p { font-size: .93rem; color: var(--muted); margin-bottom: .9rem; }
+    .card p strong { color: var(--text); }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: .9rem;
+    }
+    .tag {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .72rem;
+      padding: .2rem .65rem;
+      border-radius: 1rem;
+    }
+    .source-link {
+      font-size: .8rem;
+      font-weight: 600;
+    }
+
+    /* INSIGHT BOX */
+    .insight-block {
+      background: linear-gradient(135deg, #1a1042 0%, #0d1e32 100%);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 1.8rem 1.6rem;
+      margin-bottom: 3rem;
+    }
+    .insight-block h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .insight-block ul {
+      list-style: none;
+      display: grid;
+      gap: .8rem;
+    }
+    .insight-block ul li {
+      padding-left: 1.4rem;
+      position: relative;
+      font-size: .93rem;
+      color: var(--muted);
+    }
+    .insight-block ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .insight-block ul li strong { color: var(--text); }
+
+    /* TAKEAWAY */
+    .takeaway {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.6rem;
+      margin-bottom: 3rem;
+    }
+    .takeaway h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: var(--accent2);
+    }
+    .takeaway-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .takeaway-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .takeaway-item .emoji { font-size: 1.4rem; margin-bottom: .4rem; }
+    .takeaway-item p { font-size: .84rem; color: var(--muted); }
+    .takeaway-item p strong { color: var(--text); display: block; margin-bottom: .2rem; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    footer a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .header { padding: 2rem 1rem 1.5rem; }
+      .card { padding: 1.2rem; }
+      .card-header { gap: .7rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="badge">Veille Hebdomadaire</div>
+  <h1>IA & Automatisation :<br/><span>Ce qui change cette semaine</span></h1>
+  <p class="subtitle">Les 6 actualités marquantes du 15–18 juillet 2026 — sélectionnées pour les freelances et entrepreneurs qui automatisent.</p>
+  <div class="meta-row">
+    <span>📅 18 juillet 2026</span>
+    <span>✍️ Tony Payet — AutomationBoost</span>
+    <span>⏱ 5 min de lecture</span>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="intro">
+    <strong>Semaine chargée dans l'écosystème IA.</strong> OpenAI lance son agent le plus ambitieux à ce jour, Anthropic mise sur l'éducation et les gouvernements, n8n consolide son virage IA-first avec un canvas spatial, et Make.com repositionne ses agents comme système d'exploitation business. Tour d'horizon des 6 news qui comptent vraiment pour les indépendants et chefs d'entreprise qui construisent sur ces outils.
+  </div>
+
+  <!-- NEWS SECTION -->
+  <div class="section-label">À la Une</div>
+  <h2 class="section-title">6 Actualités à Retenir</h2>
+
+  <div class="news-grid">
+
+    <!-- 1. ChatGPT Work -->
+    <article class="card">
+      <div class="card-header">
+        <div class="card-number">1</div>
+        <div class="card-meta">
+          <div class="card-category">OpenAI · 9 juillet 2026</div>
+          <h2>ChatGPT Work : l'agent qui livre des livrables finis</h2>
+        </div>
+      </div>
+      <p>OpenAI a lancé <strong>ChatGPT Work</strong>, un agent capable de travailler pendant des heures sur des projets complexes en se connectant à vos apps. Il ne répond plus — il <em>produit</em> : feuilles de calcul, présentations, documents, mini-apps web. L'agent agrège le contexte de vos outils connectés, décompose l'objectif en sous-tâches et les exécute de façon autonome.</p>
+      <p>En parallèle, <strong>GPT-5.6</strong> arrive en trois variantes — Sol (puissance max), Luna (vitesse), Terra (équilibre). Le mode "ultra" de Sol permet de déléguer des sous-tâches à des sous-modèles spécialisés. L'application Codex est intégrée dans le desktop ChatGPT unifié.</p>
+      <div class="tag-row">
+        <span class="tag">OpenAI</span>
+        <span class="tag">Agents</span>
+        <span class="tag">GPT-5.6</span>
+        <span class="tag">Productivité</span>
+      </div>
+      <a class="source-link" href="https://www.bloomberg.com/news/articles/2026-07-09/openai-unveils-chatgpt-work-agent-to-field-tasks-for-hours" target="_blank" rel="noopener">→ Source Bloomberg</a>
+      &nbsp;&nbsp;
+      <a class="source-link" href="https://www.axios.com/2026/07/09/ai-openai-gpt-release" target="_blank" rel="noopener">→ Source Axios</a>
+    </article>
+
+    <!-- 2. Claude for Teachers + Claude Code -->
+    <article class="card">
+      <div class="card-header">
+        <div class="card-number">2</div>
+        <div class="card-meta">
+          <div class="card-category">Anthropic · Juillet 2026</div>
+          <h2>Anthropic : Claude for Teachers, Government et Claude Code en production</h2>
+        </div>
+      </div>
+      <p>Anthropic joue la carte de <strong>l'expansion sectorielle</strong> : Claude for Teachers donne un accès gratuit aux outils premium aux enseignants américains K-12, et Claude for Government entre en bêta. Sur le plan technique, <strong>Claude Code</strong> reçoit une mise à jour majeure — streaming de texte des sous-agents, meilleure gestion des uploads, rendu terminal accéléré et reporting en arrière-plan amélioré.</p>
+      <p>Le mode <strong>Cowork</strong> est étendu au mobile et au web : sessions partagées, fichiers synchronisés, approbations mobiles et tâches planifiées. Les admins Enterprise bénéficient d'analytics détaillées par groupe, par user et par coût de skill utilisé.</p>
+      <div class="tag-row">
+        <span class="tag">Anthropic</span>
+        <span class="tag">Claude Code</span>
+        <span class="tag">Enterprise</span>
+        <span class="tag">Éducation</span>
+      </div>
+      <a class="source-link" href="https://www.chalkbeat.org/2026/07/14/anthropic-launches-claude-for-teachers-as-ai-companies-battle-for-classrooms/" target="_blank" rel="noopener">→ Source Chalkbeat</a>
+      &nbsp;&nbsp;
+      <a class="source-link" href="https://releasebot.io/updates/anthropic/claude-code" target="_blank" rel="noopener">→ Release Notes Claude Code</a>
+    </article>
+
+    <!-- 3. n8n Canvas -->
+    <article class="card">
+      <div class="card-header">
+        <div class="card-number">3</div>
+        <div class="card-meta">
+          <div class="card-category">n8n · Juillet 2026</div>
+          <h2>n8n : l'IA devient native et le canvas spatial arrive</h2>
+        </div>
+      </div>
+      <p>Deux évolutions majeures chez n8n en juillet. D'abord le <strong>Canvas spatial</strong> (v1.30) : fini le workflow linéaire gauche-droite. Les nœuds se placent librement, se regroupent en clusters labellisés et codés par couleur, et se réduisent à un bloc unique pour les workflows de +50 nœuds.</p>
+      <p>Ensuite, les <strong>fonctionnalités IA deviennent first-class</strong> : outils IA, mémoire et appels LLM sont des types de nœuds standard dans n'importe quel workflow — plus besoin de sous-workflow séparé. Le nœud Chat intègre désormais les <strong>human-in-the-loop</strong> : un workflow peut se mettre en pause pour demander une validation humaine avant de continuer.</p>
+      <div class="tag-row">
+        <span class="tag">n8n</span>
+        <span class="tag">Workflow</span>
+        <span class="tag">Human-in-loop</span>
+        <span class="tag">Canvas</span>
+      </div>
+      <a class="source-link" href="https://docs.n8n.io/release-notes" target="_blank" rel="noopener">→ Release Notes n8n</a>
+      &nbsp;&nbsp;
+      <a class="source-link" href="https://medium.com/@angelosorte1/n8n-in-2026-latest-updates-practical-use-cases-ethical-automation-11af4cb4b455" target="_blank" rel="noopener">→ Analyse Medium</a>
+    </article>
+
+    <!-- 4. Make AI Agents -->
+    <article class="card">
+      <div class="card-header">
+        <div class="card-number">4</div>
+        <div class="card-meta">
+          <div class="card-category">Make.com · Juillet 2026</div>
+          <h2>Make.com pivote vers les agents IA multimodaux</h2>
+        </div>
+      </div>
+      <p>Make.com annonce une <strong>nouvelle génération d'agents IA</strong> intégrés directement dans le Scenario Builder : panneau de raisonnement visible, inputs multimodaux (documents, images, audio), et une bibliothèque d'agents réutilisables à l'échelle de l'organisation. L'UI est repensée autour de l'orchestration visuelle.</p>
+      <p>Le modèle de tarification migre des "opérations" vers les <strong>crédits</strong> — un changement important pour estimer les coûts. La tendance des utilisateurs : passer de l'automatisation de tâches uniques à des <strong>systèmes opérationnels multi-étapes</strong> touchant CRM, email, formulaires, support et reporting.</p>
+      <div class="tag-row">
+        <span class="tag">Make.com</span>
+        <span class="tag">AI Agents</span>
+        <span class="tag">No-code</span>
+        <span class="tag">Multimodal</span>
+      </div>
+      <a class="source-link" href="https://www.make.com/en/whats-new" target="_blank" rel="noopener">→ What's New Make</a>
+      &nbsp;&nbsp;
+      <a class="source-link" href="https://aiflowreview.com/make-com-ai-automation-review/" target="_blank" rel="noopener">→ Revue 2026</a>
+    </article>
+
+    <!-- 5. Multi-agent révolution -->
+    <article class="card">
+      <div class="card-header">
+        <div class="card-number">5</div>
+        <div class="card-meta">
+          <div class="card-category">Tendance Marché · Juillet 2026</div>
+          <h2>Agents solo dépassés : les systèmes multi-agents dominent</h2>
+        </div>
+      </div>
+      <p>Selon les dernières analyses de marché, le pivot le plus significatif du moment est le passage des agents individuels aux <strong>systèmes multi-agents</strong> capables de lire, router, rédiger, mettre à jour des CRM et déclencher des actions suivantes en parallèle. 85% des leaders IT en entreprise citent l'intégration workflow comme priorité #1 d'investissement IA (Gartner 2025).</p>
+      <p>Le marché de l'IA agentique devrait passer de <strong>5,2 milliards $ en 2024 à 200 milliards $ d'ici 2034</strong>. Les outils no-code comme n8n et Make permettent désormais aux PME et freelances d'accéder à ces architectures sans code.</p>
+      <div class="tag-row">
+        <span class="tag">Multi-agents</span>
+        <span class="tag">Hyperautomation</span>
+        <span class="tag">Marché</span>
+        <span class="tag">2026</span>
+      </div>
+      <a class="source-link" href="https://www.deloitte.com/us/en/insights/topics/technology-management/tech-trends/2026/agentic-ai-strategy.html" target="_blank" rel="noopener">→ Deloitte Insights</a>
+      &nbsp;&nbsp;
+      <a class="source-link" href="https://www.blueprism.com/resources/blog/future-ai-agents-trends/" target="_blank" rel="noopener">→ BluePrism Trends</a>
+    </article>
+
+    <!-- 6. Freelance IA boom -->
+    <article class="card">
+      <div class="card-header">
+        <div class="card-number">6</div>
+        <div class="card-meta">
+          <div class="card-category">Freelance & Entrepreneurs · 2026</div>
+          <h2>Freelances IA : +3x d'inscrits spécialisés, 8h/semaine économisées en moyenne</h2>
+        </div>
+      </div>
+      <p>En France, <strong>34% des PME utilisent l'IA</strong> en 2025 contre 13% un an plus tôt (Baromètre France Num). Les freelances qui se positionnent sur l'IA voient leur nombre tripler parmi les nouveaux inscrits. Un entrepreneur qui implémente bien l'IA économise en moyenne <strong>8h par semaine</strong> sur les tâches administratives.</p>
+      <p>87% des entreprises prévoient d'intégrer davantage d'IA en 2026, mais seulement 15% ont les compétences en interne — <strong>un gap massif que les freelances spécialisés peuvent combler</strong>. La demande pour les experts en automatisation n8n, Make, Claude et agents IA est en forte croissance.</p>
+      <div class="tag-row">
+        <span class="tag">Freelance</span>
+        <span class="tag">Opportunités</span>
+        <span class="tag">France</span>
+        <span class="tag">ROI</span>
+      </div>
+      <a class="source-link" href="https://www.ubiks.net/intelligence-artificielle-et-freelance-le-boom-de-2026/" target="_blank" rel="noopener">→ Ubiks.net</a>
+      &nbsp;&nbsp;
+      <a class="source-link" href="https://www.insify.fr/blog/tendances/ia-entrepreneurs-2026-guide-bonnes-pratiques/" target="_blank" rel="noopener">→ Guide Insify</a>
+    </article>
+
+  </div>
+
+  <!-- INSIGHT SECTION -->
+  <div class="section-label">Analyse</div>
+  <h2 class="section-title">Ce que ça change pour vous, freelance ou entrepreneur</h2>
+
+  <div class="insight-block">
+    <h3>💡 Mes insights de la semaine</h3>
+    <ul>
+      <li>
+        <strong>ChatGPT Work redéfinit ce qu'est un "assistant".</strong> On n'est plus dans le chatbot qui aide à rédiger — on est dans l'agent qui <em>livre</em>. Pour les freelances en productivité/automatisation, la concurrence directe avec des tâches manuelles devient réelle. La valeur-ajout se déplace vers l'orchestration et la supervision de ces agents, pas leur exécution.
+      </li>
+      <li>
+        <strong>n8n + human-in-the-loop = workflows hybrides fiables.</strong> La possibilité de mettre en pause un workflow pour validation humaine est un game-changer pour les processus sensibles (devis clients, validation de contrats, vérifications éthiques). Ça ouvre des cas d'usage enterprise que beaucoup hésitaient à automatiser.
+      </li>
+      <li>
+        <strong>Make passe des crédits → surveillez vos coûts.</strong> La migration opérations → crédits chez Make n'est pas anodine. Re-calculez dès maintenant le coût de vos scenarios existants avec le nouveau modèle. Certains workflows pourraient devenir 2-3x plus chers selon l'usage des agents IA.
+      </li>
+      <li>
+        <strong>Le gap compétences IA = opportunité concrète.</strong> 87% des boîtes veulent de l'IA, 15% ont les ressources en interne. Si vous maîtrisez n8n, Make ou les agents Claude, vous êtes dans les 15% que tout le monde cherche. C'est le moment de packager une offre claire : "Je construis votre système d'automatisation IA en X semaines pour Y résultat."
+      </li>
+      <li>
+        <strong>Les architectures multi-agents ne sont plus réservées aux techs.</strong> n8n et Make les rendent visuelles et no-code. Mais attention : complexité ≠ valeur. La vraie compétence en 2026, c'est de savoir <em>quand ne pas automatiser</em> et de concevoir des flux qui restent maintenables dans 6 mois.
+      </li>
+    </ul>
+  </div>
+
+  <!-- TAKEAWAYS -->
+  <div class="takeaway">
+    <h3>Actions concrètes à prendre cette semaine</h3>
+    <div class="takeaway-grid">
+      <div class="takeaway-item">
+        <div class="emoji">🧪</div>
+        <p><strong>Tester ChatGPT Work</strong>sur un vrai projet client : livraison de rapport ou mise à jour CRM.</p>
+      </div>
+      <div class="takeaway-item">
+        <div class="emoji">🔄</div>
+        <p><strong>Migrer un workflow n8n</strong> vers le nouveau canvas spatial — identifier les groupes logiques.</p>
+      </div>
+      <div class="takeaway-item">
+        <div class="emoji">💶</div>
+        <p><strong>Recalculer ses coûts Make</strong> avec le modèle crédits avant que le changement ne prenne effet.</p>
+      </div>
+      <div class="takeaway-item">
+        <div class="emoji">📦</div>
+        <p><strong>Packager une offre IA</strong> claire ciblant le gap compétences des PME françaises.</p>
+      </div>
+      <div class="takeaway-item">
+        <div class="emoji">🤖</div>
+        <p><strong>Explorer human-in-the-loop</strong> sur vos workflows sensibles pour débloquer des clients frileux.</p>
+      </div>
+      <div class="takeaway-item">
+        <div class="emoji">📊</div>
+        <p><strong>Qualifier ses prospects</strong> : 87% veulent l'IA, cibler ceux qui ont le budget mais pas les compétences.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>
+    Article généré le 18 juillet 2026 · <a href="https://automatisationboost.com">AutomationBoost</a> par Tony Payet<br/>
+    Veille IA hebdomadaire — Sources : Bloomberg, Axios, Chalkbeat, Anthropic, n8n Docs, Make.com, Deloitte, Ubiks.net, Insify.fr
+  </p>
+</footer>
+
+</body>
+</html>
