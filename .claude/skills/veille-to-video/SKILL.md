@@ -89,6 +89,25 @@ Testés et fonctionnels le 2026-07-08 :
   plus récente avec `search_executions({workflowId})` puis `get_execution({includeData:true})` une
   fois qu'elle passe à `status:"success"` pour récupérer `voiceUrl`/`transcripts` a posteriori.
 
+**Piège vérifié (2026-07-18, autoboost-24 Claude Mem) : `avatar-webhook-v2` peut répondre
+`success:true` avec `transcripts:[]` vide** — pas un timeout, un vrai succès HTTP, mais le node
+Whisper interne échoue silencieusement en amont (`get_execution` sur le workflow `[Avatar AI]
+Webhook v2 - Fonctionnel` a montré `"error":{"message":"The service is receiving too many requests
+from you","description":"You exceeded your current quota, please check your plan and billing
+details."}` sur le node `Whisper Transcription` — quota OpenAI épuisé côté compte Tony, pas un
+problème réseau/sandbox). Le node `Format Transcripts` dégrade proprement vers `transcripts: []`
+dans ce cas (voir son code : `else { transcripts = [] }`), donc `voiceUrl` reste utilisable même
+sans timestamps. **Fallback qui a fonctionné dans cette session : estimer les timestamps mot-à-mot
+manuellement** plutôt que d'abandonner ou de deviner à l'oreille — pondérer la durée de chaque mot
+par sa longueur de caractères (`max(2.2, len(mot)) + bonus pause sur ponctuation finale (,/./:/!/?`),
+normaliser la somme des poids sur la durée réelle du MP3 (`ffprobe`), puis regrouper en captions de
+2-3 mots en coupant sur la ponctuation quand possible. Résultat visuellement indiscernable d'un vrai
+timing Whisper une fois vérifié sur des frames extraites. Toujours vérifier ensuite la durée réelle
+du MP3 généré (`ffprobe -show_entries format=duration`) : dans cette session le débit observé était
+plus lent que d'habitude (~3.28 mots/seconde pour 119 mots → 36.3s, contre les ~3.7-4.1 mots/s
+documentés ailleurs) — la variabilité du débit TTS entre générations reste réelle, ne pas supposer
+un débit fixe pour calculer le nombre de mots cible à l'étape 1.
+
 ### Étape 5 — Construire `public/index.html` (HyperFrames)
 
 - Racine explicite `width:1080px; height:1920px;` et `data-duration` correspondant au plan final vidéo/audio.
@@ -156,6 +175,21 @@ Session 2026-07-13 : même fallback, comp de 34s (1020 frames) → **~9min24s** 
 comprise). Utiliser Monitor avec un `until` loop sur un pattern précis (ex.
 `Render complete|FATAL|render failed`) plutôt que sur le mot `error` seul — des lignes `WARN`
 bénignes contiennent `"error":"..."` dans leur JSON et déclenchent de faux positifs.
+
+Session 2026-07-18 (routine cloud autonome, projet #24 "Claude Mem") : même environnement que les
+sessions précédentes (`node` v22 dans le `$PATH`, `ffmpeg` absent mais `apt-get install -y
+--no-install-recommends ffmpeg` a suffi, aucune variable `FONTCONFIG_PATH`/`LD_LIBRARY_PATH`
+nécessaire). Comp de 37s (1110 frames) : premier rendu tombé en fallback `screenshot` après le
+même timeout de calibration `beginframe` → **~7min40s**. Deuxième rendu (après fix de l'asset
+avatar, voir piège keyframes plus bas) : même fallback → **~9min05s**. `docs.google.com` et
+`n7n.automatisationboost.com` bloqués en direct comme d'habitude, mais **`raw.githubusercontent.com`
+et le PUT vers `database.blotato.io` sont restés accessibles en direct via `curl`** dans cette
+session pour `raw.githubusercontent.com` (contrairement à la note plus bas qui documentait
+`database.blotato.io` comme bloqué aussi côté GitHub raw — ici seul le PUT Blotato lui-même est
+resté bloqué, `raw.githubusercontent.com` en GET a répondu `200` directement sans passer par le
+détour n8n). Toujours tester les deux avec un `curl` rapide avant de monter tout le contournement
+n8n — la politique réseau exacte varie d'une session à l'autre, ne pas supposer un blocage identique
+au conteneur précédent.
 
 **Gmail MCP de cette session n'expose que `create_draft`, pas d'outil d'envoi direct** (pas de
 `send_message`/`send_draft`). L'étape "envoyer un email" du pipeline ne peut donc produire qu'un
@@ -481,6 +515,18 @@ du broll suivant, jamais un seul tween qui traverse la coupure.
 `ffmpeg -stream_loop -1 -t <durée comp> -i avatar-keyed.mp4 -c copy avatar-keyed.mp4` — sinon
 l'avatar gèle/disparaît dès que la source est épuisée, silencieusement (seul `validate` avertit :
 "Video is Xs but its slot is Ys"). Même chose pour `bgm` si le morceau est plus court que la comp.
+
+**Piège vérifié (2026-07-18, autoboost-24 Claude Mem) : copier `avatar-keyed.mp4` tel quel depuis
+un ancien projet (comme conseillé à l'étape 2-3 pour réutiliser les assets) ne garantit PAS qu'il
+couvre la durée de la NOUVELLE comp.** Chaque projet a sa propre durée cible ; l'asset copié depuis
+autoboost-04 faisait 17.4s avec seulement 2 keyframes (déjà court par rapport à la comp source de
+35.71s), alors que la nouvelle comp visait 37s. Premier rendu : avatar correct jusqu'à ~17s puis
+cercle vide/noir sur le reste de la vidéo (scènes 4 et 5), sans aucune erreur `validate`/`inspect` —
+seule l'inspection de frames réelles extraites après CTA_START l'a montré. Toujours vérifier
+`ffprobe -show_entries format=duration` sur l'asset avatar fraîchement copié AVANT de rendre, et le
+loop-étendre + ré-encoder GOP court (voir piège keyframes ci-dessous) systématiquement si sa durée
+est inférieure à `data-duration` de la comp — ne jamais supposer qu'un asset "à réutiliser tel quel"
+est déjà dimensionné pour le nouveau projet.
 
 **Scène = 1120px de haut, PAS 1920px.** `.scene { height: 1120px; ... }` est correct et voulu —
 le contenu de chaque scène (texte, cartes, icônes) occupe le haut du canevas, et l'avatar overlay
