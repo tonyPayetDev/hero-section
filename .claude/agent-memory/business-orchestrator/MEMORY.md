@@ -693,3 +693,51 @@ appliquée le 07-06/07-08/07-17).
   07-17. Ne pas répéter la suggestion à chaque run (déjà faite le 07-17) — se contenter de
   vérifier si une nouvelle tâche est apparue (`createdTime` récent) avant de conclure à nouveau
   au silence.
+
+## 2026-07-19
+
+**Contexte** : 18e jour consécutif à 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress),
+requête SQL confirmée 0 résultat. `search_executions(status:["error"])` depuis
+2026-07-18T06:00:38Z (fin du dernier check) → 0 résultat. GitHub `tonyPayetDev/hero-section` :
+0 issue, 0 PR ouverte. Git log 7 jours : Autoboost Neon Video #24 (Claude Mem) finalisé le 18/07
+(scaffold → fix loop-extend/re-encode avatar → rendu final), blog veille IA à jour au 18/07
+(1 jour d'écart, cadence normale, pas dû aujourd'hui).
+
+**Découverte** : lecture du Sheet de suivi Autoboost (réutilisation du one-off
+`SI49NTVLadhUzgIe`) → row 24, #23 "Claude mem" (= Autoboost #24 dans le repo, numérotation
+Sheet/repo décalée d'1 comme déjà vu par le passé) au statut "🟡 En attente validation", lien
+"Vidéo Finale" = URL Blotato réelle (pas de lien previsualisation.automatisationboost.com mort
+cette fois — ce root cause historique ne s'applique plus à ce format de ligne), mais aucune
+"Date Publication" ni trace d'email de validation envoyé. Exactement le même root cause
+récurrent que 07-10/07-12/07-13/07-15 : vidéo rendue le jour précédent mais invisible côté
+planning tant qu'aucune validation explicite n'est demandée à Tony.
+
+**Action prise** : vérifié le rendu réel via HTTP HEAD server-side — réutilisation + mise à jour
+d'URL du workflow `TEMP HEAD Check Claude-Mem Blotato Object` (`dM4BVa7VMMNdcSUV`, déjà créé le
+07-15 pour le même besoin sur un autre object) → HTTP 200, `content-length: 12411129` (12,4 Mo),
+`last-modified: 2026-07-18T06:50:58Z`. Créé un nouveau workflow one-off (Gmail natif n8n,
+`n8n-nodes-base.gmail`, `resource: message`/`operation: send`, credential "Gmail account") via
+le SDK (`get_sdk_reference` + `get_node_types` + `validate_workflow` + `create_workflow_from_code`,
+id `LbMg4Tb6cbzZibbZ`) et exécuté (`execution 65252`) : email réel envoyé à
+tony.payet.professionnel@gmail.com avec le lien vidéo #24 et demande de validation explicite
+("OK #24") avant publication Blotato — labels Gmail retournés `SENT`+`INBOX` confirmés (pas un
+brouillon). Pas de publication Blotato faite par l'IA (règle du 07-10 toujours en vigueur : jamais
+publier de contenu marketing public sans validation explicite de Tony).
+
+**Page Notion créée** : "📹 Autoboost #24 (Claude Mem) rendu — email de validation réel envoyé
+(19/07)" (id `3a25fda3-ad05-8100-ab9e-d7e2b9f795f4`, Projet=Content, ROI=🔥5, Délégable IA=NO,
+Statut=Terminé 🙌).
+
+**Pattern à surveiller à l'avenir** :
+- Le format de ligne Sheet a évolué depuis 07-15 : les vidéos récentes (#23 Claude mem/#24 dans
+  le repo, ligne 24) utilisent directement une URL Blotato fonctionnelle comme "Vidéo Finale" au
+  lieu du lien `previsualisation.automatisationboost.com` mort — ce root cause spécifique semble
+  résolu pour les nouvelles lignes. Le root cause qui persiste est différent : l'étape "envoyer
+  l'email de validation" n'est simplement jamais déclenchée automatiquement après un rendu, quel
+  que soit le format du lien — vérifier systématiquement (Sheet + absence d'email envoyé) à
+  chaque nouvelle vidéo "✅ Fait"/rendue plutôt que de supposer que Tony a été notifié.
+- 18e jour sans tâche Notion délégable IA — situation stable, ne pas répéter la suggestion déjà
+  faite le 07-17 sauf si Tony qualifie de nouvelles tâches (vérifiable via `createdTime` récent).
+- Le workflow `TEMP HEAD Check Claude-Mem Blotato Object` (`dM4BVa7VMMNdcSUV`) est réutilisable :
+  changer son paramètre `url` via `setNodeParameter` plutôt que d'en recréer un nouveau à chaque
+  vérification HTTP HEAD Blotato.
