@@ -191,6 +191,45 @@ détour n8n). Toujours tester les deux avec un `curl` rapide avant de monter tou
 n8n — la politique réseau exacte varie d'une session à l'autre, ne pas supposer un blocage identique
 au conteneur précédent.
 
+Session 2026-07-19 (routine cloud autonome, reprise du projet #22 "efficient-fable") : même
+environnement (`node` v22, `ffmpeg` absent mais installable via `apt-get install -y
+--no-install-recommends ffmpeg` sans piège, aucune variable `FONTCONFIG_PATH`/`LD_LIBRARY_PATH`
+nécessaire, `raw.githubusercontent.com` accessible en direct via `curl` mais PUT/HEAD vers
+`database.blotato.io` bloqués — même schéma que la session du 2026-07-18).
+
+**Piège nouveau : une ligne Sheet `⬜ À faire` peut correspondre à un dossier de projet DÉJÀ
+en cours d'une session précédente, abandonné avant d'être fini (statut Sheet jamais mis à jour
+faute d'avoir atteint l'étape 9).** Repéré ici : `autoboost-22-efficient-fable/` existait déjà
+avec un `public/index.html` quasi complet (scènes, captions, voix, SFX) mais **le mot-clé CTA
+parlé dans l'audio (`FABLE`) ne correspondait plus au `Mot-clé CTA` actuel de la ligne Sheet
+(`Skill`)** — la ligne avait dû être éditée après le début du WIP. Avant de repartir de zéro sur
+un nouveau dossier numéroté, toujours lister `autoboost-neon-videos/` et vérifier si un projet WIP
+correspond déjà au sujet de la ligne ciblée (git log du dossier : `chore: ... in-progress ...` vs
+`chore: ... final ...` distingue un WIP abandonné d'un livrable terminé) — réutiliser ses assets
+(avatar/bgm/sfx déjà copiés, souvent déjà loop-étendus et GOP-fixés) et sa mise en page plutôt que
+dupliquer le travail. Si le CTA parlé ne colle plus au CTA Sheet actuel, il n'y a pas de raccourci :
+il faut régénérer la narration en entier (le CTA doit être dit à voix haute, pas seulement affiché
+à l'écran) et reconstruire les captions/timings en conséquence — un simple remplacement du texte
+affiché sans toucher à l'audio produirait un décalage audio/texte visible immédiatement.
+
+**Sécuriser le découpage des captions par un plafond de caractères, pas seulement de mots.**
+Le piège documenté plus haut (2026-07-12, autoboost-15 : une caption de 3 mots débordait sans que
+`inspect` le détecte) peut être anticipé *avant* le rendu plutôt que rattrapé après coup : en plus
+de la règle "3 mots max", plafonner aussi la longueur cumulée de la ligne (empiriquement ~21
+caractères espaces compris pour de l'Inter 700 54px MAJUSCULES sur une zone sûre de 960px — un mot
+de plus de ~10-12 caractères doit être isolé dans sa propre caption plutôt que groupé). Diviser le
+script en captions avec ce double plafond (mots ET caractères) avant même de lancer `render` évite
+un aller-retour complet (l'estimation manuelle de timing mot-à-mot + regroupement peut être scriptée
+en Python : pondérer chaque mot par sa longueur + bonus de pause sur ponctuation finale, normaliser
+sur la durée réelle du MP3 via `ffprobe`, puis regrouper avec la double contrainte).
+
+**`validate` peut aussi révéler une vraie superposition de SFX (pas seulement l'arrondi flottant
+déjà documenté) quand deux pistes sont placées à la main sur des beats rapprochés** — ex. un chime
+CTA à `t=35.68` avec `data-duration="0.9"` chevauchait un second chime placé à `t=36.40` (0.18s de
+recouvrement réel, pas un artefact d'arrondi). `StaticGuard` le bloque correctement ; le fix est de
+raccourcir la durée du premier SFX pour qu'il se termine avant le suivant, pas de le traiter comme
+le même genre de correctif "-0.01s" que le piège d'arrondi.
+
 **Gmail MCP de cette session n'expose que `create_draft`, pas d'outil d'envoi direct** (pas de
 `send_message`/`send_draft`). L'étape "envoyer un email" du pipeline ne peut donc produire qu'un
 brouillon dans la boîte Gmail de l'utilisateur, pas un envoi réel — le signaler explicitement
