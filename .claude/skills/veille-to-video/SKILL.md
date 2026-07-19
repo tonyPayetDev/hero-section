@@ -27,9 +27,9 @@ Créer une vidéo promo sociale française au format 9:16 à partir d'un script 
   Si le script du Sheet ne tient qu'en ~15s de narration au débit normal, l'étoffer (plus de détail,
   un exemple, un bénéfice supplémentaire) avant de générer la voix — ne jamais livrer une vidéo
   sous les 25s. Voir Étape 1 pour le calcul du nombre de mots cible.
-- **Palette** : fond noir mat, accent global jaune `#FFE600`, plus violet `#A855F7` et orange `#FF8A3D` en highlights. Ne jamais revenir au bleu comme accent dominant.
+- **Palette** : accent global jaune `#FFE600`, plus violet `#A855F7` et orange `#FF8A3D` en highlights. Ne jamais revenir au bleu comme accent dominant. **Le fond n'est PAS un noir plat** : chaque scène porte un dégradé gris/violet (linéaire ou radial, en alternance) — voir « Le look de référence » plus bas.
 - **Voix** : utiliser la voix clonée de l'utilisateur uniquement après accord explicite pour cette vidéo précise. Préférer `C:\Users\User\Work\Video IA AUTOBOOST\audio\voice-reference-clean.wav` avec WaveSpeed `wavespeed-ai/qwen3-tts/voice-clone`.
-- **Captions** : style TikTok, centrées autour de la bande de sécurité médiane quand le bas contient l'avatar/setup, une seule ligne, trois mots maximum si possible. Surligner exactement un mot actif/puissant par caption en néon jaune/violet/orange. Ne pas mettre de boîte/fond visible derrière chaque mot ; texte blanc avec contour/ombre noire, et glow néon coloré pour le mot actif.
+- **Captions** : style TikTok, **27px** (voir « Le look de référence »), centrées autour de la bande de sécurité médiane quand le bas contient l'avatar/setup, une seule ligne, trois mots maximum si possible. Surligner exactement un mot actif/puissant par caption en néon jaune/violet/orange. Ne pas mettre de boîte/fond visible derrière chaque mot ; texte blanc avec contour/ombre noire, et glow néon coloré pour le mot actif.
 - **Avatar/setup** : quand on utilise le fond setup réaliste, retirer les filtres vert/noir et le flou latéral. L'avatar ne doit jamais cligner des yeux au début et ne doit jamais chevaucher les captions ou le texte qui slide.
 - **Visuels** : utiliser de vrais schémas, icônes, dashboards, graphes, flèches de flux, panneaux UI. Éviter les slides façon PowerPoint/cartes seules, les filtres noirs sur le texte, la double exposition et les écrans statiques.
 - **CTA** : pour les modèles/templates gratuits, dire que le modèle est gratuit et demander de commenter le mot-clé (colonne `Mot-clé CTA` du Sheet — RESTO, FREELANCE, LEADS, AGENT, VIDEO, PROSPECTION, NOTION, PINTEREST, IDEAS, LIVRE, SITE, AVATAR, WHATSAPP, REPURPOSE, BLOG, VEILLE, CREATEUR, PAGE, DEVIS, SEO, SEEDANCE...) plutôt que de donner l'URL du site directement.
@@ -48,9 +48,17 @@ Créer une vidéo promo sociale française au format 9:16 à partir d'un script 
 ### Étape 1 — Parser le script
 
 Découper en hook / corps / CTA / durée cible. Supprimer les blocs de script collés en double.
-Cible 25-35s : au débit de narration observé sur ce projet (~3.7-4.1 mots/seconde), viser
-**95-140 mots**. Si le script source est plus court, étoffer le corps (détail du process, exemple
-concret, bénéfice, preuve sociale) plutôt que de ralentir artificiellement le débit vocal.
+
+**Débit réel de la voix clonée de marque : ~3.3 mots/seconde** — mesuré sur l'audio effectivement
+rendu (autoboost-18, 2026-07-11 : 121 mots → 36.4s ; 107 mots → 32.3s). L'ancienne estimation de
+3.7-4.1 mots/s notée ici était trop optimiste et faisait systématiquement dépasser les 35s.
+Cible 25-35s → viser **100-115 mots**. Si le script source est plus court, étoffer le corps (détail
+du process, exemple concret, bénéfice, preuve sociale) plutôt que de ralentir le débit vocal ; s'il
+est trop long, le resserrer et **régénérer la voix** plutôt que d'accélérer l'audio (`atempo`
+s'entend).
+
+**Piège TTS sur le CTA (vérifié 2026-07-11)** : `Commente VOIX` est prononcé « Commande voix » par
+le TTS. Toujours écrire **`Commente le mot <MOTCLÉ>`** — ça lève l'ambiguïté et ça sonne mieux.
 
 ### Étape 2 — Réécrire la narration si besoin
 
@@ -233,10 +241,51 @@ Si l'espace disque bloque le rendu, ne nettoyer QUE : cache Chrome Puppeteer/Hyp
 1. `blotato_list_accounts` pour retrouver le bon compte (ex. `automatisationboost` sur Instagram, comptes TikTok existants) — **toujours confirmer avec l'utilisateur quel compte/plateforme cibler** avant de publier, la publication est visible publiquement et irréversible. Comptes de référence déjà utilisés (2026-07-09) : Instagram `automatisationboost` (id `54617`), TikTok `tonypayet4` (id `36488`).
 2. Uploader le MP4 rendu via `blotato_create_presigned_upload_url` (récupère `presignedUrl` + `publicUrl`) puis `curl -X PUT "<presignedUrl>" --data-binary "@<fichier local>" -H "Content-Type: video/mp4"`. **Ne pas passer l'URL de la page de prévisualisation Coolify directement en `mediaUrls`** — testé et confirmé : Blotato renvoie `"Failed to fetch media URL: 403 Forbidden"` même si l'URL est publique et accessible en curl direct (protection réseau côté Blotato ou Cloudflare, cause exacte non identifiée). Toujours passer par l'upload presigned, jamais par l'URL de preview.
 3. `blotato_create_post` avec la légende = `Texte TikTok + Hashtags` de la ligne du Sheet, en respectant les champs requis par plateforme (ex. TikTok : `privacyLevel`, `disabledComments`, etc. — voir `requiredFields` renvoyés par `blotato_list_accounts`).
-4. **Programmation étalée sur la semaine** (pattern demandé et utilisé 2026-07-09 pour un lot de plusieurs vidéos) : passer `scheduledTime` (ISO 8601 UTC) à `blotato_create_post` plutôt que publier immédiatement. Espacer d'au moins 2 jours entre vidéos pour ne pas saturer les comptes ; heure Réunion (UTC+4) → soustraire 4h pour l'UTC (ex. 18h Réunion = `14:00:00Z`). Chaque vidéo = 2 posts (IG + TikTok) au même `scheduledTime`.
-5. Rapporter l'URL/ID du post (ou la date programmée) à l'utilisateur.
+4. **Programmation** (règles fixées par Tony le 2026-07-17) : passer `scheduledTime` (ISO 8601 UTC)
+   à `blotato_create_post` plutôt que publier immédiatement. Heure Réunion (UTC+4) → soustraire 4h
+   pour l'UTC (ex. 18h Réunion = `14:00:00Z`).
+   - **TikTok à H, Instagram à H+29min** — pas au même instant. Un post par jour, 1 vidéo/jour.
+   - Chaque vidéo = 2 posts : TikTok `tonypayet4` (36488) + Instagram `automatisationboost` (54617).
+     LinkedIn `Payet Tony` (25882) seulement sur demande (utilisé pour les vidéos de veille IA).
+
+5. **⚠️ LA MINIATURE — obligatoire, sinon toutes les vidéos ont la même** (problème signalé par
+   Tony le 2026-07-17, vérifié) : **la frame 0 de toute vidéo Autoboost est identique** — fond noir
+   + le cercle avatar, zéro texte, parce que tout le contenu des scènes arrive en animation depuis
+   `opacity: 0`. IG et TikTok prennent cette frame par défaut → dans le feed, les vidéos sont
+   indistinguables et le hook n'est pas lisible. **Ne jamais laisser la miniature par défaut.**
+   Pas besoin de re-rendre, Blotato expose les deux réglages :
+   - **Instagram** : `coverImageUrl` — extraire une frame où le **hook texte est gros et lisible**
+     (`ffmpeg -ss <t> -i <mp4> -frames:v 1 -q:v 2 cover.jpg`, sortie 1080x1920), l'uploader via
+     `blotato_create_presigned_upload_url` comme n'importe quel média, passer son `publicUrl`.
+   - **TikTok** : `videoCoverTimestamp` — le même instant, **en millisecondes** (ex. `4600`).
+   - Choisir un instant **différent d'une vidéo à l'autre** et vérifier visuellement que les covers
+     ne se ressemblent pas. Exemples retenus : #34 → 4.6s « UN APRÈS-MIDI », #35 → 7.7s
+     « AMNÉSIQUE + 20 MIN/JOUR », #36 → 8.3s « OPEN GENERATIVE AI ».
+   - **Toujours vérifier l'upload au `content-length`** : comparer la taille servie par
+     `database.blotato.io` à la taille locale. Un `HTTP 200` ne prouve rien.
+6. Rapporter l'URL/ID du post (ou la date programmée) à l'utilisateur.
 
 ### Étape 9 — Mettre à jour le Sheet (Statut/Vidéo Finale/Date)
+
+**Méthode par défaut : le webhook `sheet-video-update`** (workflow `PsxbwJybPhz4SYLf`, actif depuis
+2026-07-11). Il fait tout le travail — ne plus créer de workflow n8n jetable pour ça.
+
+```bash
+curl -s -X POST "https://n7n.automatisationboost.com/webhook/sheet-video-update" \
+  -H "Content-Type: application/json" \
+  -d '{"cta":"VOIX","statut":"✅ Fait","videoUrl":"<url du MP4>","datePublication":"2026-07-13"}'
+```
+
+- **Identification de la ligne** : passer `cta` (le mot-clé, ex. `VOIX`) — le workflow résout le
+  numéro de ligne lui-même. Il répond **400** si le mot-clé ne matche aucune ligne ou plusieurs
+  (ex. `Skill` existe 2 fois) ; dans ce cas seulement, passer `rowNumber` explicitement.
+- **Écriture partielle** : seuls les champs transmis sont écrits, les autres colonnes sont
+  préservées. Champs acceptés : `workflow`, `lienN8n`, `script`, `caption`, `cta`, `screenRecord`,
+  `statut`, `videoUrl`, `datePublication`.
+- **Toujours vérifier le code HTTP** : `200` + `{"ok":true,"rowNumber":N,"updatedColumns":[...]}` =
+  écrit. `400` + `{"ok":false,"error":"..."}` = rien n'a été écrit.
+
+Si le webhook est indisponible, le fallback manuel ci-dessous reste valable.
 
 Ce skill n'a pas d'outil d'écriture Google Sheets directe — mais un vrai workflow n8n existe déjà
 pour ce pipeline complet : **"🎬 Script Sheet → Vidéo Avatar → Validation → Réseaux"**
@@ -257,15 +306,64 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
 
 ---
 
+## ⚠️ Le look de référence — VALEURS MESURÉES, ne pas réinventer
+
+Retour de Tony le 2026-07-17 : « les anciennes vidéos étaient mieux en présentation, découpage de
+l'écran et motion design ». Vérifié en lisant le CSS de #18 / #22 / #24 (toutes en 1080x1920, comme
+les nouvelles) — les nouvelles #34/#35/#36 s'en étaient éloignées sur **trois points précis**.
+Ces valeurs sont la référence, elles ne se rediscutent pas :
+
+| | Référence (#18/#22/#24) | Dérive à ne PAS refaire (#34/#35/#36) |
+|---|---|---|
+| Taille des captions | **27px** | 68px — 2,5× trop gros, lourdaud à l'écran |
+| Fond de l'écran du haut | **dégradé gris/violet par scène** | `#060606` noir plat |
+| Contenu des scènes | **vrais panneaux UI, mockups, flux à icônes** | piles de cartes de texte |
+
+**1. Captions à 27px.** Pas 68. Le reste du bloc, tel quel :
+```css
+.caption {
+  position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+  font-size: 27px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+  text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+               -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+  opacity: 0;
+}
+```
+La bande reste à `top: 960px; height: 140px` (voir Règles Captions).
+
+**2. L'écran du haut est légèrement gris, avec un effet — jamais noir plat.** Chaque scène porte son
+propre dégradé, en **alternant linéaire et radial** d'une scène à l'autre (c'est l'alternance qui
+fait « respirer » le montage) :
+```css
+.scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+.scene-2 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); }
+.scene-3 { background: linear-gradient(135deg, #0a0a0a 0%, #12081f 100%); }
+.scene-4 { background: radial-gradient(circle at 50% 40%, #1a0a2a 0%, #050505 70%); }
+```
+
+**3. Vrais panneaux UI, pas des cartes de texte.** Voir la section `Visuels` plus haut — c'est la
+règle qui existait déjà et que #35/#36 v1 ont enfreinte. Le vocabulaire des anciennes :
+- **kicker** court et coloré (violet) → **titre** avec un mot en couleur → **le visuel**
+- fenêtre avec barre de titre + 3 points + un nom de domaine/fichier (`higgsfield.ai / pricing`)
+- flux horizontal : `.node` de 168px reliés par des `.link` (52px, flèche CSS + point pulsé)
+- mockup d'interface réaliste (bulle Telegram avec « envoyé ✓ », sidebar d'app, dashboard)
+
+**Avant de rendre, comparer une frame à une ancienne vidéo** (`ffmpeg -ss <t> -i <ancienne.mp4>` +
+`-i <nouvelle.mp4>` + `hstack`) — c'est le seul moyen fiable d'attraper ce genre de dérive, aucun
+`validate`/`inspect` ne la détecte.
+
+---
+
 ## Règles Captions
 
+- **27px** (voir la section look de référence ci-dessus) — jamais 68px.
 - Maximum trois mots par phrase de caption si possible.
 - Un seul mot actif surligné par phrase.
 - Jaune néon pour les mots de force/valeur, violet pour transformation/IA, orange pour actions/CTA.
 - Doit rester lisible sur mobile et passer `hyperframes inspect` avec 0 dépassement/occlusion de texte.
-- Style renforcé validé (à proposer par défaut sauf préférence contraire) : `text-transform: uppercase`,
+- Style validé : `text-transform: uppercase`, `font-size: 27px`, `letter-spacing: 2px`,
   `font-weight: 700` (poids max disponible avec Inter 400/700 embarqué). Positionner la bande de captions
-  plus haut que le centre bas de l'écran (ex. `top: ~960px` sur une comp 1080×1920) plutôt que juste
+  plus haut que le centre bas de l'écran (`top: 960px; height: 140px` sur une comp 1080×1920) plutôt que juste
   au-dessus de l'avatar — plus lisible, mieux séparé visuellement du cadre avatar. Toujours revalider
   `inspect` après un changement de taille/position (l'uppercase + police plus grosse peut faire déborder
   les captions les plus longues).
@@ -280,6 +378,40 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
   seul suffit largement et rend proprement en headless.
 
 ## Sound design (BGM + SFX)
+
+**Niveaux `data-volume` (fixés par Tony le 2026-07-11 — l'ancien réglage était trop fort) :**
+
+| Piste | Volume | Ancien |
+|---|---|---|
+| `#voice` | `1` | `1` |
+| `#bgm` | `0.09` | `0.12` |
+| `sfx-whoosh-*` | `0.15` | `0.30-0.35` |
+| `sfx-chime` | `0.20` | `0.40` |
+
+Le sound design doit rester **derrière** la voix, jamais au même niveau. Les vidéos #18 et #19
+(programmées les 13 et 15/07) gardent l'ancien mix — ne pas les re-rendre, c'est un choix assumé.
+
+### Palette SFX réutilisable (v1 — validée sur #37 Fable, 2026-07-19)
+
+Palette complète de 12 SFX + table des rôles, volumes et pièges :
+**`autoboost-neon-videos/_shared/sfx-palette/v1/`** (assets + `README.md`).
+
+Point de départ par défaut pour toute nouvelle vidéo : copier les `sfx-*.mp3` dans
+`public/assets/`, reprendre les rôles/volumes du README, et **re-caler les `data-start` sur les
+coupes de la nouvelle vidéo** (les rôles se transposent, pas les timestamps).
+
+Deux règles qui viennent de #37 :
+- **Whooshes** : bruts, ils durent 5,5 s avec le pic à 2,5 s. Les recouper pour que le pic tombe
+  *pile* sur la coupe (démarrer ~1,2 s avant la coupe, pas dessus).
+- **Volume BGM selon la piste** : `flowers_horror.mp3` est mesurée à -12,4 LUFS → `0.05`.
+  `bgm-ascension.mp3` est à -19,1 LUFS → `0.09`. 7 dB d'écart : mesurer avant de choisir,
+  sinon la musique passe devant la voix.
+
+**Versionnement** : `v1/` est figé. Toute évolution du mix crée `v2/` — on ne modifie ni ne
+supprime les versions précédentes, pour que chaque vidéo déjà rendue garde sa palette d'origine.
+L'ancien pass à 4 SFX (whoosh 3,80 / 10,90 / 16,40 + chime 20,40) reste documenté comme v0 dans
+le README de v1.
+
 
 - **Ne jamais synthétiser le sound design par défaut (ffmpeg sinusoïdes/bruit filtré)** si une
   vraie source libre de droits est accessible — un pad/whoosh/chime synthétisé "fait maison" est
@@ -471,13 +603,20 @@ transitions d'opacité).
 
 - [ ] Ligne du Sheet identifiée et infos récupérées (script, hashtags, mot-clé CTA)
 - [ ] Consentement voix clonée obtenu explicitement avant tout appel WaveSpeed
-- [ ] Palette noir mat + jaune/violet/orange respectée, pas de bleu dominant
-- [ ] Captions TikTok mot-à-mot validées (0 dépassement `inspect`)
+- [ ] Palette jaune/violet/orange, pas de bleu dominant — et **fond en dégradé gris/violet par scène**, jamais noir plat
+- [ ] Captions TikTok mot-à-mot en **27px** (jamais 68), 0 dépassement `inspect`
 - [ ] Avatar sans filtre vert/noir, ne recouvre jamais captions/texte
 - [ ] Avatar en overlay persistant (sibling des `.scene`, pas imbriqué dans une seule scène CTA) — visible 4-5 fois / majorité de la vidéo, masqué seulement pendant le broll
 - [ ] Au moins 1-2 broll (schéma motion-design ou clip Mixkit) si la vidéo a plusieurs scènes narratives distinctes
+- [ ] **Vrais panneaux UI / mockups / flux à icônes** — pas des piles de cartes de texte
+- [ ] **Frame comparée côte à côte à une ancienne vidéo** (#18/#22/#24) avant de rendre
 - [ ] `validate` + `inspect` = 0 problème avant rendu
 - [ ] Rendu vérifié via `ffprobe` (durée, résolution, taille)
 - [ ] Compte Blotato confirmé avec l'utilisateur avant publication
+- [ ] **Miniature explicite** : `coverImageUrl` (IG) + `videoCoverTimestamp` (TikTok) sur une frame
+      où le hook texte est lisible, et **différente des autres vidéos**. Sans ça, la frame 0 est
+      identique partout (noir + avatar) et le feed est illisible.
+- [ ] TikTok à H, Instagram à H+29min (pas au même instant)
+- [ ] Upload vérifié au `content-length` (taille servie = taille locale), pas au code HTTP
 - [ ] Post publié sur Blotato, URL/ID rapporté à l'utilisateur
 - [ ] Sheet à mettre à jour manuellement (statut, vidéo finale, date de publication)
