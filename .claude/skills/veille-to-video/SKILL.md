@@ -197,6 +197,23 @@ environnement (`node` v22, `ffmpeg` absent mais installable via `apt-get install
 nécessaire, `raw.githubusercontent.com` accessible en direct via `curl` mais PUT/HEAD vers
 `database.blotato.io` bloqués — même schéma que la session du 2026-07-18).
 
+Session 2026-07-20 (routine cloud autonome, projet #25 "Agent IA autonome") : `node` v22 disponible
+via `/opt/node22/bin` (pas dans le `$PATH` par défaut cette fois, à exporter explicitement), `ffmpeg`
+absent mais `apt-get update && apt-get install -y --no-install-recommends ffmpeg` a suffi sans piège
+404. Aucune variable `FONTCONFIG_PATH`/`LD_LIBRARY_PATH` nécessaire (texte/captions rasterisés
+correctement, vérifié sur 15+ frames extraites). `raw.githubusercontent.com` accessible en direct
+via `curl`, mais `docs.google.com`, `n7n.automatisationboost.com` (webhook direct) et PUT/HEAD vers
+`database.blotato.io` restent bloqués côté shell — les contournements MCP habituels (n8n
+`execute_workflow` pour le webhook avatar et pour lire/écrire le Sheet, relai GitHub raw → n8n
+`HTTP Request` PUT pour l'upload Blotato, vérifié ensuite avec un `HEAD` n8n confirmant un
+`content-length` identique à l'octet près) ont fonctionné sans changement de méthode. `avatar-webhook-v2`
+a de nouveau renvoyé `transcripts:[]` (même quota OpenAI épuisé documenté le 2026-07-18) — le
+fallback timing manuel (pondération par longueur de mot + bonus ponctuation, normalisé sur la durée
+réelle via `ffprobe`) a de nouveau produit un résultat indiscernable d'un vrai timing Whisper une
+fois vérifié sur les frames. Rendu tombé en fallback `screenshot` les deux fois (calibration
+`beginframe` a timeout) : ~8min et ~7min45s pour une comp de 32.4s (973 frames), cohérent avec les
+sessions précédentes.
+
 **Piège nouveau : une ligne Sheet `⬜ À faire` peut correspondre à un dossier de projet DÉJÀ
 en cours d'une session précédente, abandonné avant d'être fini (statut Sheet jamais mis à jour
 faute d'avoir atteint l'étape 9).** Repéré ici : `autoboost-22-efficient-fable/` existait déjà
@@ -222,6 +239,18 @@ script en captions avec ce double plafond (mots ET caractères) avant même de l
 un aller-retour complet (l'estimation manuelle de timing mot-à-mot + regroupement peut être scriptée
 en Python : pondérer chaque mot par sa longueur + bonus de pause sur ponctuation finale, normaliser
 sur la durée réelle du MP3 via `ffprobe`, puis regrouper avec la double contrainte).
+
+**Quand ce script Python calcule des captions bout-à-bout (fin d'une caption = début exacte de la
+suivante), s'attendre à un chevauchement flottant `StaticGuard` sur QUASIMENT CHAQUE frontière, pas
+juste un cas isolé** (vérifié 2026-07-20, autoboost-25 : 9 chevauchements `StaticGuard` sur 43
+captions + 1 sur la coupure de scène broll, tous du type `ending at X.000000003s overlaps with clip
+starting at Xs`). Plutôt que de corriger un par un après un premier `validate` échoué, retrancher
+systématiquement ~0.01s à la `data-duration` de CHAQUE caption/scène générée par le script avant même
+d'écrire le HTML (sauf la toute dernière de la comp). **Piège annexe repéré en corrigeant : bien
+identifier lequel des deux clips adjacents chevauche l'autre** — l'erreur `StaticGuard` donne le
+timestamp de fin qui déborde, qui appartient au clip PRÉCÉDENT (celui qui doit être raccourci), pas
+à celui qui démarre à ce timestamp ; raccourcir le mauvais des deux ne corrige rien et laisse
+l'erreur `StaticGuard` identique au prochain `validate`.
 
 **`validate` peut aussi révéler une vraie superposition de SFX (pas seulement l'arrondi flottant
 déjà documenté) quand deux pistes sont placées à la main sur des beats rapprochés** — ex. un chime
@@ -548,6 +577,24 @@ continu qui couvre toute la comp.** Si son repeat dépasse la fenêtre broll (ex
 visible — par-dessus le broll, même avatar/orbit bien masqués. Symptôme : un cercle néon vide qui
 flotte sur la vidéo broll. Toujours calculer N1/N2 pour que chaque tween s'arrête AVANT le début
 du broll suivant, jamais un seul tween qui traverse la coupure.
+
+**Complément vérifié (2026-07-20, autoboost-25 Agent IA autonome) : borner N1/N2 avec la formule
+`Math.ceil(fenêtre / durée) - 1` ne suffit PAS à garantir que l'anneau soit invisible pendant le
+broll — un premier rendu a montré l'anneau qui flotte quand même (frame extraite à `t=10.8s` avec
+un broll démarrant à `t=10.297s`).** Cause réelle : GSAP évalue les tweens d'un même timeline dans
+leur ordre d'ajout ; quand deux tweens animent la même propriété (`opacity`) sur la même cible et se
+chevauchent dans le temps, celui ajouté en DERNIER au timeline gagne l'affichage pour les frames où
+les deux sont actifs — indépendamment de qui a été déclenché en premier chronologiquement. Le tween
+`hide/show` explicite (`tl.to(["#avatar-frame","#avatar-orbit","#avatar-ring"], {opacity:0}, ...)`)
+placé AVANT le tween de pulsation continue dans le code perd donc systématiquement face à ce dernier
+sur la fenêtre de recouvrement, quel que soit le calcul de N1/N2. **Fix fiable : ajouter le tween
+hide/show de `#avatar-ring` APRÈS les tweens de pulsation continue dans le script** (donc après les
+blocs "Avatar neon ring — continuous breathing pulse" et "Avatar neon orbit"), pour qu'il soit ajouté
+en dernier au timeline et gagne l'ordre de rendu sur la fenêtre de recouvrement. `#avatar-frame` et
+`#avatar-orbit` n'ont pas ce problème (rien d'autre n'anime leur `opacity`), seul `#avatar-ring` a
+une pulsation `opacity` concurrente — ne déplacer que son hide/show, pas besoin de toucher aux deux
+autres. Toujours vérifier avec une frame extraite juste après le début du broll (pas seulement au
+début/à la fin de la fenêtre) pour attraper ce bug, `validate`/`inspect` ne le détectent jamais.
 
 **Vidéo avatar plus courte que la comp** : si `avatar-keyed.mp4` fait moins que `data-duration`
 (fréquent, l'asset source dure souvent ~17s), le loop-étendre AVANT de référencer le fichier :
