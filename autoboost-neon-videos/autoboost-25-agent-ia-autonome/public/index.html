@@ -637,6 +637,13 @@
       tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 4, ease: "none" }, 0);
       tl.to("#avatar-orbit", { rotation: "+=360", duration: 2.2, repeat: 5, ease: "none" }, 20.392);
 
+      // Ring is a sibling of avatar-frame (not a child), and its own pulse tween above can leave
+      // it mid-glow at the broll cut point. Added AFTER the pulse tweens so it wins render order
+      // for the overlapping window and actually hides the ring during broll (avatar-08 trap).
+      tl.to("#avatar-ring", { opacity: 0, duration: 0.3, ease: "power2.out" }, 10.297);
+      tl.set("#avatar-ring", { opacity: 0 }, 10.597);
+      tl.to("#avatar-ring", { opacity: 0.8, duration: 0.3, ease: "power2.out" }, 20.392);
+
       // Scene 4 comparison badges stagger in
       tl.from("#scene-4 .sov-badge", { scale: 0.85, opacity: 0, duration: 0.35, stagger: 0.18, ease: "back.out(2)" }, 20.512);
 
