@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Veille IA & automatisation — Semaine du 17–20 juillet 2026. Les 6 actualités les plus impactantes pour freelances et entrepreneurs : n8n, Claude, GPT-5.6, Make, agents autonomes." />
+  <title>Veille IA & Auto — 20 juillet 2026 | AutomationBoost</title>
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --border: #2a2a38;
+      --accent: #7c6fff;
+      --accent2: #ff6b6b;
+      --accent3: #00d9a3;
+      --text: #e8e8f0;
+      --text-muted: #8888aa;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      padding: 0 1rem 4rem;
+    }
+
+    .hero {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.8rem;
+      border-radius: 100px;
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 40%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .intro { font-size: 1.1rem; color: #c8c8e0; max-width: 680px; }
+    .container { max-width: 820px; margin: 0 auto; }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin: 2.5rem 0;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+    .section-title {
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.8rem;
+      margin: 3rem 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .news-card:hover { border-color: var(--accent); }
+
+    .news-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+    }
+
+    .news-card.purple::before { background: var(--accent); }
+    .news-card.red::before    { background: var(--accent2); }
+    .news-card.green::before  { background: var(--accent3); }
+    .news-card.orange::before { background: #ffaa44; }
+    .news-card.blue::before   { background: #44aaff; }
+    .news-card.yellow::before { background: #ffdd44; }
+
+    .news-number { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .news-card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.8rem; color: #fff; }
+    .news-card p { color: #b0b0cc; font-size: 0.95rem; margin-bottom: 0.8rem; }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; }
+
+    .tag {
+      background: rgba(124,111,255,0.12);
+      border: 1px solid rgba(124,111,255,0.3);
+      color: var(--accent);
+      font-size: 0.72rem; font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 100px;
+    }
+
+    .tag.green  { background: rgba(0,217,163,0.1);   border-color: rgba(0,217,163,0.3);   color: var(--accent3); }
+    .tag.red    { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.3); color: var(--accent2); }
+    .tag.orange { background: rgba(255,170,68,0.1);  border-color: rgba(255,170,68,0.3);  color: #ffaa44; }
+
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.82rem; font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    .source-link:hover { text-decoration: underline; }
+
+    .impact-block {
+      background: linear-gradient(135deg, rgba(124,111,255,0.08), rgba(0,217,163,0.05));
+      border: 1px solid rgba(124,111,255,0.25);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin: 3rem 0;
+    }
+
+    .impact-block h2 { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 1.5rem; }
+
+    .impact-item {
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: start;
+    }
+
+    .impact-icon {
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+
+    .impact-icon.purple { background: rgba(124,111,255,0.2); }
+    .impact-icon.green  { background: rgba(0,217,163,0.2); }
+    .impact-icon.red    { background: rgba(255,107,107,0.2); }
+    .impact-icon.orange { background: rgba(255,170,68,0.2); }
+
+    .impact-item h3 { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem; }
+    .impact-item p  { font-size: 0.88rem; color: #b0b0cc; }
+
+    footer {
+      max-width: 820px;
+      margin: 3rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 0 1.5rem; }
+      .news-card { padding: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="badge">📡 Veille IA &amp; Automatisation</div>
+    <h1>La semaine qui accélère tout<br>— 17–20 juillet 2026</h1>
+    <p class="meta">Par <strong>AutomationBoost</strong> &nbsp;·&nbsp; 20 juillet 2026 &nbsp;·&nbsp; 6 actualités sélectionnées</p>
+    <p class="intro">Cette semaine, l'IA ne fait plus que promettre — elle exécute. Agents autonomes, modèles à 1,5 million de tokens, et une adoption freelance à 84 % : voici ce que vous devez savoir pour ne pas rater le tournant.</p>
+  </div>
+
+  <div class="container">
+
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-num">84 %</div><div class="stat-label">des freelances utilisent l'IA (vs 41 % en 2023)</div></div>
+      <div class="stat"><div class="stat-num">+109 %</div><div class="stat-label">de croissance des compétences IA sur les plateformes freelance</div></div>
+      <div class="stat"><div class="stat-num">62 %</div><div class="stat-label">des PME (&lt;50 salariés) ont au moins un outil IA</div></div>
+      <div class="stat"><div class="stat-num">1,5 M</div><div class="stat-label">tokens de contexte pour GPT-5.6 (≈1,2 M lignes de code)</div></div>
+    </div>
+
+    <div class="section-title">🔥 Les 6 actualités de la semaine</div>
+
+    <div class="news-card purple">
+      <div class="news-number">01 / n8n</div>
+      <h2>n8n lance l'AI Assistant : construire des workflows en langage naturel</h2>
+      <div class="tag-row"><span class="tag">n8n</span><span class="tag">Agents</span><span class="tag green">Open Source</span></div>
+      <p>n8n a intégré un agent conversationnel directement dans son éditeur : l'<strong>AI Assistant</strong>. Il crée, modifie, teste et débogue des workflows à partir d'instructions en langage naturel. Plus besoin de connaître l'interface nœud par nœud — vous décrivez ce que vous voulez, l'agent construit le pipeline.</p>
+      <p>Parallèlement, le nœud AI Agent rebuilt supporte désormais nativement Claude 3.5, GPT-4o, Gemini 1.5 Pro et Mistral avec tool-calling. 35+ nouveaux nœuds ajoutés depuis janvier 2026.</p>
+      <a class="source-link" href="https://community.n8n.io/t/introducing-the-ai-assistant-the-workflow-building-agent-inside-n8n/302667" target="_blank" rel="noopener">→ Source : n8n Community</a>
+    </div>
+
+    <div class="news-card red">
+      <div class="news-number">02 / OpenAI</div>
+      <h2>GPT-5.6 + ChatGPT Work : l'agent qui livre des projets entiers</h2>
+      <div class="tag-row"><span class="tag red">OpenAI</span><span class="tag">GPT-5.6</span><span class="tag orange">9 juillet 2026</span></div>
+      <p>OpenAI a lancé <strong>ChatGPT Work</strong> le 9 juillet, propulsé par <strong>GPT-5.6</strong> (1,5 million de tokens de contexte). L'agent récupère le contexte depuis vos apps connectées, décompose un objectif en étapes, et retourne des livrables finis : tableurs, slides, documents, webapps — même si vous avez fermé votre ordinateur.</p>
+      <p>L'Agent Mode v2 ajoute : mémoire persistante, tâches planifiées, connecteurs natifs GitHub/Jira, et audit log export Enterprise. 25 tâches planifiées/mois sur les plans individuels.</p>
+      <a class="source-link" href="https://openai.com/index/introducing-chatgpt-agent/" target="_blank" rel="noopener">→ Source : OpenAI</a>
+    </div>
+
+    <div class="news-card green">
+      <div class="news-number">03 / Anthropic</div>
+      <h2>Claude Cowork passe sur web &amp; mobile — 33 % d'usage en automatisation métier</h2>
+      <div class="tag-row"><span class="tag green">Claude</span><span class="tag">Anthropic</span><span class="tag orange">7 juillet 2026</span></div>
+      <p><strong>Claude Cowork</strong> est maintenant disponible sur web et mobile (abonnés Max). L'agent permet de démarrer une tâche au bureau, recevoir des notifications sur son téléphone, et récupérer le livrable plus tard.</p>
+      <p>Les données d'usage : <strong>33,4 %</strong> des sessions concernent l'automatisation de processus métier, devant la création de contenu (16,4 %) et le développement (8,7 %). L'IA agent gagne d'abord dans les back-offices.</p>
+      <a class="source-link" href="https://techcrunch.com/2026/07/07/the-coding-agent-wars-are-spilling-into-the-rest-of-the-office-claude-cowork/" target="_blank" rel="noopener">→ Source : TechCrunch</a>
+    </div>
+
+    <div class="news-card orange">
+      <div class="news-number">04 / Make.com</div>
+      <h2>Make intègre la recherche web en temps réel et des agents multi-modaux</h2>
+      <div class="tag-row"><span class="tag orange">Make</span><span class="tag">No-Code</span><span class="tag green">IA Multimodale</span></div>
+      <p>Make.com lance un module <strong>AI Web Search</strong> natif pour injecter des données web en temps réel dans les scénarios, et des next-gen AI agents capables de traiter des inputs multimodaux (fichiers, images, documents).</p>
+      <p>Tendance de fond : <strong>62 % des PME de moins de 50 employés</strong> utilisent désormais au moins un outil d'automatisation IA — contre seulement 28 % il y a deux ans.</p>
+      <a class="source-link" href="https://www.make.com/en/blog/workflow-automation" target="_blank" rel="noopener">→ Source : Make Blog</a>
+    </div>
+
+    <div class="news-card blue">
+      <div class="news-number">05 / Agents IA</div>
+      <h2>Le grand pivot : des démos vers le déploiement en production</h2>
+      <div class="tag-row"><span class="tag">Enterprise</span><span class="tag">Agents autonomes</span><span class="tag red">Disruption SaaS</span></div>
+      <p>Juillet 2026 marque un basculement : les entreprises ne testent plus les agents IA, elles les déploient. Alteryx lance <strong>Agent Studio</strong> (workflows → agents sans IT), Akeneo déploie <strong>Agentic Ziggy</strong>, Abrigo sort une plateforme agentique pour le crédit bancaire.</p>
+      <p>Le 16 juillet, plusieurs fournisseurs publient simultanément des agents de coding capables de modifier des centaines de fichiers en une passe avec traçabilité complète. Le SaaS traditionnel est sous pression existentielle.</p>
+      <a class="source-link" href="https://aiagentstore.ai/ai-agent-news/this-week" target="_blank" rel="noopener">→ Source : AI Agent Store</a>
+    </div>
+
+    <div class="news-card yellow">
+      <div class="news-number">06 / Freelance &amp; IA</div>
+      <h2>84 % des freelances utilisent l'IA — et la tarification horaire s'effondre</h2>
+      <div class="tag-row"><span class="tag orange">Freelance</span><span class="tag">Marché</span><span class="tag green">Opportunité</span></div>
+      <p><strong>84 % des freelancers</strong> utilisent régulièrement des outils IA (Freelancer Kompass 2026), contre 41 % en 2023. Les compétences IA croissent de <strong>+109 % an sur an</strong>, portées par la génération vidéo IA (+329 %) et l'intégration IA (+178 %).</p>
+      <p>La transformation de prix est brutale : tarification horaire en chute pour les tâches commoditisables. Ceux qui vendent des résultats et systèmes d'automatisation <strong>augmentent leurs revenus</strong>.</p>
+      <a class="source-link" href="https://www.selfemployed.com/news/ai-freelance-value-based-pricing-2026/" target="_blank" rel="noopener">→ Source : SelfEmployed.com</a>
+    </div>
+
+    <div class="impact-block">
+      <h2>💡 Mon analyse — Ce que ça change pour vous</h2>
+
+      <div class="impact-item">
+        <div class="impact-icon purple">🤖</div>
+        <div>
+          <h3>L'automatisation est maintenant le minimum viable</h3>
+          <p>Avec n8n AI Assistant, Make et ChatGPT Work, construire un workflow automatisé ne demande plus de compétences techniques. Ne pas adopter ces outils en 2026, c'est prendre du retard structurel.</p>
+        </div>
+      </div>
+
+      <div class="impact-item">
+        <div class="impact-icon green">💰</div>
+        <div>
+          <h3>Facturez des résultats, pas des heures</h3>
+          <p>La tarification horaire s'effondre pour les tâches commoditisées. La bonne stratégie : vendre des <strong>systèmes complets</strong> (audit → automatisation → suivi KPIs). Un client paie 3 000 € pour récupérer 10h/semaine — pas pour 30h de votre temps.</p>
+        </div>
+      </div>
+
+      <div class="impact-item">
+        <div class="impact-icon red">⚡</div>
+        <div>
+          <h3>GPT-5.6 + Claude Cowork changent la proposition de valeur des agents</h3>
+          <p>1,5 M tokens = passer un projet entier à l'agent et récupérer un livrable. Pour les solos, c'est un levier de capacité sans embauche. La vérification humaine reste critique.</p>
+        </div>
+      </div>
+
+      <div class="impact-item">
+        <div class="impact-icon orange">🎯</div>
+        <div>
+          <h3>Fenêtre d'opportunité de 12–18 mois pour les spécialistes</h3>
+          <p>Les grandes entreprises déploient des agents en production. Pour les freelances et agences automation, c'est une <strong>fenêtre courte</strong> avant que les éditeurs SaaS n'intègrent tout nativement. Positionnez-vous maintenant.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>© 2026 AutomationBoost — Tony PAYET</span>
+      <span>Veille du 20 juillet 2026 &nbsp;·&nbsp; Sources vérifiées</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>
