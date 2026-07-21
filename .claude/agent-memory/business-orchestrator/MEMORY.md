@@ -741,3 +741,64 @@ Statut=Terminé 🙌).
 - Le workflow `TEMP HEAD Check Claude-Mem Blotato Object` (`dM4BVa7VMMNdcSUV`) est réutilisable :
   changer son paramètre `url` via `setNodeParameter` plutôt que d'en recréer un nouveau à chaque
   vérification HTTP HEAD Blotato.
+
+## 2026-07-21
+
+**Contexte** : toujours 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress, requête SQL
+confirmée). `search_executions(status:["error"])` depuis 2026-07-18T06:00:38Z → 17 résultats sur
+4 workflows différents (20/07). Après lecture complète des payloads (`includeData: true`) :
+
+1. `bYNrRtJcLgQbibNK` (réponse auto aux commentaires IG, agent OpenAI gpt-4) et
+   `ZaNrLHKYbnRBjE1a` (**nouveau** pipeline de prospection restaurants La Réunion — scan Google
+   Maps → qualification IA gpt-5.1 → email offre → RDV Google Calendar) — tous deux en échec
+   `insufficient_quota` sur le compte "OpenAi account TP" le 20/07 (10h-18h27). Root cause déjà vue
+   les 07-14/07-16 (crédits API épuisés). **Déjà résolu par Tony avant ce run** : vérifié via
+   `search_executions` que `bYNrRtJcLgQbibNK` tourne en succès toutes les ~15 min depuis 22h le
+   20/07 jusqu'à ce matin — pas d'action nécessaire.
+2. `U0U6yjMp88h9cH2A` (lecture commentaires IG via Blotato, toutes les 10 min) — 401 Unauthorized
+   sur le credential "Bloblato", plusieurs essais manuels de Tony 17h56-18h27 le 20/07. **Également
+   déjà résolu** : succès en continu depuis 22h10 le 20/07 — Tony a corrigé lui-même en direct
+   pendant cette fenêtre, pas d'action nécessaire (piège évité : ne pas dupliquer un fix déjà en
+   cours par Tony le jour même).
+3. `Upi6aFi0KYo49gn7` (🍽️ FoodBoost — Post quotidien auto) — **seul signal encore actif et non
+   résolu** : déclenchement réel planifié du 20/07 06h00 UTC en erreur sur le nœud
+   `🎨 Image conseil 9:16` (httpRequest → api.kie.ai) : `Credentials not found`. Ce workflow tire
+   aléatoirement chaque jour entre branche "vitrine" (carrousel) et branche "conseil" (vidéo,
+   dupliquée de la vitrine). Comparaison structurelle des deux branches (mêmes URL kie.ai,
+   `genericAuthType: httpHeaderAuth`) + historique des succès (18/07 et 19/07 ont bien atteint le
+   dernier nœud de la branche conseil `📤 Programmer vidéo IG`) : le nœud dupliqué
+   `🎨 Image conseil 9:16` avait perdu/jamais eu son credential, contrairement à son équivalent
+   `🎨 Créer tâche image` de la branche vitrine.
+
+**Action prise** : `update_workflow` (`setNodeCredential`) sur `Upi6aFi0KYo49gn7` — rattachement du
+credential `httpHeaderAuth` "Kie" (id `tRgP7oqjNemaLMxO`, trouvé via `list_credentials` sans filtre
+— attention, `list_credentials(query:"kie")` avait renvoyé 0 résultat, le filtre partiel semble ne
+pas matcher tous les cas, toujours lister sans filtre si un candidat évident n'apparaît pas) au
+nœud cassé. Workflow republié (`activeVersionId 98a671a6-26c7-480b-b7c6-44f7836b3017`). **Pas
+testé en conditions réelles** : ce workflow publie un vrai post Instagram en production, impossible
+de le déclencher en mode test sans publier du contenu réel non validé — contrairement aux workflows
+purement internes des jours précédents, le pattern habituel "tester via `execute_workflow` en mode
+production" ne s'applique pas ici. À vérifier au prochain tirage de la branche "conseil" (~1 jour
+sur 2) que le post part bien jusqu'au bout.
+
+**Page Notion créée** : "🐛 Workflow n8n corrigé — FoodBoost Post quotidien (credential Kie
+manquante, branche conseil)" (id `3a45fda3-ad05-818f-8944-c2d9e35fb20e`, Projet=Content, ROI=🔥5,
+Délégable IA=NO, Statut=Terminé 🙌).
+
+**Pattern à surveiller à l'avenir** :
+- Nouveau pipeline `ZaNrLHKYbnRBjE1a` (prospection restaurants automatisée, scan → qualification IA
+  → offre → RDV) découvert ce jour, en cours de construction/test par Tony (exécutions manuelles
+  uniquement jusqu'ici) — à surveiller dans les prochains runs, c'est potentiellement un futur
+  signal "Cash Direct" important une fois passé en production (trigger réel, pas seulement manuel).
+- Root cause "crédits OpenAI épuisés" touche maintenant 3 fois en une semaine (07-14, 07-16, 07-20)
+  plusieurs pipelines différents simultanément — confirme qu'un monitoring de solde proactif
+  deviendrait utile si ça continue, mais Tony corrige déjà lui-même assez vite (même jour) donc pas
+  urgent d'insister davantage sur ce point pour l'instant.
+- Avant d'agir sur un signal `search_executions(status:["error"])`, toujours vérifier s'il y a eu
+  des exécutions **récentes et réussies** du même workflow après le timestamp de l'erreur — piège
+  évité 2 fois aujourd'hui (bYNrRtJcLgQbibNK, U0U6yjMp88h9cH2A) où Tony avait déjà corrigé le jour
+  même, quelques heures après l'échec.
+- Pour un workflow qui publie du contenu réel en production (posts sociaux), un fix ne peut pas être
+  validé par `execute_workflow` comme pour les workflows internes — se contenter de la confirmation
+  de publication du workflow (`activeVersionId` mis à jour) et documenter clairement dans Notion que
+  la vraie validation se fera au prochain déclenchement programmé.
