@@ -802,3 +802,72 @@ Délégable IA=NO, Statut=Terminé 🙌).
   validé par `execute_workflow` comme pour les workflows internes — se contenter de la confirmation
   de publication du workflow (`activeVersionId` mis à jour) et documenter clairement dans Notion que
   la vraie validation se fera au prochain déclenchement programmé.
+
+## 2026-07-22
+
+**Contexte** : toujours 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress, requête SQL
+confirmée). `search_executions(status:["error"])` depuis 2026-07-21T00:00:00Z → 6 résultats sur
+4 workflows. Deux étaient déjà résolus/non actionnables : `U0U6yjMp88h9cH2A` (Auto-DM commentaires
+IG) a eu 1 échec le 21/07 03h20 mais tourne en succès continu depuis (vérifié via 20 exécutions
+consécutives réussies jusqu'à ce matin) ; `YUJjz5NNsYo41t8q` (Scrape Competitor Videos, inactif) —
+1 échec en exécution manuelle le 21/07 23h22, probablement un test de mise au point de Tony sur un
+workflow encore inactif, hors scope.
+
+**Découverte critique** : `PPZW8CwBirBoxBvE` ("Formulaire tony portfolio", webhook `Form-tony-ia`,
+le formulaire de contact RÉEL sur tony.automatisationboost.com — analyse de faisabilité IA +
+email + lien Calendly) a eu 3 échecs consécutifs le 21/07 15h43-15h44 (1 webhook + 2 retries),
+juste après une édition du workflow (`updatedAt` = 15:44:20, exactement dans la fenêtre d'échec).
+Root cause : le nœud Webhook n'avait plus de `responseMode` explicite (donc défaut `onReceived` —
+réponse immédiate générique), alors qu'un nœud `Repondre au Site` (`respondToWebhook`, réponse JSON
+personnalisée) existait plus loin dans le flux → erreur n8n bloquante "Unused Respond to Webhook
+node found in the workflow" levée sur CHAQUE appel, avant même que "Normaliser Formulaire" ne
+s'exécute. Concrètement : depuis 24h+, tout prospect remplissant le formulaire principal de Tony
+ne recevait ni analyse de faisabilité IA ni proposition de RDV Calendly — perte de leads silencieuse
+sur son propre outil de prospection (pas un client, mais SON canal d'acquisition à lui). Aucun appel
+au webhook depuis l'échec (0 exécution entre 15:44:08 hier et ce matin) donc impossible de savoir
+combien de prospects réels ont été perdus, mais le bug était structurel et se serait reproduit à
+coup sûr au prochain remplissage.
+
+**Action prise** : `update_workflow` (`setNodeParameter`, path `/responseMode`, value
+`responseNode`) sur le nœud Webhook — fix chirurgical d'un seul paramètre, pas de réécriture SDK
+(le node Gmail "Envoyer Analyse par Email" a bien ses credentials visibles mais je suis resté sur
+une opération atomique par prudence/rapidité). Un warning `INVALID_PARAMETER` pré-existant sur ce
+même nœud Gmail (`operation` non explicite dans les paramètres) est apparu dans la réponse —
+non touché : le nœud fonctionnait déjà avant (exécution 66000 réussie) et n'est pas lié au bug du
+jour, donc hors scope (cf. pattern du 07-09 : ne traiter que le node concerné par le signal du
+jour). Workflow republié (`activeVersionId 1bea4d2a-075b-4711-83f3-9ecb65c511e8`). **Testé en
+conditions réelles** : `execute_workflow` (mode production, payload webhook complet avec l'email de
+Tony lui-même comme destinataire de test) → exécution `66160`, statut passé de `error` systématique
+à **`success`** en ~7s (Webhook → Normaliser → Claude analyse faisabilité → Gmail envoyé → réponse
+JSON au site). Fix confirmé fonctionnel de bout en bout.
+
+**Page Notion créée** : "🐛 Formulaire portfolio Tony cassé — bug 'Unused Respond to Webhook'
+corrigé (lead capture restaurée)" (id `3a55fda3-ad05-817c-b8ca-dc826c8b94fe`, Projet=Content,
+ROI=🔥5, Délégable IA=NO, Statut=Terminé 🙌).
+
+**Piège rencontré et corrigé** : `notion-create-pages` ignore silencieusement les propriétés
+fournies (et crée une page vide "Nouvelle page") si le paramètre `parent` est omis — la page
+atterrit en page privée workspace-level au lieu de la base de données cible. Le paramètre `parent`
+doit être un objet **top-level** du call (`{"pages": [...], "parent": {"type": "data_source_id",
+"data_source_id": "..."}}`), PAS un champ à l'intérieur de chaque élément de `pages[]` (ça produit
+une erreur de validation explicite "Unrecognized key: parent", plus facile à repérer que l'omission
+silencieuse). Récupéré ici via `notion-move-pages` (page → data_source_id) puis
+`notion-update-page` (command `update_properties`) — à faire directement correctement la prochaine
+fois plutôt que de corriger après coup.
+
+**Découverte annexe non traitée (hors scope, une seule tâche/jour)** : un workflow
+`cDyiklSU4A9L8eQT` ("Formulaire Tony IA - Analyse + RDV Calendly", créé le 21/07 15h17, inactif)
+semble être une refonte en chantier du même formulaire (même webhook `Form-tony-ia` décrit,
+description quasi identique) — probablement le brouillon que Tony éditait au moment où le workflow
+actif a cassé à 15h44. Ne pas le confondre avec le workflow actif `PPZW8CwBirBoxBvE` lors d'un
+prochain check ; si Tony l'active un jour, il y aura un conflit de webhook path avec le workflow
+actif actuel tant que celui-ci n'est pas désactivé/archivé — signal à surveiller, pas à traiter
+proactivement (ambigu, décision de Tony).
+
+**Pattern à surveiller à l'avenir** :
+- Nouveaux workflows apparus le 21-22/07 (`soNcMKsz1ce7yDhA` validation Sheet TikTok/Instagram,
+  `SExiTmmXzlWNQOZn` veille concurrents IG) : construction active de Tony sur la pipeline Autoboost,
+  aucun signal d'erreur dessus aujourd'hui — à surveiller aux prochains runs une fois qu'ils auront
+  plus d'historique d'exécution.
+- Le compte OpenAI ne montre plus de panne "insufficient_quota" depuis le 20/07 — pattern
+  potentiellement résolu côté facturation par Tony, à ne plus supposer par défaut.
