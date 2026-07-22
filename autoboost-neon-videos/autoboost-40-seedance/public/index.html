@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- BADGE DE NUMÉRO D'ASTUCE ---------- */
+/* top:36px et pas 132 : à 132 le badge tombait sur la 1re ligne du titre et mangeait
+   « mots » / « mouvement » (repéré au snapshot à t=7.0s et 13.3s). Au-dessus du kicker,
+   il ne croise plus rien et le titre garde toute sa largeur. */
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.6;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;}
+/* surlignage des 20 premiers mots */
+.mono .lock{color:#060606;background:var(--accent-yellow);border-radius:5px;padding:1px 6px;font-weight:700;}
+.verdict{position:absolute;left:90px;right:90px;top:830px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- ORDRE (scene 2) ---------- */
+.order{position:absolute;left:90px;right:90px;top:800px;display:flex;gap:18px;justify-content:center;}
+.ochip{padding:16px 26px;border-radius:16px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:28px;font-weight:800;color:#cfd2da;opacity:0;white-space:nowrap;}
+.ochip .n{color:var(--accent-yellow);margin-right:10px;}
+
+/* ---------- MOUVEMENTS CAMÉRA (scene 3) ---------- */
+.moves{position:absolute;left:80px;right:80px;top:470px;display:flex;flex-direction:column;gap:20px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:24px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:34px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mv .strike{position:absolute;left:30px;right:30px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+.mv .dur{margin-left:auto;font-size:28px;font-weight:900;color:var(--accent-yellow);}
+
+/* ---------- RÉFÉRENCES @ (scene 4) ---------- */
+.refs{position:absolute;left:70px;right:70px;top:440px;display:flex;flex-direction:column;gap:22px;}
+.ref{display:flex;align-items:center;gap:24px;padding:26px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.ref .at{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:38px;font-weight:900;
+  color:var(--accent-yellow);width:220px;flex:0 0 220px;}
+.ref .arw{color:var(--violet);font-size:34px;font-weight:900;}
+.ref .what{font-size:36px;font-weight:800;color:#fff;}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- CTA (scene 5) ---------- */
+.limit{position:absolute;left:150px;right:150px;top:400px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:200px;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+/* 100px : "SEEDANCE" fait 8 caractères — même réglage que #39 TERMINAL, qui débordait à 112. */
+.cta-word{position:absolute;left:0;right:0;top:540px;text-align:center;font-size:100px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:700px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:840px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de public/assets/voice.mp3
+     (ffmpeg silencedetect=noise=-40dB:d=0.18 -> 14 groupes de parole).
+     Coupes de scène posées DANS les silences : 5.68 / 11.83 / 18.66 / 20.76 / 24.68 -->
+<div id="root" data-composition-id="autoboost40seedance" data-start="0" data-width="1080" data-height="1920" data-duration="29.20">
+
+  <!-- SCENE 1 — HOOK : ton prompt, pas le modèle (groupes 1-2, 0.39 -> 5.48) -->
+  <div class="scene scene-1" data-s="0" data-d="5.68">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Tes vidéos IA</div>
+      <div class="title" data-role="t1">On dirait<br><span class="o">du faux.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">prompt-raté.txt</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">cinématique, 8k, lumière dorée,</div>
+        <div class="dim" data-role="pl2">ambiance épique, très détaillé,</div>
+        <div class="lit" data-role="pl3">un homme marche…</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Le sujet arrive en 3ᵉ ligne.</div>
+  </div>
+
+  <!-- SCENE 2 — ASTUCE 1 : les 20 premiers mots (groupes 3-5, 5.89 -> 11.62) -->
+  <div class="scene scene-2" data-s="5.68" data-d="6.15">
+    <div class="tipnum" data-role="n2">1</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Astuce 1</div>
+      <div class="title" data-role="t2" style="font-size:74px;">Les <span class="y">20 premiers mots</span><br>verrouillent la scène</div>
+    </div>
+    <div class="card" data-role="c2" style="top:490px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">prompt.txt</span></div>
+      <div class="mono">
+        <div data-role="pw1"><span class="lock">Une femme relève la tête et regarde l'objectif,</span></div>
+        <div class="dim" data-role="pw2">style néon, lumière rasante, grain argentique…</div>
+      </div>
+    </div>
+    <div class="order">
+      <div class="ochip" data-role="o1"><span class="n">1</span>QUI FAIT QUOI</div>
+      <div class="ochip" data-role="o2"><span class="n">2</span>STYLE</div>
+      <div class="ochip" data-role="o3"><span class="n">3</span>LUMIÈRE</div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — ASTUCE 2 : un seul mouvement, avec sa durée (groupes 6-9, 12.03 -> 18.50) -->
+  <div class="scene scene-3" data-s="11.83" data-d="6.83">
+    <div class="tipnum" data-role="n3">2</div>
+    <div class="pad">
+      <div class="kicker" data-role="k3">Astuce 2</div>
+      <div class="title" data-role="t3" style="font-size:74px;">Un <span class="y">seul mouvement</span><br>avec sa durée</div>
+    </div>
+    <div class="moves">
+      <div class="mv ok" data-role="mv1">
+        <span class="tag">✓</span>Travelling avant lent<span class="dur">3 s</span>
+      </div>
+      <div class="mv ko" data-role="mv2">
+        <span class="tag">✕</span>zoom + pan + tilt
+        <span class="strike" data-role="sk2"></span>
+      </div>
+      <div class="mv ko" data-role="mv3">
+        <span class="tag">✕</span>orbite + travelling arrière
+        <span class="strike" data-role="sk3"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROLL — respiration avant l'astuce 3 (groupe 10 : « Trois : tague tes références ») -->
+  <video id="broll" class="broll-vid" src="assets/broll-creator.mp4" data-start="18.66" data-duration="2.10" muted playsinline></video>
+  <div class="scene scene-broll" data-s="18.66" data-d="2.10"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — ASTUCE 3 : les références @ (groupes 11-12, 20.95 -> 24.44) -->
+  <div class="scene scene-4" data-s="20.76" data-d="3.92">
+    <div class="tipnum" data-role="n4">3</div>
+    <div class="pad">
+      <div class="kicker" data-role="k4">Astuce 3</div>
+      <div class="title" data-role="t4" style="font-size:74px;">Tague tes refs<br>avec <span class="y">l'arobase</span></div>
+    </div>
+    <div class="refs">
+      <div class="ref" data-role="r1"><span class="at">@image</span><span class="arw">→</span><span class="what">le visage</span></div>
+      <div class="ref" data-role="r2"><span class="at">@vidéo</span><span class="arw">→</span><span class="what">le mouvement</span></div>
+      <div class="ref" data-role="r3"><span class="at">@texte</span><span class="arw">→</span><span class="what">le décor</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — LIMITE 200 MOTS + CTA (groupes 13-14, 24.93 -> 28.34) -->
+  <div class="scene scene-5" data-s="24.68" data-d="4.52">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Et garde-le court</div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>ton prompt</span><span><b>200 mots</b> max</span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <!-- allow-overflow : le pulse scale:1.05 s'applique à la boîte pleine largeur (1080px),
+         qui déborde donc de 27px de chaque côté. Boîte transparente, texte centré : OK. -->
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">SEEDANCE</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">SEEDANCE</span><br>je t'envoie le guide</div>
+    <div class="cta-follow" data-role="ctafollow">— mais seulement si tu me suis</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="29.20" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.20"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.20"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.20"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="28.34" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="29.20" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1). Les zoom démarrent 1.2s AVANT la coupe
+       pour que le pic du whoosh tombe pile dessus (coupes : 5.68 / 11.83 / 18.66 / 20.76 / 24.68). -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-notify.mp3"      data-start="4.10"  data-volume="0.16"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="4.48"  data-volume="0.17"></audio>
+  <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="5.88"  data-volume="0.15"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="5.90"  data-volume="0.18"></audio>
+  <audio id="sfx-lock"      src="assets/sfx-notify.mp3"      data-start="6.85"  data-volume="0.16"></audio>
+  <audio id="sfx-o1"        src="assets/sfx-click-soft.mp3"  data-start="9.50"  data-volume="0.13"></audio>
+  <audio id="sfx-o2"        src="assets/sfx-click-soft.mp3"  data-start="9.75"  data-volume="0.13"></audio>
+  <audio id="sfx-o3"        src="assets/sfx-click-soft.mp3"  data-start="10.00" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="10.63" data-volume="0.17"></audio>
+  <audio id="sfx-click-2"   src="assets/sfx-click.mp3"       data-start="12.05" data-volume="0.18"></audio>
+  <audio id="sfx-ko-1"      src="assets/sfx-click-soft.mp3"  data-start="12.80" data-volume="0.13"></audio>
+  <audio id="sfx-ko-2"      src="assets/sfx-click-soft.mp3"  data-start="13.10" data-volume="0.13"></audio>
+  <audio id="sfx-valid"     src="assets/sfx-confirm.mp3"     data-start="14.55" data-volume="0.18"></audio>
+  <audio id="sfx-strike-1"  src="assets/sfx-whoosh-lat.mp3"  data-start="17.50" data-volume="0.14"></audio>
+  <audio id="sfx-strike-2"  src="assets/sfx-whoosh-lat.mp3"  data-start="17.80" data-volume="0.14"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="17.46" data-volume="0.17"></audio>
+  <audio id="sfx-arrow"     src="assets/sfx-whoosh-lat.mp3"  data-start="18.85" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="19.56" data-volume="0.19"></audio>
+  <audio id="sfx-click-3"   src="assets/sfx-click.mp3"       data-start="20.98" data-volume="0.18"></audio>
+  <audio id="sfx-r1"        src="assets/sfx-click-soft.mp3"  data-start="21.00" data-volume="0.13"></audio>
+  <audio id="sfx-r2"        src="assets/sfx-click-soft.mp3"  data-start="21.30" data-volume="0.13"></audio>
+  <audio id="sfx-r3"        src="assets/sfx-click-soft.mp3"  data-start="21.60" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-zoom.mp3"        data-start="23.48" data-volume="0.19"></audio>
+  <audio id="sfx-limit"     src="assets/sfx-notify.mp3"      data-start="24.95" data-volume="0.16"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="26.50" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="26.50" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="27.85" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost40seedance";
+const DUR=29.20;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade (data-s/data-d) ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade (root-level clip) ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : le prompt raté se remplit, puis le verdict tombe ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.15);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.45);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.85);
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},2.25);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},4.10);
+
+/* ---- scene 2 : les 20 premiers mots se verrouillent, puis l'ordre ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},5.90);
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},5.95);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},6.15);
+tl.fromTo(R("c2"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},6.60);
+tl.fromTo(R("pw1"),{opacity:0},{opacity:1,duration:0.35},6.85);
+tl.fromTo(R("pw2"),{opacity:0},{opacity:1,duration:0.35},7.60);
+tl.fromTo(R("o1"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},9.50);
+tl.fromTo(R("o2"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},9.75);
+tl.fromTo(R("o3"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},10.00);
+
+/* ---- scene 3 : le bon mouvement d'abord, les mauvais barrés ensuite ---- */
+tl.fromTo(R("n3"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},12.05);
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},12.10);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},12.30);
+/* les 2 mauvais empilages arrivent d'abord (« un seul mouvement de caméra »), */
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},12.80);
+tl.fromTo(R("mv3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},13.10);
+/* puis le bon, sur « un travelling avant lent » */
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},14.55);
+/* et les barres se tracent sur « pas cinq mouvements empilés » (17.44-18.50).
+   Terminées à 18.10, soit avant le fondu de sortie de la scène (18.36). */
+tl.fromTo(R("sk2"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},17.50);
+tl.fromTo(R("sk3"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},17.80);
+
+/* ---- scene 4 : les 3 références en cascade ---- */
+tl.fromTo(R("n4"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},20.95);
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},21.00);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},21.15);
+tl.fromTo(R("r1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},21.00);
+tl.fromTo(R("r2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},21.30);
+tl.fromTo(R("r3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},21.60);
+
+/* ---- scene 5 : la jauge se remplit puis le CTA ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},24.95);
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},24.95);
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:1,duration:0.9,ease:"power2.out"},25.10);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},26.50);
+/* pulse CTA : fenêtre 27.0 -> 29.2 = 2.2s / 0.5 = 4.4 -> repeat 3 */
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},27.00);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},27.85);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},28.70);
+
+/* ---- CAPTIONS — un groupe de parole = 1 à 4 lignes, réparties dans le groupe.
+   Groupes mesurés : 0.39-2.00 | 2.30-5.48 | 5.89-7.67 | 8.05-9.09 | 9.47-11.62
+   12.03-14.08 | 14.51-15.32 | 15.69-17.00 | 17.44-18.50 | 18.83-20.57
+   20.95-22.09 | 22.37-24.43 | 24.93-26.24 | 26.50-28.34 ---- */
+const caps=[
+ [0.39,"TES VIDÉOS IA",""],
+ [1.15,"ONT L'AIR FAUSSES ?","ohot:FAUSSES"],
+ [2.30,"C'EST PAS LE MODÈLE",""],
+ [3.10,"C'EST TON PROMPT","hot:TON PROMPT"],
+ [4.10,"TROIS TRUCS",""],
+ [4.75,"QUI CHANGENT TOUT SUR SEEDANCE","vhot:SEEDANCE"],
+ [5.89,"UN : LES 20 PREMIERS MOTS","hot:20 PREMIERS MOTS"],
+ [6.85,"VERROUILLENT LA SCÈNE",""],
+ [8.05,"METS QUI FAIT QUOI",""],
+ [8.60,"EN PREMIER","hot:EN PREMIER"],
+ [9.47,"LE STYLE ET LA LUMIÈRE",""],
+ [10.25,"ÇA VIENT APRÈS",""],
+ [10.95,"JAMAIS AVANT","ohot:JAMAIS AVANT"],
+ [12.03,"DEUX : UN SEUL MOUVEMENT","hot:UN SEUL MOUVEMENT"],
+ [13.10,"DE CAMÉRA",""],
+ [13.60,"AVEC SA DURÉE","hot:AVEC SA DURÉE"],
+ [14.51,"UN TRAVELLING AVANT LENT","vhot:TRAVELLING AVANT LENT"],
+ [15.69,"TROIS SECONDES DE ZOOM",""],
+ [16.40,"SUR LES YEUX","hot:SUR LES YEUX"],
+ [17.44,"PAS CINQ MOUVEMENTS",""],
+ [18.00,"EMPILÉS","ohot:EMPILÉS"],
+ [18.83,"TROIS : TAGUE",""],
+ [19.50,"TES RÉFÉRENCES AVEC L'AROBASE","hot:L'AROBASE"],
+ [20.95,"L'IMAGE VERROUILLE",""],
+ [21.55,"LE VISAGE","hot:LE VISAGE"],
+ [22.37,"LA VIDÉO DONNE LE MOUVEMENT","vhot:LE MOUVEMENT"],
+ [23.40,"LE TEXTE PLANTE LE DÉCOR","ohot:LE DÉCOR"],
+ [24.93,"GARDE TON PROMPT",""],
+ [25.60,"SOUS 200 MOTS","hot:SOUS 200 MOTS"],
+ [26.50,"COMMENTE LE MOT",""],
+ [27.15,"SEEDANCE","hot:SEEDANCE"],
+ [27.85,"JE T'ENVOIE LE GUIDE",""]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:28.34;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  /* le sortant doit être TERMINÉ avant l'entrant : les lignes se superposent sinon. */
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail : 29.2/1.05 = 27.8 -> repeat 27 ; décalée : (29.2-0.52)/1.05 = 27.3 -> repeat 26 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:27,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:26,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=18.66, BROLL_END=20.76;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 18.66/0.5 = 37.3 -> repeat 37 (IMPAIR = retombe à opacity 0 avant le broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:37,yoyo:true},0);
+/* ring après broll : (29.2-20.76)/0.5 = 16.9 -> repeat 16 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:16,yoyo:true},BROLL_END);
+/* orbit : 18.66/2.2 = 8.5 -> repeat 7 ; puis (29.2-20.76)/2.2 = 3.8 -> repeat 2 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:7,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:2,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},26.50);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 puis +8.02 -> 2.34 / 10.36 / 18.38 / 26.40.
+   Aucun ne tombe dans la fenêtre broll (18.66-20.76) où l'avatar est masqué : les 4 sont gardés.
+   LEAD 0.12 : le fondu doit CULMINER sur le drop, pas démarrer dessus. */
+var LEAD = 0.12;
+[2.34, 10.36, 18.38, 26.40].forEach(function(t){
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
