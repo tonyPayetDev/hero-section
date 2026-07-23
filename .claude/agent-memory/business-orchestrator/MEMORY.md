@@ -871,3 +871,91 @@ proactivement (ambigu, décision de Tony).
   plus d'historique d'exécution.
 - Le compte OpenAI ne montre plus de panne "insufficient_quota" depuis le 20/07 — pattern
   potentiellement résolu côté facturation par Tony, à ne plus supposer par défaut.
+
+## 2026-07-23
+
+**Contexte** : toujours 0 page Notion "🤖 Délégable IA" = vrai (to-do/in-progress, requête SQL
+confirmée). `search_executions(status:["error"])` depuis 2026-07-22T00:00:00Z → 1 seul résultat
+(`6InNNRjMJxiteEkV`, webhook `/webhook/tts-gen`, exécution 66307, 12:12 UTC) : payload de
+production réel (script prospection freelance, pas un test curl), WaveSpeed n'a pas terminé le
+clonage vocal dans les 6×20s=120s de polling, fallback vers OpenAI TTS qui a lui-même échoué en
+`insufficient_quota`. Auto-résolu 6 min plus tard (exécution 66311, succès, 43s — probablement
+WaveSpeed a fini plus vite cette fois, le fallback OpenAI n'a pas été sollicité). Pas d'action
+prise dessus : ni bloquant confirmé, ni nouveauté par rapport au pattern OpenAI déjà documenté
+plusieurs fois (07-14, 07-16, 07-20/21). GitHub : 0 issue, 0 PR ouverte. FoodBoost
+(`Upi6aFi0KYo49gn7`) : succès le 22/07 06h00 (le fix credential Kie du 07-21 tient). Blog veille
+IA : dernier article 22/07, pas en retard.
+
+**Découverte (le vrai signal du jour)** : le workflow `ZaNrLHKYbnRBjE1a` ("VENDRE - Prospection
+restaurants vers RDV automatique" — scan Google Maps via Apify → qualification IA gpt-5.1 → offre
+personnalisée → envoi Gmail → RDV Google Calendar, déjà repéré le 07-21 comme "à surveiller")
+était scaffoldé depuis le 20/07 (`aiBuilderAssisted: true`) mais **totalement non configuré** :
+aucun des 8 nœuds à credentials (Apify, 3× OpenAI, 3× Gmail + Gmail Trigger, 2× Google Sheets,
+Google Calendar) n'avait de credential attaché, le Google Sheet de suivi n'existait pas
+(`documentId.value` vide), le Calendar cible était vide, et le champ `emailAlerte` de la branche
+réponses était vide. La sticky note du workflow listait exactement ces 4 points comme prérequis
+avant activation — jamais traités en 3 jours. C'est un pipeline "Cash Direct" (ROI 5) directement
+aligné avec le métier de Tony (dev web/IA + démos restaurants), à l'abandon faute de config, donc
+traité en priorité aujourd'hui (impact réel > liste Notion vide, cf. consigne).
+
+**Action prise** : configuration complète du workflow, SANS l'activer ni l'exécuter en conditions
+réelles (risque d'envoyer un vrai email de prospection non sollicité à un vrai restaurant scrapé
+sur Google Maps — analogue au principe déjà établi le 07-10 de ne jamais publier de contenu public
+sans validation explicite de Tony, mais ici encore plus sensible car ce serait un email adressé à
+un tiers qui n'a rien demandé).
+1. Créé la vraie feuille de suivi Google Sheets ("Feuille de suivi prospection", id
+   `1Uk-cNFxFLfIJzI-kpmYEcROSkAY0GNRKNV8Gd5eF2cg`) avec 2 onglets "Prospects" et "Reponses" via un
+   workflow one-off (`gMe1mHIjMYfmw7hz`, opération `spreadsheet.create` du nœud Google Sheets natif).
+2. Piège rencontré : `resource: sheet, operation: append` avec `columns.mappingMode: defineBelow`
+   échoue avec "Could not retrieve the column data" sur une feuille sans AUCUNE ligne d'en-tête
+   existante (le resourceMapper a besoin de lire les headers pour mapper). Contourné en écrivant
+   les en-têtes via un appel HTTP brut à l'API Sheets (`POST .../values/{sheet}!A1:F1:append`,
+   `predefinedCredentialType: googleSheetsOAuth2Api`) plutôt que via le nœud Sheets structuré —
+   **pattern à réutiliser** : pour écrire une ligne d'en-tête sur une feuille neuve, toujours
+   passer par l'API brute (httpRequest + predefinedCredentialType) et non par le nœud Sheets
+   resourceMapper, qui suppose des headers déjà présents.
+3. `update_workflow` (16 opérations atomiques) sur `ZaNrLHKYbnRBjE1a` : attaché credential Apify
+   natif (`UCHrBkwNMBZcmtkC`) au nœud HTTP Request de scan (bascule de `genericCredentialType`/
+   `httpHeaderAuth` — qui n'avait pas de credential correspondant — vers
+   `predefinedCredentialType`/`apifyApi`), credential OpenAI (`aJUfJkarEgt23LAZ`) sur les 3 nœuds
+   `lmChatOpenAi`, credential Gmail (`8IlDEgihQ00v54lT`) sur 3 nœuds Gmail + le Gmail Trigger,
+   credential Google Sheets (`BzoZcNvj4lwERNPx`) + le vrai spreadsheetId sur les 2 nœuds
+   Journaliser, credential Google Calendar (`4wr3HsOPSqEQOQMq`) + `calendar.value: "primary"` sur
+   le nœud de création de RDV, et l'email d'alerte réel de Tony sur le nœud "Parametres des
+   réponses". Piège d'API rencontré : `setNodeCredential` exige un champ `credentialKey` distinct
+   de `credentialName` (le nom de la clé de credential du node type, ex. `openAiApi`,
+   `gmailOAuth2` — pas juste le nom lisible) ; et `setNodeParameter` avec un path pointant dans un
+   tableau imbriqué (`/assignments/assignments/0/value`) échoue ("cannot descend into non-object")
+   — utiliser `updateNodeParameters` avec `replace:true` et l'objet complet à la place pour ce cas.
+4. **Point bloquant découvert, non réparable par l'IA** : le credential "Google Calendar account"
+   (`4wr3HsOPSqEQOQMq`) échoue systématiquement sur `explore_node_resources` avec "Unable to sign
+   without access token" — l'autorisation OAuth2 semble absente/expirée (contrairement à "Google
+   Sheets account" qui fonctionne parfaitement avec les mêmes types de scopes Google). Nécessite
+   une reconnexion interactive dans l'UI n8n, hors de portée de cette session. Attaché quand même
+   le credential id au nœud (best effort) et documenté le blocage pour Tony.
+5. Workflow laissé `active: false`, non exécuté en conditions réelles. Le test manuel final
+   (recommandé par la propre sticky note du workflow : "Tester en manuel avant d'activer") est
+   volontairement laissé à Tony.
+
+**Page Notion créée** : "🍽️ Pipeline prospection restaurants VENDRE — configuration terminée
+(credentials + Sheet réel)" (id `3a65fda3-ad05-8120-8147-daae184bf224`, Projet=Prospection,
+ROI=🔥5, Délégable IA=NO, Statut=Terminé 🙌).
+
+**Pattern à surveiller à l'avenir** :
+- Nouveau pattern de risque identifié : un pipeline "Cash Direct" scaffoldé par un builder IA
+  (`aiBuilderAssisted: true`) peut rester des jours sans AUCUN credential attaché sur aucun nœud
+  (pas seulement 1-2 comme les bugs habituels) — toujours vérifier `get_workflow_details` +
+  tenter `explore_node_resources` sur chaque credential type avant de supposer qu'un scaffold est
+  "presque prêt" ; ici c'était sur les 8/8 nœuds à credentials.
+- Le credential "Google Calendar account" (`4wr3HsOPSqEQOQMq`) est cassé (pas de token
+  d'autorisation) — à surveiller si un autre workflow utilisant Google Calendar tombe en panne à
+  l'avenir ; le root cause sera probablement le même et nécessite une reconnexion manuelle par
+  Tony dans n8n, pas un fix de code.
+- Workflows one-off utilitaires créés aujourd'hui, réutilisables si besoin de retoucher la feuille
+  de suivi prospection : `gMe1mHIjMYfmw7hz` (création spreadsheet), `Ie810O7AeLK58yvJ` (écriture
+  brute des en-têtes via API Sheets). `RNKxax6wrksP35uM` a échoué (resourceMapper sur feuille
+  vide) et peut être ignoré/supprimé si Tony fait du ménage dans n8n.
+- Avant d'activer `ZaNrLHKYbnRBjE1a` pour de vrai, Tony doit : (1) reconnecter le credential
+  Google Calendar, (2) faire un test manuel (le pipeline enverra un vrai email et créera un vrai
+  RDV dès qu'un restaurant scanné score ≥ 6/10), (3) vérifier le contenu généré par l'agent de
+  rédaction d'offre au moins une fois avant de laisser tourner en automatique quotidien 8h.
