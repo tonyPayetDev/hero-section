@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family:"Inter"; font-weight:400; font-display:block; src:url(fonts/Inter-400-latin.woff2) format("woff2"); }
+@font-face { font-family:"Inter"; font-weight:700; font-display:block; src:url(fonts/Inter-700-latin.woff2) format("woff2"); }
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-5{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:76px;line-height:1.04;font-weight:700;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- BADGE ---------- */
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:700;
+  color:#060606;background:var(--accent-yellow);opacity:0;box-shadow:0 0 40px rgba(255,230,0,.45);}
+.tipnum svg{width:46px;height:46px;stroke:#060606;fill:none;stroke-width:2;}
+
+/* ---------- CARTE NAVIGATEUR (scene 1) ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:28px 34px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:700;}
+.tabsgrid{display:flex;flex-wrap:wrap;gap:12px;}
+.tabchip{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.04);border:1px solid #2a2140;
+  border-radius:12px;padding:12px 16px;font-size:23px;font-weight:700;color:#cfd2da;}
+.tabchip .fav{width:14px;height:14px;border-radius:4px;flex:0 0 14px;}
+.tabcount{position:absolute;left:90px;right:90px;top:840px;text-align:center;font-size:40px;font-weight:700;
+  color:var(--orange);opacity:0;}
+.tabcount b{color:var(--accent-yellow);}
+
+/* ---------- CHAT CARD (scene 2) : ce que l'IA fait ---------- */
+.steps{position:absolute;left:90px;right:90px;top:470px;display:flex;flex-direction:column;gap:22px;}
+.step{display:flex;align-items:center;gap:22px;padding:26px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.step .ic{width:52px;height:52px;flex:0 0 52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,230,0,.10);color:var(--accent-yellow);}
+.step .ic svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+.step .lb{font-size:36px;font-weight:700;color:#fff;}
+.step .ok{margin-left:auto;color:var(--good);font-size:30px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.step .ok svg{width:30px;height:30px;stroke:var(--good);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;}
+.step.active{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+
+/* ---------- FLOW (scene 3) : chaos -> rangé ---------- */
+.flow{position:absolute;left:60px;right:60px;top:430px;display:flex;align-items:center;justify-content:center;}
+.fnode{width:150px;height:150px;border-radius:20px;background:#0d0d12;border:1px solid #2a2140;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;flex:0 0 150px;opacity:0;}
+.fnode .num{font-size:44px;font-weight:700;color:var(--orange);}
+.fnode .ic{width:46px;height:46px;color:var(--accent-yellow);} .fnode .ic svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.fnode .lb{font-size:20px;font-weight:700;color:#cfd2da;}
+.farrow{flex:1;height:3px;background:rgba(255,255,255,.16);position:relative;margin:0 8px;}
+.farrow .pulse{position:absolute;top:50%;left:0;width:16px;height:16px;border-radius:50%;background:var(--accent-yellow);
+  box-shadow:0 0 18px 4px var(--accent-yellow);transform:translate(-50%,-50%);}
+.groups{position:absolute;left:90px;right:90px;top:625px;display:flex;flex-direction:column;gap:14px;}
+.grp{display:flex;align-items:center;gap:18px;padding:20px 28px;border-radius:18px;background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.grp .gk{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:26px;font-weight:700;color:var(--muted);width:150px;flex:0 0 150px;}
+.grp .gv{font-size:34px;font-weight:700;color:#fff;}
+.grp .gd{margin-left:auto;width:16px;height:16px;border-radius:50%;background:var(--good);box-shadow:0 0 16px var(--good);}
+
+/* ---------- BROLL (scene 4) ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.78) 100%);}
+.privacy{position:absolute;left:80px;right:80px;top:300px;text-align:center;opacity:0;z-index:3;}
+.privacy .pk{font-size:30px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--accent-yellow);}
+.privacy .pt{font-size:66px;font-weight:700;line-height:1.08;margin-top:20px;}
+.privacy .pt .v{color:var(--violet);}
+.privchip{display:inline-flex;align-items:center;gap:12px;margin-top:30px;padding:16px 28px;border-radius:999px;
+  background:rgba(40,200,64,.12);border:1px solid var(--good);font-size:30px;font-weight:700;color:var(--good);}
+.privchip svg{width:30px;height:30px;stroke:var(--good);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ---------- CTA (scene 5) ---------- */
+.gauge{position:absolute;left:150px;right:150px;top:380px;opacity:0;}
+.gauge .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:700;color:var(--muted);margin-bottom:14px;}
+.gauge .lab b{color:var(--accent-yellow);}
+.gauge .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.gauge .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+.free-pill{position:absolute;left:50%;top:490px;transform:translateX(-50%);background:var(--orange);color:#1a0d00;
+  font-weight:700;font-size:30px;letter-spacing:3px;text-transform:uppercase;padding:12px 34px;border-radius:999px;opacity:0;white-space:nowrap;}
+.cta-word{position:absolute;left:0;right:0;top:580px;text-align:center;font-size:150px;font-weight:700;
+  color:var(--accent-yellow);letter-spacing:4px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:760px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-sub .y{color:var(--accent-yellow);}
+.cta-follow{position:absolute;left:80px;right:80px;top:870px;text-align:center;font-size:28px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;} #cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de public/assets/voice.mp3 (silencedetect -40dB:0.18).
+     Coupes de scène posées DANS les silences : 4.38 / 13.00 / 20.99 / 25.24 -->
+<div id="root" data-composition-id="autoboost41tabmind" data-start="0" data-width="1080" data-height="1920" data-duration="29.928">
+
+  <!-- SCENE 1 — HOOK : 40 onglets ouverts (0 -> 4.38) -->
+  <div class="scene scene-1" data-s="0" data-d="4.38">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Ton navigateur</div>
+      <div class="title" data-role="t1">40 onglets<br><span class="o">un vrai bordel.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">40 onglets ouverts</span></div>
+      <div class="tabsgrid">
+        <div class="tabchip"><span class="fav" style="background:#ff5f57"></span>Gmail</div>
+        <div class="tabchip"><span class="fav" style="background:#febc2e"></span>Doc client</div>
+        <div class="tabchip"><span class="fav" style="background:#4c9aff"></span>YouTube</div>
+        <div class="tabchip"><span class="fav" style="background:#28c840"></span>n8n</div>
+        <div class="tabchip"><span class="fav" style="background:#a855f7"></span>Notion</div>
+        <div class="tabchip"><span class="fav" style="background:#ff8a3d"></span>Analytics</div>
+        <div class="tabchip"><span class="fav" style="background:#4c9aff"></span>Recherche…</div>
+        <div class="tabchip"><span class="fav" style="background:#ff5f57"></span>+ 33 autres</div>
+      </div>
+    </div>
+    <div class="tabcount" data-role="cnt1">Tu ne retrouves <b>plus rien.</b></div>
+  </div>
+
+  <!-- SCENE 2 — CE QUE FAIT L'IA (4.38 -> 13.00) -->
+  <div class="scene scene-2" data-s="4.38" data-d="8.62">
+    <div class="tipnum" data-role="n2">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg>
+    </div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Automatique</div>
+      <div class="title" data-role="t2" style="font-size:70px;">Une <span class="v">IA</span> lit<br>tes onglets</div>
+    </div>
+    <div class="steps">
+      <div class="step" data-role="s1">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <span class="lb">Lit chaque page</span>
+        <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span>
+      </div>
+      <div class="step" data-role="s2">
+        <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="11" r="5"/><path d="M9.7 17h4.6M12 3v1M4 12H3M21 12h-1"/></svg></span>
+        <span class="lb">Comprend le sujet</span>
+        <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span>
+      </div>
+      <div class="step" data-role="s3">
+        <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+        <span class="lb">Regroupe par thème</span>
+        <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 6.5"/></svg></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — CHAOS -> RANGÉ (13.00 -> 20.51) -->
+  <div class="scene scene-3" data-s="13.00" data-d="7.51">
+    <div class="pad">
+      <div class="kicker" data-role="k3">Le résultat</div>
+      <div class="title" data-role="t3" style="font-size:70px;">Du <span class="o">chaos</span><br>au <span class="y">rangé</span></div>
+    </div>
+    <div class="flow">
+      <div class="fnode" data-role="f1"><span class="num">40</span><span class="lb">Onglets</span></div>
+      <div class="farrow" data-role="a1"><span class="pulse"></span></div>
+      <div class="fnode" data-role="f2"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg></span><span class="lb">IA</span></div>
+      <div class="farrow" data-role="a2"><span class="pulse"></span></div>
+      <div class="fnode" data-role="f3"><span class="num">3</span><span class="lb">Groupes</span></div>
+    </div>
+    <div class="groups">
+      <div class="grp" data-role="g1"><span class="gk">groupe 1</span><span class="gv">Travail en cours</span><span class="gd"></span></div>
+      <div class="grp" data-role="g2"><span class="gk">groupe 2</span><span class="gv">Recherches</span><span class="gd"></span></div>
+      <div class="grp" data-role="g3"><span class="gk">groupe 3</span><span class="gv">À lire plus tard</span><span class="gd"></span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 4 — BROLL plein écran : privé, dans ton navigateur (20.99 -> 24.84) -->
+  <video id="broll" class="broll-vid" src="assets/broll-tabs.mp4" data-start="20.99" data-duration="3.85" muted playsinline></video>
+  <div class="scene scene-broll" data-s="20.99" data-d="3.85"><div class="broll-grad"></div></div>
+  <div class="privacy" data-role="priv">
+    <div class="pk">100% local</div>
+    <div class="pt">Dans <span class="v">ton navigateur</span></div>
+    <div class="privchip"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Aucune donnée ne sort</div>
+  </div>
+
+  <!-- SCENE 5 — CTA (25.24 -> 29.928) -->
+  <div class="scene scene-5" data-s="25.24" data-d="4.688">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Le workflow, pour toi</div>
+    </div>
+    <div class="gauge" data-role="gauge">
+      <div class="lab"><span>40 onglets</span><span><b>3 groupes</b> rangés</span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="free-pill" data-role="pill">Gratuit</div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">TAB</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span class="y">TAB</span><br>je t'envoie le workflow</div>
+    <div class="cta-follow" data-role="ctafollow">— gratuitement, si tu me suis</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="29.928" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.928"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.928"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.928"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="29.928" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="29.928" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1). Zoom démarrent ~1.2s AVANT la coupe
+       pour que le pic tombe dessus (coupes : 4.38 / 13.00 / 20.99 / 25.24). -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-cnt"       src="assets/sfx-notify.mp3"      data-start="3.10"  data-volume="0.16"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="3.18"  data-volume="0.17"></audio>
+  <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="4.40"  data-volume="0.15"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="4.55"  data-volume="0.18"></audio>
+  <audio id="sfx-s1"        src="assets/sfx-click-soft.mp3"  data-start="5.30"  data-volume="0.13"></audio>
+  <audio id="sfx-s2"        src="assets/sfx-click-soft.mp3"  data-start="6.60"  data-volume="0.13"></audio>
+  <audio id="sfx-s3"        src="assets/sfx-click-soft.mp3"  data-start="7.10"  data-volume="0.13"></audio>
+  <audio id="sfx-regroupe"  src="assets/sfx-notify.mp3"      data-start="10.70" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="11.80" data-volume="0.18"></audio>
+  <audio id="sfx-click-2"   src="assets/sfx-click.mp3"       data-start="13.20" data-volume="0.18"></audio>
+  <audio id="sfx-f1"        src="assets/sfx-click-soft.mp3"  data-start="13.35" data-volume="0.13"></audio>
+  <audio id="sfx-f2"        src="assets/sfx-click-soft.mp3"  data-start="13.60" data-volume="0.13"></audio>
+  <audio id="sfx-f3"        src="assets/sfx-click-soft.mp3"  data-start="13.85" data-volume="0.13"></audio>
+  <audio id="sfx-g1"        src="assets/sfx-click-soft.mp3"  data-start="16.30" data-volume="0.13"></audio>
+  <audio id="sfx-g2"        src="assets/sfx-click-soft.mp3"  data-start="16.60" data-volume="0.13"></audio>
+  <audio id="sfx-g3"        src="assets/sfx-click-soft.mp3"  data-start="16.90" data-volume="0.13"></audio>
+  <audio id="sfx-valid"     src="assets/sfx-confirm.mp3"     data-start="18.30" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="19.79" data-volume="0.19"></audio>
+  <audio id="sfx-arrow"     src="assets/sfx-whoosh-lat.mp3"  data-start="21.20" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="24.04" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="27.55" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="27.55" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="28.60" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost41tabmind";
+const DUR=29.928;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+const $=s=>document.querySelector(s);
+
+/* ---- SCENES auto fade ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.15);
+tl.fromTo(R("cnt1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},3.05);
+
+/* ---- scene 2 ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},4.55);
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},4.60);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},4.80);
+tl.fromTo(R("s1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},5.30);
+tl.fromTo(R("s2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},6.60);
+tl.fromTo(R("s3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},7.10);
+tl.to(R("s3"),{className:"step active",duration:0.1},10.70);
+
+/* ---- scene 3 ---- */
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},13.15);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},13.30);
+tl.fromTo(R("f1"),{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.35,ease:"back.out(1.8)"},13.45);
+tl.fromTo(R("f2"),{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.35,ease:"back.out(1.8)"},13.70);
+tl.fromTo(R("f3"),{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.35,ease:"back.out(1.8)"},13.95);
+tl.fromTo(R("a1").querySelector(".pulse"),{x:0},{x:150,duration:1.4,ease:"power1.inOut",repeat:1},14.2);
+tl.fromTo(R("a2").querySelector(".pulse"),{x:0},{x:150,duration:1.4,ease:"power1.inOut",repeat:1},14.6);
+tl.fromTo(R("g1"),{opacity:0,x:-24},{opacity:1,x:0,duration:0.35,ease:"power3.out"},16.30);
+tl.fromTo(R("g2"),{opacity:0,x:-24},{opacity:1,x:0,duration:0.35,ease:"power3.out"},16.60);
+tl.fromTo(R("g3"),{opacity:0,x:-24},{opacity:1,x:0,duration:0.35,ease:"power3.out"},16.90);
+
+/* ---- scene 4 broll : privacy ---- */
+tl.fromTo(R("priv"),{opacity:0,y:24},{opacity:1,y:0,duration:0.45,ease:"power3.out"},21.30);
+tl.to(R("priv"),{opacity:0,duration:0.3,ease:"power2.in"},24.40);
+
+/* ---- scene 5 CTA ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.40);
+tl.fromTo(R("gauge"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.55);
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:1,duration:1.0,ease:"power2.out"},25.70);
+tl.fromTo(R("pill"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.6)"},26.90);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},27.55);
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},28.10);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},28.60);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},29.30);
+
+/* ---- CAPTIONS (mot-à-mot, timings réutilisés de la voix) ---- */
+const caps=[
+ [0.0,"SI T'AS QUARANTE","hot:QUARANTE"],
+ [0.761,"ONGLETS OUVERTS","vhot:ONGLETS"],
+ [1.511,"LÀ MAINTENANT","hot:MAINTENANT"],
+ [2.25,"ÇA RISQUE DE","ohot:RISQUE"],
+ [2.807,"TOUT CHANGER","hot:CHANGER"],
+ [3.397,"POUR TOI","hot:TOI"],
+ [3.933,"J'AI BRANCHÉ","ohot:BRANCHÉ"],
+ [4.522,"UNE INTELLIGENCE","vhot:INTELLIGENCE"],
+ [5.326,"ARTIFICIELLE","vhot:ARTIFICIELLE"],
+ [5.968,"QUI LIT TOUS","ohot:LIT"],
+ [6.504,"MES ONGLETS","vhot:ONGLETS"],
+ [7.04,"ET LES RÉORGANISE","ohot:RÉORGANISE"],
+ [7.854,"TOUTE SEULE","hot:SEULE"],
+ [8.551,"ELLE COMPREND","ohot:COMPREND"],
+ [9.194,"LE SUJET","hot:SUJET"],
+ [9.58,"DE CHAQUE PAGE","vhot:PAGE"],
+ [10.233,"OUVERTE","vhot:OUVERTE"],
+ [10.694,"ET REGROUPE","ohot:REGROUPE"],
+ [11.24,"TOUT PAR THÈME","hot:THÈME"],
+ [11.883,"EN UNE SECONDE","hot:SECONDE"],
+ [12.698,"LE TRAVAIL","vhot:TRAVAIL"],
+ [13.191,"EN COURS","hot:COURS"],
+ [13.576,"D'UN CÔTÉ","vhot:CÔTÉ"],
+ [14.091,"LES RECHERCHES","ohot:RECHERCHES"],
+ [14.787,"DE L'AUTRE","vhot:L'AUTRE"],
+ [15.366,"LES ARTICLES","ohot:ARTICLES"],
+ [15.955,"À LIRE","hot:LIRE"],
+ [16.287,"RANGÉS ENSEMBLE","hot:ENSEMBLE"],
+ [17.198,"PLUS JAMAIS","ohot:JAMAIS"],
+ [17.734,"DE FOUILLIS","hot:FOUILLIS"],
+ [18.366,"PLUS JAMAIS","ohot:JAMAIS"],
+ [18.902,"D'ONGLET PERDU","vhot:D'ONGLET"],
+ [19.598,"AU MILIEU DES AUTRES","hot:AUTRES"],
+ [20.681,"ET ÇA TOURNE","ohot:TOURNE"],
+ [21.238,"DIRECTEMENT DANS","hot:DIRECTEMENT"],
+ [22.041,"MON NAVIGATEUR","vhot:NAVIGATEUR"],
+ [22.824,"SANS EXTENSION LOUCHE","ohot:EXTENSION"],
+ [23.842,"QUI ASPIRE","ohot:ASPIRE"],
+ [24.324,"MES DONNÉES","hot:DONNÉES"],
+ [25.02,"ENREGISTRE","ohot:ENREGISTRE"],
+ [25.556,"CETTE VIDÉO","hot:VIDÉO"],
+ [26.092,"POUR NE PAS OUBLIER","ohot:OUBLIER"],
+ [27.046,"ET COMMENTE","ohot:COMMENTE"],
+ [27.592,"LE MOT TAB","hot:TAB"],
+ [28.031,"JE T'ENVOIE","vhot:T'ENVOIE"],
+ [28.578,"LE WORKFLOW","hot:WORKFLOW"],
+ [29.124,"GRATUITEMENT","ohot:GRATUITEMENT"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]-0.01:DUR;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.16,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.12},end-0.14);
+});
+
+/* Barres du rail : 29.928/1.05 = 28.5 -> repeat 28 ; décalée : (29.928-0.52)/1.05 = 28.0 -> repeat 27 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:28,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:27,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=20.99, BROLL_END=24.84;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 20.99/0.5 = 41.9 -> repeat 41 (IMPAIR = retombe à 0 avant le broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:41,yoyo:true},0);
+/* ring après broll : (29.928-24.84)/0.5 = 10.2 -> repeat 10 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:10,yoyo:true},BROLL_END);
+/* orbit : 20.99/2.2 = 9.5 -> repeat 8 ; puis (29.928-24.84)/2.2 = 2.3 -> repeat 1 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:8,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:1,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},27.55);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 / 10.36 / 18.38 / 26.40.
+   Aucun ne tombe dans la fenêtre broll (20.99-24.84) où l'avatar est masqué. */
+var LEAD=0.12;
+[2.34,10.36,18.38,26.40].forEach(function(t){
+  var s=t-LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
