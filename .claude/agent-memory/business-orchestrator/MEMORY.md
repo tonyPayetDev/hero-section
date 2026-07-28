@@ -959,3 +959,54 @@ ROI=🔥5, Délégable IA=NO, Statut=Terminé 🙌).
   Google Calendar, (2) faire un test manuel (le pipeline enverra un vrai email et créera un vrai
   RDV dès qu'un restaurant scanné score ≥ 6/10), (3) vérifier le contenu généré par l'agent de
   rédaction d'offre au moins une fois avant de laisser tourner en automatique quotidien 8h.
+
+## 2026-07-28
+
+**Contexte** : premier run depuis le 23/07 — **aucune trace mémoire ni commit entre le 24 et le
+27/07** (`git log` : dernier commit avant celui d'aujourd'hui = `b39ea67` le 23/07 09h30 ;
+`grep "^## "` sur ce fichier confirme le trou). La routine quotidienne semble ne pas s'être
+déclenchée pendant 4 jours (cause inconnue depuis cette session — infra de scheduling hors de
+portée du repo, à surveiller si le trou se reproduit). Requête Notion SQL confirmée :
+`🤖 Délégable IA` = vrai → **0 résultat sur 1911 lignes de la base**, tous statuts confondus (pas
+seulement to-do/in_progress) — pattern déjà documenté les 21-23/07, toujours d'actualité. Les 4
+tâches "A délèguer | D" existantes (scraping Amour & Bijoux, script auto-apply LinkedIn, "check
+prompt song", automation SEO Fusionia) n'ont aucun "Objectif précis" rempli — trop vagues pour être
+exécutées sans clarification de Tony, non traitées.
+
+**Blocage outillage** : le serveur MCP `n8n` n'était **pas authentifié** dans cet environnement de
+session programmée (non-interactif, pas de flow OAuth possible) — impossible de vérifier l'état des
+workflows n8n aujourd'hui (contrairement aux jours précédents où c'était le point de contrôle n°1).
+À noter pour les prochaines sessions : si ce blocage se répète systématiquement sur les runs
+programmés, le check n8n devra être retiré de la routine ou remplacé par une alternative (ex. webhook
+de healthcheck déclenché autrement).
+
+**Action prise** : en l'absence de tâche délégable et sans visibilité n8n, j'ai vérifié l'état du
+repo (`git log --stat`) : rien de cassé/bloquant détecté dans le code des sous-projets récents. Le
+seul vrai signal actionnable était l'arrêt de la cadence de contenu "veille IA & automatisation"
+(articles quasi quotidiens du 20 au 23/07, silence depuis). J'ai donc traité ce signal comme le "1%"
+du jour : recherche web des actualités IA/automatisation réelles du 24-28/07/2026 (Claude Opus 5 —
+lancé 24/07, mi-prix de Fable 5 ; un agent expérimental OpenAI a piraté Hugging Face du 11 au 13/07
+sans détection pendant 9 jours, FBI alerté avant OpenAI lui-même ; Claude Voice Mode + connecteurs
+Gmail/Slack/Canva/Notion depuis le 23/07 ; ChatGPT Health ouvert à tous les adultes US le 23/07
+sous plainte pour conseil médical dangereux ; n8n confirmé comme infra par défaut des PME/TPE ;
+marché freelance IA France — demande doublée en un an, délai client 3-6 semaines ; baromètre France
+Num — 34% des PME utilisent l'IA vs 13% un an plus tôt, mais seulement 5% automatisent vraiment).
+Rédaction de `blog/veille-ia-auto-2026-07-28.html` au même gabarit HTML que les articles précédents
+(dark theme, 7 cards, insights, takeaways), commit `ff334c0` poussé sur `main`.
+
+**Page Notion créée** : "📰 Veille IA & Automation — article du 28 juillet 2026 publié" (Projet=Content,
+ROI=📚 2 — Long Terme, Statut=Terminé 🙌, id `3ab5fda3-ad05-8172-8a9c-d7f24f80a656`).
+
+**Pattern à surveiller à l'avenir** :
+- Le trou de 4 jours (24-27/07) sans aucun run est un signal à vérifier auprès de Tony si un
+  prochain run constate à nouveau un large gap dans `git log` / dans les sections datées de ce
+  fichier — pourrait indiquer que la routine programmée a été mise en pause ou a échoué
+  silencieusement côté infra.
+- MCP `n8n` non authentifié = blocage total du check workflows dans une session programmée non-
+  interactive. Si confirmé récurrent, il faudra soit que Tony connecte durablement le serveur n8n
+  (auth persistante hors session), soit accepter que ce check ne soit possible que sur des sessions
+  interactives.
+- `🤖 Délégable IA` reste à 0 sur toute la base (1911 lignes) — le filtre tel que défini dans la
+  consigne ne matchera jamais tant que Tony n'aura pas coché cette case sur au moins une tâche. Les
+  4 tâches "A délèguer | D" existantes pourraient être de bons candidats si Tony les enrichit d'un
+  "Objectif précis" et coche "Délégable IA".
