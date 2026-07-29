@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="assets/gsap.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #060606; }
+  #root { position: relative; width: 1080px; height: 1920px; background: #060606; overflow: hidden; }
+  .test-text {
+    position: absolute; top: 800px; left: 60px; width: 960px;
+    color: #fff; font-family: Inter, sans-serif; font-weight: 700;
+    font-size: 64px; text-align: center; text-transform: uppercase;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000;
+  }
+  .hot { color: #FFE600; text-shadow: 0 0 18px rgba(255,230,0,0.9); }
+</style>
+</head>
+<body>
+  <div id="root" data-composition-id="testenv" data-start="0" data-width="1080" data-height="1920" data-duration="2">
+    <div class="test-text">TEST <span class="hot">RENDU</span> TEXTE</div>
+  </div>
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+    tl.to({}, { duration: 2 });
+    window.__timelines["testenv"] = tl;
+  </script>
+</body>
+</html>
