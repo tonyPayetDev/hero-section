@@ -1010,3 +1010,78 @@ ROI=📚 2 — Long Terme, Statut=Terminé 🙌, id `3ab5fda3-ad05-8172-8a9c-d7f
   consigne ne matchera jamais tant que Tony n'aura pas coché cette case sur au moins une tâche. Les
   4 tâches "A délèguer | D" existantes pourraient être de bons candidats si Tony les enrichit d'un
   "Objectif précis" et coche "Délégable IA".
+
+## 2026-07-29
+
+**Contexte** : MCP `n8n` bien authentifié aujourd'hui (contrairement au 07-28). Requête Notion SQL
+confirmée : 0 page `🤖 Délégable IA` = vrai hors statut "Terminé 🙌" — queue toujours vide.
+`search_executions(status:["error"])` depuis 2026-07-28T00:00 → 3 résultats, tous non actionnables
+après lecture complète (`includeData: true`) :
+1. `U0U6yjMp88h9cH2A` (Auto-DM commentaires IG) — nœud "Lire mapping ressources" (Google Sheets) :
+   503 "Service currently unavailable", panne transitoire Google API, pas un bug de code.
+2. `bwhzurz3ydY7MWEW` (nouveau workflow "Lead - Feed Insta regenere ChatGPT", créé par Tony le jour
+   même) — test manuel (`Limit (test 1 lead)`), échec `insufficient_quota` OpenAI (compte "OpenAi
+   account TP"). Workflow encore `active: false`, en cours de construction par Tony lui-même — pas
+   à corriger par l'IA sans le casser en plein développement.
+3. `6InNNRjMJxiteEkV` (webhook `/webhook/tts-gen`) — même quota OpenAI épuisé, mais payload
+   `user-agent: curl`/`content-length: 0` = test manuel (pattern déjà documenté 10/07-23/07), pas
+   de la prod.
+Vérifié que les 2 échecs OpenAI se sont auto-résolus dans la minute/heure suivante (exécutions
+68244, 68248, 68372 en succès) — le compte n'est pas réellement à sec comme lors des pannes du
+07-14/07-16 (celles-là duraient des heures), donc pas de nouveau fix `onError: continueErrorOutput`
+nécessaire aujourd'hui.
+
+**Découverte (le vrai "1%" du jour)** : en auditant la cadence du blog "veille IA & automatisation"
+(2 articles pour la même date parue le 28/07 — `veille-ia-auto-2026-07-28.html` et son `-v2`,
+confirmé intentionnel via le message de commit `3293619` : "Different angle from v1", pas un bug),
+j'ai découvert que **le dossier `blog/` n'a jamais été déployé nulle part depuis le début de la
+série (premier article le 20/06/2026)** : aucun `Dockerfile`, aucune page d'index listant les
+articles, et `grep -r "veille-ia-auto"` sur tout le repo ne remonte que le fichier mémoire lui-même
+— zéro lien entrant. Confirmé aussi : pas de mapping "blog" dans `docs/freelance-sites-mapping.md`,
+et `git log --diff-filter=A -- blog/` ne montre jamais de `Dockerfile`. Un `WebFetch` direct sur
+`https://automatisationboost.com` a été bloqué (403 Cloudflare) — impossible de vérifier depuis ce
+sandbox si le vrai site (probablement dans le submodule `automationboost/`, non checké out dans ce
+clone, gitlink `01058d31c...`) a sa propre page blog indépendante ; mais le dossier `blog/` À LA
+RACINE de ce repo, lui, n'a jamais été publié. Résultat concret : **16 articles rédigés sur 5+
+semaines dorment sur GitHub sans avoir jamais été vus par un visiteur ni indexés par un moteur de
+recherche**.
+
+**Action prise** : créé `blog/index.html` (thème sombre cohérent avec les articles existants,
+variables CSS reprises de `veille-ia-auto-2026-07-28.html`) qui liste et lie chronologiquement les
+16 articles (le plus récent en premier, y compris les deux éditions du 23/07 et du 28/07). Commit
+`e61616c`, poussé sur `origin/main` (après un `git fetch origin main` + `git checkout -B main
+origin/main` car HEAD était détaché — `git branch -vv` affichait initialement `origin/main` en
+retard de 2 commits sur HEAD, mais un simple fetch a confirmé qu'ils étaient déjà synchronisés,
+juste un ref local pas rafraîchi ; pattern déjà documenté le 07-10/07-15, à revérifier systématiquement
+avant de conclure à un problème de synchronisation).
+
+**Non fait, documenté pour Tony** : le déploiement Coolify réel. Tenté d'invoquer le skill
+`/deploy-to-coolify` (mentionné dans CLAUDE.md) — **indisponible dans cette session** : le
+répertoire `.claude/skills-pending/deploy-to-coolify/` existe (repéré par `find`) mais n'est ni
+listé par le `Skill` tool ni accessible en lecture directe (`ls`/`stat` échouent dessus alors que
+`find` le voit — probablement un skill en attente d'activation, délibérément isolé). Sans ce skill,
+aucun identifiant/API Coolify n'était disponible pour créer l'app moi-même. Documenté dans la page
+Notion : Tony doit lancer `/deploy-to-coolify blog` manuellement pour publier ce contenu en ligne.
+
+**Page Notion créée** : "📰 Blog veille IA — page d'index créée (16 articles jamais publiés
+découverts)" (id `3ac5fda3-ad05-8120-8fd7-d887ccce4f9f`, Projet=Content, ROI=🔥5, Délégable IA=NO,
+Statut=Terminé 🙌).
+
+**Pattern à surveiller à l'avenir** :
+- Le dossier `blog/` créer par la routine "veille IA" continuera de produire des articles orphelins
+  tant que Tony n'a pas exécuté `/deploy-to-coolify blog` au moins une fois — si un prochain run
+  constate encore 0 lien entrant après cette date, vérifier d'abord si le déploiement a eu lieu
+  (chercher un `Dockerfile` dans `blog/` ou une entrée dans `docs/freelance-sites-mapping.md`) avant
+  de re-signaler le même problème.
+- Le skill `deploy-to-coolify` peut être absent/non-invocable dans une session automatisée
+  programmée (`.claude/skills-pending/`, visible par `find` mais pas par `ls`/`stat` ni par le
+  `Skill` tool) — dans ce cas, ne pas tenter de deviner l'API Coolify à l'aveugle ; préparer le
+  code et documenter pour exécution manuelle, comme prévu par la consigne.
+- Il existe un submodule `automationboost` (gitlink `01058d31c...`) jamais checké out dans ce clone
+  — pourrait contenir le vrai site automatisationboost.com avec sa propre structure de blog,
+  distincte du dossier `blog/` à la racine. `WebFetch` vers `automatisationboost.com` est bloqué par
+  Cloudflare (403) depuis ce sandbox — si un accès web différent devient disponible un jour, vérifier
+  si ce submodule a déjà sa propre solution de blog avant de dupliquer le travail.
+- Repérer aussi le dossier `blog-staging/` (un seul fichier, `veille-ia-auto-2026-07-20.html`, jamais
+  documenté dans cette mémoire) — semble être une zone de brouillon distincte de `blog/`, à
+  investiguer si un futur run a du temps disponible et aucun autre signal plus fort.
