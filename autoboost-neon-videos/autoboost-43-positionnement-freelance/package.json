@@ -1,0 +1,13 @@
+{
+  "name": "autoboost-41-tab-mind",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes preview",
+    "check": "npx --yes hyperframes validate public --json && npx --yes hyperframes inspect public",
+    "render": "npx --yes hyperframes render"
+  },
+  "dependencies": {
+    "hyperframes": "^0.7.68"
+  }
+}
