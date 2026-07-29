@@ -1,0 +1,5 @@
+node_modules/
+# Scratch render output (frame captures, work dirs) — regenerable via `hyperframes render`.
+# The canonical deliverable lives in public/renders/.
+# Anchored to project root only — do NOT match public/renders/ (the kept final MP4s).
+/renders/
