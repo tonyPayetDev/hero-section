@@ -445,6 +445,16 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
 
 ## Sound design (BGM + SFX)
 
+- **Palette partagée par défaut (depuis ~2026-07-19, pas encore documentée ailleurs dans ce
+  fichier avant le 2026-08-03) : `autoboost-neon-videos/_shared/`.** `_shared/bgm/flowers_horror.mp3`
+  (musique de marque par défaut, -12.4 LUFS → `data-volume="0.05"`, voir `_shared/bgm/README.md` —
+  ne pas confondre avec l'ancien `bgm-ascension.mp3` encore présent dans certains projets plus
+  anciens comme référence/exemple, -19.1 LUFS → `0.09`, 7 dB d'écart) et
+  `_shared/sfx-palette/v1/` (12 fichiers + `README.md` documentant le rôle/volume de chacun :
+  hook, transition, chiffre, cascade, validation, CTA — voir ce README pour le mapping complet
+  plutôt que de réinventer un sound design par événement). Un nouveau projet scaffoldé à partir
+  d'un projet existant hérite déjà souvent de ces fichiers dans `public/assets/` (copiés à
+  l'étape 2-3) — vérifier leur présence avant de retélécharger/regénérer quoi que ce soit.
 - **Ne jamais synthétiser le sound design par défaut (ffmpeg sinusoïdes/bruit filtré)** si une
   vraie source libre de droits est accessible — un pad/whoosh/chime synthétisé "fait maison" est
   perceptiblement moins bon qu'une vraie piste, même courte. Ne l'utiliser qu'en dernier recours
