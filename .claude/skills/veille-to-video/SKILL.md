@@ -108,6 +108,17 @@ plus lent que d'habitude (~3.28 mots/seconde pour 119 mots → 36.3s, contre les
 documentés ailleurs) — la variabilité du débit TTS entre générations reste réelle, ne pas supposer
 un débit fixe pour calculer le nombre de mots cible à l'étape 1.
 
+**Piège vérifié (2026-08-04, autoboost-47 RTK) : ne pas supposer qu'un credential OpenAI alternatif
+listé par `list_credentials({type:"openAiApi"})` résoudra le problème de quota ci-dessus.** Sur cette
+session, les 3 credentials OpenAI disponibles ont TOUS échoué pour un appel Whisper direct (construit en
+mini-workflow `Manual Trigger → HTTP Request GET (binaire) → HTTP Request POST whisper-1`, en dehors du
+pipeline `avatar-webhook-v2`) : `"OpenAi account TP"` → `"You have no credits remaining"`, `"OpenAi
+account 3"` et `"OpenAi account 2 DSI TAF"` → `"Incorrect API key provided"` (401) chacun. Tester les
+3 a coûté ~1 minute mais n'a rien débloqué. Sauf preuve du contraire dans une session future (crédits
+rechargés / nouvelle clé ajoutée par Tony), traiter la transcription Whisper comme indisponible par
+défaut sur cette instance n8n et passer directement au fallback d'estimation manuelle ci-dessus plutôt
+que de perdre du temps à tester chaque credential.
+
 ### Étape 5 — Construire `public/index.html` (HyperFrames)
 
 - Racine explicite `width:1080px; height:1920px;` et `data-duration` correspondant au plan final vidéo/audio.
@@ -605,6 +616,45 @@ en dernier au timeline et gagne l'ordre de rendu sur la fenêtre de recouvrement
 une pulsation `opacity` concurrente — ne déplacer que son hide/show, pas besoin de toucher aux deux
 autres. Toujours vérifier avec une frame extraite juste après le début du broll (pas seulement au
 début/à la fin de la fenêtre) pour attraper ce bug, `validate`/`inspect` ne le détectent jamais.
+
+**Piège vérifié (2026-08-04, autoboost-47 RTK) : même en suivant le fix ci-dessus à la lettre — deux
+segments de pulsation BORNÉS (un avant `BROLL_START`, un après `BROLL_END`, aucun tween continu qui
+traverse la coupure) — l'anneau peut quand même rester visible pendant tout le broll.** Cause : le
+segment 1 (`repeat:N, yoyo:true`) a un nombre de "legs" = `N+1` ; si ce nombre est IMPAIR, le dernier
+leg va dans le sens "forward" (vers `opacity:0.8`) et non "retour" (vers `opacity:0`) — l'anneau finit
+donc visible à la fin du segment, et RIEN ne le ramène à 0 avant `BROLL_END` puisqu'aucun autre tween
+ne touche sa propriété `opacity` entre les deux segments. Le calcul `repeat = floor(fenêtre/durée) - 1`
+recommandé plus haut ne garantit PAS non plus la parité — un rendu complet (confirmé par frame extraite
+à `t=16.5s` et `t=20.5s`, en plein milieu du broll) a montré le cercle jaune vide qui chevauche
+`.diag-clean`/`.diag-badge`. **Fix définitif, plus simple et plus robuste que d'ajuster N1/N2 pour
+tomber sur la bonne parité : ajouter un troisième tween hide/show explicite pour `#avatar-ring`, APRÈS
+les deux segments de pulsation dans le script** (même principe que le fix "ajouté en dernier gagne" déjà
+documenté, mais appliqué en plus des segments bornés, pas à la place) :
+```js
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
+```
+Ce hide/show n'a pas besoin d'être parfaitement calculé (pas de N1/N2 à faire correspondre) : comme il
+est ajouté en dernier, il gagne systématiquement l'affichage sur sa propre fenêtre de 0.25s à chaque
+borne, indépendamment de l'état où la pulsation s'est arrêtée. Toujours vérifier avec une frame en
+PLEIN MILIEU de la fenêtre broll (pas seulement juste après le début) — ce bug particulier ne se voit
+pas forcément sur la toute première frame post-coupure si le segment 1 finit encore proche de 0.
+
+**Piège vérifié (2026-08-04, autoboost-47 RTK) : `avatar-webhook-v2` peut dépasser largement la
+fenêtre "1 à 4 minutes" documentée plus haut — ce run a pris ~7min40 côté WaveSpeed
+(`timings.inference: 458831` ms) alors que le workflow abandonne après 6 tentatives de poll (~120s) et
+répond `success:false` / `Respond Error` (PAS un timeout client, un vrai abandon serveur documenté par
+le node `Max Attempts?`).** Le job WaveSpeed continue pourtant de tourner en arrière-plan après cet
+abandon. Récupération : noter le `id` de prédiction renvoyé par le premier node `Qwen3 Voice Clone`
+(visible dans les données d'exécution du run échoué, `get_execution` avec `includeData:true`), puis
+créer un mini-workflow ponctuel `Manual Trigger → HTTP Request` (GET sur
+`https://api.wavespeed.ai/api/v3/predictions/<id>/result`, `authentication: genericCredentialType`,
+`genericAuthType: httpHeaderAuth`, credential `WaveSpeed` déjà connectée — ne jamais recopier la clé en
+dur dans les paramètres du node) et le réexécuter (`execute_workflow`) toutes les ~20-30s jusqu'à
+`status:"completed"` avec un `outputs[0]` non vide (URL CloudFront). Une fois l'URL obtenue, télécharger
+l'audio via un second mini-workflow (`HTTP Request` binaire → `Code` base64) comme d'habitude. Ne
+JAMAIS relancer `avatar-webhook-v2` depuis le début après un abandon — ça soumet un NOUVEAU job
+WaveSpeed et gaspille le travail déjà fait sur le premier.
 
 **Vidéo avatar plus courte que la comp** : si `avatar-keyed.mp4` fait moins que `data-duration`
 (fréquent, l'asset source dure souvent ~17s), le loop-étendre AVANT de référencer le fichier :
