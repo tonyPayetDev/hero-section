@@ -413,6 +413,11 @@ tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",rep
 tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:5,ease:"none"},0);
 tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:4,ease:"none"},BROLL_END);
 tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},31.00);
+/* Piège documenté : la pulsation ring ci-dessus peut se figer visible (opacity 0.8) en fin de
+   segment, avant même BROLL_START — sans tween explicite ensuite, le ring flotte, vide, sur le
+   broll. Ce hide/show, ajouté APRÈS les tweens de pulsation, gagne sur leur fenêtre de recouvrement. */
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
 
 tl.totalDuration(DUR);
 window.__timelines[compId]=tl;
