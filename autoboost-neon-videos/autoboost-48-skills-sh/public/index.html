@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.6;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;}
+.mono .lock{color:#060606;background:var(--accent-yellow);border-radius:5px;padding:1px 6px;font-weight:700;}
+.verdict{position:absolute;left:90px;right:90px;top:830px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- CHIPS (scene 2 + scene 4) ---------- */
+.order{position:absolute;left:90px;right:90px;top:800px;display:flex;gap:18px;justify-content:center;}
+.ochip{padding:16px 26px;border-radius:16px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:28px;font-weight:800;color:#cfd2da;opacity:0;white-space:nowrap;}
+.ochip .n{color:var(--accent-yellow);margin-right:10px;}
+
+/* ---------- LIGNES OK/KO (scene 3) ---------- */
+.moves{position:absolute;left:80px;right:80px;top:470px;display:flex;flex-direction:column;gap:20px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:24px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:34px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mv .strike{position:absolute;left:30px;right:30px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+
+/* ---------- ÉTAPES (scene 4) ---------- */
+.refs{position:absolute;left:70px;right:70px;top:470px;display:flex;flex-direction:column;gap:22px;}
+.ref{display:flex;align-items:center;gap:24px;padding:26px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.ref .at{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:38px;font-weight:900;
+  color:var(--accent-yellow);width:96px;flex:0 0 96px;text-align:center;}
+.ref .arw{color:var(--violet);font-size:34px;font-weight:900;}
+.ref .what{font-size:36px;font-weight:800;color:#fff;}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- CTA (scene 5) ---------- */
+.limit{position:absolute;left:150px;right:150px;top:400px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+/* 116px : "SKILLZ" fait 6 caractères, tient large sans déborder. */
+.cta-word{position:absolute;left:0;right:0;top:540px;text-align:center;font-size:116px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:710px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:850px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de public/assets/voice.mp3
+     (ffmpeg silencedetect=noise=-40dB:d=0.18 -> 10 groupes de parole).
+     Coupes de scène posées DANS les silences : 5.68 / 12.40 / 18.95 / 20.75 / 23.19 -->
+<div id="root" data-composition-id="autoboost48skillssh" data-start="0" data-width="1080" data-height="1920" data-duration="29.14">
+
+  <!-- SCENE 1 — HOOK INVERSE : ne va JAMAIS sur ce site (0.40 -> 5.39) -->
+  <div class="scene scene-1" data-s="0" data-d="5.68">
+    <div class="pad">
+      <div class="kicker" data-role="k1">À éviter absolument</div>
+      <div class="title" data-role="t1">Ne va<br><span class="o">JAMAIS</span> sur ce site</div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">navigateur</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">https://skills.sh</div>
+        <div class="lit" data-role="pl2">600 000+ skills gratuites…</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">…si tu veux des agents nuls.</div>
+  </div>
+
+  <!-- SCENE 2 — LE SITE : skills.sh, 600 000+ skills gratuites (5.87 -> 12.19) -->
+  <div class="scene scene-2" data-s="5.68" data-d="6.72">
+    <div class="pad">
+      <div class="kicker" data-role="k2">Le site</div>
+      <div class="title" data-role="t2" style="font-size:80px;"><span class="y">skills.sh</span></div>
+    </div>
+    <div class="card" data-role="c2" style="top:450px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">skills.sh</span></div>
+      <div class="mono">
+        <div class="lit" data-role="pw1" style="font-size:52px;"><span class="lock">600 000+</span> skills</div>
+        <div class="dim" data-role="pw2">gratuites · open source</div>
+      </div>
+    </div>
+    <div class="order">
+      <div class="ochip" data-role="o1">CLAUDE CODE</div>
+      <div class="ochip" data-role="o2">CURSOR</div>
+      <div class="ochip" data-role="o3">AGENTS IA</div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — UNE SKILL C'EST QUOI : mode d'emploi auto-chargé (12.61 -> 18.75) -->
+  <div class="scene scene-3" data-s="12.40" data-d="6.55">
+    <div class="pad">
+      <div class="kicker" data-role="k3">Une skill, c'est quoi ?</div>
+      <div class="title" data-role="t3" style="font-size:72px;">Un <span class="y">mode d'emploi</span><br>chargé tout seul</div>
+    </div>
+    <div class="moves">
+      <div class="mv ok" data-role="mv1">
+        <span class="tag">&#10003;</span>L'agent charge la skill
+      </div>
+      <div class="mv ko" data-role="mv2">
+        <span class="tag">&#10007;</span>Il se plante
+        <span class="strike" data-role="sk2" data-layout-allow-occlusion="true"></span>
+      </div>
+      <div class="mv ko" data-role="mv3">
+        <span class="tag">&#10007;</span>Il répète ses erreurs
+        <span class="strike" data-role="sk3" data-layout-allow-occlusion="true"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROLL — respiration (code) pendant « tu cherches, tu copies, tu colles » (18.95 -> 20.75) -->
+  <video id="broll" class="broll-vid" src="assets/broll-code.mp4" data-start="18.95" data-duration="1.80" muted playsinline></video>
+  <div class="scene scene-broll" data-s="18.95" data-d="1.80"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — LES ÉTAPES : cherche, copie, colle, zéro config (20.75 -> 22.98) -->
+  <div class="scene scene-4" data-s="20.75" data-d="2.44">
+    <div class="pad">
+      <div class="kicker" data-role="k4" style="color:var(--accent-yellow);">Zéro config</div>
+      <div class="title" data-role="t4" style="font-size:72px;">Cherche · Copie<br><span class="y">Colle</span></div>
+    </div>
+    <div class="refs">
+      <div class="ref" data-role="r1"><span class="at">1</span><span class="arw">&#8594;</span><span class="what">Cherche la skill</span></div>
+      <div class="ref" data-role="r2"><span class="at">2</span><span class="arw">&#8594;</span><span class="what">Copie / colle dans ton projet</span></div>
+      <div class="ref" data-role="r3"><span class="at">3</span><span class="arw">&#8594;</span><span class="what">Zéro configuration</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — RÉSULTAT + CTA (23.39 -> 28.79) -->
+  <div class="scene scene-5" data-s="23.19" data-d="5.95">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Le résultat</div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>fiabilité de tes agents</span><span><b>2×</b> sans changer de modèle</span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">SKILLZ</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">SKILLZ</span><br>je t'envoie le lien direct</div>
+    <div class="cta-follow" data-role="ctafollow">— gratuit, si tu me suis</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="29.14" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.14"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.14"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.14"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="29.07" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="29.14" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1). Les zoom démarrent ~1.2s AVANT la coupe
+       pour que le pic tombe pile dessus (coupes : 5.68 / 12.40 / 18.95 / 20.75 / 23.19). -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-notify.mp3"      data-start="3.00"  data-volume="0.16"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="4.48"  data-volume="0.17"></audio>
+  <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="5.80"  data-volume="0.15"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="5.95"  data-volume="0.18"></audio>
+  <audio id="sfx-site"      src="assets/sfx-notify.mp3"      data-start="6.85"  data-volume="0.16"></audio>
+  <audio id="sfx-num"       src="assets/sfx-notify.mp3"      data-start="8.15"  data-volume="0.16"></audio>
+  <audio id="sfx-o1"        src="assets/sfx-click-soft.mp3"  data-start="10.20" data-volume="0.13"></audio>
+  <audio id="sfx-o2"        src="assets/sfx-click-soft.mp3"  data-start="10.45" data-volume="0.13"></audio>
+  <audio id="sfx-o3"        src="assets/sfx-click-soft.mp3"  data-start="10.70" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="11.20" data-volume="0.17"></audio>
+  <audio id="sfx-click-2"   src="assets/sfx-click.mp3"       data-start="12.55" data-volume="0.18"></audio>
+  <audio id="sfx-ok"        src="assets/sfx-confirm.mp3"     data-start="13.20" data-volume="0.18"></audio>
+  <audio id="sfx-ko-1"      src="assets/sfx-click-soft.mp3"  data-start="16.45" data-volume="0.13"></audio>
+  <audio id="sfx-strike-1"  src="assets/sfx-whoosh-lat.mp3"  data-start="17.10" data-volume="0.14"></audio>
+  <audio id="sfx-ko-2"      src="assets/sfx-click-soft.mp3"  data-start="17.20" data-volume="0.13"></audio>
+  <audio id="sfx-strike-2"  src="assets/sfx-whoosh-lat.mp3"  data-start="17.95" data-volume="0.14"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="17.75" data-volume="0.19"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="19.55" data-volume="0.17"></audio>
+  <audio id="sfx-click-3"   src="assets/sfx-click.mp3"       data-start="20.85" data-volume="0.18"></audio>
+  <audio id="sfx-r1"        src="assets/sfx-click-soft.mp3"  data-start="21.05" data-volume="0.13"></audio>
+  <audio id="sfx-r2"        src="assets/sfx-click-soft.mp3"  data-start="21.30" data-volume="0.13"></audio>
+  <audio id="sfx-r3"        src="assets/sfx-click-soft.mp3"  data-start="21.55" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-zoom.mp3"        data-start="21.99" data-volume="0.19"></audio>
+  <audio id="sfx-result"    src="assets/sfx-notify.mp3"      data-start="23.60" data-volume="0.16"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="26.50" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="26.50" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="27.30" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost48skillssh";
+const DUR=29.14;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade (data-s/data-d) ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : hook inverse ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.05);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.35);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.80);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},3.00);
+
+/* ---- scene 2 : skills.sh + 600k + chips ---- */
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},5.80);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},5.95);
+tl.fromTo(R("c2"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},8.10);
+tl.fromTo(R("pw1"),{opacity:0},{opacity:1,duration:0.35},8.35);
+tl.fromTo(R("pw2"),{opacity:0},{opacity:1,duration:0.35},9.00);
+tl.fromTo(R("o1"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},10.20);
+tl.fromTo(R("o2"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},10.45);
+tl.fromTo(R("o3"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},10.70);
+
+/* ---- scene 3 : def + le bon comportement puis les vieux problèmes barrés ---- */
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},12.55);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},12.75);
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},13.20);
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},16.45);
+tl.fromTo(R("mv3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},17.20);
+tl.fromTo(R("sk2"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},17.10);
+tl.fromTo(R("sk3"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},17.95);
+
+/* ---- scene 4 : les 3 étapes ---- */
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},20.85);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},20.95);
+tl.fromTo(R("r1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.35,ease:"power3.out"},21.05);
+tl.fromTo(R("r2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.35,ease:"power3.out"},21.30);
+tl.fromTo(R("r3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.35,ease:"power3.out"},21.55);
+
+/* ---- scene 5 : résultat + CTA ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},23.35);
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},23.35);
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:0.92,duration:1.1,ease:"power2.out"},23.60);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},26.50);
+/* pulse CTA : fenêtre 27.0 -> 29.14 = 2.14s / 0.5 = 4.3 -> repeat 3 */
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},27.00);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},27.30);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},28.30);
+
+/* ---- CAPTIONS mot-à-mot (timings estimés, transcripts Whisper vides) ---- */
+const caps=[
+ [0.42,"NE VA JAMAIS","hot:JAMAIS"],
+ [1.35,"SUR CE SITE",""],
+ [2.35,"SI TU VEUX",""],
+ [3.05,"DES AGENTS IA NULS","ohot:NULS"],
+ [4.15,"ET PERDRE DU TEMPS","ohot:PERDRE"],
+ [5.90,"CE SITE S'APPELLE",""],
+ [6.85,"SKILLS.SH","vhot:SKILLS.SH"],
+ [8.25,"600 000 SKILLS","hot:600 000"],
+ [9.35,"GRATUITES","hot:GRATUITES"],
+ [10.25,"CLAUDE CODE, CURSOR",""],
+ [11.30,"TOUS TES AGENTS","vhot:AGENTS"],
+ [12.65,"UNE SKILL","vhot:SKILL"],
+ [13.55,"UN MODE D'EMPLOI","hot:MODE D'EMPLOI"],
+ [14.55,"QUE L'AGENT CHARGE","vhot:CHARGE"],
+ [15.45,"TOUT SEUL","hot:TOUT SEUL"],
+ [16.45,"IL ARRÊTE",""],
+ [17.10,"DE SE PLANTER","ohot:PLANTER"],
+ [17.95,"PLUS D'ERREURS","ohot:PLUS"],
+ [19.30,"TU CHERCHES",""],
+ [19.80,"TU COPIES",""],
+ [20.25,"TU COLLES","hot:COLLES"],
+ [20.90,"DANS TON PROJET",""],
+ [21.75,"ZÉRO CONFIG","hot:ZÉRO"],
+ [23.45,"RÉSULTAT",""],
+ [24.05,"DES AGENTS FIABLES","hot:FIABLES"],
+ [25.15,"SANS CHANGER",""],
+ [25.65,"DE MODÈLE","vhot:MODÈLE"],
+ [26.60,"COMMENTE LE MOT",""],
+ [27.25,"SKILLZ","hot:SKILLZ"],
+ [27.95,"JE T'ENVOIE LE LIEN","ohot:LE LIEN"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:29.13;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail : 29.14/1.05 = 27.7 -> repeat 27 ; décalée : (29.14-0.52)/1.05 = 27.3 -> repeat 26 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:27,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:26,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=18.95, BROLL_END=20.75;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 18.95/0.5 = 37.9 -> repeat 37 */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:37,yoyo:true},0);
+/* ring après broll : (29.14-20.75)/0.5 = 16.8 -> repeat 16 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:16,yoyo:true},BROLL_END);
+/* orbit : 18.95/2.2 = 8.6 -> repeat 7 ; puis (29.14-20.75)/2.2 = 3.8 -> repeat 2 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:7,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:2,ease:"none"},BROLL_END);
+/* Hide/show explicite de #avatar-ring AJOUTÉ EN DERNIER (gagne l'ordre de rendu sur la fenêtre broll,
+   fix définitif du cercle jaune flottant — cf. SKILL.md 2026-08-04). */
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},26.50);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 / 10.36 / 18.38 / 26.40.
+   Aucun dans la fenêtre broll (18.95-20.75) : les 4 sont gardés.
+   LEAD 0.12 : le fondu doit CULMINER sur le drop. */
+var LEAD = 0.12;
+[2.34, 10.36, 18.38, 26.40].forEach(function(t){
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+/* Le drop violet à 18.38 déborde dans la fenêtre broll (orbit-v encore à ~0.9 à 18.95).
+   Hide explicite AJOUTÉ EN DERNIER pour qu'il gagne l'ordre de rendu et qu'aucun arc violet
+   ne flotte sur le broll (même logique que le hide/show de #avatar-ring). */
+tl.to("#avatar-orbit-v",{opacity:0,duration:0.2,ease:"power2.out"},BROLL_START);
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
