@@ -334,6 +334,14 @@ Toujours vérifier où le fichier est réellement apparu (`find . -iname "*.mp4"
 avant de conclure à un échec, puis le déplacer manuellement vers `public/renders/<nom-final>.mp4`
 pour qu'il soit conservé (le `/renders/` racine, lui, est ignoré par git).
 
+**Précision (2026-08-05, autoboost-49, `hyperframes@0.7.94`) : la vraie option courte est `-o` (long
+`--output`), PAS `--out`.** `--out` échoue immédiatement avec `Unknown flag: --out` sur cette version —
+ce n'est plus un échec silencieux comme documenté ci-dessus sur 0.7.5, mais une vraie erreur explicite.
+`hyperframes render public -o public/renders/<nom>.mp4` a bien écrit exactement au chemin demandé,
+aucun besoin du contournement "chercher où le fichier est apparu". Essayer `-o`/`--output` en premier ;
+ne retomber sur la recherche `find` que si le CLI installé est une vieille version qui accepte encore
+`--out` sans le respecter.
+
 **Chaque `<audio>` du composition DOIT avoir un `id` unique, même les SFX/BGM sans besoin
 d'y référer ailleurs.** Le renderer HyperFrames (confirmé sur `hyperframes@0.7.5`) lève une erreur
 de lint bloquante en pratique (`media_missing_id`) et **rend cet élément silencieux** si `id` est
@@ -655,6 +663,21 @@ dur dans les paramètres du node) et le réexécuter (`execute_workflow`) toutes
 l'audio via un second mini-workflow (`HTTP Request` binaire → `Code` base64) comme d'habitude. Ne
 JAMAIS relancer `avatar-webhook-v2` depuis le début après un abandon — ça soumet un NOUVEAU job
 WaveSpeed et gaspille le travail déjà fait sur le premier.
+
+**Meilleure méthode que le curl documenté ci-dessus quand `n7n.automatisationboost.com` est bloqué
+côté shell (vérifié 2026-08-05, autoboost-49 Générateur vidéos produit) : appeler `avatar-webhook-v2`
+directement via le MCP n8n plutôt que par un curl POST sur l'URL publique du webhook.** `search_workflows({query:"Avatar"})`
+retrouve le workflow actif `[Avatar AI] Webhook v2 - Fonctionnel` (id `S85QlXjhIO6nBvzY`, un seul
+trigger `n8n-nodes-base.webhook` sur `avatar-webhook-v2`) ; `execute_workflow({workflowId:
+"S85QlXjhIO6nBvzY", executionMode:"production", inputs:{type:"webhook", webhookData:{method:"POST",
+body:{voixUrl, avatarUrl, description}}}})` déclenche exactement la même exécution que le curl, mais
+renvoie un `executionId` immédiatement (pas d'attente bloquante côté outil) — il suffit ensuite de
+poller `get_execution({workflowId, executionId, includeData:false})` jusqu'à `status:"success"` (ou
+`"error"`), sans jamais se soucier d'un timeout client puisqu'il n'y a pas de connexion HTTP à tenir
+ouverte. Dans cette session, l'exécution a réussi en ~44s (bien dans la fenêtre 1-4min). Cette méthode
+évite tout le contournement "chercher l'exécution après un timeout curl" documenté plus haut — à
+préférer par défaut, ne retomber sur le curl direct que si le webhook n'est pas retrouvable via
+`search_workflows`.
 
 **Vidéo avatar plus courte que la comp** : si `avatar-keyed.mp4` fait moins que `data-duration`
 (fréquent, l'asset source dure souvent ~17s), le loop-étendre AVANT de référencer le fichier :
