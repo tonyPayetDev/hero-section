@@ -108,6 +108,17 @@ plus lent que d'habitude (~3.28 mots/seconde pour 119 mots → 36.3s, contre les
 documentés ailleurs) — la variabilité du débit TTS entre générations reste réelle, ne pas supposer
 un débit fixe pour calculer le nombre de mots cible à l'étape 1.
 
+**Technique validée (2026-08-06, autoboost-51 Claude Code agents parallèles) : si le MP3 généré
+dépasse la fenêtre 25-35s malgré un script déjà dans la fourchette de mots visée, corriger avec
+`ffmpeg -i voice.mp3 -filter:a "atempo=X" -c:a libmp3lame -q:a 2 voice-fast.mp3`** plutôt que de
+régénérer la narration ou de raccourcir le script après coup. `atempo` accélère sans changer la
+hauteur de voix (contrairement à un simple resampling) et reste naturel jusqu'à ~15-20% de
+speedup. Calculer `X = durée_mesurée / durée_cible` (viser confortablement sous 35s, ex. 34s pour
+garder une marge) — ici un MP3 à 38.976s (débit 3.46 mots/s, en dessous de la plage 3.7-4.1
+documentée plus haut) corrigé avec `atempo=1.1465` a donné 34.008s (débit effectif ~3.97 mots/s,
+en plein dans la plage). Toujours re-mesurer la durée réelle après coup (`ffprobe`) plutôt que de
+faire confiance au calcul théorique — l'arrondi d'encodage MP3 dérive légèrement.
+
 **Piège vérifié (2026-08-04, autoboost-47 RTK) : ne pas supposer qu'un credential OpenAI alternatif
 listé par `list_credentials({type:"openAiApi"})` résoudra le problème de quota ci-dessus.** Sur cette
 session, les 3 credentials OpenAI disponibles ont TOUS échoué pour un appel Whisper direct (construit en
