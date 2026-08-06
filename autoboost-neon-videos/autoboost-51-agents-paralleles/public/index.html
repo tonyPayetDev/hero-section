@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-4{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-broll{height:1920px;background:#050505;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:76px;line-height:1.06;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- CARTES / TERMINAL ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:28px;line-height:1.68;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;} .mono .bad{color:var(--bad);} .mono .good{color:var(--good);}
+.verdict{position:absolute;left:90px;right:90px;top:900px;text-align:center;font-size:40px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- CHIPS (scene 2) ---------- */
+.order{position:absolute;left:70px;right:70px;top:520px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.ochip{padding:16px 22px;border-radius:16px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:30px;font-weight:900;color:var(--accent-yellow);opacity:0;white-space:nowrap;}
+
+/* ---------- DIAGRAM (broll fullscreen scene) ---------- */
+#diagram{position:absolute;top:0;left:0;width:1080px;height:1920px;opacity:0;z-index:1;
+  display:flex;flex-direction:column;align-items:center;}
+.diag-title{position:absolute;left:80px;right:80px;top:200px;text-align:center;font-size:50px;font-weight:900;
+  color:#fff;letter-spacing:.5px;opacity:0;line-height:1.15;}
+.diag-title b{color:var(--accent-yellow);}
+.diag-sources{position:absolute;left:80px;right:80px;top:370px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
+.dchip{padding:20px 26px;border-radius:18px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:28px;font-weight:800;color:#cfd2da;opacity:0;white-space:nowrap;}
+.diag-arrow{position:absolute;left:0;right:0;text-align:center;font-size:56px;font-weight:900;color:var(--violet);opacity:0;}
+.diag-arrow.a1{top:480px;}
+.diag-arrow.a2{top:1140px;}
+.diag-filter{position:absolute;left:90px;right:90px;top:580px;background:#0d0d12;border:2px solid var(--accent-yellow);
+  border-radius:28px;padding:36px 40px;box-shadow:0 0 60px rgba(255,230,0,.18),0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.diag-filter .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.diag-filter .file{margin-left:14px;color:var(--accent-yellow);font-size:28px;font-weight:900;letter-spacing:1px;}
+.diag-clean{position:absolute;left:90px;right:90px;top:1220px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:34px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;text-align:center;}
+.diag-clean .lbl{font-size:26px;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.diag-clean .val{font-size:36px;font-weight:900;color:var(--good);}
+.diag-badge{position:absolute;left:50%;top:1500px;width:280px;height:280px;margin-left:-140px;border-radius:50%;
+  background:radial-gradient(circle,#1a1a06 0%,#0d0d0d 70%);border:4px solid var(--accent-yellow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;
+  box-shadow:0 0 60px rgba(255,230,0,.4),0 0 120px rgba(255,230,0,.18);}
+.diag-badge .num{font-size:76px;font-weight:900;color:var(--accent-yellow);line-height:1;}
+.diag-badge .lbl{font-size:26px;font-weight:800;color:#fff;letter-spacing:2px;margin-top:6px;}
+
+/* ---------- SCENE 4 — conflict-risk bar ---------- */
+.limit{position:absolute;left:150px;right:150px;top:600px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:26px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--bad),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,95,87,.5);}
+.filecard{position:absolute;left:90px;right:90px;top:720px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+
+/* ---------- CTA (scene 5) ---------- */
+.cta-word{position:absolute;left:0;right:0;top:520px;text-align:center;font-size:112px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:3px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:680px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:820px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur voice.mp3 réel : audio brut avatar-webhook-v2 faisait 38.976s (hors cible 25-35s),
+     accéléré à x1.1465 via ffmpeg atempo -> 34.008s (~3.97 mots/s, cohérent avec la plage documentée
+     3.7-4.1 mots/s). avatar-webhook-v2 a répondu success:true avec transcripts:[] (quota Whisper OpenAI
+     épuisé, piège connu) -> timing mot-à-mot estimé (pondération longueur de mot + bonus pause ponctuation,
+     normalisé sur la durée ffprobe réelle), regroupé en captions de 2-3 mots avec plafond ~21 caractères. -->
+<div id="root" data-composition-id="autoboost51parallele" data-start="0" data-width="1080" data-height="1920" data-duration="34.30">
+
+  <!-- SCENE 1 — HOOK : 5 agents, 1 terminal (0 -> 9.447) -->
+  <div class="scene scene-1" data-s="0" data-d="9.447">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Claude Code peut le faire</div>
+      <div class="title" data-role="t1">5 AGENTS.<br><span class="y">1 SEUL TERMINAL.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">agents actifs</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">agent 1 &#8594; corrige les bugs</div>
+        <div class="dim" data-role="pl2">agent 2 &#8594; écrit les tests</div>
+        <div class="good" data-role="pl3">agent 3 &#8594; met à jour la doc</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">En parallèle. Pas en série.</div>
+  </div>
+
+  <!-- SCENE 2 — AVANT / MAINTENANT (9.447 -> 17.447) -->
+  <div class="scene scene-2" data-s="9.447" data-d="8.000">
+    <div class="pad">
+      <div class="kicker" data-role="k2">Avant vs maintenant</div>
+      <div class="title" data-role="t2" style="font-size:64px;">UN PAR UN.<br><span class="o">PUIS TOUS EN MÊME TEMPS.</span></div>
+    </div>
+    <div class="order">
+      <div class="ochip" data-role="o1">BUGS</div>
+      <div class="ochip" data-role="o2">TESTS</div>
+      <div class="ochip" data-role="o3">DOCS</div>
+      <div class="ochip" data-role="o4">REVIEW</div>
+      <div class="ochip" data-role="o5">DEPLOY</div>
+    </div>
+    <div class="verdict" data-role="v2" style="top:660px;">1 terminal. Résultats en même temps.</div>
+  </div>
+
+  <!-- BROLL — SCHÉMA : 1 JOURNÉE -> 2 HEURES (17.447 -> 22.930), avatar masqué -->
+  <div class="scene scene-broll" data-s="17.447" data-d="5.483"></div>
+  <div id="diagram">
+    <div class="diag-title" data-role="dt">Une journée <b>en 2 heures</b></div>
+    <div class="diag-sources">
+      <div class="dchip" data-role="ds1">PROJET CLIENT</div>
+    </div>
+    <div class="diag-arrow a1" data-role="da1">&#8595;</div>
+    <div class="diag-filter" data-role="df">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">5 AGENTS EN PARALLÈLE</span></div>
+      <div class="mono">
+        <div class="bad" data-role="dfl1">avant &#8594; 1 journée de va-et-vient</div>
+        <div class="good" data-role="dfl2">&#8594; 2h de supervision</div>
+      </div>
+    </div>
+    <div class="diag-arrow a2" data-role="da2">&#8595;</div>
+    <div class="diag-clean" data-role="dc">
+      <div class="lbl">Résultat</div>
+      <div class="val">2h de supervision.</div>
+    </div>
+    <div class="diag-badge" data-role="db">
+      <div class="num">-75%</div>
+      <div class="lbl">DE TEMPS</div>
+    </div>
+  </div>
+
+  <!-- SCENE 4 — LE VRAI PIÈGE (22.930 -> 30.059) -->
+  <div class="scene scene-4" data-s="22.930" data-d="7.129">
+    <div class="pad">
+      <div class="kicker" data-role="k4" style="color:var(--accent-yellow);">Le vrai piège</div>
+      <div class="title" data-role="t4" style="font-size:64px;">NE PAS TOUCHER<br><span class="y">LES MÊMES FICHIERS.</span></div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>risque de conflit</span><span><b>fichiers partagés</b></span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="filecard" data-role="fc">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">découpage des tâches</span></div>
+      <div class="mono">
+        <div class="bad" data-role="fcl1">2 agents, 1 fichier &#8594; conflit</div>
+        <div class="good" data-role="fcl2">1 agent, 1 périmètre &#8594; propre</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v4" style="top:920px;color:#fff;font-size:34px;">Méthode complète dans la vidéo suivante.</div>
+  </div>
+
+  <!-- SCENE 5 — CTA (30.059 -> 34.30) -->
+  <div class="scene scene-4" style="background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);" data-s="30.059" data-d="4.241">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Astuce Claude Code</div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">PARALLELE</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">PARALLELE</span><br>je t'envoie la méthode complète</div>
+    <div class="cta-follow" data-role="ctafollow">&#8212; follow pour plus d'astuces Claude Code</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="34.30" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.30"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.30"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="33.94" data-volume="1"></audio>
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="34.30" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 -->
+  <audio id="sfx-hook-a"   src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-b"   src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-click-1"  src="assets/sfx-click.mp3"       data-start="2.04"  data-volume="0.18"></audio>
+  <audio id="sfx-cs-1"     src="assets/sfx-click-soft.mp3"  data-start="4.60"  data-volume="0.13"></audio>
+  <audio id="sfx-cs-2"     src="assets/sfx-click-soft.mp3"  data-start="5.92"  data-volume="0.13"></audio>
+  <audio id="sfx-confirm-1" src="assets/sfx-confirm.mp3"    data-start="8.30"  data-volume="0.18"></audio>
+  <audio id="sfx-zoom-1"   src="assets/sfx-zoom.mp3"        data-start="9.447" data-volume="0.17"></audio>
+  <audio id="sfx-cs-3"     src="assets/sfx-click-soft.mp3"  data-start="10.90" data-volume="0.13"></audio>
+  <audio id="sfx-cs-4"     src="assets/sfx-click-soft.mp3"  data-start="12.00" data-volume="0.13"></audio>
+  <audio id="sfx-cs-5"     src="assets/sfx-click-soft.mp3"  data-start="13.30" data-volume="0.13"></audio>
+  <audio id="sfx-cs-6"     src="assets/sfx-click-soft.mp3"  data-start="14.50" data-volume="0.13"></audio>
+  <audio id="sfx-cs-7"     src="assets/sfx-click-soft.mp3"  data-start="15.70" data-volume="0.13"></audio>
+  <audio id="sfx-confirm-2" src="assets/sfx-confirm.mp3"    data-start="16.32" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-2"   src="assets/sfx-zoom.mp3"        data-start="17.447" data-volume="0.17"></audio>
+  <audio id="sfx-cs-8"     src="assets/sfx-click-soft.mp3"  data-start="18.20" data-volume="0.13"></audio>
+  <audio id="sfx-wl-1"     src="assets/sfx-whoosh-lat.mp3"  data-start="18.60" data-volume="0.16"></audio>
+  <audio id="sfx-click-2"  src="assets/sfx-click.mp3"       data-start="19.00" data-volume="0.18"></audio>
+  <audio id="sfx-wl-2"     src="assets/sfx-whoosh-lat.mp3"  data-start="20.20" data-volume="0.16"></audio>
+  <audio id="sfx-confirm-3" src="assets/sfx-confirm.mp3"    data-start="20.60" data-volume="0.18"></audio>
+  <audio id="sfx-notify-1" src="assets/sfx-notify.mp3"      data-start="21.10" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-3"   src="assets/sfx-zoom.mp3"        data-start="22.930" data-volume="0.17"></audio>
+  <audio id="sfx-click-3"  src="assets/sfx-click.mp3"       data-start="23.30" data-volume="0.18"></audio>
+  <audio id="sfx-glitch-1" src="assets/sfx-glitch-soft.mp3" data-start="26.816" data-volume="0.15"></audio>
+  <audio id="sfx-confirm-4" src="assets/sfx-confirm.mp3"    data-start="29.30" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-4"   src="assets/sfx-zoom.mp3"        data-start="30.059" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"  src="assets/sfx-pop.mp3"         data-start="30.40" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"  src="assets/sfx-impact.mp3"      data-start="30.40" data-volume="0.18"></audio>
+  <audio id="sfx-cs-9"     src="assets/sfx-click-soft.mp3"  data-start="31.60" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost51parallele";
+const DUR=34.30;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 (0 -> 9.447) ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},2.00);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},4.60);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},5.92);
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},8.30);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.6)"},8.90);
+
+/* ---- scene 2 (9.447 -> 17.447) ---- */
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},9.55);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},9.75);
+tl.fromTo(R("o1"),{opacity:0,y:24,scale:0.85},{opacity:1,y:0,scale:1,duration:0.3,ease:"back.out(1.8)"},10.90);
+tl.fromTo(R("o2"),{opacity:0,y:24,scale:0.85},{opacity:1,y:0,scale:1,duration:0.3,ease:"back.out(1.8)"},12.00);
+tl.fromTo(R("o3"),{opacity:0,y:24,scale:0.85},{opacity:1,y:0,scale:1,duration:0.3,ease:"back.out(1.8)"},13.30);
+tl.fromTo(R("o4"),{opacity:0,y:24,scale:0.85},{opacity:1,y:0,scale:1,duration:0.3,ease:"back.out(1.8)"},14.50);
+tl.fromTo(R("o5"),{opacity:0,y:24,scale:0.85},{opacity:1,y:0,scale:1,duration:0.3,ease:"back.out(1.8)"},15.70);
+tl.fromTo(R("v2"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.6)"},16.32);
+
+/* ---- broll diagram (17.447 -> 22.930) ---- */
+tl.to("#diagram",{opacity:1,duration:0.3,ease:"power2.out"},17.447);
+tl.to("#diagram",{opacity:0,duration:0.3,ease:"power2.in"},22.63);
+tl.fromTo(R("dt"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4,ease:"power3.out"},17.65);
+tl.fromTo(R("ds1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.3,ease:"power3.out"},18.20);
+tl.fromTo(R("da1"),{opacity:0},{opacity:0.8,duration:0.25},18.55);
+tl.to(R("da1"),{y:12,duration:0.5,ease:"sine.inOut",repeat:2,yoyo:true},18.55);
+tl.fromTo(R("df"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"power3.out"},19.00);
+tl.fromTo(R("dfl1"),{opacity:0},{opacity:1,duration:0.25},19.40);
+tl.fromTo(R("dfl2"),{opacity:0},{opacity:1,duration:0.25},19.80);
+tl.fromTo(R("da2"),{opacity:0},{opacity:0.8,duration:0.25},20.15);
+tl.to(R("da2"),{y:12,duration:0.5,ease:"sine.inOut",repeat:2,yoyo:true},20.15);
+tl.fromTo(R("dc"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"power3.out"},20.55);
+tl.fromTo(R("db"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.7)"},21.10);
+tl.to(R("db"),{scale:1.06,duration:0.45,ease:"sine.inOut",repeat:2,yoyo:true},21.55);
+
+/* ---- scene 4 (22.930 -> 30.059) ---- */
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},23.03);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},23.30);
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},24.10);
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:0.7,duration:2.0,ease:"power2.out"},24.30);
+tl.fromTo(R("fc"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"power3.out"},26.10);
+tl.fromTo(R("fcl1"),{opacity:0},{opacity:1,duration:0.25},26.816);
+tl.fromTo(R("fcl2"),{opacity:0},{opacity:1,duration:0.25},27.60);
+tl.fromTo(R("v4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},29.30);
+
+/* ---- scene 5 (30.059 -> 34.30) ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},30.16);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},30.40);
+tl.to(R("ctaword"),{scale:1.05,duration:0.4,ease:"sine.inOut",repeat:2,yoyo:true},30.90);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},31.60);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},33.00);
+
+/* ---- CAPTIONS (timing mot-à-mot estimé, normalisé sur les 34.008s réels de voice.mp3) ---- */
+const caps=[
+ [0.000,"CLAUDE CODE PEUT",""],
+ [0.678,"MAINTENANT LANCER",""],
+ [1.452,"CINQ AGENTS EN","hot:CINQ AGENTS"],
+ [2.042,"PARALLÈLE SUR LE","vhot:PARALLÈLE"],
+ [2.730,"MÊME PROJET CHACUN",""],
+ [3.576,"AVEC SA PROPRE",""],
+ [4.167,"TÂCHE",""],
+ [4.554,"UN AGENT CORRIGE",""],
+ [5.241,"LES BUGS PENDANT","hot:BUGS"],
+ [5.919,"QU'UN AUTRE ÉCRIT",""],
+ [6.645,"LES TESTS PENDANT","hot:TESTS"],
+ [7.443,"QU'UN TROISIÈME MET",""],
+ [8.266,"À JOUR LA",""],
+ [8.673,"DOCUMENTATION","hot:DOCUMENTATION"],
+ [9.447,"AVANT TOUT ÇA",""],
+ [10.062,"TOURNAIT EN SÉRIE","vhot:SÉRIE"],
+ [10.870,"L'UN APRÈS L'AUTRE",""],
+ [11.717,"ET J'ATTENDAIS ENTRE",""],
+ [12.598,"CHAQUE ÉTAPE",""],
+ [13.275,"LÀ JE LANCE",""],
+ [13.803,"LES CINQ D'UN","hot:CINQ"],
+ [14.335,"COUP DEPUIS UN",""],
+ [14.925,"SEUL TERMINAL ET","vhot:TERMINAL"],
+ [15.685,"JE RÉCUPÈRE LES",""],
+ [16.324,"RÉSULTATS EN MÊME","hot:RÉSULTATS"],
+ [17.060,"TEMPS","hot:TEMPS"],
+ [17.447,"SUR MON DERNIER",""],
+ [18.076,"PROJET CLIENT CE",""],
+ [18.836,"QUI PRENAIT UNE",""],
+ [19.465,"JOURNÉE COMPLÈTE DE","hot:JOURNÉE COMPLÈTE"],
+ [20.297,"VA-ET-VIENT TIENT",""],
+ [21.072,"MAINTENANT EN DEUX","hot:DEUX"],
+ [21.856,"HEURES DE SUPERVISION","hot:HEURES"],
+ [22.930,"LE VRAI PIÈGE","ohot:PIÈGE"],
+ [23.545,"C'EST DE BIEN",""],
+ [24.087,"DÉCOUPER LES TÂCHES","vhot:DÉCOUPER"],
+ [24.910,"POUR QU'ELLES NE",""],
+ [25.597,"SE MARCHENT PAS",""],
+ [26.236,"DESSUS SUR LES",""],
+ [26.816,"MÊMES FICHIERS","ohot:FICHIERS"],
+ [27.591,"JE TE MONTRE",""],
+ [28.094,"COMMENT JE DÉCOUPE",""],
+ [28.878,"ÇA DANS LA",""],
+ [29.285,"VIDÉO SUIVANTE",""],
+ [30.059,"FOLLOW POUR PLUS","ohot:FOLLOW"],
+ [30.736,"D'ASTUCES CLAUDE CODE","vhot:CLAUDE CODE"],
+ [31.656,"ET COMMENTE LE","ohot:COMMENTE"],
+ [32.256,"MOT PARALLELE POUR","ohot:PARALLELE"],
+ [33.030,"LA MÉTHODE COMPLÈTE","hot:MÉTHODE COMPLÈTE"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:DUR-0.15;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:32,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:32,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit — bornés strictement AVANT la fenêtre broll pour éviter
+   le piège documenté (deux tweens d'opacity concurrents sur #avatar-ring). ---- */
+const BROLL_START=17.447, BROLL_END=22.930;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:34,yoyo:true},0);
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:22,yoyo:true},BROLL_END);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:7,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:5,ease:"none"},BROLL_END);
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},30.40);
+/* Piège documenté : la pulsation ring ci-dessus peut se figer visible (opacity 0.8) en fin de
+   segment (parité paire/impaire du nombre de legs), avant même BROLL_START — sans tween explicite
+   ensuite, le ring flotte, vide, sur le broll. Ce hide/show, ajouté APRÈS les tweens de pulsation,
+   gagne sur leur fenêtre de recouvrement quel que soit l'état où la pulsation s'est arrêtée. */
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
