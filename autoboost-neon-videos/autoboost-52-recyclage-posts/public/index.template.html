@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.6;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;}
+.mono .lock{color:#060606;background:var(--accent-yellow);border-radius:5px;padding:1px 6px;font-weight:700;}
+.verdict{position:absolute;left:90px;right:90px;top:830px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+.order{position:absolute;left:90px;right:90px;top:800px;display:flex;gap:18px;justify-content:center;}
+.ochip{padding:16px 26px;border-radius:16px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:28px;font-weight:800;color:#cfd2da;opacity:0;white-space:nowrap;}
+.ochip .n{color:var(--accent-yellow);margin-right:10px;}
+
+.moves{position:absolute;left:80px;right:80px;top:470px;display:flex;flex-direction:column;gap:20px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:24px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:34px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mv .strike{position:absolute;left:30px;right:30px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+.mv .dur{margin-left:auto;font-size:28px;font-weight:900;color:var(--accent-yellow);}
+
+.refs{position:absolute;left:70px;right:70px;top:470px;display:flex;flex-direction:column;gap:22px;}
+.ref{display:flex;align-items:center;gap:24px;padding:26px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.ref .at{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:34px;font-weight:900;
+  color:var(--accent-yellow);width:210px;flex:0 0 210px;}
+.ref .arw{color:var(--violet);font-size:34px;font-weight:900;}
+.ref .what{font-size:36px;font-weight:800;color:#fff;}
+
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+.limit{position:absolute;left:150px;right:150px;top:400px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+.cta-word{position:absolute;left:0;right:0;top:540px;text-align:center;font-size:100px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:700px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:840px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost52recycle" data-start="0" data-width="1080" data-height="1920" data-duration="__DUR__">
+
+  <!-- SCENE 1 — HOOK : ton meilleur post, vu une seule fois -->
+  <div class="scene scene-1" data-key="s1">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Tes meilleurs posts</div>
+      <div class="title" data-role="t1">Vus<br><span class="o">une seule fois.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">top-post.log</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">post du 12 mars</div>
+        <div class="lit" data-role="pl2">48 210 vues · 1 890 saves</div>
+        <div class="dim" data-role="pl3">puis… plus jamais republié</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Ton audience passe à côté.</div>
+  </div>
+
+  <!-- SCENE 2 — ÉTAPE 1 : il lit tes 30 derniers posts -->
+  <div class="scene scene-2" data-key="s2">
+    <div class="tipnum" data-role="n2">1</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Le workflow · étape 1</div>
+      <div class="title" data-role="t2" style="font-size:72px;">Il lit tes<br><span class="y">30 derniers posts</span></div>
+    </div>
+    <div class="card" data-role="c2" style="top:490px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">stats.json</span></div>
+      <div class="mono">
+        <div data-role="pw1"><span class="lock">Analyse des 30 derniers posts</span></div>
+        <div class="dim" data-role="pw2">vues · saves · partages · portée…</div>
+      </div>
+    </div>
+    <div class="order">
+      <div class="ochip" data-role="o1"><span class="n">•</span>VUES</div>
+      <div class="ochip" data-role="o2"><span class="n">•</span>SAVES</div>
+      <div class="ochip" data-role="o3"><span class="n">•</span>PARTAGES</div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — ÉTAPE 2 : il repère les tops -->
+  <div class="scene scene-3" data-key="s3">
+    <div class="tipnum" data-role="n3">2</div>
+    <div class="pad">
+      <div class="kicker" data-role="k3">Étape 2</div>
+      <div class="title" data-role="t3" style="font-size:72px;">Il repère<br>tes <span class="y">tops</span></div>
+    </div>
+    <div class="moves">
+      <div class="mv ok" data-role="mv1"><span class="tag">✓</span>Post viral<span class="dur">48k</span></div>
+      <div class="mv ko" data-role="mv2"><span class="tag">✕</span>Post moyen<span class="strike" data-role="sk2"></span></div>
+      <div class="mv ko" data-role="mv3"><span class="tag">✕</span>Post faible<span class="strike" data-role="sk3"></span></div>
+    </div>
+  </div>
+
+  <!-- BROLL — respiration (créateur au travail) -->
+  <video id="broll" class="broll-vid" src="assets/broll-recycle.mp4" data-start="__BROLL_START__" data-duration="__BROLL_DUR__" muted playsinline></video>
+  <div class="scene scene-broll" data-key="broll"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — ÉTAPE 3 : il reprogramme +3 mois -->
+  <div class="scene scene-4" data-key="s4">
+    <div class="tipnum" data-role="n4">3</div>
+    <div class="pad">
+      <div class="kicker" data-role="k4">Étape 3</div>
+      <div class="title" data-role="t4" style="font-size:72px;">Il <span class="y">reprogramme</span><br>+3 mois</div>
+    </div>
+    <div class="refs">
+      <div class="ref" data-role="r1"><span class="at">repéré</span><span class="arw">→</span><span class="what">le top post</span></div>
+      <div class="ref" data-role="r2"><span class="at">+3 mois</span><span class="arw">→</span><span class="what">republié</span></div>
+      <div class="ref" data-role="r3"><span class="at">texte</span><span class="arw">→</span><span class="what">légèrement varié</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — BÉNÉFICE + CTA -->
+  <div class="scene scene-5" data-key="s5">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Une config. Zéro effort.</div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>ton temps</span><span><b>0 min</b> / mois</span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">RECYCLE</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">RECYCLE</span><br>je t'envoie le workflow</div>
+    <div class="cta-follow" data-role="ctafollow">— abonne-toi pour la suite</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="__DUR__" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="__DUR__"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="__DUR__"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="__DUR__"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO (voice + BGM flowers_horror @0.05 + SFX palette v1, injected) -->
+__AUDIO_BLOCK__
+</div>
+
+<script>
+const CFG = __CFG_JSON__;
+const compId="autoboost52recycle";
+const DUR=CFG.dur;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+const cuts=CFG.cuts;
+const BROLL_START=cuts.broll, BROLL_END=cuts.s4;
+
+/* windows: [key, start, end] */
+const WIN={
+  s1:[cuts.s1,cuts.s2], s2:[cuts.s2,cuts.s3], s3:[cuts.s3,cuts.broll],
+  broll:[cuts.broll,cuts.s4], s4:[cuts.s4,cuts.s5], s5:[cuts.s5,DUR]
+};
+/* scene fade in/out driven by window */
+document.querySelectorAll(".scene").forEach(el=>{
+  const w=WIN[el.dataset.key]; if(!w) return;
+  const s=w[0], e=w[1];
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},Math.max(s+0.3,e-0.3));
+});
+document.querySelectorAll(".broll-vid").forEach(el=>{
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},BROLL_START);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},BROLL_END-0.3);
+});
+
+/* helper: schedule at start+off, clamped inside window */
+function at(win,off){const w=WIN[win];return Math.min(w[0]+off, w[1]-0.25);}
+
+/* ---- SCENE 1 ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s1",0.10));
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s1",0.35));
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s1",1.10));
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},at("s1",1.40));
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},at("s1",1.75));
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},at("s1",2.10));
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},at("s1",2.9));
+
+/* ---- SCENE 2 ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},at("s2",0.10));
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s2",0.15));
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s2",0.35));
+tl.fromTo(R("c2"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s2",0.80));
+tl.fromTo(R("pw1"),{opacity:0},{opacity:1,duration:0.35},at("s2",1.05));
+tl.fromTo(R("pw2"),{opacity:0},{opacity:1,duration:0.35},at("s2",1.35));
+tl.fromTo(R("o1"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},at("s2",1.55));
+tl.fromTo(R("o2"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},at("s2",1.80));
+tl.fromTo(R("o3"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},at("s2",2.05));
+
+/* ---- SCENE 3 ---- */
+tl.fromTo(R("n3"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},at("s3",0.10));
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s3",0.15));
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s3",0.35));
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s3",1.00));
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s3",1.80));
+tl.fromTo(R("mv3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s3",2.05));
+tl.fromTo(R("sk2"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},at("s3",2.30));
+tl.fromTo(R("sk3"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},at("s3",2.55));
+
+/* ---- SCENE 4 ---- */
+tl.fromTo(R("n4"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},at("s4",0.10));
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s4",0.15));
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s4",0.35));
+tl.fromTo(R("r1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s4",0.50));
+tl.fromTo(R("r2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s4",0.80));
+tl.fromTo(R("r3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s4",1.10));
+
+/* ---- SCENE 5 ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s5",0.10));
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s5",0.15));
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:1,duration:0.9,ease:"power2.out"},at("s5",0.35));
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},at("s5",1.7));
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},at("s5",2.2));
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s5",3.0));
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},Math.min(cuts.s5+3.9,DUR-0.4));
+
+/* ---- CAPTIONS ---- */
+const caps=CFG.caps;
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const start=c[0], txt=c[1], tag=c[2];
+  const end=(i<caps.length-1)?caps[i+1][0]:CFG.capEnd;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const parts=tag.split(":");const cls=parts[0];const word=parts.slice(1).join(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},Math.max(start+0.2,end-0.16));
+});
+
+/* ---- caption rail bars ---- */
+var rt=Math.max(1,Math.floor(DUR/1.05)-1);
+var rb=Math.max(1,Math.floor((DUR-0.52)/1.05)-1);
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:rt,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:rb,yoyo:true},0.52);
+
+/* ---- AVATAR frame/orbit hide during broll ---- */
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+
+/* orbit rotation, two bounded segments */
+var oa=Math.max(1,Math.floor(BROLL_START/2.2)-1);
+var ob=Math.max(1,Math.floor((DUR-BROLL_END)/2.2)-1);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:oa,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:ob,ease:"none"},BROLL_END);
+
+/* ring breathing, two bounded segments */
+var na=Math.max(1,Math.floor(BROLL_START/0.5)-1);
+var nb=Math.max(1,Math.floor((DUR-BROLL_END)/0.5)-1);
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:na,yoyo:true},0);
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:nb,yoyo:true},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},at("s5",1.7));
+/* explicit ring hide/show LAST so it wins render order over the pulse (skill fix) */
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
+
+/* ---- violet orbit pulse on BGM drops (flowers_horror: 2.34/10.36/18.38/26.40) ---- */
+var LEAD=0.12;
+[2.34,10.36,18.38,26.40].forEach(function(t){
+  if(t>DUR-0.2) return;
+  if(t>=BROLL_START-0.2 && t<=BROLL_END+0.2) return;
+  var s=t-LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
