@@ -690,6 +690,29 @@ ouverte. Dans cette session, l'exécution a réussi en ~44s (bien dans la fenêt
 préférer par défaut, ne retomber sur le curl direct que si le webhook n'est pas retrouvable via
 `search_workflows`.
 
+**Piège vérifié (2026-08-11, autoboost-53 Alerte stock/paniers Shopify) : même appelé via
+`execute_workflow` MCP (pas de curl), `avatar-webhook-v2` peut prendre nettement plus longtemps
+que la fenêtre "1 à 4 minutes" habituelle — ici ~9min10 côté WaveSpeed (poll `get_execution` toutes
+les ~20-30s jusqu'à `status:"success"`), sans que l'exécution n8n passe jamais par le chemin
+`Respond Error` documenté plus haut (elle reste `"running"` normalement jusqu'au bout, puis
+`"success"` directement). Le script utilisé faisait 138 mots, rien d'anormal côté payload — la
+variabilité du temps d'inférence WaveSpeed lui-même semble juste plus large que documenté
+jusqu'ici. Ne pas interpréter un `status:"running"` qui dépasse 7-8min comme un signe d'échec :
+continuer à poller `get_execution({workflowId, executionId, includeData:false})` normalement,
+sans relancer le webhook. Utiliser ce temps d'attente pour scaffolder le projet, écrire le squelette
+`index.html` avec des `data-duration` en placeholders (`__DUR__` etc.) et un script de substitution
+(pondération longueur de mot + bonus ponctuation, normalisé sur la durée réelle une fois connue)
+plutôt que d'attendre les bras croisés — voir aussi le pattern general ci-dessus sur l'estimation
+manuelle de timing.
+
+**Correction du warning `hyperframes validate` sur la durée de `voice`** : même quand `data-duration`
+de `<audio id="voice">` est réglé exactement sur la valeur `ffprobe` (ex. `34.008`), `validate` peut
+quand même avertir `"Audio voice is 33.96s but its slot (data-duration) is 34.01s"` — le décodeur du
+validator (Chrome headless / WebAudio) mesure parfois quelques dizaines de ms de moins que `ffprobe`
+sur un MP3 réencodé (ex. après un `atempo`). Fix simple : régler `data-duration` un poil sous la
+valeur `ffprobe` (ex. `33.95` au lieu de `34.008`) plutôt que d'essayer de faire correspondre les deux
+mesures au dixième près — le warning disparaît et ça n'a aucun impact audible.
+
 **Vidéo avatar plus courte que la comp** : si `avatar-keyed.mp4` fait moins que `data-duration`
 (fréquent, l'asset source dure souvent ~17s), le loop-étendre AVANT de référencer le fichier :
 `ffmpeg -stream_loop -1 -t <durée comp> -i avatar-keyed.mp4 -c copy avatar-keyed.mp4` — sinon
