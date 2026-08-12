@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.6;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;}
+.mono .lock{color:#060606;background:var(--accent-yellow);border-radius:5px;padding:1px 6px;font-weight:700;}
+.verdict{position:absolute;left:90px;right:90px;top:830px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+.order{position:absolute;left:90px;right:90px;top:800px;display:flex;gap:18px;justify-content:center;}
+.ochip{padding:16px 26px;border-radius:16px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:28px;font-weight:800;color:#cfd2da;opacity:0;white-space:nowrap;}
+.ochip .n{color:var(--accent-yellow);margin-right:10px;}
+
+.moves{position:absolute;left:80px;right:80px;top:470px;display:flex;flex-direction:column;gap:20px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:24px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:34px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mv .strike{position:absolute;left:30px;right:30px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+.mv .dur{margin-left:auto;font-size:28px;font-weight:900;color:var(--accent-yellow);}
+
+.refs{position:absolute;left:70px;right:70px;top:470px;display:flex;flex-direction:column;gap:22px;}
+.ref{display:flex;align-items:center;gap:24px;padding:26px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.ref .at{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:34px;font-weight:900;
+  color:var(--accent-yellow);width:230px;flex:0 0 230px;}
+.ref .arw{color:var(--violet);font-size:34px;font-weight:900;}
+.ref .what{font-size:36px;font-weight:800;color:#fff;}
+
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+.limit{position:absolute;left:150px;right:150px;top:400px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+.cta-word{position:absolute;left:0;right:0;top:540px;text-align:center;font-size:96px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:700px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:840px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost53shopify" data-start="0" data-width="1080" data-height="1920" data-duration="31.05">
+
+  <!-- SCENE 1 — HOOK : ta boutique Shopify perd des ventes chaque nuit -->
+  <div class="scene scene-1" data-key="s1">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Ta boutique Shopify</div>
+      <div class="title" data-role="t1">Perd des ventes<br><span class="o">chaque nuit.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">panier-abandonne.log</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">23:41 · panier · 89 EUR</div>
+        <div class="lit" data-role="pl2">client parti · onglet ferme</div>
+        <div class="dim" data-role="pl3">relance… jamais envoyee</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Et personne ne le relance.</div>
+  </div>
+
+  <!-- SCENE 2 — PROBLEME 1 : relance auto des paniers abandonnes -->
+  <div class="scene scene-2" data-key="s2">
+    <div class="tipnum" data-role="n2">1</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Le workflow · relance auto</div>
+      <div class="title" data-role="t2" style="font-size:70px;">Il relance les<br><span class="y">paniers abandonnes</span></div>
+    </div>
+    <div class="card" data-role="c2" style="top:490px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">n8n-shopify.json</span></div>
+      <div class="mono">
+        <div data-role="pw1"><span class="lock">Panier inactif depuis 20 min</span></div>
+        <div class="dim" data-role="pw2">→ message auto + code promo minute</div>
+      </div>
+    </div>
+    <div class="order">
+      <div class="ochip" data-role="o1"><span class="n">•</span>TEMPS REEL</div>
+      <div class="ochip" data-role="o2"><span class="n">•</span>20 MIN</div>
+      <div class="ochip" data-role="o3"><span class="n">•</span>CODE PROMO</div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — PREUVE : client reunionnais, commandes recuperees -->
+  <div class="scene scene-3" data-key="s3">
+    <div class="pad">
+      <div class="kicker" data-role="k3">Resultat client</div>
+      <div class="title" data-role="t3" style="font-size:70px;">Chez un client<br><span class="y">reunionnais</span></div>
+    </div>
+    <div class="moves">
+      <div class="mv ok" data-role="mv1"><span class="tag">✓</span>Panier relance a temps<span class="dur">+CA</span></div>
+      <div class="mv ko" data-role="mv2"><span class="tag">✕</span>Onglet ferme, aucun suivi<span class="strike" data-role="sk2"></span></div>
+      <div class="mv ko" data-role="mv3"><span class="tag">✕</span>Parti chez un concurrent<span class="strike" data-role="sk3"></span></div>
+    </div>
+  </div>
+
+  <!-- BROLL — respiration (setup e-commerce) -->
+  <video id="broll" class="broll-vid" src="assets/broll-shopify.mp4" data-start="18.08" data-duration="1.7" muted playsinline></video>
+  <div class="scene scene-broll" data-key="broll"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — PROBLEME 2 : alerte stock bas -->
+  <div class="scene scene-4" data-key="s4">
+    <div class="tipnum" data-role="n4">2</div>
+    <div class="pad">
+      <div class="kicker" data-role="k4">Meme scenario · stock</div>
+      <div class="title" data-role="t4" style="font-size:70px;">Alerte quand le<br><span class="y">stock est bas</span></div>
+    </div>
+    <div class="refs">
+      <div class="ref" data-role="r1"><span class="at">stock</span><span class="arw">→</span><span class="what">sous 5 unites</span></div>
+      <div class="ref" data-role="r2"><span class="at">alerte</span><span class="arw">→</span><span class="what">en temps reel</span></div>
+      <div class="ref" data-role="r3"><span class="at">promo</span><span class="arw">→</span><span class="what">jamais a sec</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — RECAP + CTA -->
+  <div class="scene scene-5" data-key="s5">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Deux problemes, un scenario.</div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>tes ventes</span><span><b>24/7</b> en pilote auto</span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">SHOPIFY</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">SHOPIFY</span><br>je t'envoie le workflow</div>
+    <div class="cta-follow" data-role="ctafollow">— abonne-toi pour la suite</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="31.05" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="31.05"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="31.05"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="31.05"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO (voice + BGM flowers_horror @0.05 + SFX palette v1, injected) -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="30.5" data-volume="1"></audio>
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="31.05" data-volume="0.05"></audio>
+  <audio id="sfx-hook" src="assets/sfx-glitch-hard.mp3" data-start="0.27" data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp" src="assets/sfx-impact.mp3" data-start="0.27" data-volume="0.2"></audio>
+  <audio id="sfx-zoom-1" src="assets/sfx-zoom.mp3" data-start="4.83" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-2" src="assets/sfx-zoom.mp3" data-start="12.61" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-3" src="assets/sfx-zoom.mp3" data-start="16.88" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-4" src="assets/sfx-zoom.mp3" data-start="18.58" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-5" src="assets/sfx-zoom.mp3" data-start="22.21" data-volume="0.18"></audio>
+  <audio id="sfx-click-1" src="assets/sfx-click.mp3" data-start="6.15" data-volume="0.18"></audio>
+  <audio id="sfx-click-2" src="assets/sfx-click.mp3" data-start="13.93" data-volume="0.18"></audio>
+  <audio id="sfx-click-3" src="assets/sfx-click.mp3" data-start="19.9" data-volume="0.18"></audio>
+  <audio id="sfx-verdict" src="assets/sfx-notify.mp3" data-start="5.03" data-volume="0.16"></audio>
+  <audio id="sfx-o1" src="assets/sfx-click-soft.mp3" data-start="7.58" data-volume="0.13"></audio>
+  <audio id="sfx-o2" src="assets/sfx-click-soft.mp3" data-start="7.83" data-volume="0.13"></audio>
+  <audio id="sfx-o3" src="assets/sfx-click-soft.mp3" data-start="8.08" data-volume="0.13"></audio>
+  <audio id="sfx-valid" src="assets/sfx-confirm.mp3" data-start="15.16" data-volume="0.18"></audio>
+  <audio id="sfx-strike-1" src="assets/sfx-whoosh-lat.mp3" data-start="15.96" data-volume="0.14"></audio>
+  <audio id="sfx-strike-2" src="assets/sfx-whoosh-lat.mp3" data-start="16.26" data-volume="0.14"></audio>
+  <audio id="sfx-r1" src="assets/sfx-click-soft.mp3" data-start="20.28" data-volume="0.13"></audio>
+  <audio id="sfx-r2" src="assets/sfx-click-soft.mp3" data-start="20.58" data-volume="0.13"></audio>
+  <audio id="sfx-r3" src="assets/sfx-click-soft.mp3" data-start="20.88" data-volume="0.13"></audio>
+  <audio id="sfx-limit" src="assets/sfx-notify.mp3" data-start="23.66" data-volume="0.16"></audio>
+  <audio id="sfx-cta-pop" src="assets/sfx-pop.mp3" data-start="25.11" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp" src="assets/sfx-impact.mp3" data-start="25.11" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub" src="assets/sfx-click-soft.mp3" data-start="26.41" data-volume="0.13"></audio>
+</div>
+
+<script>
+const CFG = {"dur": 31.05, "audio": 30.5, "onset": 0.22, "offset": 27.44, "cuts": {"s1": 0.0, "s2": 6.03, "s3": 13.81, "broll": 18.08, "s4": 19.78, "s5": 23.41}, "capEnd": 27.44, "caps": [[0.22, "TA BOUTIQUE SHOPIFY", "hot:SHOPIFY"], [1.03, "PERD DES VENTES", ""], [1.65, "CHAQUE NUIT SANS", "ohot:NUIT"], [2.32, "QUE TU LE", ""], [2.67, "SACHES", ""], [3.15, "UN CLIENT REMPLIT", ""], [3.87, "SON PANIER FERME", "hot:PANIER"], [4.63, "L'ONGLET ET PERSONNE", ""], [5.59, "NE LE RELANCE", "vhot:RELANCE"], [6.32, "J'AI CONSTRUIT UN", ""], [7.05, "WORKFLOW N8N QUI", "hot:WORKFLOW"], [7.71, "REPERE LES PANIERS", "hot:PANIERS"], [8.47, "ABANDONNES EN TEMPS", "ohot:ABANDONNES"], [9.29, "REEL ET ENVOIE", "hot:REEL"], [9.97, "UN MESSAGE", ""], [10.4, "AUTOMATIQUE APRES", "vhot:AUTOMATIQUE"], [11.16, "VINGT MINUTES AVEC", "hot:MINUTES"], [12.02, "UN CODE PROMO", "ohot:PROMO"], [12.55, "LIMITE DANS LE", ""], [13.13, "TEMPS", ""], [13.56, "CHEZ UN CLIENT", ""], [14.14, "REUNIONNAIS CA A", "vhot:REUNIONNAIS"], [14.97, "RECUPERE PLUSIEURS", "vhot:RECUPERE"], [15.78, "COMMANDES QUI", "hot:COMMANDES"], [16.35, "PARTAIENT DROIT CHEZ", ""], [17.2, "UN CONCURRENT", "ohot:CONCURRENT"], [17.98, "LE MEME SCENARIO", "vhot:SCENARIO"], [18.65, "T'ALERTE AUSSI QUAND", ""], [19.51, "UN PRODUIT PASSE", ""], [20.18, "SOUS CINQ UNITES", "hot:CINQ"], [20.85, "EN STOCK POUR", "hot:STOCK"], [21.48, "NE JAMAIS TOMBER", ""], [22.15, "EN RUPTURE EN", "ohot:RUPTURE"], [22.69, "PLEINE PROMO", "ohot:PROMO"], [23.41, "DEUX PROBLEMES REGLES", "ohot:DEUX"], [24.31, "D'UN COUP", ""], [24.88, "COMMENTE LE MOT", ""], [25.51, "SHOPIFY ET JE", "hot:SHOPIFY"], [26.05, "T'ENVOIE LE WORKFLOW", "hot:WORKFLOW"], [26.92, "COMPLET", "hot:COMPLET"]]};
+const compId="autoboost53shopify";
+const DUR=CFG.dur;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+const cuts=CFG.cuts;
+const BROLL_START=cuts.broll, BROLL_END=cuts.s4;
+
+/* windows: [key, start, end] */
+const WIN={
+  s1:[cuts.s1,cuts.s2], s2:[cuts.s2,cuts.s3], s3:[cuts.s3,cuts.broll],
+  broll:[cuts.broll,cuts.s4], s4:[cuts.s4,cuts.s5], s5:[cuts.s5,DUR]
+};
+/* scene fade in/out driven by window */
+document.querySelectorAll(".scene").forEach(el=>{
+  const w=WIN[el.dataset.key]; if(!w) return;
+  const s=w[0], e=w[1];
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},Math.max(s+0.3,e-0.3));
+});
+document.querySelectorAll(".broll-vid").forEach(el=>{
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},BROLL_START);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},BROLL_END-0.3);
+});
+
+/* helper: schedule at start+off, clamped inside window */
+function at(win,off){const w=WIN[win];return Math.min(w[0]+off, w[1]-0.25);}
+
+/* ---- SCENE 1 ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s1",0.10));
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s1",0.35));
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s1",1.10));
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},at("s1",1.40));
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},at("s1",1.75));
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},at("s1",2.10));
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},at("s1",2.9));
+
+/* ---- SCENE 2 ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},at("s2",0.10));
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s2",0.15));
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s2",0.35));
+tl.fromTo(R("c2"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s2",0.80));
+tl.fromTo(R("pw1"),{opacity:0},{opacity:1,duration:0.35},at("s2",1.05));
+tl.fromTo(R("pw2"),{opacity:0},{opacity:1,duration:0.35},at("s2",1.35));
+tl.fromTo(R("o1"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},at("s2",1.55));
+tl.fromTo(R("o2"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},at("s2",1.80));
+tl.fromTo(R("o3"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},at("s2",2.05));
+
+/* ---- SCENE 3 ---- */
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s3",0.15));
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s3",0.35));
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s3",1.00));
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s3",1.80));
+tl.fromTo(R("mv3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s3",2.05));
+tl.fromTo(R("sk2"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},at("s3",2.30));
+tl.fromTo(R("sk3"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},at("s3",2.55));
+
+/* ---- SCENE 4 ---- */
+tl.fromTo(R("n4"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},at("s4",0.10));
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s4",0.15));
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},at("s4",0.35));
+tl.fromTo(R("r1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s4",0.50));
+tl.fromTo(R("r2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s4",0.80));
+tl.fromTo(R("r3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},at("s4",1.10));
+
+/* ---- SCENE 5 ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s5",0.10));
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s5",0.15));
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:1,duration:0.9,ease:"power2.out"},at("s5",0.35));
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},at("s5",1.7));
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},at("s5",2.2));
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},at("s5",3.0));
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},Math.min(cuts.s5+3.9,DUR-0.4));
+
+/* ---- CAPTIONS ---- */
+const caps=CFG.caps;
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const start=c[0], txt=c[1], tag=c[2];
+  const end=(i<caps.length-1)?caps[i+1][0]:CFG.capEnd;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const parts=tag.split(":");const cls=parts[0];const word=parts.slice(1).join(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},Math.max(start+0.2,end-0.16));
+});
+
+/* ---- caption rail bars ---- */
+var rt=Math.max(1,Math.floor(DUR/1.05)-1);
+var rb=Math.max(1,Math.floor((DUR-0.52)/1.05)-1);
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:rt,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:rb,yoyo:true},0.52);
+
+/* ---- AVATAR frame/orbit hide during broll ---- */
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+
+/* orbit rotation, two bounded segments */
+var oa=Math.max(1,Math.floor(BROLL_START/2.2)-1);
+var ob=Math.max(1,Math.floor((DUR-BROLL_END)/2.2)-1);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:oa,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:ob,ease:"none"},BROLL_END);
+
+/* ring breathing, two bounded segments */
+var na=Math.max(1,Math.floor(BROLL_START/0.5)-1);
+var nb=Math.max(1,Math.floor((DUR-BROLL_END)/0.5)-1);
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:na,yoyo:true},0);
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:nb,yoyo:true},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},at("s5",1.7));
+/* explicit ring hide/show LAST so it wins render order over the pulse (skill fix) */
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
+
+/* ---- violet orbit pulse on BGM drops (flowers_horror: 2.34/10.36/18.38/26.40) ---- */
+var LEAD=0.12;
+[2.34,10.36,18.38,26.40].forEach(function(t){
+  if(t>DUR-0.2) return;
+  if(t>=BROLL_START-0.2 && t<=BROLL_END+0.2) return;
+  var s=t-LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
