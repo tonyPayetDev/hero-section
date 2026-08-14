@@ -741,6 +741,31 @@ totale de l'overlay avatar persistant.)
 **Captions à `top: 960px`** (pas `bottom: ...`) pour rester au-dessus du cercle avatar (voir
 Règles Captions ci-dessus) — sinon les captions tombent dans la zone avatar et se chevauchent.
 
+**Piège vérifié (2026-08-14, autoboost-56 Claude Code Hooks) : le texte `.verdict` (classe de base
+`top:900px`, utilisée pour les phrases de synthèse en fin de scène type "Toujours la même heure.")
+peut chevaucher visuellement `#caption-band` (`top:930px`) alors que `validate`/`inspect` ne
+signalent rien.** Un `.verdict` sur une seule ligne à 34-38px avec le `line-height` par défaut du
+navigateur (~1.2, non déclaré explicitement sur `.verdict`) dépasse déjà ~900+40=940px de hauteur —
+soit au-delà du début de la bande de captions à 930px. Repéré uniquement par extraction de frame
+réelle (`ffmpeg -ss <t> -frames:v 1` + `Read`) au moment précis où un verdict de fin de scène
+apparaît en même temps qu'une caption : le texte blanc du verdict se superposait visuellement au
+plateau semi-opaque de la bande de captions. Fix appliqué : remonter `.verdict` à `top:850px` (et
+tout override inline de scène spécifique, ex. `top:900px` sur une scène résultat) pour garder une
+marge de sécurité d'au moins ~40px avant `930px`. Toujours vérifier une frame au moment exact où un
+verdict de fin de scène et une caption coexistent, pas seulement `inspect` (9 échantillons) qui peut
+manquer cet instant précis comme documenté plus haut pour le débordement horizontal de caption.
+
+**Rappel qualité (2026-08-14, autoboost-56) : en copiant la structure d'un projet de référence pour
+le panneau "résultat" du schéma broll (`.diag-clean`), le contenu textuel peut se retrouver
+sémantiquement contradictoire avec le message de la vidéo si on ne l'adapte pas au sujet.** Repéré
+après rendu (pas avant, car `validate`/`inspect` ne lisent pas le sens du texte) : un panneau censé
+illustrer "aucun commit cassé ne passe" affichait littéralement "Commit cassé poussé en prod" comme
+label — techniquement un texte plausible dans le gabarit générique hérité, mais qui dit l'inverse du
+propos de la vidéo une fois lu dans son contexte. Toujours relire à voix haute le texte de chaque
+panneau/badge du schéma broll après l'avoir adapté au nouveau sujet, pas seulement copier la
+structure — un contresens de ce type ne casse ni `validate` ni `inspect`, seule une relecture
+attentive (ou l'inspection visuelle des frames) l'attrape.
+
 **Broll plein écran (pattern pour varier, avatar masqué)** : scènes dédiées avec leur propre classe
 (ex. `.scene-broll`), explicitement `height: 1920px` (override du 1120px par défaut, ces scènes-là
 n'ont pas besoin de laisser de la place à l'avatar puisqu'il est masqué). Bon candidat : schéma
