@@ -262,6 +262,18 @@ un aller-retour complet (l'estimation manuelle de timing mot-à-mot + regroupeme
 en Python : pondérer chaque mot par sa longueur + bonus de pause sur ponctuation finale, normaliser
 sur la durée réelle du MP3 via `ffprobe`, puis regrouper avec la double contrainte).
 
+**Affiner ce script pour forcer une coupure de caption à CHAQUE signe de ponctuation (virgule
+comprise), pas seulement quand le groupe courant a déjà ≥2 mots** (vérifié 2026-08-15, autoboost-57
+Claude Code navigateur). Une condition du type "ne flush qu'à partir de 2 mots" laisse un mot de fin
+de phrase isolé (ex. `"cassé."`) se faire absorber par le premier mot de la phrase suivante dans la
+même caption (`"CASSÉ IMPOSSIBLE"`, à cheval sur deux idées différentes) — visuellement correct
+(sous la limite de caractères) mais sémantiquement confus. Flush inconditionnel dès qu'un token se
+termine par `.`/`!`/`?`, et flush aussi sur `,`/`;`/`:` si le groupe courant contient déjà ≥1 mot :
+ça produit plus de captions courtes (parfois un seul mot, ex. `"CASSÉ"` seul, `"PORTES"` seul) mais
+respecte les frontières de sens, ce qui rend le rythme plus naturel pour des répétitions type
+"zéro X, zéro Y, zéro Z" (chaque "zéro ..." devient sa propre caption au lieu d'être tronçonné à la
+limite de 3 mots/20 caractères sans égard au sens).
+
 **Quand ce script Python calcule des captions bout-à-bout (fin d'une caption = début exacte de la
 suivante), s'attendre à un chevauchement flottant `StaticGuard` sur QUASIMENT CHAQUE frontière, pas
 juste un cas isolé** (vérifié 2026-07-20, autoboost-25 : 9 chevauchements `StaticGuard` sur 43
@@ -435,6 +447,25 @@ Réutiliser la credential Google Sheets déjà connectée (`list_credentials({ty
 "googleSheets"})` → id credential), puis `execute_workflow({workflowId, executionMode:
 "manual"})` pour l'exécuter une fois. Vérifier ensuite en relisant le CSV export du Sheet
 (`.../export?format=csv&gid=<gid>`) que les bonnes colonnes ont changé.
+
+**Piège vérifié (2026-08-15, autoboost-57 Claude Code navigateur) : le Sheet expose DEUX jeux de
+colonnes quasi identiques — `Mot-clé CTA`/`Vidéo Finale` (avec accents, les vraies colonnes déjà
+utilisées par toutes les lignes précédentes) et `Mot-cle CTA`/`Video Finale` (sans accents,
+colonnes fantômes toujours vides sur toutes les lignes lues).** Ni le nom de la colonne demandé
+par une éventuelle instruction externe ("Video Finale" sans accent, ex. dans un prompt de routine)
+ni le fait que les deux existent dans le JSON renvoyé par une lecture Sheet ne garantit d'écrire au
+bon endroit — écrire dans la variante sans accent laisserait la vraie colonne `Vidéo Finale` vide et
+la ligne resterait invisible pour toute lecture ultérieure basée sur `Vidéo Finale`. Avant d'écrire,
+toujours vérifier sur une ligne déjà remplie (ex. la ligne juste au-dessus, déjà en `🟡 En attente
+validation`) laquelle des deux variantes contient réellement le lien, et cibler celle-là dans
+`columns.value`.
+
+**Gmail MCP : la disponibilité de `send_message` varie selon la session — ne pas supposer par
+défaut que seul `create_draft` est exposé** (contredit la note plus ancienne de ce fichier).
+Vérifié le 2026-08-15 (autoboost-57) : `mcp__Gmail__send_message` était bien disponible et a envoyé
+l'email de validation directement, sans passer par un brouillon. Toujours vérifier les outils Gmail
+réellement chargés (ex. via une recherche d'outils) avant de conclure qu'un envoi direct est
+impossible et de se rabattre sur un brouillon.
 
 ---
 
