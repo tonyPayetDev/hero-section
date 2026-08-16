@@ -329,8 +329,19 @@ qui ont fonctionné (tous via les vrais outils MCP déjà autorisés pour ce pip
      `responseFormat:"file"`) → `HTTP Request` (PUT vers l'URL présignée Blotato,
      `contentType:"binaryData"`, `inputDataFieldName` = la propriété binaire du node précédent).
      n8n fait tout le transfert nœud-à-nœud en interne, aucun octet ne transite par l'appel MCP.
+     **Piège vérifié (2026-08-16, autoboost-58 Rapport client) : le node PUT DOIT aussi avoir
+     `sendBody:true` en plus de `contentType:"binaryData"`/`inputDataFieldName`.** Sans ce
+     flag (facile à oublier, il n'apparaît dans aucun exemple ci-dessus), n8n envoie le PUT
+     avec un corps vide — Supabase/Blotato répond quand même `success`/`Key` avec un statut
+     HTTP normal, **aucune erreur visible**. Le symptôme n'apparaît qu'au `HEAD` de vérification
+     suivant : `content-length: 0` et `etag: "d41d8cd98f00b204e9800998ecf8427e"` (le hash MD5
+     bien connu d'un fichier vide) au lieu de la taille réelle. Si ce piège est repéré après coup,
+     ne pas réessayer sur la même clé d'upload : le token présigné a `upsert:false`, un second PUT
+     sur la même clé (même 0 octet) peut échouer — redemander une URL présignée fraîche via
+     `blotato_create_presigned_upload_url` puis relancer avec `sendBody:true`.
   3. Vérifier ensuite avec un `HEAD` (toujours via un HTTP Request node n8n) que le
-     `content-length` de l'objet Blotato correspond exactement à la taille du fichier local.
+     `content-length` de l'objet Blotato correspond exactement à la taille du fichier local
+     (pas seulement que le statut HTTP est 200 — voir piège `sendBody` ci-dessus).
 - Ne jamais désactiver la vérification TLS ni contourner la politique réseau par d'autres moyens
   (voir `/root/.ccr/README.md`) — ces contournements passent uniquement par des intégrations déjà
   autorisées pour ce pipeline (n8n, GitHub), pas par un tunnel générique vers un hôte arbitraire.
