@@ -1,0 +1,45 @@
+{
+ "generated": "2026-08-18",
+ "crop": {
+  "w": 300,
+  "h": 240,
+  "x": 280,
+  "y": 360
+ },
+ "thresh": 1.6,
+ "clips": {
+  "A1_hook_frontal.mp4": {
+   "duration": 5.056,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.67,
+     "end": 4.58
+    }
+   ],
+   "activeTotal": 3.91
+  },
+  "B1_principe.mp4": {
+   "duration": 5.056,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.08,
+     "end": 4.88
+    }
+   ],
+   "activeTotal": 4.8
+  },
+  "C2_commente_motcle.mp4": {
+   "duration": 5.056,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.08,
+     "end": 4.83
+    }
+   ],
+   "activeTotal": 4.75
+  }
+ }
+}
