@@ -1,0 +1,64 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Cap,Outfit,82,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,5.0,0,2,70,70,300,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.40,0:00:00.94,Cap,,0,0,0,,Écoute bien.
+Dialogue: 0,0:00:00.94,0:00:01.38,Cap,,0,0,0,,Tu crois
+Dialogue: 0,0:00:01.38,0:00:02.23,Cap,,0,0,0,,te connaître.
+Dialogue: 0,0:00:02.23,0:00:02.69,Cap,,0,0,0,,Tu te racontes
+Dialogue: 0,0:00:02.69,0:00:03.21,Cap,,0,0,0,,la même histoire
+Dialogue: 0,0:00:03.21,0:00:04.04,Cap,,0,0,0,,depuis des années.
+Dialogue: 0,0:00:04.13,0:00:04.60,Cap,,0,0,0,,Tu vas aller
+Dialogue: 0,0:00:04.60,0:00:05.33,Cap,,0,0,0,,sur Claude.
+Dialogue: 0,0:00:05.33,0:00:05.64,Cap,,0,0,0,,Et tu vas
+Dialogue: 0,0:00:05.64,0:00:05.99,Cap,,0,0,0,,le tester
+Dialogue: 0,0:00:05.99,0:00:06.37,Cap,,0,0,0,,deux fois.
+Dialogue: 0,0:00:06.37,0:00:07.17,Cap,,0,0,0,,Sur un Claude
+Dialogue: 0,0:00:07.17,0:00:07.41,Cap,,0,0,0,,VIDE.
+Dialogue: 0,0:00:07.41,0:00:08.09,Cap,,0,0,0,,Et sur celui
+Dialogue: 0,0:00:08.09,0:00:08.44,Cap,,0,0,0,,qui a déjà
+Dialogue: 0,0:00:08.44,0:00:08.82,Cap,,0,0,0,,toutes tes
+Dialogue: 0,0:00:08.82,0:00:09.62,Cap,,0,0,0,,conversations.
+Dialogue: 0,0:00:09.75,0:00:10.42,Cap,,0,0,0,,Tu lui demandes ça,
+Dialogue: 0,0:00:10.42,0:00:10.96,Cap,,0,0,0,,en dix questions.
+Dialogue: 0,0:00:10.96,0:00:11.89,Cap,,0,0,0,,Que pourrais-tu
+Dialogue: 0,0:00:11.89,0:00:12.27,Cap,,0,0,0,,me demander
+Dialogue: 0,0:00:12.27,0:00:12.69,Cap,,0,0,0,,sur moi-même
+Dialogue: 0,0:00:12.69,0:00:13.10,Cap,,0,0,0,,pour révéler
+Dialogue: 0,0:00:13.10,0:00:13.55,Cap,,0,0,0,,quelque chose
+Dialogue: 0,0:00:13.55,0:00:13.96,Cap,,0,0,0,,que moi-même
+Dialogue: 0,0:00:13.96,0:00:14.56,Cap,,0,0,0,,j'ignore ?
+Dialogue: 0,0:00:14.70,0:00:15.51,Cap,,0,0,0,,Et tu précises.
+Dialogue: 0,0:00:15.51,0:00:16.22,Cap,,0,0,0,,UNE PAR UNE.
+Dialogue: 0,0:00:16.22,0:00:16.91,Cap,,0,0,0,,Pas toutes
+Dialogue: 0,0:00:16.91,0:00:17.52,Cap,,0,0,0,,à la fois.
+Dialogue: 0,0:00:17.52,0:00:18.09,Cap,,0,0,0,,C'est ce détail
+Dialogue: 0,0:00:18.09,0:00:18.93,Cap,,0,0,0,,qui change tout.
+Dialogue: 0,0:00:19.20,0:00:19.80,Cap,,0,0,0,,Le Claude vide
+Dialogue: 0,0:00:19.80,0:00:20.65,Cap,,0,0,0,,te pose des questions
+Dialogue: 0,0:00:20.65,0:00:21.27,Cap,,0,0,0,,intelligentes.
+Dialogue: 0,0:00:21.27,0:00:22.21,Cap,,0,0,0,,Et froides.
+Dialogue: 0,0:00:22.35,0:00:23.10,Cap,,0,0,0,,Celui qui te connaît
+Dialogue: 0,0:00:23.10,0:00:23.73,Cap,,0,0,0,,te pose la question
+Dialogue: 0,0:00:23.73,0:00:24.19,Cap,,0,0,0,,que tu évites
+Dialogue: 0,0:00:24.19,0:00:24.99,Cap,,0,0,0,,depuis six mois.
+Dialogue: 0,0:00:25.32,0:00:26.05,Cap,,0,0,0,,Tu vas être choqué.
+Dialogue: 0,0:00:26.05,0:00:27.08,Cap,,0,0,0,,Tu vas être bluffé
+Dialogue: 0,0:00:27.08,0:00:27.75,Cap,,0,0,0,,par les questions.
+Dialogue: 0,0:00:27.75,0:00:28.56,Cap,,0,0,0,,Tu vas découvrir
+Dialogue: 0,0:00:28.56,0:00:29.32,Cap,,0,0,0,,comment tu es.
+Dialogue: 0,0:00:30.08,0:00:30.94,Cap,,0,0,0,,C'est indéniable.
+Dialogue: 0,0:00:30.94,0:00:31.78,Cap,,0,0,0,,Irréfutable.
+Dialogue: 0,0:00:31.78,0:00:32.76,Cap,,0,0,0,,Commente MIROIR,
+Dialogue: 0,0:00:32.76,0:00:33.40,Cap,,0,0,0,,je t'envoie
+Dialogue: 0,0:00:33.40,0:00:34.43,Cap,,0,0,0,,les dix questions.

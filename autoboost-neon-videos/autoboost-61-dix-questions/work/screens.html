@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>screens</title>
+<style>
+@font-face { font-family:'Inter'; src:url('fonts/Inter-700-latin.woff2') format('woff2'); font-weight:700; }
+@font-face { font-family:'Inter'; src:url('fonts/Inter-400-latin.woff2') format('woff2'); font-weight:400; }
+:root{
+  --bg:#08080a; --ink:#ffffff; --dim:#8b8b94;
+  --neon:#FFE600; --vio:#A855F7; --org:#FF8A3D;
+  --panel:#121216; --line:rgba(255,255,255,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden}
+body{
+  background:
+    radial-gradient(900px 700px at 50% 8%, rgba(168,85,247,.13), transparent 65%),
+    radial-gradient(760px 620px at 50% 96%, rgba(255,230,0,.09), transparent 62%),
+    var(--bg);
+  font-family:'Inter','DejaVu Sans',sans-serif; color:var(--ink);
+  display:flex; flex-direction:column;
+}
+body::before{
+  content:''; position:absolute; inset:0;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:120px 120px; opacity:.30; pointer-events:none;
+}
+.wrap{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:150px 60px 210px}
+.tag{
+  align-self:flex-start;display:flex;align-items:center;gap:12px;
+  font-size:23px;font-weight:700;letter-spacing:.22em;color:var(--neon);
+  border:2px solid rgba(255,230,0,.42);border-radius:100px;padding:12px 26px;margin-bottom:44px;
+}
+.tag i{width:12px;height:12px;border-radius:50%;background:var(--neon);box-shadow:0 0 16px var(--neon);font-style:normal}
+h1{font-size:74px;font-weight:700;line-height:1.06;letter-spacing:-.022em;margin-bottom:16px}
+h1.sm{font-size:56px;margin-bottom:34px}
+h1 em{font-style:normal;color:var(--neon)}
+h1 u{text-decoration:none;color:var(--vio)}
+.sub{font-size:31px;font-weight:400;color:var(--dim);line-height:1.4;margin-bottom:46px}
+
+/* ---- app panel ---- */
+.panel{background:var(--panel);border:2px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 34px 90px rgba(0,0,0,.62)}
+.bar{display:flex;align-items:center;gap:11px;padding:19px 24px;background:#191920;border-bottom:2px solid var(--line)}
+.dot{width:15px;height:15px;border-radius:50%;background:#3a3a44}
+.bar .who{margin-left:14px;font-size:23px;font-weight:700;color:#c9c9d2}
+.chip{margin-left:auto;font-size:19px;font-weight:700;padding:7px 15px;border-radius:8px;letter-spacing:.05em}
+.chip.cold{background:rgba(139,139,148,.16);color:#a9a9b4;border:2px solid rgba(139,139,148,.34)}
+.chip.warm{background:rgba(255,230,0,.14);color:var(--neon);border:2px solid rgba(255,230,0,.42)}
+.body{padding:30px 28px;display:flex;flex-direction:column;gap:18px}
+
+/* chat bubbles */
+.msg{font-size:29px;line-height:1.42;padding:22px 25px;border-radius:18px;max-width:100%}
+.me{align-self:flex-end;background:rgba(168,85,247,.17);border:2px solid rgba(168,85,247,.42);color:#efe6ff}
+.ai{align-self:flex-start;background:#1c1c23;border:2px solid var(--line);color:#e2e2ea}
+.ai.sting{border-color:rgba(255,230,0,.55);background:rgba(255,230,0,.07);color:#fff}
+
+/* input */
+.input{display:flex;align-items:center;gap:14px;margin:8px 26px 26px;padding:22px 24px;background:#0e0e13;border:2px solid rgba(168,85,247,.45);border-radius:16px}
+.input .txt{font-size:28px;line-height:1.35;color:#e9e9f2;flex:1}
+.caret{display:inline-block;width:3px;height:30px;background:var(--vio);vertical-align:-5px;margin-left:3px}
+.send{width:52px;height:52px;border-radius:12px;background:var(--vio);display:grid;place-items:center;font-size:26px;color:#fff;flex:none}
+
+/* ---- split ---- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.col{display:flex;flex-direction:column;transition:none}
+.col .panel{display:flex;flex-direction:column}
+.col .body{gap:16px}
+.col.off{opacity:.30;filter:grayscale(1)}
+.col.on .panel{border-color:rgba(255,230,0,.60);box-shadow:0 0 0 4px rgba(255,230,0,.14),0 34px 90px rgba(0,0,0,.62)}
+.coltitle{font-size:26px;font-weight:700;letter-spacing:.1em;margin-bottom:14px;text-align:center}
+.coltitle.l{color:var(--dim)}
+.coltitle.r{color:var(--neon)}
+.q{font-size:25px;line-height:1.4;padding:18px 20px;border-radius:14px;background:#1c1c23;border:2px solid var(--line);color:#d5d5de}
+.col.on .q{border-color:rgba(255,230,0,.28)}
+.q.big{font-size:30px;color:#fff;border-color:rgba(255,230,0,.6);background:rgba(255,230,0,.08)}
+
+/* ---- numbered list ---- */
+.list{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;align-items:center;gap:18px;padding:20px 22px;background:var(--panel);border:2px solid var(--line);border-radius:16px}
+.row .n{width:52px;height:52px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:25px;font-weight:700;background:#22222b;color:#8b8b94}
+.row.act{border-color:rgba(255,230,0,.6);background:rgba(255,230,0,.07)}
+.row.act .n{background:var(--neon);color:#111}
+.row .t{font-size:27px;color:#dcdce4;line-height:1.35}
+.row.lock .t{filter:blur(7px);opacity:.55}
+
+/* ---- big statement ---- */
+.state{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:26px}
+.state .big{font-size:118px;font-weight:700;line-height:.98;letter-spacing:-.03em}
+.state .big span{color:var(--neon)}
+.state .small{font-size:34px;color:var(--dim)}
+
+/* ---- endcard ---- */
+.end{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:34px}
+.end .kw{font-size:150px;font-weight:700;color:var(--neon);letter-spacing:-.02em;text-shadow:0 0 60px rgba(255,230,0,.45)}
+.end .base{font-size:40px;color:#e6e6ee;line-height:1.35}
+.end .logo{margin-top:24px;font-size:28px;font-weight:700;letter-spacing:.34em;color:var(--dim)}
+
+/* ---- fake comment field (overlay strip) ---- */
+body.strip{background:transparent;width:1080px;height:340px}
+body.strip::before{display:none}
+.cbar{width:1080px;padding:26px 40px;display:flex;align-items:center;gap:20px}
+.cfield{flex:1;display:flex;align-items:center;gap:14px;background:rgba(10,10,14,.92);border:3px solid rgba(255,230,0,.75);border-radius:100px;padding:24px 32px;box-shadow:0 0 44px rgba(255,230,0,.28)}
+.cfield .ph{font-size:34px;color:#8b8b94}
+.cfield .typed{font-size:38px;font-weight:700;color:var(--neon);letter-spacing:.06em}
+.cfield .cur{display:inline-block;width:4px;height:38px;background:var(--neon);vertical-align:-6px;margin-left:4px}
+.cbtn{width:78px;height:78px;border-radius:50%;background:var(--neon);display:grid;place-items:center;flex:none;box-shadow:0 0 34px rgba(255,230,0,.5)}
+.cbtn svg{width:38px;height:38px}
+.cbtn.dim{background:#2a2a33}
+.cbtn.dim svg path{fill:#6b6b76}
+.bottomline{position:absolute;left:0;right:0;bottom:0;height:8px;background:linear-gradient(90deg,var(--neon),var(--org),var(--vio));z-index:5}
+</style>
+</head>
+<body>
+<div class="wrap" id="w"></div>
+<div class="bottomline" id="bl"></div>
+<script>
+const W = document.getElementById('w');
+const s = decodeURIComponent(location.hash.slice(1) || 'deux_b');
+
+const PROMPT = "Que pourrais-tu me demander sur moi-même pour révéler quelque chose que moi-même j'ignore ?";
+
+// generic, cold — what a blank Claude asks
+const COLD = [
+  "Quelle décision récente as-tu prise sans savoir pourquoi&nbsp;?",
+  "Qu'est-ce que tu remets à demain depuis longtemps&nbsp;?",
+  "Quelle qualité t'attribue-t-on que tu ne vois pas&nbsp;?"
+];
+// context-aware — invented, pointed, ZERO real personal data
+const WARM = [
+  "Tu relances tout le monde. Qui ne te relance jamais&nbsp;?",
+  "Tu appelles ça «&nbsp;bientôt&nbsp;» depuis quatre mois. C'est quoi le vrai blocage&nbsp;?",
+  "Tu répares les systèmes des autres. Le tien tourne sans toi depuis quand&nbsp;?"
+];
+
+const tag = (t) => `<div class="tag"><i></i>${t}</div>`;
+
+function head(t, sub){ return (t?`<h1>${t}</h1>`:'') + (sub?`<div class="sub">${sub}</div>`:''); }
+
+function panel(who, chip, chipCls, inner, extra=''){
+  return `<div class="panel ${extra}">
+    <div class="bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="who">${who}</div><div class="chip ${chipCls}">${chip}</div></div>
+    <div class="body">${inner}</div></div>`;
+}
+
+function render(){
+  // --- S3 : the two Claudes ---
+  if (s.startsWith('deux')) {
+    const both = s === 'deux_b';
+    W.innerHTML = tag('LE TEST') + `<h1 class="sm">Deux Claude.<br><em>Le même prompt.</em></h1>` +
+      `<div class="split">
+        <div class="col on"><div class="coltitle l">CLAUDE VIDE</div>
+          ${panel('Nouvelle conversation','0 SOUVENIR','cold','<div class="q">Aucun historique.</div><div class="q">Il ne sait rien de toi.</div>')}</div>
+        <div class="col on" style="${both?'':'opacity:0'}"><div class="coltitle r">TON CLAUDE</div>
+          ${panel('Ton espace','4 MOIS','warm','<div class="q">Tes projets.</div><div class="q">Tes doutes. Tes retours en arrière.</div>')}</div>
+      </div>`;
+    return;
+  }
+  // --- S4 : the prompt being typed ---
+  if (s.startsWith('prompt')) {
+    const n = Math.min(PROMPT.length, parseInt(s.split('_')[1] || '0', 10));
+    const txt = PROMPT.slice(0, n).replace(/ /g,'&nbsp;');
+    W.innerHTML = tag('LE PROMPT') + head('Tu lui demandes<br><em>exactement ça.</em>','') +
+      `<div class="panel">
+        <div class="bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <div class="who">Claude</div><div class="chip warm">10 QUESTIONS</div></div>
+        <div class="input"><div class="txt">${txt}<span class="caret"></span></div>
+          <div class="send">↑</div></div>
+      </div>`;
+    return;
+  }
+  // --- S6 : one by one ---
+  if (s.startsWith('unepar')) {
+    const b = s === 'unepar_b';
+    W.innerHTML = tag('LA CONSIGNE') +
+      `<div class="state">
+        <div class="big">UNE<br>PAR <span>UNE</span></div>
+        <div class="small">${b?'Pas les dix d\'un coup.':'&nbsp;'}</div>
+        <div class="list" style="width:100%;margin-top:10px">
+          <div class="row act"><div class="n">1</div><div class="t">Question 1</div></div>
+          <div class="row lock"><div class="n">2</div><div class="t">Question suivante verrouillée</div></div>
+          <div class="row lock"><div class="n">3</div><div class="t">Question suivante verrouillée</div></div>
+        </div>
+      </div>`;
+    return;
+  }
+  // --- S7 / S8 : THE SPLIT ---
+  if (s.startsWith('split')) {
+    const right = s === 'split_r';
+    const coldQ = COLD.map(q=>`<div class="q">${q}</div>`).join('');
+    const warmQ = right
+      ? WARM.map((q,i)=>`<div class="q${i===2?' big':''}">${q}</div>`).join('')
+      : WARM.map(q=>`<div class="q">${q}</div>`).join('');
+    W.innerHTML = tag(right?'AVEC TON HISTORIQUE':'CLAUDE VIDE') +
+      `<h1 class="sm">${right?'Celui qui te connaît.<br><em>Ça pique.</em>':'Le même prompt.<br><u>Deux réponses.</u>'}</h1>
+      <div class="split">
+        <div class="col ${right?'off':'on'}"><div class="coltitle l">CLAUDE VIDE</div>
+          ${panel('Nouvelle conversation','0 SOUVENIR','cold',coldQ)}</div>
+        <div class="col ${right?'on':'off'}"><div class="coltitle r">TON CLAUDE</div>
+          ${panel('Ton espace','4 MOIS','warm',warmQ)}</div>
+      </div>`;
+    return;
+  }
+  // --- S11 : endcard ---
+  if (s === 'endcard') {
+    W.innerHTML = `<div class="end">
+        <div class="base">Commente le mot</div>
+        <div class="kw">MIROIR</div>
+        <div class="base">je t'envoie les 10 questions.</div>
+        <div class="logo">AUTOMATION BOOST</div>
+      </div>`;
+    return;
+  }
+  // --- comment field strip (overlay on the CTA shot) ---
+  if (s.startsWith('cta')) {
+    document.body.className = 'strip';
+    document.getElementById('bl').style.display = 'none';
+    const n = parseInt(s.split('_')[1] || '0', 10);   // 0..6, 7 = sent
+    const word = 'MIROIR';
+    const sent = n > word.length;
+    const typed = word.slice(0, Math.min(n, word.length));
+    W.outerHTML = `<div class="cbar">
+      <div class="cfield">
+        ${typed ? `<span class="typed">${typed}</span>` : `<span class="ph">Ajoute un commentaire…</span>`}
+        ${sent ? '' : '<span class="cur"></span>'}
+      </div>
+      <div class="cbtn ${typed?'':'dim'}"><svg viewBox="0 0 24 24"><path fill="#111" d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></div>
+    </div>`;
+    return;
+  }
+  W.innerHTML = head('?', s);
+}
+render();
+document.documentElement.setAttribute('data-ready','1');
+</script>
+</body>
+</html>

@@ -20,10 +20,18 @@ const ENV = { ...process.env, PATH: FFDIR + ':' + process.env.PATH };
 const CLIPS = process.argv[2] || '/work/autoboost-neon-videos/_shared/avatar-bank/clips';
 const OUT = process.argv[3] || '/work/autoboost-neon-videos/_shared/avatar-bank/lips-map.json';
 
-// mouth box in the bank's native 720x1280 framing (measured: mouth sits near 360,470)
-const CROP = { w: 300, h: 240, x: 280, y: 360 };
+// mouth box in the bank's native 720x1280 framing (measured: mouth sits near 360,470).
+// Override with LIPS_CROP="w,h,x,y" when a batch of clips uses a different framing —
+// a box tuned for one shot scale lands on the eyes (blinks) or the torso in another,
+// which is exactly the false-positive trap documented in LIPS-MAP.md.
+const CROP = (() => {
+  const o = process.env.LIPS_CROP;
+  if (!o) return { w: 300, h: 240, x: 280, y: 360 };
+  const [w, h, x, y] = o.split(',').map(Number);
+  return { w, h, x, y };
+})();
 const GW = 48, GH = 48;
-const THRESH = 1.6;   // mean abs diff below this = mouth effectively still
+const THRESH = Number(process.env.LIPS_THRESH ?? 1.6);   // mean abs diff below this = mouth effectively still
 const MIN_ACTIVE = 0.30; // s — ignore shorter blips
 const MIN_GAP = 0.20;    // s — bridge micro-pauses inside a sentence
 

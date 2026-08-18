@@ -1,0 +1,53 @@
+// GATE — run after the build, BEFORE assembling.
+// Flags any avatar shot whose SOURCE window falls in a still (non-speaking) part of the
+// bank clip while the voice track is active. Reads shot params straight out of order.json
+// so it can never drift from the actual cut.
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+
+const FFDIR = '/home/claude/tools/ffmpeg-build/ffmpeg-7.0.2-amd64-static';
+const ENV = { ...process.env, PATH: FFDIR + ':' + process.env.PATH };
+const P = process.argv[2] || '/work/autoboost-neon-videos/autoboost-61-dix-questions';
+const MAP = process.argv[3] || '/work/autoboost-neon-videos/_shared/avatar-bank/lips-map-d.json';
+const MAXBAD = Number(process.argv[4] ?? 6);   // frames tolerated per shot (6f = 0.20s)
+
+const { order, marks } = JSON.parse(fs.readFileSync(`${P}/work/order.json`, 'utf8'));
+const LM = JSON.parse(fs.readFileSync(MAP, 'utf8'));
+
+// NB: silent windows print RMS_level=-inf. Filtering those out with a numeric grep
+// (as the original version did) DELETES array entries and shifts every later index,
+// which makes the gate fire on the wrong timestamps. Keep every window, map -inf to -99.
+const rmsRaw = spawnSync('bash', ['-c',
+  `ffmpeg -v error -i "${P}/work/voice_bed.wav" -ac 1 -ar 48000 -af "asetnsamples=n=1600,astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level:file=-" -f null - 2>&1 | grep '^lavfi.astats.Overall.RMS_level='`],
+  { env: ENV, maxBuffer: 1 << 28, encoding: 'utf8' }).stdout.trim().split('\n');
+const rms = rmsRaw.map(l => {
+  const v = l.split('=')[1];
+  return (v === '-inf' || v === undefined) ? -99 : Number(v);
+});
+if (Math.abs(rms.length - Math.round(36.6 * 30)) > 3)
+  console.warn(`WARN: ${rms.length} RMS windows, expected ~1098 — check alignment`);
+const voicedAt = (t) => (rms[Math.round(t * 30)] ?? -99) > -34;
+
+let bad = 0;
+console.log('shot  src              srcWindow        lips-active zone            still&voiced');
+for (const id of order) {
+  const m = marks[id];
+  if (m.kind !== 'avatar') continue;
+  const act = LM.clips[m.src].active;
+  const inActive = (ts) => act.some(w => ts >= w.start && ts <= w.end);
+  let n = 0; const hits = [];
+  for (let i = 0; i < m.frames; i++) {
+    const tOut = m.start + i / 30;
+    const tSrc = m.ss + (i / 30) * m.speed;
+    if (!inActive(tSrc) && voicedAt(tOut)) { n++; hits.push(tOut); }
+  }
+  const srcEnd = m.ss + (m.frames / 30) * m.speed;
+  const zone = act.map(w => w.start.toFixed(2) + '-' + w.end.toFixed(2)).join(',');
+  const viol = n >= MAXBAD;
+  if (viol) bad++;
+  console.log(id.padEnd(5) + ' ' + m.src.replace('.mp4', '').padEnd(16) + ' ' +
+    `${m.ss.toFixed(2)}-${srcEnd.toFixed(2)}`.padEnd(15) + '  ' + zone.padEnd(25) +
+    String(n).padStart(6) + (viol ? `   <== ${(n / 30).toFixed(2)}s @ ${hits[0].toFixed(2)}-${hits[hits.length - 1].toFixed(2)}` : ''));
+}
+console.log(bad ? `\nFAIL — ${bad} shot(s) violate the lips-active rule` : '\nPASS — no shot violates the lips-active rule');
+process.exit(bad ? 1 : 0);

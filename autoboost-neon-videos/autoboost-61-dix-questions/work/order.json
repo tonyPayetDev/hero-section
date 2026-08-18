@@ -1,0 +1,22 @@
+{
+  "fps": 30,
+  "totalFrames": 1098,
+  "order": ["S1","S2","S3","S4","S5","S6","S7","S8","S9","S10","S11"],
+  "voice": {
+    "t01": 0.40, "t02": 4.13, "t03": 9.75, "t04": 14.70, "t05": 17.52,
+    "t06": 19.20, "t07": 22.35, "t08": 25.32, "t09": 30.08
+  },
+  "marks": {
+    "S1":  { "kind":"avatar", "src":"D1_hook_frontal.mp4",      "ss":4.56, "frames":120, "speed":1.0, "start":0.0000,  "zoom":1.00, "yoff":0.34, "role":"hook — Écoute bien" },
+    "S2":  { "kind":"avatar", "src":"D1_hook_frontal.mp4",      "ss":0.45, "frames":87,  "speed":1.0, "start":4.0000,  "zoom":1.14, "yoff":0.32, "role":"punch-in — tu vas le tester deux fois" },
+    "S3":  { "kind":"screen", "png":"deux",    "frames":85,  "start":6.9000,  "role":"les deux Claude apparaissent" },
+    "S4":  { "kind":"screen", "png":"prompt",  "frames":149, "start":9.7333,  "role":"le prompt tapé en direct" },
+    "S5":  { "kind":"avatar", "src":"D2_insistance_doigts.mp4", "ss":5.55, "frames":84,  "speed":1.0, "start":14.7000, "zoom":1.06, "yoff":0.33, "role":"INSISTANCE doigts — une par une" },
+    "S6":  { "kind":"screen", "png":"unepar",  "frames":51,  "start":17.5000, "role":"UNE PAR UNE" },
+    "S7":  { "kind":"screen", "png":"split_l", "frames":94,  "start":19.2000, "role":"SPLIT — Claude vide actif" },
+    "S8":  { "kind":"screen", "png":"split_r", "frames":89,  "start":22.3333, "role":"SPLIT — ton Claude actif, la question qui pique" },
+    "S9":  { "kind":"avatar", "src":"D4_relance_barbe.mp4",     "ss":4.88, "frames":122, "speed":1.0, "start":25.3000, "zoom":1.10, "yoff":0.32, "role":"RELANCE barbe+lunettes — tu vas être choqué" },
+    "S10": { "kind":"avatar", "src":"D3_cta_lunettes.mp4",      "ss":0.00, "frames":169, "speed":1.0, "start":29.3667, "zoom":1.02, "yoff":0.31, "role":"CTA — 0.00-0.70 = met ses lunettes, SILENCE voulu, voix seulement à partir de 30.08" },
+    "S11": { "kind":"screen", "png":"endcard", "frames":48,  "start":35.0000, "role":"carton final MIROIR" }
+  }
+}
