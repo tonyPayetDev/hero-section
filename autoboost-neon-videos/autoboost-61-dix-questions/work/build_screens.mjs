@@ -51,7 +51,7 @@ seq('S6', [{ png: 'unepar_a', frames: 16 }, { png: 'unepar_b', frames: 35 }], 1.
 
 // --- S7 / S8 : the split -> 94 f / 89 f
 seq('S7', [{ png: 'split_l', frames: 94 }], 1.05);
-seq('S8', [{ png: 'split_r', frames: 89 }], 1.06);
+seq('S8', [{ png: 'split_r1', frames: 22 }, { png: 'split_r2', frames: 22 }, { png: 'split_r3', frames: 45 }], 1.06);
 
 // --- S11 : endcard -> 48 f
 seq('S11', [{ png: 'endcard', frames: 48 }], 1.05);

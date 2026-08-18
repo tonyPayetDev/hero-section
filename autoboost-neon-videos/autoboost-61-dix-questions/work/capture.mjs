@@ -24,7 +24,7 @@ states.push('deux_a', 'deux_b');
 for (let n = 0; n <= PROMPT_LEN; n += 3) states.push('prompt_' + n);
 states.push('prompt_' + PROMPT_LEN);
 states.push('unepar_a', 'unepar_b');
-states.push('split_l', 'split_r');
+states.push('split_l', 'split_r1', 'split_r2', 'split_r3');
 states.push('endcard');
 for (let n = 0; n <= 7; n++) states.push('cta_' + n);
 

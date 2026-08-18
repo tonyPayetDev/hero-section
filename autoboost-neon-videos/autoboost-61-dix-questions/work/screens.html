@@ -187,11 +187,16 @@ function render(){
   }
   // --- S7 / S8 : THE SPLIT ---
   if (s.startsWith('split')) {
-    const right = s === 'split_r';
+    // split_l = blank Claude lit ; split_r1..r3 = the context-aware questions landing one by one
+    const right = s.startsWith('split_r');
+    const shown = right ? (parseInt(s.slice('split_r'.length), 10) || 3) : 3;
     const coldQ = COLD.map(q=>`<div class="q">${q}</div>`).join('');
-    const warmQ = right
-      ? WARM.map((q,i)=>`<div class="q${i===2?' big':''}">${q}</div>`).join('')
-      : WARM.map(q=>`<div class="q">${q}</div>`).join('');
+    const warmQ = WARM.map((q,i)=>{
+      if (!right) return `<div class="q">${q}</div>`;
+      if (i >= shown) return `<div class="q" style="opacity:0">${q}</div>`;
+      const isLast = (i === 2 && shown === 3);
+      return `<div class="q${isLast?' big':''}">${q}</div>`;
+    }).join('');
     W.innerHTML = tag(right?'AVEC TON HISTORIQUE':'CLAUDE VIDE') +
       `<h1 class="sm">${right?'Celui qui te connaît.<br><em>Ça pique.</em>':'Le même prompt.<br><u>Deux réponses.</u>'}</h1>
       <div class="split">
