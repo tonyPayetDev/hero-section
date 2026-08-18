@@ -262,6 +262,17 @@ un aller-retour complet (l'estimation manuelle de timing mot-à-mot + regroupeme
 en Python : pondérer chaque mot par sa longueur + bonus de pause sur ponctuation finale, normaliser
 sur la durée réelle du MP3 via `ffprobe`, puis regrouper avec la double contrainte).
 
+**Implémentation qui a produit 0 débordement sans aucune correction manuelle (2026-08-18,
+autoboost-60 Monitoring erreurs n8n) : vérifier le plafond de caractères AVANT d'ajouter le mot au
+groupe courant, pas seulement en flushant après coup une fois la ligne trop longue.** Calculer
+`longueur_prospective = len(groupe_actuel + " " + mot)` et flush le groupe (sans le nouveau mot)
+dès que cette longueur prospective dépasse ~20 caractères (MAJUSCULES, avant d'ajouter), puis
+démarrer un nouveau groupe avec ce mot. Combiné à la règle ponctuation (flush inconditionnel sur
+`.!?`, flush si ≥1 mot sur `,;:`) et au plafond de 3 mots, ce contrôle *avant insertion* a produit
+49 captions sur un script de 122 mots, toutes ≤20 caractères, validées ensuite par extraction de
+frames réelles à 22 timestamps — aucun ajustement manuel nécessaire après coup, contrairement aux
+sessions précédentes qui découpaient d'abord puis coupaient les groupes trop longs.
+
 **Affiner ce script pour forcer une coupure de caption à CHAQUE signe de ponctuation (virgule
 comprise), pas seulement quand le groupe courant a déjà ≥2 mots** (vérifié 2026-08-15, autoboost-57
 Claude Code navigateur). Une condition du type "ne flush qu'à partir de 2 mots" laisse un mot de fin
