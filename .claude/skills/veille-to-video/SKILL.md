@@ -34,6 +34,21 @@ Créer une vidéo promo sociale française au format 9:16 à partir d'un script 
 - **Visuels** : utiliser de vrais schémas, icônes, dashboards, graphes, flèches de flux, panneaux UI. Éviter les slides façon PowerPoint/cartes seules, les filtres noirs sur le texte, la double exposition et les écrans statiques.
 - **CTA** : pour les modèles/templates gratuits, dire que le modèle est gratuit et demander de commenter le mot-clé (colonne `Mot-clé CTA` du Sheet — RESTO, FREELANCE, LEADS, AGENT, VIDEO, PROSPECTION, NOTION, PINTEREST, IDEAS, LIVRE, SITE, AVATAR, WHATSAPP, REPURPOSE, BLOG, VEILLE, CREATEUR, PAGE, DEVIS, SEO, SEEDANCE...) plutôt que de donner l'URL du site directement.
 
+### 🔒 Choré avatar + ligne néon + sound design (VERROUILLÉ 2026-08-06, demande Tony)
+
+Règles imposées par Tony — les appliquer par défaut sur toute vidéo Autoboost, sauf contre-ordre explicite :
+
+- **L'avatar n'est PAS présent en continu.** Il apparaît par fenêtres courtes de **3 à 5 s** puis disparaît (fade). Entre deux apparitions, l'écran ne montre que les scènes + la ligne néon. Ne jamais laisser l'avatar visible toute la durée.
+- **Deux formes d'avatar, en alternance** (même asset `assets/avatar-loop.mp4`, juste un cadrage CSS différent) :
+  1. **Cercle** néon (anneau jaune + orbit + pulse sur le beat) — typiquement sur le hook/début.
+  2. **Bandeau 3:4 plein largeur en bas** (`#avatar-wide` : `width:1080px; height:762px; bottom:0`, vidéo en `width:1080;height:1440;object-fit:cover;object-position:top;translate(-50%,-42%)`, bords fondus au fond par un dégradé latéral + bas) — typiquement sur le CTA, la voix off au premier plan. Le `data-start/duration` de chaque `<video>` est limité à sa fenêtre pour ne pas décoder l'avatar tout le long.
+- **Ligne néon réactive à la musique** (`#neon-line`) : barre horizontale plein largeur (~5px, dégradé jaune→violet→jaune, glow), présente toute la vidéo, **clignote sur CHAQUE beat** (pulse `scaleY` 2.2–3.2 → 1 + `opacity`, downbeat plus fort tous les 4). Placée à `top:1158px` = elle sert aussi de **bord haut du bandeau 3:4** quand il est visible (alignement exact `1920-762`).
+- **Sound design** (réf. cible Tony : TikTok `https://vm.tiktok.com/ZN8dTTfxy/`) :
+  - Musique de fond **duckée bas (~0.16)** en permanence sous la **voix off à 1.0** — la voix doit toujours dominer (mesure de contrôle : fenêtre parlée ~10-12 dB au-dessus de la musique seule via `volumedetect`).
+  - **Beat-sync réel** : mesurer le beat sur le fichier musical (grille `BEAT0`/`BEATP`, ~80.8 BPM = `BEATP≈0.743s` sur `flowers_horror.mp3`) et piloter ligne néon + pulses avatar + flashs dessus. Ne jamais inventer un tempo au hasard.
+  - **SFX impact** sur chaque drop de scène (volume ~0.24-0.28), palette `_shared/sfx-palette/v1` (voir mémoire `reference_sfx_palette_v1`).
+  - ⚠️ **Track exact non encore verrouillé** : la réf TikTok n'est pas téléchargeable ici (tokscript non-Pro + capture headless TikTok bloquée). Demander à Tony le `.mp3` de la trend pour figer le morceau ; en attendant, `flowers_horror.mp3` reste la base beat-sync.
+
 ---
 
 ## Workflow
@@ -238,15 +253,18 @@ Si l'espace disque bloque le rendu, ne nettoyer QUE : cache Chrome Puppeteer/Hyp
 
 ### Étape 8 — Publier sur Blotato
 
-1. `blotato_list_accounts` pour retrouver le bon compte (ex. `automatisationboost` sur Instagram, comptes TikTok existants) — **toujours confirmer avec l'utilisateur quel compte/plateforme cibler** avant de publier, la publication est visible publiquement et irréversible. Comptes de référence déjà utilisés (2026-07-09) : Instagram `automatisationboost` (id `54617`), TikTok `tonypayet4` (id `36488`).
+1. `blotato_list_accounts` pour retrouver les comptes Autoboost — **TikTok, Instagram, LinkedIn, YouTube et Facebook** — puis vérifier les comptes avant toute publication publique. Comptes de référence : Instagram `automatisationboost` (id `54617`), TikTok `tonypayet4` (id `36488`), LinkedIn `Payet Tony` (id `25882`). Les IDs YouTube et Facebook doivent être récupérés avec `blotato_list_accounts` et ne doivent jamais être devinés.
 2. Uploader le MP4 rendu via `blotato_create_presigned_upload_url` (récupère `presignedUrl` + `publicUrl`) puis `curl -X PUT "<presignedUrl>" --data-binary "@<fichier local>" -H "Content-Type: video/mp4"`. **Ne pas passer l'URL de la page de prévisualisation Coolify directement en `mediaUrls`** — testé et confirmé : Blotato renvoie `"Failed to fetch media URL: 403 Forbidden"` même si l'URL est publique et accessible en curl direct (protection réseau côté Blotato ou Cloudflare, cause exacte non identifiée). Toujours passer par l'upload presigned, jamais par l'URL de preview.
 3. `blotato_create_post` avec la légende = `Texte TikTok + Hashtags` de la ligne du Sheet, en respectant les champs requis par plateforme (ex. TikTok : `privacyLevel`, `disabledComments`, etc. — voir `requiredFields` renvoyés par `blotato_list_accounts`).
-4. **Programmation** (règles fixées par Tony le 2026-07-17) : passer `scheduledTime` (ISO 8601 UTC)
-   à `blotato_create_post` plutôt que publier immédiatement. Heure Réunion (UTC+4) → soustraire 4h
-   pour l'UTC (ex. 18h Réunion = `14:00:00Z`).
-   - **TikTok à H, Instagram à H+29min** — pas au même instant. Un post par jour, 1 vidéo/jour.
-   - Chaque vidéo = 2 posts : TikTok `tonypayet4` (36488) + Instagram `automatisationboost` (54617).
-     LinkedIn `Payet Tony` (25882) seulement sur demande (utilisé pour les vidéos de veille IA).
+4. **Programmation — règle globale Autoboost** : passer `scheduledTime` (ISO 8601 UTC) à
+   `blotato_create_post` plutôt que publier immédiatement. L'heure de référence est **18h00 à La Réunion**,
+   soit **14h00 UTC** (`UTC+4`).
+   - Chaque vidéo doit être programmée **le même jour à 18h00** sur les cinq réseaux : TikTok, Instagram,
+     LinkedIn, YouTube et Facebook.
+   - Ne plus appliquer l'ancien décalage Instagram de 29 minutes.
+   - Un seul lot de cinq publications par vidéo et par jour : pas de doublon, pas de publication immédiate.
+   - Utiliser les IDs renvoyés par `blotato_list_accounts` pour chaque plateforme, puis vérifier les cinq
+     retours de `blotato_create_post` et les dates planifiées avec `blotato_list_schedules`.
 
 5. **⚠️ LA MINIATURE — obligatoire, sinon toutes les vidéos ont la même** (problème signalé par
    Tony le 2026-07-17, vérifié) : **la frame 0 de toute vidéo Autoboost est identique** — fond noir

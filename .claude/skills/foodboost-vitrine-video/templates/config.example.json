@@ -1,0 +1,28 @@
+{
+  "_comment": "Exemple BURGER/STREET-FOOD. Change `style` + `dishes` pour n'importe quelle cuisine (créole, pizza, sushi, pâtisserie...). id = slug ascii sans espace, sert de nom de fichier.",
+  "style": "professional food photography, dark moody background, warm rim lighting, gentle steam, fresh garnish, rustic dark surface, shallow depth of field, ultra appetizing, vertical 9:16 food magazine composition",
+  "dishes": [
+    {
+      "id": "burger",
+      "name": "Burger maison",
+      "sub": "smashé minute",
+      "prompt": "A juicy gourmet double smash cheeseburger, melting cheddar, toasted brioche bun, crisp lettuce, dripping sauce",
+      "motion": "melted cheese slowly dripping, gentle steam, subtle slow camera push-in, cinematic food video, no text"
+    },
+    {
+      "id": "sandwich",
+      "name": "Club sandwich",
+      "sub": "frais du midi",
+      "prompt": "A fresh triple-decker club sandwich stacked high, grilled chicken, bacon, tomato, held together with a pick, crumbs on the board",
+      "motion": "subtle slow camera push-in, gentle steam wisps, cinematic food video, no text"
+    },
+    {
+      "id": "frites",
+      "name": "Frites maison",
+      "sub": "croustillantes",
+      "prompt": "A basket of golden crispy hand-cut fries, sea salt, small pot of aioli, steam rising",
+      "motion": "gentle steam rising from hot fries, subtle slow camera push-in, cinematic food video, no text"
+    }
+  ],
+  "narration": "Le menu du jour chez FoodBoost. Un burger smashé minute, cheddar fondant. Un club sandwich frais préparé le midi. Et des frites maison bien croustillantes. Ces photos sont générées automatiquement, publiées chaque jour, sans photographe, sans budget. Ton resto mérite la même vitrine. Commente le mot MENU."
+}

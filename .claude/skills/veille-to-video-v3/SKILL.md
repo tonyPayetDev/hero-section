@@ -112,6 +112,51 @@ de timeline, piste audio réutilisée telle quelle (vérifié bit à bit via l'e
 2. Banque en **24 fps**, rendus en **30 fps** → une image sur cinq est dupliquée, du mouvement `0.00`
    isolé est normal. Seules les **séries continues** (> ~6 images) sont des défauts.
 
+### ⚠️ Enveloppes RMS ffmpeg — deux pièges qui faussent TOUT (PAYÉS 2026-08-18, `matrix-formation`)
+
+Ces deux-là valent pour **toute** analyse audio par enveloppe (`astats` + `ametadata`) :
+repérage de dialogue, spans de captions, garde-fou lèvres, détection de pauses.
+Ils ne plantent jamais — ils rendent un résultat **plausible et faux**.
+
+1. **`-ar` est une option de SORTIE : elle ne s'applique PAS avant `asetnsamples`.**
+   Sur une source **44,1 kHz**, `ffmpeg -i src -ar 48000 -af "asetnsamples=n=4000,astats=…"`
+   produit des fenêtres de 4000 échantillons **à 44,1 kHz**, donc **11,02 fenêtres/s au lieu de 12** —
+   soit jusqu'à **15 s de dérive** en fin de fichier. Conclusion obtenue : « le personnage ne parle
+   quasiment jamais ». Entièrement fausse.
+   **Parade** : `aresample=48000` **DANS la chaîne de filtres**, et surtout **redéduire la cadence**
+   du nombre de fenêtres obtenues (`rate = nWindows / duration`) au lieu de la supposer.
+   Détection : recouper une fenêtre annoncée « 0 % de voix » avec `volumedetect` — si elle sort
+   à `mean -41 dB / max -20 dB`, ce n'est pas du silence, l'indexation ment.
+
+2. **`grep -o '=-\?[0-9.]*$'` ne matche pas `-inf` → les fenêtres de silence sont SUPPRIMÉES**,
+   pas mises à zéro. Tous les index suivants se décalent. Sur un montage de 56 s, 355 fenêtres à
+   `-inf` = jusqu'à **11,8 s de dérive** entre le temps réel et le temps mesuré.
+   **Parade** : `grep -oE '=(-?inf|-?[0-9.]+)$'` puis mapper `-inf` → `-99` côté JS.
+
+3. **`silencedetect` sans `-map 0:a` renvoie 0 plage** : sans le map il analyse le flux vidéo et ne
+   dit rien, ce qui se lit à tort comme « aucun silence dans ce fichier ». Avec `-map 0:a` sur la même
+   source : **58 plages** sous −45 dB. Mettre `-map 0:a` sur **toute** analyse audio.
+
+4. **Le garde-fou lèvres doit lire une piste VOIX SEULE**, jamais `final_audio.wav`. Sur le mix complet,
+   le lit d'ambiance, la musique et l'audio d'origine des extraits franchissent le seuil −34 dBFS et
+   comptent comme « voix active » : le contrôleur crie alors sur des plans de coupe légitimes.
+   `build_audio_caps.mjs` écrit `voice_only.wav` (mêmes gains, mêmes placements, ni lit ni extraits)
+   exprès pour ça.
+
+### 🎙️ Il Y A un STT ici — Whisper via WaveSpeed
+
+Ne conclus plus « pas de STT disponible » (les `.pt` de `~/.cache/whisper` sont inutilisables faute
+de Python, mais ce n'est pas la seule voie). Endpoint
+`https://api.wavespeed.ai/api/v3/wavespeed-ai/openai-whisper`, body
+`{audio, language:'fr', enable_timestamps:true}` → renvoie `srt`, `text` et `text_details`
+(segments `{start,end,text}`). Modèle de référence :
+`/work/.claude/skills/foodboost-vitrine-video/scripts/whisper.mjs` (clé en dur dedans, à lire depuis
+ce fichier). Il attend une **URL** : pour du local, uploader d'abord en multipart sur
+`https://api.wavespeed.ai/api/v3/media/upload/binary` (champ `file`), qui rend un `download_url`
+directement consommable. Une passe sur le fichier entier coûte quelques centimes et remplace des
+heures de repérage à l'aveugle — et surtout elle sert de **seconde source indépendante** pour
+savoir qui parle : si Whisper place du texte là où la bouche est fermée, c'est une voix **hors champ**.
+
 ## STYLE VERROUILLÉ (réf `veille-to-avatar-v3-v3`, validé 2026-08-15)
 
 Tony a validé `previsualisation/veille-to-avatar-v3-v3` (« c'est ok nickel, verrouillé »).

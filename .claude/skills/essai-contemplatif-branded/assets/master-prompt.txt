@@ -1,0 +1,35 @@
+MASTER PROMPT — ESSAI CONTEMPLATIF (à coller tel quel dans VideoBoost)
+=====================================================================
+Remplacer les {CHAMPS}. Coller la VOIX OFF EN ENTIER (jamais résumée).
+
+---
+
+Crée une vidéo essai contemplative, format {RATIO}, durée {DUREE}s, style "video
+essay" minimaliste et melancolique (référence: EGO / Kurzgesagt sobre).
+
+REGISTRE VOIX OFF (non négociable):
+- Voix off calme, essayiste, débit posé. Respirations marquées entre les phrases.
+- On explique, on ne vend pas. Aucune punchline criée, aucun ton "motivation".
+
+ESCALADE (non négociable):
+- Escalade continue concret -> conceptuel -> existentiel. JAMAIS de retour en arrière,
+  on ne redescend jamais expliquer.
+
+DIRECTION VISUELLE (non négociable):
+- Ouverture sur {OBJET_BANAL}, plein cadre, sous-estimé.
+- Plans lents, zooms doux sur des détails, écrans sombres, diagrammes abstraits simples,
+  grain léger. Aucun cut nerveux.
+- Palette SOMBRE au départ qui SE DÉSATURE PROGRESSIVEMENT VERS LE BLANC au fil de la vidéo.
+- FIN: fondu au blanc total + SILENCE. Le blanc reste 2s. Aucun logo par-dessus le blanc.
+
+AUDIO:
+- Nappe ambient minimale, très basse. Aucune musique "hype", aucun drop.
+- L'ambient se coupe NET sur le fondu au blanc.
+
+SYNCHRONISER LA VOIX OFF SUIVANTE, MOT POUR MOT, sur toute la durée:
+"""
+{COLLER_LA_VO_COMPLETE_ICI}
+"""
+
+CARTON FINAL (optionnel, APRÈS le blanc, écran séparé): wordmark discret
+"VideoBoost — Automation Boost" en gris clair. Jamais d'or, jamais par-dessus le blanc.
