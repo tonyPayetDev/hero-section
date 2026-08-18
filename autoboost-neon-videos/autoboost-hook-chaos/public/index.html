@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family: Inter; font-weight: 400; font-display: block; src: url(fonts/Inter-400-latin.woff2) format('woff2'); }
+  @font-face { font-family: Inter; font-weight: 700; font-display: block; src: url(fonts/Inter-700-latin.woff2) format('woff2'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #FFE600; --violet: #A855F7; --orange: #FF8A3D; --ok: #3DFF9E;
+    --ink: #F3F3F7; --dim: #9A9AA6;
+  }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden;
+          background: #050505; font-family: Inter, "DejaVu Sans", sans-serif; color: var(--ink); }
+
+  .bg { position: absolute; inset: 0; z-index: 0; }
+  #bg1 { background: linear-gradient(135deg, #0a0a0a 0%, #170a26 100%); opacity: 0; }
+  #bg2 { background: radial-gradient(circle at 50% 34%, #12081f 0%, #050505 74%); opacity: 0; }
+  #bg3 { background: linear-gradient(135deg, #1a0a06 0%, #2a0f10 100%); opacity: 0; }
+  #grain { position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.06;
+     background:
+       radial-gradient(1px 1px at 20% 30%, #fff, transparent 60%),
+       radial-gradient(1px 1px at 70% 60%, #fff, transparent 60%),
+       radial-gradient(1px 1px at 40% 80%, #fff, transparent 60%); }
+
+  #brand { position: absolute; z-index: 9; top: 54px; left: 54px; display: flex; align-items: center; gap: 16px; opacity: 0; }
+  #brand svg { width: 58px; height: 58px; }
+  #brand .wm { font-size: 30px; font-weight: 700; letter-spacing: 4px; }
+  #brand .wm b { color: var(--gold); }
+
+  #kicker { position: absolute; z-index: 9; top: 70px; right: 54px; display:flex; align-items:center; gap:12px;
+     padding: 11px 24px; border-radius: 999px; background: rgba(10,8,16,.72);
+     border: 1px solid rgba(168,85,247,.45); font-size: 22px; font-weight: 700;
+     letter-spacing: 4px; text-transform: uppercase; color: #d9cffb; opacity: 0; }
+  #kicker .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 14px var(--gold); }
+
+  /* ===== AVATAR WINDOW (overlaid in pass 2) ===== */
+  #avatarWin { position: absolute; z-index: 5; left: 216px; top: 150px; width: 648px; height: 1152px;
+     border-radius: 30px; overflow: hidden; background: #000;
+     border: 3px solid rgba(255,230,0,.60);
+     box-shadow: 0 0 0 2px rgba(6,6,6,.9), 0 26px 80px rgba(0,0,0,.7), 0 0 70px rgba(255,230,0,.18); opacity: 0; }
+  #avatarWin .vig { position:absolute; inset:0; z-index:3; pointer-events:none;
+     background: linear-gradient(180deg, rgba(0,0,0,.22) 0%, transparent 20%, transparent 74%, rgba(0,0,0,.55) 100%); }
+  #avatarWin .wtag { position:absolute; left:22px; top:20px; z-index:4; display:flex; align-items:center; gap:10px;
+     padding:7px 16px; border-radius:999px; background: rgba(8,8,10,.66); border:1px solid rgba(255,255,255,.16);
+     font-size:19px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#e9e9ef; }
+  #avatarWin .wtag i { width:11px; height:11px; border-radius:50%; background:#ff5f57; box-shadow:0 0 10px #ff5f57; }
+
+  /* ===== APP PANEL (proofs) ===== */
+  #app { position: absolute; z-index: 4; left: 70px; top: 150px; width: 940px; height: 1152px;
+     border-radius: 30px; overflow: hidden; opacity: 0;
+     background: linear-gradient(180deg, #0e0e15 0%, #0a0a10 100%);
+     border: 1px solid rgba(255,255,255,.10);
+     box-shadow: 0 0 0 2px rgba(6,6,6,.9), 0 26px 80px rgba(0,0,0,.7), 0 0 60px rgba(168,85,247,.14); }
+  #app .bar { height: 74px; display:flex; align-items:center; gap:14px; padding:0 28px;
+     background: rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.08); }
+  #app .bar .dots{ display:flex; gap:9px; }
+  #app .bar .dots i{ width:14px; height:14px; border-radius:50%; display:block; }
+  #app .bar .dots i:nth-child(1){ background:#ff5f57 } #app .bar .dots i:nth-child(2){ background:#febc2e } #app .bar .dots i:nth-child(3){ background:#28c840 }
+  #app .bar .ttl{ font-size:22px; font-weight:700; letter-spacing:1px; color:#e7e7ef; }
+  #app .bar .ttl b{ color:var(--gold) }
+  #app .bar .chip{ margin-left:auto; font-size:17px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+     color:#c9a8ff; padding:6px 16px; border-radius:999px; background:rgba(168,85,247,.12); border:1px solid rgba(168,85,247,.35); }
+  #app .stage { position:relative; width:100%; height: calc(100% - 74px); }
+  .view { position:absolute; inset:0; padding: 40px 44px; opacity:0; }
+
+  /* --- view: JOURNAL pipeline --- */
+  #viewJournal .head{ display:flex; align-items:baseline; gap:16px; margin-bottom:34px; }
+  #viewJournal .head .t{ font-size:38px; font-weight:700; color:#fff; }
+  #viewJournal .head .t span{ display:block; font-size:21px; letter-spacing:3px; text-transform:uppercase; color:var(--dim); margin-top:6px; }
+  .step{ display:flex; align-items:center; gap:22px; height:150px; padding:0 30px; margin-bottom:26px;
+     border-radius:18px; background:#08080e; border:1px solid rgba(255,255,255,.09); opacity:0; }
+  .step .ic{ width:60px; height:60px; border-radius:15px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+     background:rgba(168,85,247,.12); border:1px solid rgba(168,85,247,.36); }
+  .step .ic b{ font-size:26px; font-weight:700; color:#c9a8ff; }
+  .step .tx{ flex:1 1 auto; }
+  .step .tx .n{ font-size:30px; font-weight:700; color:#fff; }
+  .step .tx .s{ font-size:20px; color:var(--dim); margin-top:5px; letter-spacing:1px; }
+  .step .ck{ width:26px; height:14px; border-left:5px solid var(--ok); border-bottom:5px solid var(--ok);
+     transform:rotate(-45deg) scale(.2); opacity:0; margin-right:10px; }
+  .step .pb{ position:absolute; }
+
+  /* --- view: SITES + reseaux --- */
+  #viewSites .head{ display:flex; align-items:baseline; gap:16px; margin-bottom:28px; }
+  #viewSites .head .n{ font-size:70px; font-weight:700; color:var(--gold); line-height:1; text-shadow:0 0 30px rgba(255,230,0,.5); }
+  #viewSites .head .t{ font-size:29px; font-weight:700; color:#fff; }
+  #viewSites .head .t span{ display:block; font-size:21px; letter-spacing:3px; text-transform:uppercase; color:var(--dim); margin-top:4px; }
+  #viewSites .sgrid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; margin-bottom:56px; }
+  .site{ border-radius:16px; overflow:hidden; background:#0b0b12; border:1px solid rgba(255,255,255,.10); height:376px; opacity:0; }
+  .site .sb{ height:26px; background:rgba(255,255,255,.05); display:flex; align-items:center; gap:5px; padding:0 10px; }
+  .site .sb i{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.25); display:block; }
+  .site .hero{ height:130px; margin:12px; border-radius:10px; }
+  .site .ln{ height:11px; margin:0 12px 9px; border-radius:6px; background:rgba(255,255,255,.13); }
+  .site .ln.s{ width:56% }
+  .site .btn{ height:26px; margin:14px 12px 0; border-radius:8px; background:rgba(255,230,0,.85); }
+  .site .nm{ font-size:18px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin:14px 12px 0; }
+  #viewSites .netTitle{ font-size:22px; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--dim); margin-bottom:18px; }
+  #viewSites .nets{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
+  .net{ border-radius:14px; height:168px; background:#08080e; border:1px solid rgba(255,255,255,.10);
+     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; opacity:0; }
+  .net .b{ font-size:19px; font-weight:700; letter-spacing:1px; color:#e7e7ef; }
+  .net .ck{ width:22px; height:12px; border-left:5px solid var(--ok); border-bottom:5px solid var(--ok);
+     transform:rotate(-45deg) scale(.2); opacity:0; }
+
+  /* --- stamp VALIDE --- */
+  /* placé SOUS la fenêtre avatar : la passe 2 recouvre tout le rectangle 216..864 / 150..1302 */
+  #stamp{ position:absolute; z-index:13; left:50%; top:1620px; transform:translate(-50%,-50%) rotate(-9deg);
+     padding:22px 50px; border:7px solid var(--ok); border-radius:22px; opacity:0;
+     font-size:78px; font-weight:700; letter-spacing:8px; color:var(--ok);
+     text-shadow:0 0 40px rgba(61,255,158,.5); box-shadow:0 0 60px rgba(61,255,158,.25); }
+
+  /* neon beat line */
+  #neon-line { position: absolute; z-index: 6; top: 1350px; left: 0; width: 1080px; height: 5px;
+     background: linear-gradient(90deg, rgba(255,230,0,0) 0%, var(--gold) 22%, var(--violet) 50%, var(--gold) 78%, rgba(255,230,0,0) 100%);
+     box-shadow: 0 0 18px rgba(255,230,0,.6), 0 0 40px rgba(168,85,247,.4); opacity: 0; }
+
+  /* captions */
+  .cap { position: absolute; z-index: 8; left: 50%; top: 1400px; transform: translateX(-50%);
+     width: 1000px; text-align:center;
+     font-size: 40px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.18;
+     text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+                  -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 0 6px 14px rgba(0,0,0,.8);
+     color: #fff; opacity: 0; }
+  .cap .hot { color: var(--gold); text-shadow: -3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 0 22px rgba(255,230,0,.9); }
+  .cap .violet { color: var(--violet); text-shadow: -3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 0 22px rgba(168,85,247,.95); }
+  .cap .orange { color: var(--orange); text-shadow: -3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 0 24px rgba(255,138,61,.95); }
+
+  /* punch lockup (reprise du hook) */
+  #punch { position:absolute; z-index:14; left:60px; right:60px; top:50%; transform:translateY(-50%); text-align:center; opacity:0; }
+  #punch .p1{ font-size:62px; font-weight:400; color:rgba(243,243,247,.82); line-height:1.28; }
+  #punch .p2{ margin-top:28px; font-size:88px; font-weight:700; color:var(--gold); line-height:1.15;
+     text-shadow:0 0 40px rgba(255,230,0,.35); }
+
+  /* ===== CTA : faux champ de commentaire ===== */
+  #ctaBox{ position:absolute; z-index:15; left:60px; top:1470px; width:960px; opacity:0; }
+  #ctaBox .lbl{ text-align:center; font-size:26px; font-weight:700; letter-spacing:5px; text-transform:uppercase;
+     color:var(--dim); margin-bottom:20px; }
+  #ctaBox .pill{ display:flex; align-items:center; gap:20px; height:118px; padding:0 26px;
+     border-radius:999px; background:#0d0d13; border:2px solid rgba(255,230,0,.5);
+     box-shadow:0 0 46px rgba(255,230,0,.18); }
+  #ctaBox .pill .av{ width:66px; height:66px; border-radius:50%; flex:0 0 auto;
+     background:linear-gradient(135deg,var(--violet),var(--gold)); }
+  #ctaBox .pill .tx{ flex:1 1 auto; font-size:42px; font-weight:700; color:#fff; letter-spacing:2px; }
+  #ctaBox .pill .tx i{ font-style:normal; color:var(--dim); font-weight:400; }
+  #ctaBox .pill .cur{ display:inline-block; width:4px; height:44px; background:var(--gold); vertical-align:-8px;
+     margin-left:4px; box-shadow:0 0 10px var(--gold); }
+  #ctaBox .pill .send{ width:78px; height:78px; border-radius:50%; flex:0 0 auto; background:var(--gold);
+     display:flex; align-items:center; justify-content:center; }
+  #ctaBox .pill .send svg{ width:40px; height:40px; }
+
+  /* ===== FINAL LOCKUP ===== */
+  #finalCTA { position:absolute; inset:0; z-index:22; display:flex; flex-direction:column; align-items:center; justify-content:center;
+     background: radial-gradient(circle at 50% 44%, #1a1206 0%, #050505 72%); opacity:0; gap:26px; }
+  #finalCTA .kw { font-size:210px; font-weight:700; line-height:.95; letter-spacing:8px;
+     background:linear-gradient(180deg,#fff 0%, var(--gold) 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
+     text-shadow:0 0 80px rgba(255,230,0,.35); opacity:0; }
+  #finalCTA .sub { font-size:44px; font-weight:700; letter-spacing:5px; text-transform:uppercase; color:#fff; opacity:0; }
+  #finalCTA .sub b{ color:var(--orange) }
+  #finalCTA .tag { margin-top:46px; display:flex; align-items:center; gap:16px; opacity:0; }
+  #finalCTA .tag svg{ width:64px; height:64px }
+  #finalCTA .tag .wm{ font-size:42px; font-weight:700; letter-spacing:6px } #finalCTA .tag .wm b{ color:var(--gold) }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="hookchaos" data-start="0" data-width="1080" data-height="1920" data-duration="35">
+
+  <div id="bg1" class="bg"></div>
+  <div id="bg2" class="bg"></div>
+  <div id="bg3" class="bg"></div>
+  <div id="grain"></div>
+
+  <div id="brand">
+    <svg viewBox="0 0 64 64" fill="none"><rect x="3" y="3" width="58" height="58" rx="16" fill="#0c0c0c" stroke="#FFE600" stroke-width="2.5"/><path d="M35 12 L20 36 H31 L27 52 L44 26 H33 Z" fill="#FFE600"/></svg>
+    <div class="wm">AUTO<b>BOOST</b></div>
+  </div>
+  <div id="kicker"><span class="dot"></span>le systeme tourne</div>
+
+  <div id="avatarWin">
+    <div class="wtag"><i></i>Live</div>
+    <div class="vig"></div>
+  </div>
+
+  <div id="app">
+    <div class="bar">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="ttl">AUTOMATION <b>BOOST</b></div>
+      <div class="chip" id="appChip">auto</div>
+    </div>
+    <div class="stage">
+
+      <div class="view" id="viewJournal">
+        <div class="head"><div class="t">Journal IA du jour<span>exécuté chaque matin — 06:00</span></div></div>
+        <div class="step" data-s="1"><div class="ic"><b>1</b></div><div class="tx"><div class="n">Recherche web</div><div class="s">sources du jour collectées</div></div><div class="ck"></div></div>
+        <div class="step" data-s="2"><div class="ic"><b>2</b></div><div class="tx"><div class="n">Script</div><div class="s">rédigé et minuté</div></div><div class="ck"></div></div>
+        <div class="step" data-s="3"><div class="ic"><b>3</b></div><div class="tx"><div class="n">Voix clonée</div><div class="s">segments générés</div></div><div class="ck"></div></div>
+        <div class="step" data-s="4"><div class="ic"><b>4</b></div><div class="tx"><div class="n">Montage</div><div class="s">rendu 9:16 — 1080x1920</div></div><div class="ck"></div></div>
+        <div class="step" data-s="5"><div class="ic"><b>5</b></div><div class="tx"><div class="n">Publication</div><div class="s">programmée automatiquement</div></div><div class="ck"></div></div>
+      </div>
+
+      <div class="view" id="viewSites">
+        <div class="head"><div class="n">24/7</div><div class="t">Sites clients générés<span>pendant que je dors</span></div></div>
+        <div class="sgrid">
+          <div class="site" data-i="1"><div class="sb"><i></i><i></i><i></i></div><div class="hero" style="background:linear-gradient(135deg,#3b2a10,#FFE600)"></div><div class="ln"></div><div class="ln s"></div><div class="btn"></div><div class="nm">restaurant</div></div>
+          <div class="site" data-i="2"><div class="sb"><i></i><i></i><i></i></div><div class="hero" style="background:linear-gradient(135deg,#2a1040,#A855F7)"></div><div class="ln"></div><div class="ln s"></div><div class="btn"></div><div class="nm">immobilier</div></div>
+          <div class="site" data-i="3"><div class="sb"><i></i><i></i><i></i></div><div class="hero" style="background:linear-gradient(135deg,#40200a,#FF8A3D)"></div><div class="ln"></div><div class="ln s"></div><div class="btn"></div><div class="nm">location</div></div>
+        </div>
+        <div class="netTitle">publication automatique</div>
+        <div class="nets">
+          <div class="net" data-i="1"><div class="b">TikTok</div><div class="ck"></div></div>
+          <div class="net" data-i="2"><div class="b">Instagram</div><div class="ck"></div></div>
+          <div class="net" data-i="3"><div class="b">LinkedIn</div><div class="ck"></div></div>
+          <div class="net" data-i="4"><div class="b">YouTube</div><div class="ck"></div></div>
+          <div class="net" data-i="5"><div class="b">Facebook</div><div class="ck"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="stamp">VALIDE</div>
+  <div id="neon-line"></div>
+  <div class="cap" id="cap"></div>
+
+  <div id="punch">
+    <div class="p1"></div>
+    <div class="p2"></div>
+  </div>
+
+  <div id="ctaBox">
+    <div class="lbl" id="ctaLbl"></div>
+    <div class="pill">
+      <div class="av"></div>
+      <div class="tx"><span id="ctaTyped"></span><span class="cur"></span></div>
+      <div class="send"><svg viewBox="0 0 24 24" fill="#0b0b0b"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg></div>
+    </div>
+  </div>
+
+  <div id="finalCTA">
+    <div class="kw" id="finalKw"></div>
+    <div class="sub" id="finalSub"></div>
+    <div class="tag">
+      <svg viewBox="0 0 64 64" fill="none"><rect x="3" y="3" width="58" height="58" rx="16" fill="#0c0c0c" stroke="#FFE600" stroke-width="2.5"/><path d="M35 12 L20 36 H31 L27 52 L44 26 H33 Z" fill="#FFE600"/></svg>
+      <div class="wm">AUTO<b>BOOST</b></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script src="hooks/chaos-hook.js"></script>
+<script>
+/* =====================================================================
+   VARIABLES DU HOOK REUTILISABLE  (bloc /work/autoboost-neon-videos/
+   _shared/hooks/chaos-automatiser/) — change ces valeurs, pas l'anim.
+   ===================================================================== */
+const HOOK_VARS = {
+  tasks: [
+    'Post Instagram', 'Script vidéo', 'Relance client', 'Devis #1042',
+    'Montage reel', 'Mail prospect', 'Facture à envoyer', 'Planning semaine',
+    'Newsletter', 'Article de blog', 'Story du jour', 'Veille IA',
+    'Retouche photo', 'Réponse DM', 'Miniature YouTube', 'Rapport mensuel'
+  ],
+  tileCount: 48,
+  buttonLabel: 'AUTOMATISER',
+  counterLabel: 'tâches en retard',
+  counterDoneLabel: 'tâches exécutées',
+  counterTarget: 128,
+  punchLine1: 'Arrête de travailler comme une machine.',
+  punchLine2: 'Construis-en une.',
+  brandTop: 'AUTOMATISATION', brandBottom: 'BOOST',
+  accent: '#FFE600', accent2: '#A855F7', danger: '#FF3B30', ok: '#3DFF9E',
+  bg: '#050505', autoHide: true
+};
+
+/* ===== textes du corps (accents ici, jamais dans le .js du hook) ===== */
+const BODY = {
+  kicker: 'le système tourne',
+  chip: 'automatique',
+  journalTitle: 'Journal IA du jour',
+  stamp: 'VALIDÉ',
+  punch1: 'Arrête de travailler comme une machine.',
+  punch2: 'Construis-en une.',
+  ctaLabel: 'commente le mot',
+  ctaKeyword: 'CHAOS',
+  ctaSub: 'et je t’envoie le <b>plan du système</b>'
+};
+
+/* ===== TIMING MAP (offsets absolus, patché après TTS) ===== */
+const S = {
+  s01:10.55, s01d:13.86,
+  s02:14.60, s02d:19.53,
+  s03:20.25, s03d:24.02,
+  s04:24.75, s04d:25.97,
+  s05:26.80, s05d:29.44,
+  s06:30.20, s06d:32.79
+};
+const DUR = 34.6;
+const HOOK_END = 10.0;
+
+const tl = gsap.timeline({ paused: true });
+
+/* ---------- helpers ---------- */
+function show(el, t, d){ d=d||0.32; tl.to(el,{opacity:1,duration:d,ease:"power2.out"},t); }
+function hide(el, t, d){ d=d||0.28; tl.to(el,{opacity:0,duration:d,ease:"power2.in"},t); }
+function capSeq(chunks, tStart, tEnd){
+  const n = chunks.length, span = (tEnd - tStart) / n;
+  for(let i=0;i<n;i++){
+    const a = tStart + i*span, b = a + span - 0.05;
+    (function(html,ta,tb){
+      tl.call(()=>{ document.getElementById('cap').innerHTML = html; }, null, ta);
+      tl.fromTo('#cap',{opacity:0,y:10},{opacity:1,y:0,duration:0.13,ease:"power2.out"},ta);
+      tl.to('#cap',{opacity:0,duration:0.11,ease:"power2.in"},tb);
+    })(chunks[i], a, b);
+  }
+}
+
+/* ===================== 1) LE HOOK (0 -> 10 s, muet) ===================== */
+ChaosHook.mount(document.getElementById('root'), HOOK_VARS);
+ChaosHook.build(tl, 0);
+
+/* ===================== 2) LE CORPS (10 -> 36 s) ===================== */
+document.getElementById('kicker').lastChild.textContent = BODY.kicker;
+document.getElementById('appChip').textContent = BODY.chip;
+document.querySelector('#viewJournal .head .t').firstChild.textContent = BODY.journalTitle;
+document.getElementById('stamp').textContent = BODY.stamp;
+document.querySelector('#punch .p1').textContent = BODY.punch1;
+document.querySelector('#punch .p2').textContent = BODY.punch2;
+document.getElementById('ctaLbl').textContent = BODY.ctaLabel;
+document.getElementById('finalKw').textContent = BODY.ctaKeyword;
+document.getElementById('finalSub').innerHTML = BODY.ctaSub;
+
+function buildBody(){
+  /* décor */
+  show('#bg1', HOOK_END - 0.05, 0.30);
+  tl.fromTo('#brand',{opacity:0,y:-12},{opacity:1,y:0,duration:0.4},HOOK_END+0.10);
+  tl.fromTo('#kicker',{opacity:0,y:-12},{opacity:1,y:0,duration:0.4},HOOK_END+0.20);
+  show('#neon-line', HOOK_END+0.05, 0.4);
+
+  /* fonds qui basculent */
+  tl.to('#bg1',{opacity:0,duration:0.5}, S.s02-0.35); tl.to('#bg2',{opacity:1,duration:0.5}, S.s02-0.35);
+  tl.to('#bg2',{opacity:0,duration:0.5}, S.s05-0.35); tl.to('#bg3',{opacity:1,duration:0.5}, S.s05-0.35);
+
+  /* ---- A) avatar A1 : le systeme tourne tout seul ---- */
+  show('#avatarWin', HOOK_END+0.35, 0.35);
+  capSeq([
+    'PENDANT QUE <span class="hot">TU</span>',
+    'ENCHAÎNES TES TÂCHES',
+    'À LA <span class="orange">MAIN</span>…',
+    'MON <span class="hot">SYSTÈME</span>',
+    'TOURNE <span class="violet">TOUT SEUL</span>'
+  ], S.s01+0.10, S.s01d-0.05);
+  hide('#avatarWin', S.s01d+0.15, 0.28);
+
+  /* ---- B) journal IA quotidien ---- */
+  show('#app', S.s02-0.30, 0.35);
+  show('#viewJournal', S.s02-0.20, 0.30);
+  for(let i=1;i<=5;i++){
+    const at = S.s02 + 0.55 + (i-1)*0.72;
+    tl.fromTo('.step[data-s="'+i+'"]',{opacity:0,x:-26},{opacity:1,x:0,duration:0.28,ease:"power3.out"},at);
+    tl.to('.step[data-s="'+i+'"]',{borderColor:'rgba(61,255,158,.45)',backgroundColor:'#0a1210',duration:0.25},at+0.34);
+    tl.fromTo('.step[data-s="'+i+'"] .ck',{opacity:0,scale:0.2},{opacity:1,scale:1,duration:0.22,ease:"back.out(2.4)"},at+0.40);
+  }
+  capSeq([
+    'CHAQUE <span class="hot">MATIN</span>',
+    'IL PRODUIT LE <span class="hot">JOURNAL IA</span>',
+    'RECHERCHE · <span class="violet">SCRIPT</span>',
+    'VOIX <span class="violet">CLONÉE</span>',
+    'MONTAGE · <span class="orange">PUBLICATION</span>'
+  ], S.s02+0.10, S.s02d-0.05);
+
+  /* ---- C) sites generes + 5 reseaux ---- */
+  hide('#viewJournal', S.s03-0.35, 0.25);
+  show('#viewSites', S.s03-0.15, 0.30);
+  for(let i=1;i<=3;i++){
+    tl.fromTo('.site[data-i="'+i+'"]',{opacity:0,y:26,scale:0.92},{opacity:1,y:0,scale:1,duration:0.32,ease:"back.out(1.6)"}, S.s03+0.25+(i-1)*0.30);
+  }
+  for(let i=1;i<=5;i++){
+    const at = S.s03 + 2.05 + (i-1)*0.26;
+    tl.fromTo('.net[data-i="'+i+'"]',{opacity:0,y:18,scale:0.9},{opacity:1,y:0,scale:1,duration:0.26,ease:"back.out(1.8)"},at);
+    tl.fromTo('.net[data-i="'+i+'"] .ck',{opacity:0,scale:0.2},{opacity:1,scale:1,duration:0.20,ease:"back.out(2.4)"},at+0.24);
+    tl.to('.net[data-i="'+i+'"]',{borderColor:'rgba(61,255,158,.45)',duration:0.22},at+0.24);
+  }
+  capSeq([
+    'IL GÉNÈRE DES <span class="hot">SITES CLIENTS</span>',
+    'COMPLETS',
+    'ET IL PUBLIE SUR <span class="violet">5 RÉSEAUX</span>',
+    'PENDANT QUE <span class="orange">JE DORS</span>'
+  ], S.s03+0.10, S.s03d-0.05);
+
+  /* ---- D) je valide (avatar B1) ---- */
+  hide('#app', S.s04-0.45, 0.30);
+  show('#avatarWin', S.s04-0.20, 0.30);
+  tl.fromTo('#stamp',{opacity:0,scale:1.6,rotation:-24},{opacity:1,scale:1,rotation:-9,duration:0.32,ease:"back.out(2.2)"},S.s04+0.35);
+  tl.to('#stamp',{boxShadow:'0 0 110px rgba(61,255,158,.55)',duration:0.28,yoyo:true,repeat:2},S.s04+0.55);
+  capSeq([
+    'MOI, JE <span class="hot">VALIDE</span>',
+    "C'EST <span class=\"orange\">TOUT</span>"
+  ], S.s04+0.05, S.s04d-0.02);
+  hide('#stamp', S.s04d+0.10, 0.25);
+  hide('#avatarWin', S.s04d+0.15, 0.28);
+
+  /* ---- E) punch : reprise de la punchline du hook ---- */
+  hide('#neon-line', S.s05-0.3, 0.3);
+  tl.fromTo('#punch',{opacity:0},{opacity:1,duration:0.3},S.s05-0.15);
+  tl.fromTo('#punch .p1',{opacity:0,y:24},{opacity:1,y:0,duration:0.38,ease:"power3.out"},S.s05+0.05);
+  tl.fromTo('#punch .p2',{opacity:0,y:28,scale:0.94},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.7)"},S.s05+1.35);
+  tl.to('#punch .p2',{textShadow:'0 0 90px rgba(255,230,0,.75)',duration:0.3,yoyo:true,repeat:3},S.s05+1.75);
+  hide('#punch', S.s05d+0.10, 0.30);
+
+  /* ---- F) CTA : avatar C2 + faux champ de commentaire ---- */
+  show('#neon-line', S.s06-0.35, 0.3);
+  show('#avatarWin', S.s06-0.30, 0.30);
+  capSeq([
+    'COMMENTE LE MOT',
+    '<span class="hot">' + BODY.ctaKeyword + '</span>'
+  ], S.s06+0.05, S.s06+1.28);
+  tl.fromTo('#ctaBox',{opacity:0,y:26},{opacity:1,y:0,duration:0.34,ease:"power3.out"},S.s06+1.35);
+  tl.call(()=>{ document.getElementById('ctaTyped').innerHTML = '<i>Ajouter un commentaire…</i>'; }, null, S.s06+1.35);
+  const KW = BODY.ctaKeyword;
+  for(let i=0;i<=KW.length;i++){
+    (function(n,tt){ tl.call(()=>{ document.getElementById('ctaTyped').textContent = KW.slice(0,n); }, null, tt); })(i, S.s06+1.95+i*0.10);
+  }
+  tl.to('#ctaBox .send',{scale:1.16,duration:0.16,yoyo:true,repeat:5,ease:"power2.inOut"},S.s06+2.55);
+  tl.to('#ctaBox .pill',{boxShadow:'0 0 90px rgba(255,230,0,.42)',duration:0.3,yoyo:true,repeat:3},S.s06+2.55);
+  hide('#avatarWin', S.s06d+0.05, 0.25);
+  hide('#ctaBox', S.s06d+0.10, 0.25);
+  hide('#neon-line', S.s06d+0.10, 0.25);
+
+  /* ---- G) lockup final ---- */
+  show('#finalCTA', S.s06d+0.20, 0.28);
+  tl.fromTo('#finalCTA .kw',{opacity:0,scale:1.4},{opacity:1,scale:1,duration:0.36,ease:"back.out(2)"},S.s06d+0.34);
+  tl.fromTo('#finalCTA .sub',{opacity:0,y:20},{opacity:1,y:0,duration:0.30,ease:"power3.out"},S.s06d+0.60);
+  tl.fromTo('#finalCTA .tag',{opacity:0,y:16},{opacity:1,y:0,duration:0.30},S.s06d+0.82);
+  tl.to('#finalCTA .kw',{textShadow:'0 0 130px rgba(255,230,0,.7)',duration:0.4,yoyo:true,repeat:3},S.s06d+0.72);
+
+  /* ---- ligne neon beat-sync (BGM ~134 BPM), corps uniquement ---- */
+  const BEATP=0.448, BEAT0=HOOK_END+0.04;
+  for(let i=0,t=BEAT0;t<S.s05-0.4;i++,t+=BEATP){
+    const down=(i%4===0);
+    tl.to('#neon-line',{scaleY:down?3.2:2.1,duration:0.07,ease:"power2.out"},t);
+    tl.to('#neon-line',{scaleY:1,duration:BEATP*0.62,ease:"power2.in"},t+0.07);
+  }
+}
+buildBody();
+
+window.__timelines = window.__timelines || {};
+window.__timelines["hookchaos"] = tl;
+</script>
+</body>
+</html>
