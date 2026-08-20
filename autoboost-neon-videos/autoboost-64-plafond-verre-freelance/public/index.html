@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-4{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-5{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:78px;line-height:1.05;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:32px;line-height:1.7;}
+.mono div{display:flex;justify-content:space-between;gap:24px;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;font-weight:700;}
+.verdict{position:absolute;left:90px;right:90px;top:850px;text-align:center;font-size:40px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- BELIEF TRAP (scene 2) ---------- */
+.belief{position:absolute;left:90px;right:90px;top:470px;padding:30px 34px;border-radius:22px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;box-shadow:0 0 34px rgba(255,95,87,.10);}
+.belief .tag{display:inline-flex;align-items:center;gap:10px;font-size:26px;font-weight:900;color:var(--bad);
+  letter-spacing:1px;margin-bottom:16px;}
+.belief .txt{position:relative;font-size:36px;font-weight:700;line-height:1.35;color:#cfd2da;}
+.belief .strike{position:absolute;left:0;right:0;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+.truth{position:absolute;left:90px;right:90px;top:700px;text-align:center;font-size:40px;font-weight:800;
+  color:#fff;line-height:1.35;opacity:0;}
+.truth .y{color:var(--accent-yellow);}
+
+/* ---------- DIAGRAM (broll scene 3) ---------- */
+.diag-wrap{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;align-items:center;
+  padding-top:220px;}
+.diag-title{font-size:46px;font-weight:900;text-align:center;color:#fff;letter-spacing:.5px;opacity:0;
+  text-shadow:0 0 30px rgba(255,230,0,.35);margin-bottom:70px;}
+.diag-title .y{color:var(--accent-yellow);}
+.diag-flow{display:flex;flex-direction:column;align-items:center;gap:0;width:840px;}
+.dnode{width:100%;padding:28px 34px;border-radius:20px;background:#0d0d12;border:1px solid #2a2140;
+  display:flex;align-items:center;gap:22px;opacity:0;box-shadow:0 20px 50px rgba(0,0,0,.5);}
+.dnode .ic{width:64px;height:64px;flex:0 0 64px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,230,0,.10);border:2px solid var(--accent-yellow);}
+.dnode .ic svg{width:34px;height:34px;stroke:var(--accent-yellow);}
+.dnode.violet .ic{background:rgba(168,85,247,.12);border-color:var(--violet);}
+.dnode.violet .ic svg{stroke:var(--violet);}
+.dnode.orange .ic{background:rgba(255,138,61,.12);border-color:var(--orange);}
+.dnode.orange .ic svg{stroke:var(--orange);}
+.dnode .lab{font-size:34px;font-weight:800;color:#fff;line-height:1.15;}
+.dnode .sub{font-size:24px;font-weight:600;color:var(--muted);margin-top:4px;}
+.darrow{width:5px;height:56px;background:linear-gradient(180deg,var(--accent-yellow),rgba(255,230,0,.15));
+  opacity:0;border-radius:3px;}
+.darrow.v{background:linear-gradient(180deg,var(--violet),rgba(168,85,247,.15));}
+.diag-badge{margin-top:56px;padding:22px 40px;border-radius:99px;background:rgba(40,200,64,.10);
+  border:2px solid var(--good);font-size:32px;font-weight:900;color:var(--good);opacity:0;
+  box-shadow:0 0 30px rgba(40,200,64,.25);}
+
+/* ---------- MOUVEMENTS / COMPARAISON (scene 4) ---------- */
+.moves{position:absolute;left:80px;right:80px;top:470px;display:flex;flex-direction:column;gap:22px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:26px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:32px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mv .strike{position:absolute;left:110px;right:120px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+.mv-verdict{position:absolute;left:90px;right:90px;top:750px;text-align:center;font-size:38px;font-weight:800;
+  color:#fff;line-height:1.35;opacity:0;}
+.mv-verdict .y{color:var(--accent-yellow);}
+
+/* ---------- CTA (scene 5) ---------- */
+.cta-word{position:absolute;left:0;right:0;top:500px;text-align:center;font-size:112px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:670px;text-align:center;font-size:38px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:810px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS (27px, mot-à-mot, top ~960) ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:170px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:78px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.86) 12%,rgba(6,6,8,.86) 88%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:760px;height:4px;margin-left:-380px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:83px;}
+.caption{position:absolute;left:50%;top:26px;transform:translateX(-50%);white-space:nowrap;
+  font-size:27px;font-weight:800;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:892px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de assets/voice.mp3 (ffmpeg silencedetect=noise=-40dB:d=0.15)
+     Coupes de scène posées au milieu des pauses : 5.81 / 15.69 / 23.18 / 28.23 -->
+<div id="root" data-composition-id="autoboost64plafond" data-start="0" data-width="1080" data-height="1920" data-duration="32.328">
+
+  <!-- SCENE 1 — HOOK : 15h gagnées, et pourtant bloqué (0 -> 5.81) -->
+  <div class="scene scene-1" data-s="0" data-d="5.81">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Cette semaine</div>
+      <div class="title" data-role="t1">15h <span class="y">gagnées</span><br>grâce à <span class="v">Claude Code</span> + <span class="o">n8n</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">temps-gagne.log</span></div>
+      <div class="mono">
+        <div data-role="pl1"><span class="dim">Tâches automatisées</span><span class="lit">+15h / sem</span></div>
+        <div data-role="pl2"><span class="dim">Nouveaux clients</span><span class="lit" style="color:var(--bad);">+0</span></div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Et pourtant... je me suis senti bloqué.</div>
+  </div>
+
+  <!-- SCENE 2 — LE PIÈGE : la croyance fausse, puis la vérité (5.81 -> 15.69) -->
+  <div class="scene scene-2" data-s="5.81" data-d="9.88">
+    <div class="pad">
+      <div class="kicker" data-role="k2">Le plafond</div>
+      <div class="title" data-role="t2" style="font-size:66px;">Aucun outil ne le<br>casse <span class="o">tout seul.</span></div>
+    </div>
+    <div class="belief" data-role="bel">
+      <div class="tag">✕ LA CROYANCE</div>
+      <div class="txt" data-role="beltxt">Plus d'heures libérées<span class="strike" data-role="belstrike"></span><br>= plus de clients</div>
+    </div>
+    <div class="truth" data-role="truth">Le temps gagné ne sert à rien<br>si tu ne changes pas <span class="y">ce que tu en fais.</span></div>
+  </div>
+
+  <!-- SCENE 3 — DIAGRAMME (broll, avatar masqué) : le système construit (15.69 -> 23.18) -->
+  <div class="scene scene-broll" data-s="15.69" data-d="7.50">
+    <div class="diag-wrap">
+      <div class="diag-title" data-role="dtitle">Un seul système,<br>pas dix petites tâches :<br>un <span class="y">agent de qualification</span></div>
+      <div class="diag-flow">
+        <div class="dnode" data-role="dn1">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 4l8 7 8-7"/></svg></div>
+          <div><div class="lab">Lead entrant</div><div class="sub">formulaire, DM, mail</div></div>
+        </div>
+        <div class="darrow" data-role="da1"></div>
+        <div class="dnode violet" data-role="dn2">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
+          <div><div class="lab">Agent IA</div><div class="sub">Claude Code + n8n</div></div>
+        </div>
+        <div class="darrow v" data-role="da2"></div>
+        <div class="dnode orange" data-role="dn3">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <div><div class="lab">Score de qualification</div><div class="sub">budget, besoin, délai</div></div>
+        </div>
+      </div>
+      <div class="diag-badge" data-role="dbadge">✓ Premier appel déjà qualifié</div>
+    </div>
+  </div>
+
+  <!-- SCENE 4 — COMPARAISON : 10 petites tâches vs 1 système (23.18 -> 28.23) -->
+  <div class="scene scene-4" data-s="23.18" data-d="5.04">
+    <div class="pad">
+      <div class="kicker" data-role="k4">Pas la vitesse</div>
+      <div class="title" data-role="t4" style="font-size:64px;">Ce qu'on choisit<br>de <span class="y">reconstruire.</span></div>
+    </div>
+    <div class="moves">
+      <div class="mv ko" data-role="mv1"><span class="tag">✕</span>10 petites tâches en plus<span class="strike" data-role="sk1"></span></div>
+      <div class="mv ok" data-role="mv2"><span class="tag">✓</span>1 système : l'agent qualification</div>
+    </div>
+    <div class="mv-verdict" data-role="mvv">C'est ça qui fait grandir<br>un <span class="y">freelance.</span></div>
+  </div>
+
+  <!-- SCENE 5 — CTA : commente le mot PLAFOND (28.23 -> 32.328) -->
+  <div class="scene scene-5" data-s="28.23" data-d="4.10">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Comment je l'ai construit</div>
+      <div class="title" data-role="t5b" style="font-size:52px;">je te montre tout</div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">PLAFOND</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">PLAFOND</span><br>je t'envoie le système complet</div>
+    <div class="cta-follow" data-role="ctafollow">— mais seulement si tu me suis</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="32.328" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="32.328"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="32.328"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="32.328"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32.29" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="32.328" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1), calées sur les vraies pauses du MP3. -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-notify.mp3"      data-start="3.80"  data-volume="0.16"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="4.61"  data-volume="0.17"></audio>
+  <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="5.90"  data-volume="0.15"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="6.95"  data-volume="0.18"></audio>
+  <audio id="sfx-strike-1"  src="assets/sfx-whoosh-lat.mp3"  data-start="10.85" data-volume="0.14"></audio>
+  <audio id="sfx-truth"     src="assets/sfx-confirm.mp3"     data-start="11.70" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="14.49" data-volume="0.18"></audio>
+  <audio id="sfx-dn1"       src="assets/sfx-click-soft.mp3"  data-start="17.30" data-volume="0.13"></audio>
+  <audio id="sfx-dn2"       src="assets/sfx-notify.mp3"      data-start="18.50" data-volume="0.16"></audio>
+  <audio id="sfx-dn3"       src="assets/sfx-click-soft.mp3"  data-start="20.40" data-volume="0.13"></audio>
+  <audio id="sfx-dbadge"    src="assets/sfx-confirm.mp3"     data-start="22.30" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="21.98" data-volume="0.19"></audio>
+  <audio id="sfx-ko"        src="assets/sfx-click-soft.mp3"  data-start="23.85" data-volume="0.13"></audio>
+  <audio id="sfx-strike-2"  src="assets/sfx-whoosh-lat.mp3"  data-start="24.95" data-volume="0.14"></audio>
+  <audio id="sfx-ok"        src="assets/sfx-confirm.mp3"     data-start="25.55" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="27.03" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="29.75" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="29.75" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="29.95" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost64plafond";
+const DUR=32.328;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade (data-s/data-d) ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : le hook + le card + le verdict ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.20);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.45);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.60);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.95);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.35,ease:"back.out(1.5)"},2.60);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},3.85);
+
+/* ---- scene 2 : la croyance barrée puis la vérité ---- */
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},5.95);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},6.15);
+tl.fromTo(R("bel"),{opacity:0,y:30},{opacity:1,y:0,duration:0.4,ease:"power3.out"},6.95);
+tl.fromTo(R("belstrike"),{scaleX:0},{scaleX:1,duration:0.35,ease:"power2.out"},10.85);
+tl.fromTo(R("truth"),{opacity:0,y:20},{opacity:1,y:0,duration:0.5,ease:"power3.out"},11.70);
+
+/* ---- scene 3 : diagramme en cascade ---- */
+tl.fromTo(R("dtitle"),{opacity:0,y:20},{opacity:1,y:0,duration:0.5,ease:"power3.out"},15.85);
+tl.fromTo(R("dn1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.4,ease:"power3.out"},17.30);
+tl.fromTo(R("da1"),{opacity:0,scaleY:0},{opacity:1,scaleY:1,duration:0.3},18.05);
+tl.fromTo(R("dn2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.4,ease:"power3.out"},18.50);
+tl.fromTo(R("da2"),{opacity:0,scaleY:0},{opacity:1,scaleY:1,duration:0.3},19.90);
+tl.fromTo(R("dn3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.4,ease:"power3.out"},20.40);
+tl.fromTo(R("dbadge"),{opacity:0,scale:0.85},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},22.30);
+
+/* ---- scene 4 : comparaison 10 tâches vs 1 système ---- */
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},23.30);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},23.50);
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},23.85);
+tl.fromTo(R("sk1"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},24.95);
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},25.55);
+tl.fromTo(R("mvv"),{opacity:0,y:20},{opacity:1,y:0,duration:0.45},27.20);
+
+/* ---- scene 5 : la bascule, puis le CTA ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},28.35);
+tl.fromTo(R("t5b"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},28.75);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},29.75);
+/* pulse CTA : fenêtre 30.25 -> 32.328 = 2.08s / 0.5 = 4.16 -> repeat 3 */
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},30.25);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},29.95);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},31.20);
+
+/* ---- CAPTIONS — mot-à-mot, calées sur les timestamps réels (pondération longueur de mot +
+   bonus pause ponctuation, normalisé sur les 12 segments de parole détectés par silencedetect
+   sur assets/voice.mp3 — Whisper indisponible, transcripts:[] côté avatar-webhook-v2, quota
+   OpenAI épuisé comme documenté dans le skill). ---- */
+const caps=[
+ [0.85,"CLAUDE CODE ET","vhot:CLAUDE CODE"],
+ [1.5,"N8N M'ONT FAIT","vhot:N8N"],
+ [2.14,"GAGNER QUINZE HEURES","hot:QUINZE HEURES"],
+ [3.1,"CETTE SEMAINE",""],
+ [3.8,"ET POURTANT JE","ohot:POURTANT"],
+ [4.46,"ME SUIS SENTI",""],
+ [5.05,"BLOQUÉ","ohot:BLOQUÉ"],
+ [6.12,"IL Y A",""],
+ [6.44,"UN PLAFOND QU'AUCUN","hot:PLAFOND"],
+ [7.28,"OUTIL NE CASSE",""],
+ [7.87,"TOUT SEUL","ohot:TOUT SEUL"],
+ [8.58,"CELUI DE CROIRE",""],
+ [9.16,"QUE PLUS D'HEURES","hot:PLUS D'HEURES"],
+ [9.81,"LIBÉRÉES VEUT DIRE",""],
+ [10.5,"PLUS DE CLIENTS","hot:CLIENTS"],
+ [11.66,"LA VÉRITÉ","vhot:VÉRITÉ"],
+ [12.5,"C'EST QUE LE",""],
+ [12.95,"TEMPS GAGNÉ NE","hot:GAGNÉ"],
+ [13.49,"SERT À RIEN","ohot:RIEN"],
+ [13.94,"SI TU NE",""],
+ [14.23,"CHANGES PAS CE","hot:CHANGES"],
+ [14.78,"QUE TU FAIS",""],
+ [15.18,"AVEC",""],
+ [15.9,"MOI J'AI UTILISÉ",""],
+ [16.52,"CES QUINZE HEURES","hot:QUINZE HEURES"],
+ [17.18,"POUR CONSTRUIRE UN","hot:CONSTRUIRE"],
+ [17.89,"SEUL SYSTÈME","vhot:SYSTÈME"],
+ [18.77,"PAS DIX PETITES","ohot:PAS DIX"],
+ [19.38,"TÂCHES EN PLUS",""],
+ [20.33,"UN AGENT QUI","vhot:AGENT"],
+ [20.81,"QUALIFIE MES","hot:QUALIFIE"],
+ [21.32,"PROSPECTS AVANT MÊME","hot:PROSPECTS"],
+ [22.17,"LE PREMIER APPEL","hot:PREMIER APPEL"],
+ [23.42,"CE N'EST PAS",""],
+ [23.84,"LA VITESSE QUI","ohot:VITESSE"],
+ [24.34,"FAIT GRANDIR UN","hot:GRANDIR"],
+ [24.87,"FREELANCE","hot:FREELANCE"],
+ [25.52,"C'EST CE QU'ON",""],
+ [26.02,"CHOISIT DE",""],
+ [26.4,"RECONSTRUIRE AVEC LE","vhot:RECONSTRUIRE"],
+ [27.15,"TEMPS QU'ON RÉCUPÈRE","hot:RÉCUPÈRE"],
+ [28.46,"FOLLOW","ohot:FOLLOW"],
+ [29.06,"ET COMMENTE LE",""],
+ [29.6,"MOT PLAFOND SI","hot:PLAFOND"],
+ [30.13,"TU VEUX VOIR",""],
+ [30.57,"COMMENT J'AI",""],
+ [31.05,"CONSTRUIT CE SYSTÈME","vhot:SYSTÈME"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:32.20;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail : 32.328/1.05 = 30.8 -> repeat 30 ; décalée : (32.328-0.52)/1.05 = 30.3 -> repeat 29 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:30,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:29,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=15.69, BROLL_END=23.18;
+/* ring avant broll : 15.69/0.5 = 31.4 -> repeat 30 ; après : (32.328-23.18)/0.5 = 18.3 -> repeat 17 */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:30,yoyo:true},0);
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:17,yoyo:true},BROLL_END);
+/* orbit avant : 15.69/2.2 = 7.1 -> repeat 6 ; après : (32.328-23.18)/2.2 = 4.2 -> repeat 3 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:6,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:3,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},29.75);
+
+/* hide/show avatar pendant le broll — AJOUTÉS EN DERNIER pour gagner l'ordre de rendu
+   d'opacité sur la fenêtre de recouvrement (voir pièges avatar-25 / avatar-47). */
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 puis +8.02 -> 2.34 / 10.36 / 18.38 / 26.40. */
+var LEAD = 0.12;
+[2.34, 10.36, 18.38, 26.40].forEach(function(t){
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
