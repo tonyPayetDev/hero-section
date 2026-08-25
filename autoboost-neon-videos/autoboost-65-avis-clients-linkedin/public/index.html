@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840; --li:#0A66C2;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#0a1626 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-6{background:radial-gradient(circle at 50% 42%,#1a1400 0%,#050505 72%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:120px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:74px;line-height:1.03;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- BADGE DE NUMÉRO D'ÉTAPE ---------- */
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+/* ---------- CARTE AVIS (scene 1) ---------- */
+.review{position:absolute;left:90px;right:90px;top:360px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:28px 36px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.stars{display:flex;gap:8px;margin-bottom:14px;}
+.stars svg{width:34px;height:34px;}
+.review .quote{font-size:32px;line-height:1.32;font-weight:600;color:#fff;}
+.review .who{margin-top:14px;font-size:25px;font-weight:700;color:var(--muted);}
+.arrow-mid{position:absolute;left:0;right:0;top:624px;text-align:center;opacity:0;}
+.arrow-mid svg{width:50px;height:50px;}
+/* carte post LinkedIn */
+.lipost{position:absolute;left:150px;right:150px;top:690px;background:#0d0d12;border:1px solid var(--li);
+  border-radius:20px;padding:22px 28px;box-shadow:0 0 34px rgba(10,102,194,.28);opacity:0;display:flex;align-items:center;gap:18px;}
+.lipost .libadge{width:56px;height:56px;flex:0 0 56px;border-radius:12px;background:var(--li);
+  display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;font-family:Georgia,serif;}
+.lipost .litxt b{display:block;font-size:30px;font-weight:800;color:#fff;}
+.lipost .litxt span{font-size:24px;color:var(--muted);font-weight:600;}
+.verdict{position:absolute;left:90px;right:90px;top:832px;text-align:center;font-size:42px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;line-height:1.1;}
+
+/* ---------- FLOW SCHEMA (scene 2) ---------- */
+.flow{position:absolute;left:70px;right:70px;top:470px;display:flex;flex-direction:column;gap:26px;}
+.fnode{display:flex;align-items:center;gap:24px;padding:26px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.fnode .fico{width:60px;height:60px;flex:0 0 60px;border-radius:14px;display:flex;align-items:center;justify-content:center;}
+.fnode .fico svg{width:34px;height:34px;}
+.fnode .flab{font-size:36px;font-weight:800;color:#fff;}
+.fnode .fsub{font-size:24px;font-weight:600;color:var(--muted);margin-top:2px;}
+.fnode.n1 .fico{background:rgba(255,230,0,.14);border:1px solid var(--accent-yellow);}
+.fnode.n2 .fico{background:rgba(168,85,247,.16);border:1px solid var(--violet);}
+.fnode.n3 .fico{background:rgba(255,138,61,.14);border:1px solid var(--orange);}
+.farrow{display:flex;justify-content:center;opacity:0;}
+.farrow svg{width:40px;height:40px;}
+.pulse-dot{position:absolute;right:110px;top:494px;width:20px;height:20px;border-radius:50%;
+  background:var(--good);box-shadow:0 0 20px rgba(40,200,64,.8);opacity:0;}
+
+/* ---------- INGRÉDIENTS (scene 3) ---------- */
+.ingr{position:absolute;left:80px;right:80px;top:490px;display:flex;flex-direction:column;gap:22px;}
+.ing{display:flex;align-items:center;gap:22px;padding:26px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:38px;font-weight:800;color:#fff;opacity:0;}
+.ing .tag{width:52px;height:52px;flex:0 0 52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:900;color:#060606;background:var(--accent-yellow);}
+.ing .sub{margin-left:auto;font-size:26px;font-weight:700;color:var(--muted);}
+
+/* ---------- VALIDATION (scene 4) ---------- */
+.valwrap{position:absolute;left:80px;right:80px;top:500px;display:flex;flex-direction:column;gap:22px;}
+.vrow{position:relative;display:flex;align-items:center;gap:22px;padding:26px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:36px;font-weight:800;color:#cfd2da;opacity:0;}
+.vrow .tag{width:48px;height:48px;flex:0 0 48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;}
+.vrow.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.vrow.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.vrow.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.vrow .strike{position:absolute;left:96px;right:30px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+.vrow .dur{margin-left:auto;font-size:30px;font-weight:900;color:var(--accent-yellow);}
+
+/* ---------- RÉSULTAT (scene 5) ---------- */
+.stats{position:absolute;left:80px;right:80px;top:470px;display:flex;gap:22px;}
+.stat{flex:1;background:#0d0d12;border:1px solid #2a2140;border-radius:20px;padding:28px 20px;text-align:center;opacity:0;}
+.stat .num{font-size:66px;font-weight:900;color:var(--accent-yellow);line-height:1;}
+.stat .num.v{color:var(--violet);}
+.stat .lab{font-size:24px;font-weight:700;color:var(--muted);margin-top:12px;line-height:1.2;}
+.proof{position:absolute;left:90px;right:90px;top:720px;background:#0d0d12;border:1px solid var(--li);
+  border-radius:20px;padding:26px 30px;opacity:0;box-shadow:0 0 30px rgba(10,102,194,.22);}
+.proof .head{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.proof .head .dot{width:44px;height:44px;flex:0 0 44px;border-radius:10px;background:var(--li);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;font-family:Georgia,serif;}
+.proof .head .nm b{display:block;font-size:26px;font-weight:800;color:#fff;}
+.proof .head .nm span{font-size:20px;color:var(--muted);}
+.proof .body{font-size:30px;font-weight:600;color:#e8e8ee;line-height:1.35;}
+.proof .body .hl{color:var(--accent-yellow);font-weight:800;}
+
+/* ---------- CTA (scene 6) ---------- */
+.cta-word{position:absolute;left:0;right:0;top:470px;text-align:center;font-size:120px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:3px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:640px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.35;}
+.cta-follow{position:absolute;left:80px;right:80px;top:800px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- BROLL ---------- */
+.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- CAPTIONS (27px, top ~960px) ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:150px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:80px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.86) 10%,rgba(6,6,8,.86) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:760px;height:4px;margin-left:-380px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:2px;}
+#cap-bar-bot{top:84px;}
+.caption{position:absolute;left:50%;top:30px;transform:translateX(-50%);white-space:nowrap;
+  font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de public/assets/voice.mp3 (silencedetect -40dB:d=0.18).
+     Coupes de scène posées DANS les silences : 6.85 / 11.13 / 16.20(broll) / 18.15 / 23.05 / 31.30 -->
+<div id="root" data-composition-id="autoboost65avisli" data-start="0" data-width="1080" data-height="1920" data-duration="34.10">
+
+  <!-- SCENE 1 — HOOK : mes avis clients écrivent mes posts (0.57 -> 6.59) -->
+  <div class="scene scene-1" data-s="0" data-d="6.85">
+    <div class="pad">
+      <div class="kicker" data-role="k1" style="color:var(--li);">Avis client → LinkedIn</div>
+      <div class="title" data-role="t1">Mes avis clients<br>écrivent mes <span class="y">posts</span></div>
+    </div>
+    <div class="review" data-role="rev">
+      <div class="stars" data-role="stars">
+        <svg viewBox="0 0 24 24" fill="#FFE600"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="#FFE600"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="#FFE600"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="#FFE600"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        <svg viewBox="0 0 24 24" fill="#FFE600"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+      </div>
+      <div class="quote">« Travail au top, +40% de leads en deux mois. »</div>
+      <div class="who">— Client vérifié</div>
+    </div>
+    <div class="arrow-mid" data-role="arw1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+    </div>
+    <div class="lipost" data-role="lip">
+      <div class="libadge">in</div>
+      <div class="litxt"><b>Post LinkedIn prêt</b><span>rédigé automatiquement</span></div>
+    </div>
+    <div class="verdict" data-role="v1">2 contrats. 0 post écrit à la main.</div>
+  </div>
+
+  <!-- SCENE 2 — ÉTAPE 1 : n8n capte l'avis (7.10 -> 10.93) -->
+  <div class="scene scene-2" data-s="6.85" data-d="4.28">
+    <div class="tipnum" data-role="n2">1</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Étape 1</div>
+      <div class="title" data-role="t2">n8n <span class="v">capte l'avis</span><br>tout seul</div>
+    </div>
+    <div class="pulse-dot" data-role="pdot"></div>
+    <div class="flow">
+      <div class="fnode n1" data-role="f1">
+        <div class="fico"><svg viewBox="0 0 24 24" fill="#FFE600"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div>
+        <div><div class="flab">Avis client</div><div class="fsub">Google, DM, email…</div></div>
+      </div>
+      <div class="farrow" data-role="fa1"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa0aa" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fnode n2" data-role="f2">
+        <div class="fico"><svg viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/></svg></div>
+        <div><div class="flab">Workflow n8n</div><div class="fsub">récupère le texte</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — ÉTAPE 2 : Claude Code réécrit (11.33 -> 16.26) -->
+  <div class="scene scene-3" data-s="11.13" data-d="5.07">
+    <div class="tipnum" data-role="n3">2</div>
+    <div class="pad">
+      <div class="kicker" data-role="k3">Étape 2</div>
+      <div class="title" data-role="t3">Claude Code<br>le <span class="v">réécrit</span> en post</div>
+    </div>
+    <div class="ingr">
+      <div class="ing" data-role="i1"><span class="tag">1</span>Un avant / après<span class="sub">l'histoire</span></div>
+      <div class="ing" data-role="i2"><span class="tag">2</span>Un chiffre concret<span class="sub">la preuve</span></div>
+      <div class="ing" data-role="i3"><span class="tag">3</span>Une accroche<span class="sub">le hook</span></div>
+    </div>
+  </div>
+
+  <!-- BROLL — respiration dans le grand silence 16.26 -> 17.49 -->
+  <video id="broll" class="broll-vid" data-role="broll" src="assets/broll-clip.mp4" data-start="16.20" data-duration="1.95" muted playsinline></video>
+  <div class="scene scene-broll" data-s="16.20" data-d="1.95"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — ÉTAPE 3 : validation humaine (17.49 -> 22.86) -->
+  <div class="scene scene-4" data-s="18.15" data-d="4.90">
+    <div class="tipnum" data-role="n4">3</div>
+    <div class="pad">
+      <div class="kicker" data-role="k4">Étape 3</div>
+      <div class="title" data-role="t4">Tu valides en<br><span class="y">30 secondes</span></div>
+    </div>
+    <div class="valwrap">
+      <div class="vrow ko" data-role="vr1"><span class="tag">✕</span>100% automatique<span class="strike" data-role="vst"></span></div>
+      <div class="vrow ok" data-role="vr2"><span class="tag">✓</span>Relecture humaine<span class="dur">30 s</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — RÉSULTAT / preuve sociale (23.24 -> 30.89) -->
+  <div class="scene scene-5" data-s="23.05" data-d="8.25">
+    <div class="pad" style="top:130px;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Le résultat</div>
+      <div class="title" data-role="t5">Une <span class="y">preuve sociale</span><br>fraîche chaque semaine</div>
+    </div>
+    <div class="stats">
+      <div class="stat" data-role="s1"><div class="num">+2</div><div class="lab">contrats<br>ce mois-ci</div></div>
+      <div class="stat" data-role="s2"><div class="num v">0</div><div class="lab">soirée<br>à rédiger</div></div>
+      <div class="stat" data-role="s3"><div class="num">1<span style="font-size:34px;">/sem</span></div><div class="lab">post<br>de preuve</div></div>
+    </div>
+    <div class="proof" data-role="pf">
+      <div class="head"><span class="dot">in</span><span class="nm"><b>Ton prospect</b><span>voit un client réel</span></span></div>
+      <div class="body">Des <span class="hl">résultats réels</span>, racontés par un vrai client. Ça débloque la décision.</div>
+    </div>
+  </div>
+
+  <!-- SCENE 6 — CTA (31.65 -> 34.05) -->
+  <div class="scene scene-6" data-s="31.30" data-d="2.80">
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">TEMOIN</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">TEMOIN</span><br>je t'envoie le workflow</div>
+    <div class="cta-follow" data-role="ctafollow">— follow + lien en bio</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="34.10" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.10"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.10"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.10"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="34.05" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="34.10" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1). Zoom démarre ~1.2s AVANT la coupe pour que le pic
+       tombe dessus. Coupes : 6.85 / 11.13 / 16.20 / 18.15 / 23.05 / 31.30 -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-rev"       src="assets/sfx-notify.mp3"      data-start="1.15"  data-volume="0.14"></audio>
+  <audio id="sfx-arrow-1"   src="assets/sfx-whoosh-lat.mp3"  data-start="3.30"  data-volume="0.15"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-confirm.mp3"     data-start="5.55"  data-volume="0.18"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="5.65"  data-volume="0.17"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="6.90"  data-volume="0.18"></audio>
+  <audio id="sfx-f1"        src="assets/sfx-click-soft.mp3"  data-start="7.55"  data-volume="0.13"></audio>
+  <audio id="sfx-f2"        src="assets/sfx-click-soft.mp3"  data-start="8.90"  data-volume="0.13"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="9.93"  data-volume="0.17"></audio>
+  <audio id="sfx-click-2"   src="assets/sfx-click.mp3"       data-start="11.20" data-volume="0.18"></audio>
+  <audio id="sfx-i1"        src="assets/sfx-click-soft.mp3"  data-start="12.76" data-volume="0.13"></audio>
+  <audio id="sfx-i2"        src="assets/sfx-click-soft.mp3"  data-start="13.67" data-volume="0.13"></audio>
+  <audio id="sfx-i3"        src="assets/sfx-click-soft.mp3"  data-start="14.57" data-volume="0.13"></audio>
+  <audio id="sfx-broll"     src="assets/sfx-whoosh-lat.mp3"  data-start="16.10" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="16.95" data-volume="0.17"></audio>
+  <audio id="sfx-click-3"   src="assets/sfx-click.mp3"       data-start="18.20" data-volume="0.18"></audio>
+  <audio id="sfx-ko"        src="assets/sfx-click-soft.mp3"  data-start="19.45" data-volume="0.13"></audio>
+  <audio id="sfx-strike"    src="assets/sfx-whoosh-lat.mp3"  data-start="20.10" data-volume="0.14"></audio>
+  <audio id="sfx-valid"     src="assets/sfx-confirm.mp3"     data-start="21.45" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="21.85" data-volume="0.17"></audio>
+  <audio id="sfx-notify-5"  src="assets/sfx-notify.mp3"      data-start="23.10" data-volume="0.16"></audio>
+  <audio id="sfx-s1"        src="assets/sfx-click-soft.mp3"  data-start="24.15" data-volume="0.13"></audio>
+  <audio id="sfx-s2"        src="assets/sfx-click-soft.mp3"  data-start="24.45" data-volume="0.13"></audio>
+  <audio id="sfx-s3"        src="assets/sfx-click-soft.mp3"  data-start="24.75" data-volume="0.13"></audio>
+  <audio id="sfx-proof"     src="assets/sfx-click.mp3"       data-start="27.20" data-volume="0.15"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-zoom.mp3"        data-start="30.10" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="31.55" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="31.55" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="32.80" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost65avisli";
+const DUR=34.10;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade (data-s/data-d) ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("rev"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.05);
+tl.fromTo(R("arw1"),{opacity:0,scale:0.6},{opacity:1,scale:1,duration:0.35,ease:"back.out(1.8)"},3.30);
+tl.fromTo(R("lip"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"power3.out"},3.70);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},5.55);
+
+/* ---- scene 2 ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},6.90);
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},6.95);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},7.15);
+tl.fromTo(R("f1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},7.55);
+tl.fromTo(R("fa1"),{opacity:0},{opacity:1,duration:0.3},8.30);
+tl.fromTo(R("f2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},8.90);
+tl.fromTo(R("pdot"),{opacity:0},{opacity:1,duration:0.3},9.60);
+tl.to(R("pdot"),{scale:1.5,duration:0.5,ease:"sine.inOut",repeat:2,yoyo:true},9.90);
+
+/* ---- scene 3 ---- */
+tl.fromTo(R("n3"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},11.20);
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},11.25);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},11.45);
+tl.fromTo(R("i1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},12.76);
+tl.fromTo(R("i2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},13.67);
+tl.fromTo(R("i3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},14.57);
+
+/* ---- scene 4 ---- */
+tl.fromTo(R("n4"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},18.20);
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},18.25);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},18.45);
+tl.fromTo(R("vr1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},19.45);
+tl.fromTo(R("vst"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},20.10);
+tl.fromTo(R("vr2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},21.45);
+
+/* ---- scene 5 ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},23.10);
+tl.fromTo(R("t5"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},23.35);
+tl.fromTo(R("s1"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},24.15);
+tl.fromTo(R("s2"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},24.45);
+tl.fromTo(R("s3"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},24.75);
+tl.fromTo(R("pf"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"power3.out"},27.20);
+
+/* ---- scene 6 : CTA ---- */
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},31.55);
+tl.to(R("ctaword"),{scale:1.05,duration:0.45,ease:"sine.inOut",repeat:2,yoyo:true},32.10);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},32.80);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},33.45);
+
+/* ---- CAPTIONS ---- */
+const caps=[
+ [0.57,"MES AVIS CLIENTS","hot:AVIS"],
+ [1.28,"ÉCRIVENT MES POSTS","hot:POSTS"],
+ [2.09,"LINKEDIN À MA","hot:LINKEDIN"],
+ [2.70,"PLACE",""],
+ [3.48,"DEUX NOUVEAUX",""],
+ [4.17,"CONTRATS CE MOIS-CI","hot:CONTRATS"],
+ [5.17,"ZÉRO POST RÉDIGÉ","ohot:ZÉRO"],
+ [5.98,"À LA MAIN","ohot:MAIN"],
+ [7.10,"DÈS QU'UN CLIENT",""],
+ [7.98,"LAISSE UN AVIS","hot:AVIS"],
+ [8.88,"UN WORKFLOW N8N","vhot:WORKFLOW"],
+ [9.75,"RÉCUPÈRE LE TEXTE","vhot:RÉCUPÈRE"],
+ [11.33,"CLAUDE CODE LE","vhot:CLAUDE"],
+ [11.95,"RÉÉCRIT EN POST","vhot:RÉÉCRIT"],
+ [12.76,"UN VRAI AVANT-APRÈS","hot:AVANT-APRÈS"],
+ [13.67,"UN CHIFFRE CONCRET","hot:CHIFFRE"],
+ [14.57,"UNE ACCROCHE QUI","hot:ACCROCHE"],
+ [15.30,"DONNE ENVIE DE",""],
+ [15.92,"LIRE",""],
+ [17.49,"JE VALIDE EN","ohot:VALIDE"],
+ [17.98,"TRENTE SECONDES","hot:SECONDES"],
+ [18.65,"AVANT PUBLICATION",""],
+ [19.49,"JAMAIS EN","ohot:JAMAIS"],
+ [19.87,"AUTOMATIQUE COMPLET","vhot:AUTOMATIQUE"],
+ [20.81,"PARCE QU'UN CLIENT",""],
+ [21.53,"MÉRITE UNE RELECTURE","hot:RELECTURE"],
+ [22.40,"HUMAINE","hot:HUMAINE"],
+ [23.24,"RÉSULTAT",""],
+ [23.70,"UNE PREUVE SOCIALE","hot:PREUVE"],
+ [24.48,"FRAÎCHE CHAQUE","hot:FRAÎCHE"],
+ [25.11,"SEMAINE","hot:SEMAINE"],
+ [25.52,"SANS Y PASSER",""],
+ [26.11,"MES SOIRÉES","ohot:SOIRÉES"],
+ [27.14,"TES PROSPECTS VOIENT","hot:PROSPECTS"],
+ [28.00,"UN CLIENT RÉEL","hot:RÉEL"],
+ [28.58,"PARLER DE RÉSULTATS","hot:RÉSULTATS"],
+ [29.40,"RÉELS","hot:RÉELS"],
+ [29.70,"ET ÇA DÉBLOQUE","ohot:DÉBLOQUE"],
+ [30.28,"LA DÉCISION","hot:DÉCISION"],
+ [31.65,"COMMENTE LE MOT","ohot:COMMENTE"],
+ [32.39,"TEMOIN","hot:TEMOIN"],
+ [32.81,"JE T'ENVOIE LE",""],
+ [33.44,"WORKFLOW","vhot:WORKFLOW"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:34.00;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:31,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:30,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=16.20, BROLL_END=18.15;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 16.20/0.5 = 32.4 -> repeat 31 (impair -> retombe à 0 avant broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:31,yoyo:true},0);
+/* hide/show explicite ring pendant broll (ajouté en dernier = gagne) */
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:31,yoyo:true},BROLL_END);
+/* orbit rotation */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:7,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:6,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out",overwrite:"auto"},31.55);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 / 10.36 / 18.38 / 26.40.
+   18.38 tombe dans la fenêtre broll (16.20-18.15)? non, 18.38 > 18.15 -> gardé. */
+var LEAD=0.12;
+[2.34,10.36,18.38,26.40].forEach(function(t){
+  if(t>BROLL_START && t<BROLL_END) return;
+  var s=t-LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
