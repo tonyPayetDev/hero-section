@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:radial-gradient(circle at 50% 34%,#12081f 0%,#050505 74%);}
+.scene-2{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-3{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-4{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-5{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 72%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- MASTHEAD (scene 1) ---------- */
+.masthead{position:absolute;left:0;right:0;top:300px;text-align:center;}
+.mh-tag{font-size:34px;font-weight:800;letter-spacing:8px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.mh-title{font-size:150px;font-weight:900;letter-spacing:-2px;line-height:.98;margin-top:20px;opacity:0;
+  text-shadow:0 0 60px rgba(168,85,247,.45);}
+.mh-title .y{color:var(--accent-yellow);}
+.mh-sub{margin-top:34px;font-size:40px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#fff;opacity:0;}
+.mh-rule{margin:28px auto 0;width:0;height:5px;border-radius:3px;
+  background:linear-gradient(90deg,var(--accent-yellow),var(--violet));box-shadow:0 0 20px rgba(255,230,0,.5);}
+
+/* ---------- BADGE DE NUMÉRO DE SUJET ---------- */
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.verdict{position:absolute;left:90px;right:90px;top:850px;text-align:center;font-size:42px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;line-height:1.15;}
+
+/* ---------- ORDRE / EXPANSION (scene 2) ---------- */
+.order{position:absolute;left:70px;right:70px;top:520px;display:flex;gap:16px;justify-content:center;align-items:center;}
+.ochip{padding:22px 28px;border-radius:18px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:30px;font-weight:800;color:#cfd2da;opacity:0;white-space:nowrap;text-align:center;}
+.ochip.hot{border-color:var(--accent-yellow);box-shadow:0 0 30px rgba(255,230,0,.25);color:#fff;}
+.ochip .n{display:block;font-size:20px;color:var(--violet);margin-bottom:6px;letter-spacing:1px;}
+.oarrow{font-size:40px;font-weight:900;color:var(--violet);opacity:0;}
+
+/* ---------- MOUVEMENTS / COMPARO (scene 3) ---------- */
+.moves{position:absolute;left:80px;right:80px;top:520px;display:flex;flex-direction:column;gap:24px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:30px 34px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:36px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:46px;height:46px;flex:0 0 46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mv .dur{margin-left:auto;font-size:32px;font-weight:900;color:var(--accent-yellow);white-space:nowrap;}
+.mv.ko .dur{color:var(--bad);}
+
+/* ---------- RÉFÉRENCES (scene 4) ---------- */
+.refs{position:absolute;left:70px;right:70px;top:500px;display:flex;flex-direction:column;gap:22px;}
+.ref{display:flex;align-items:center;gap:20px;padding:28px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.ref .at{font-size:34px;font-weight:800;color:var(--bad);flex:1;text-align:right;}
+.ref .arw{color:var(--violet);font-size:36px;font-weight:900;}
+.ref .what{font-size:34px;font-weight:900;color:var(--good);flex:1;}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- CONCLUSION + CTA (scene 5) ---------- */
+.concl{position:absolute;left:80px;right:80px;top:330px;text-align:center;font-size:52px;font-weight:900;
+  line-height:1.14;color:#fff;opacity:0;letter-spacing:-.5px;}
+.concl .o{color:var(--orange);} .concl .y{color:var(--accent-yellow);}
+.cta-word{position:absolute;left:0;right:0;top:470px;text-align:center;font-size:120px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:660px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:800px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS (27px, top ~960px) ---------- */
+#caption-band{position:absolute;top:960px;left:0;width:1080px;height:150px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:84px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:760px;height:4px;margin-left:-380px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 14px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:89px;}
+.caption{position:absolute;left:50%;top:30px;transform:translateX(-50%);white-space:nowrap;
+  font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences estimés de public/assets/voice.mp3 (34.008s, 105 mots).
+     Coupes de scène posées dans les silences de fin de phrase : 2.30 / 10.25 / 17.40 / 19.45 / 24.20 -->
+<div id="root" data-composition-id="autoboost67journalia" data-start="0" data-width="1080" data-height="1920" data-duration="34.05">
+
+  <!-- SCENE 1 — MASTHEAD / HOOK : « Journal IA, cette semaine » (0.00 -> 2.30) -->
+  <div class="scene scene-1" data-s="0" data-d="2.30">
+    <div class="masthead">
+      <div class="mh-tag" data-role="mhtag">L'actu IA qui compte</div>
+      <div class="mh-title" data-role="mhtitle">JOURNAL <span class="y">IA</span></div>
+      <div class="mh-sub" data-role="mhsub">· cette semaine ·</div>
+      <div class="mh-rule" data-role="mhrule"></div>
+    </div>
+  </div>
+
+  <!-- SCENE 2 — SUJET 1 : les agents autonomes sortent des devs (2.30 -> 10.25) -->
+  <div class="scene scene-2" data-s="2.30" data-d="7.95">
+    <div class="tipnum" data-role="n2">1</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Sujet 1</div>
+      <div class="title" data-role="t2" style="font-size:70px;">Les agents <span class="y">autonomes</span><br>sortent des devs</div>
+    </div>
+    <div class="order">
+      <div class="ochip" data-role="o1"><span class="n">HIER</span>DEV</div>
+      <div class="oarrow" data-role="oa1">→</div>
+      <div class="ochip" data-role="o2"><span class="n">AUJOURD'HUI</span>COMMERCIAL</div>
+      <div class="oarrow" data-role="oa2">→</div>
+      <div class="ochip hot" data-role="o3"><span class="n">DEMAIN</span>COMPTABLE</div>
+    </div>
+    <div class="verdict" data-role="v2" style="color:var(--accent-yellow);">Une tâche de bout en bout — sans toi.</div>
+  </div>
+
+  <!-- SCENE 3 — SUJET 2 : le coût de l'IA s'effondre (10.25 -> 17.40) -->
+  <div class="scene scene-3" data-s="10.25" data-d="7.15">
+    <div class="tipnum" data-role="n3">2</div>
+    <div class="pad">
+      <div class="kicker" data-role="k3">Sujet 2</div>
+      <div class="title" data-role="t3" style="font-size:70px;">Le <span class="y">coût de l'IA</span><br>s'effondre</div>
+    </div>
+    <div class="moves">
+      <div class="mv ko" data-role="mv2">
+        <span class="tag">✕</span>Il y a 6 mois<span class="dur">plusieurs centimes</span>
+      </div>
+      <div class="mv ok" data-role="mv1">
+        <span class="tag">✓</span>Aujourd'hui<span class="dur">≈ 0 €</span>
+      </div>
+    </div>
+    <div class="verdict" data-role="v3" style="color:var(--orange);">Ce qui coûtait cher tourne presque gratuitement.</div>
+  </div>
+
+  <!-- BROLL — respiration sur « Troisième sujet : la communauté... » (17.40 -> 19.45) -->
+  <video id="broll" class="broll-vid" src="assets/broll-journal.mp4" data-start="17.40" data-duration="2.05" muted playsinline></video>
+  <div class="scene scene-broll" data-s="17.40" data-d="2.05"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — SUJET 3 : la communauté n8n explose (19.45 -> 24.20) -->
+  <div class="scene scene-4" data-s="19.45" data-d="4.75">
+    <div class="tipnum" data-role="n4">3</div>
+    <div class="pad">
+      <div class="kicker" data-role="k4">Sujet 3</div>
+      <div class="title" data-role="t4" style="font-size:70px;">La communauté <span class="y">n8n</span><br>explose</div>
+    </div>
+    <div class="refs">
+      <div class="ref" data-role="r1"><span class="at">no-code fermé</span><span class="arw">→</span><span class="what">workflow à toi</span></div>
+      <div class="ref" data-role="r2"><span class="at">abonnement</span><span class="arw">→</span><span class="what">auto-hébergé</span></div>
+      <div class="ref" data-role="r3"><span class="at">outil loué</span><span class="arw">→</span><span class="what">outil possédé</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — CONCLUSION + CTA (24.20 -> 34.05) -->
+  <div class="scene scene-5" data-s="24.20" data-d="9.85">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">La vraie leçon</div>
+    </div>
+    <div class="concl" data-role="concl">Chaque semaine sans automatiser,<br><span class="o">un concurrent le fait à ta place.</span></div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">JOURNAL</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">JOURNAL</span><br>je t'envoie le résumé chaque semaine</div>
+    <div class="cta-follow" data-role="ctafollow">— follow + lien en bio</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="34.05" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.05"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.05"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.05"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="33.95" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="34.05" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1). Les zoom démarrent ~1.2s AVANT la coupe
+       pour que le pic du whoosh tombe pile dessus (coupes : 2.30 / 10.25 / 17.40 / 19.45 / 24.20). -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="1.10"  data-volume="0.17"></audio>
+  <audio id="sfx-topic-1"   src="assets/sfx-notify.mp3"      data-start="2.35"  data-volume="0.16"></audio>
+  <audio id="sfx-o1"        src="assets/sfx-click-soft.mp3"  data-start="4.46"  data-volume="0.13"></audio>
+  <audio id="sfx-o2"        src="assets/sfx-click-soft.mp3"  data-start="6.21"  data-volume="0.13"></audio>
+  <audio id="sfx-o3"        src="assets/sfx-click.mp3"       data-start="7.08"  data-volume="0.18"></audio>
+  <audio id="sfx-v2"        src="assets/sfx-confirm.mp3"     data-start="9.62"  data-volume="0.18"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="9.05"  data-volume="0.17"></audio>
+  <audio id="sfx-topic-2"   src="assets/sfx-notify.mp3"      data-start="10.65" data-volume="0.16"></audio>
+  <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="12.43" data-volume="0.15"></audio>
+  <audio id="sfx-ko"        src="assets/sfx-click.mp3"       data-start="12.43" data-volume="0.18"></audio>
+  <audio id="sfx-ok"        src="assets/sfx-confirm.mp3"     data-start="15.58" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="16.20" data-volume="0.17"></audio>
+  <audio id="sfx-arrow"     src="assets/sfx-whoosh-lat.mp3"  data-start="17.55" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="18.25" data-volume="0.19"></audio>
+  <audio id="sfx-topic-3"   src="assets/sfx-notify.mp3"      data-start="19.66" data-volume="0.16"></audio>
+  <audio id="sfx-r1"        src="assets/sfx-click-soft.mp3"  data-start="20.80" data-volume="0.13"></audio>
+  <audio id="sfx-r2"        src="assets/sfx-click-soft.mp3"  data-start="21.93" data-volume="0.13"></audio>
+  <audio id="sfx-r3"        src="assets/sfx-click-soft.mp3"  data-start="22.79" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-zoom.mp3"        data-start="23.00" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="30.95" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="30.95" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="31.66" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost67journalia";
+const DUR=34.05;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade (data-s/data-d) ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : masthead ---- */
+tl.fromTo(R("mhtag"),{opacity:0,y:16},{opacity:1,y:0,duration:0.35},0.10);
+tl.fromTo(R("mhtitle"),{opacity:0,scale:0.86},{opacity:1,scale:1,duration:0.55,ease:"back.out(1.5)"},0.30);
+tl.fromTo(R("mhsub"),{opacity:0,y:14},{opacity:1,y:0,duration:0.35},0.85);
+tl.fromTo(R("mhrule"),{width:0},{width:360,duration:0.5,ease:"power2.out"},0.90);
+
+/* ---- scene 2 : sujet 1 — agents autonomes ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},2.35);
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},2.40);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},2.60);
+tl.fromTo(R("o1"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},4.46);
+tl.fromTo(R("oa1"),{opacity:0},{opacity:1,duration:0.3},5.40);
+tl.fromTo(R("o2"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},6.21);
+tl.fromTo(R("oa2"),{opacity:0},{opacity:1,duration:0.3},6.92);
+tl.fromTo(R("o3"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"back.out(1.6)"},7.08);
+tl.fromTo(R("v2"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.5)"},9.62);
+
+/* ---- scene 3 : sujet 2 — coût qui s'effondre ---- */
+tl.fromTo(R("n3"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},10.65);
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},10.70);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},10.90);
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},12.43);
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},15.58);
+tl.fromTo(R("v3"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.5)"},16.61);
+
+/* ---- scene 4 : sujet 3 — n8n explose ---- */
+tl.fromTo(R("n4"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},19.65);
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},19.70);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},19.85);
+tl.fromTo(R("r1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},20.80);
+tl.fromTo(R("r2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},21.93);
+tl.fromTo(R("r3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},22.79);
+
+/* ---- scene 5 : conclusion puis CTA ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},24.54);
+tl.fromTo(R("concl"),{opacity:0,y:24},{opacity:1,y:0,duration:0.55,ease:"power3.out"},24.70);
+tl.to(R("concl"),{opacity:0,duration:0.4,ease:"power2.in"},30.10);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},30.90);
+/* pulse CTA : fenêtre 31.4 -> 34.0 = 2.6s / 0.5 = 5.2 -> repeat 4 */
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:4,yoyo:true},31.40);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},31.66);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},33.10);
+
+/* ---- CAPTIONS — un mot coloré par phrase, 2-3 mots par ligne ---- */
+const caps=[
+ [0.38,"JOURNAL IA","vhot:IA"],
+ [0.85,"CETTE SEMAINE","hot:CETTE SEMAINE"],
+ [1.41,"PREMIER SUJET","hot:PREMIER"],
+ [2.31,"LES AGENTS AUTONOMES","vhot:AGENTS AUTONOMES"],
+ [3.55,"FAÇON CLAUDE CODE","vhot:CLAUDE CODE"],
+ [4.46,"SORTENT DES DEVS","hot:DEVS"],
+ [5.40,"ET ARRIVENT",""],
+ [6.21,"CHEZ LES COMMERCIAUX","hot:COMMERCIAUX"],
+ [7.08,"ET LES COMPTABLES","hot:COMPTABLES"],
+ [7.70,"CAPABLES DE FINIR",""],
+ [8.68,"UNE TÂCHE ENTIÈRE","hot:ENTIÈRE"],
+ [9.62,"SANS SUPERVISION","ohot:SANS SUPERVISION"],
+ [10.60,"DEUXIÈME SUJET","hot:DEUXIÈME"],
+ [11.56,"LE COÛT DE L'IA","hot:COÛT"],
+ [12.43,"S'EFFONDRE","ohot:S'EFFONDRE"],
+ [13.22,"LES AUTOMATISATIONS","vhot:AUTOMATISATIONS"],
+ [14.19,"COÛTAIENT DES CENTIMES","hot:CENTIMES"],
+ [15.58,"TOURNENT AUJOURD'HUI",""],
+ [16.61,"PRESQUE GRATUITEMENT","ohot:GRATUITEMENT"],
+ [17.81,"TROISIÈME SUJET","hot:TROISIÈME"],
+ [18.82,"LA COMMUNAUTÉ N8N","vhot:N8N"],
+ [19.64,"EXPLOSE","ohot:EXPLOSE"],
+ [20.26,"LES FREELANCES","hot:FREELANCES"],
+ [20.80,"REMPLACENT LEURS OUTILS",""],
+ [21.93,"NO-CODE FERMÉS","hot:FERMÉS"],
+ [22.79,"PAR DES WORKFLOWS","vhot:WORKFLOWS"],
+ [23.44,"QU'ILS POSSÈDENT","hot:POSSÈDENT"],
+ [24.54,"LA CONCLUSION",""],
+ [25.24,"EST SIMPLE","hot:SIMPLE"],
+ [25.82,"CHAQUE SEMAINE",""],
+ [26.52,"TU N'AUTOMATISES PAS","vhot:N'AUTOMATISES"],
+ [27.62,"DE TON ACTIVITÉ","hot:ACTIVITÉ"],
+ [28.75,"UN CONCURRENT","ohot:CONCURRENT"],
+ [29.40,"LE FAIT",""],
+ [29.74,"À TA PLACE","ohot:À TA PLACE"],
+ [30.43,"FOLLOW","ohot:FOLLOW"],
+ [30.95,"COMMENTE LE MOT",""],
+ [31.66,"JOURNAL","hot:JOURNAL"],
+ [32.25,"POUR LE RECEVOIR",""],
+ [32.80,"CHAQUE SEMAINE","hot:CHAQUE SEMAINE"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:33.95;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail : 34.05/1.05 = 32.4 -> repeat 31 ; décalée : (34.05-0.52)/1.05 = 31.9 -> repeat 30 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:31,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:30,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=17.40, BROLL_END=19.45;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 17.40/0.5 = 34.8 -> repeat 34 (PAIR = revient à 0 avant le broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:34,yoyo:true},0);
+/* ring après broll : (34.05-19.45)/0.5 = 29.2 -> repeat 28 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:28,yoyo:true},BROLL_END);
+/* orbit rotation : avant broll puis après */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:7,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:5,ease:"none"},BROLL_END);
+/* hide/show explicite de sécurité (ajouté en dernier = gagne l'affichage sur sa fenêtre) */
+tl.to("#avatar-ring",{opacity:0,duration:0.25,ease:"power2.out"},BROLL_START);
+tl.to("#avatar-ring",{opacity:0.8,duration:0.25,ease:"power2.out"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},30.90);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 puis +8.02 -> 2.34 / 10.36 / 18.38 / 26.40.
+   18.38 tombe dans la fenêtre broll (17.40-19.45) où l'avatar est masqué -> écarté.
+   LEAD 0.12 : le fondu doit CULMINER sur le drop. */
+var LEAD = 0.12;
+[2.34, 10.36, 26.40].forEach(function(t){
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
