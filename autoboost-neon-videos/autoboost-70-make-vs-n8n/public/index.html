@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autoboost 70 — Make.com vs n8n</title>
+<style>
+  :root{
+    --jaune:#eab308; --jaune-clair:#BEF264; --violet:#8b5cf6; --violet-profond:#7c3aed;
+    --bg:#0a0a0f; --surface:#111117; --filet:#232330; --texte:#EDEDED; --texte-sourd:#8A8A8A;
+    --erreur:#ff6b6b;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--texte); font-family:-apple-system,'Segoe UI',Roboto,sans-serif; padding:32px 20px 80px;}
+  .wrap{max-width:720px; margin:0 auto;}
+  h1{font-size:22px; margin:0 0 4px;}
+  .sub{color:var(--texte-sourd); font-size:14px; margin-bottom:24px;}
+  video{width:100%; max-width:400px; display:block; margin:0 auto 28px; border-radius:16px; border:1px solid var(--filet); background:#000;}
+  .badge{display:inline-block; background:var(--jaune); color:#0a0a0f; font-weight:800; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:5px 12px; border-radius:999px; margin-bottom:10px;}
+  .warn{background:rgba(255,107,107,.10); border:1px solid var(--erreur); border-radius:12px; padding:16px 18px; margin:18px 0; font-size:14px; line-height:1.5;}
+  .warn b{color:var(--erreur);}
+  .card{background:var(--surface); border:1px solid var(--filet); border-radius:14px; padding:18px 20px; margin:16px 0;}
+  .card h2{font-size:15px; margin:0 0 10px; color:var(--jaune); text-transform:uppercase; letter-spacing:.06em;}
+  pre{white-space:pre-wrap; font-size:14px; line-height:1.55; margin:0; font-family:inherit; color:var(--texte);}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  td,th{padding:6px 8px; border-bottom:1px solid var(--filet); text-align:left;}
+  th{color:var(--texte-sourd); font-weight:600;}
+  a{color:var(--jaune-clair);}
+  .foot{color:var(--texte-sourd); font-size:12px; margin-top:30px; text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge">Prévisualisation — non publiée</div>
+  <h1>Alternative gratuite à Make.com — même automatisations, zéro abonnement</h1>
+  <div class="sub">autoboost-70-make-vs-n8n · pipeline v3 (banque avatar) · décor BUREAU · CTA <b>MAKE</b> · 34,5s</div>
+
+  <video src="video.mp4" controls playsinline poster=""></video>
+
+  <div class="warn">
+    <b>⚠️ Porte CTA non vérifiée.</b> Le mot-clé <b>MAKE</b> n'apparaît pas dans l'onglet
+    « Ressources CTA » du Sheet de suivi (45 mots-clés vérifiés, MAKE absent). Si Blotato
+    n'a pas de porte automatique sur ce mot, les commentateurs ne recevront rien —
+    à corriger avant toute diffusion.
+  </div>
+
+  <div class="warn" style="border-color:var(--violet); background:rgba(139,92,246,.10);">
+    <b style="color:var(--violet-clair,#c4b5fd);">Écart au standard verrouillé du 2026-08-29.</b>
+    Le projet de référence <code>veille-to-avatar-v3-v3</code> et le gabarit
+    <code>secteurs-workflows/v2/template.mjs</code> cités par le skill v3 ne sont pas
+    présents dans ce dépôt (scripts de session locale, jamais commités). La démo n8n et
+    l'habillage ci-dessous sont reconstruits depuis la spécification écrite du skill, pas
+    copiés d'un fichier vérifié. Détail complet dans <code>PROMPT.md</code> à la racine du
+    projet.
+  </div>
+
+  <div class="card">
+    <h2>Script voix off envoyé au clonage</h2>
+    <pre>Make.com me facturait quarante-neuf euros par mois pour connecter les outils de mes clients. J'ai tout migré sur n8n en un week-end : mêmes scénarios, mêmes déclencheurs, mêmes intégrations Gmail, Sheets, Slack, Stripe. Sauf que maintenant je paye l'hébergement une fois, pas un abonnement qui grimpe à chaque scénario ajouté. Pour un client qui fait tourner cinq automatisations, ça représente plus de cinq cents euros économisés chaque année, sans perdre une seule fonctionnalité, avec un contrôle total sur les données. C'est la migration que je propose maintenant à tous mes clients qui payent trop cher pour un outil fermé. Commente le mot MAKE si tu veux le guide complet, gratuit.</pre>
+  </div>
+
+  <div class="card">
+    <h2>Plan de montage avatar (banque réelle, aucune génération IA)</h2>
+    <table>
+      <tr><th>Rôle</th><th>Clip</th><th>ss</th><th>durée</th><th>fenêtre</th></tr>
+      <tr><td>Hook plein cadre</td><td>A1_hook_frontal.mp4</td><td>0.67s</td><td>3.91s</td><td>0.00–3.97s</td></tr>
+      <tr><td>Punch (fenêtre)</td><td>B1_principe.mp4</td><td>0.08s</td><td>2.42s</td><td>19.50–21.92s</td></tr>
+      <tr><td>Réalité (fenêtre)</td><td>B1_principe.mp4</td><td>1.74s</td><td>3.14s</td><td>22.30–25.44s</td></tr>
+      <tr><td>CTA (fenêtre)</td><td>C2_commente_motcle.mp4</td><td>0.08s</td><td>2.52s</td><td>30.00–32.52s</td></tr>
+    </table>
+    <p style="font-size:12px; color:var(--texte-sourd); margin-top:10px;">Validé contre <code>lips-map.json</code> : chaque plan tient entièrement dans la plage « lèvres actives » de son clip source. Décor bureau, jamais mélangé avec le set voiture.</p>
+  </div>
+
+  <div class="card">
+    <h2>Détails techniques</h2>
+    <table>
+      <tr><td>Voix</td><td>WaveSpeed qwen3-tts/voice-clone, voixUrl archiviste_ZIl7EoOf.mp3</td></tr>
+      <tr><td>Transcription</td><td>WaveSpeed openai-whisper (fallback, Whisper OpenAI du webhook à court de crédits)</td></tr>
+      <tr><td>Musique</td><td>bgm-ascension-orig.mp3, bouclée, duckée sidechain sous la voix</td></tr>
+      <tr><td>Rendu</td><td>HyperFrames (passe 1, habillage) + ffmpeg (passe 2, overlay avatar + captions ASS + mix audio)</td></tr>
+      <tr><td>Format</td><td>1080×1920, 30fps, h264/aac, 34,5s</td></tr>
+    </table>
+  </div>
+
+  <div class="foot">Généré par le pipeline veille-to-video-v3 — voir PROMPT.md pour le détail complet.</div>
+</div>
+</body>
+</html>
