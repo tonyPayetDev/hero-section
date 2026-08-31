@@ -1,0 +1,79 @@
+Journal IA · 2026-08-21 · 2026-08-21T00:30:08Z · log=/work/.claude/skills/veille-journal-ia/logs/2026-08-21-003008.log
+MemAvailable 4982 Mo
+
+═══ [00:30:08] 1/8 · récupération de l'édition
+édition récupérée depuis origin/journal-ia-2026-08-21
+édition : /work/previsualisation/journal-ia/2026-08-21.md (8334 octets)
+
+═══ [00:30:17] 2/8 · parsing déterministe du script
+[parse] 2026-08-21 · 0 brèves · 0 gags · 5 segments · ~15.7s de parole estimée
+
+═══ [00:30:17] 3/8 · voix clonée (5 segments)
+  ✓ intro (25512 o, essai 1)
+  ✓ outro (26664 o, essai 1)
+  ✓ cd (9984 o, essai 1)
+  ✓ cta (51384 o, essai 1)
+  ✓ tag (17232 o, essai 1)
+
+═══ [00:31:27] 3b · traitement voix (silences coupés, atempo, normalisation)
+
+═══ [00:31:27] 4/8 · calage temporel
+[layout] durée totale 18.87s  ⚠ hors cible 45-60s
+   intro     0.45 →   3.343  (2.893s)
+   outro    3.743 →   7.094  (3.351s)
+   cta      7.494 →  14.015  (6.521s)
+   cd      14.415 →  15.795  (1.38s)
+   tag     16.194 →  18.324  (2.13s)
+
+═══ [00:31:27] 5/8 · composition HTML + audio + clips avatar
+[build_html] /work/autoboost-neon-videos/journal-ia-2026-08-21/public/index.html · 0 brèves · 0 gags · 3 fenêtres avatar · 18.87s
+[gen_ffmpeg] build_audio.sh · 5 segments · 5 SFX
+[gen_ffmpeg] pass2.sh + prep_clips.sh · 3 fenêtres avatar
+cta.mp4 6.800000
+intro.mp4 2.966667
+outro.mp4 3.466667
+18.840000
+
+═══ [00:31:37] 6/8 · snapshot de contrôle
+
+═══ [00:31:43] 6b · rendu HyperFrames (18.87s, ~10-20 min)
+[initSession:beginframe] pollSubCompositionTimelines complete (478ms)
+[initSession:beginframe] applyVideoMetadataHints complete (478ms)
+[initSession:beginframe] pollVideosReady complete (480ms)
+[initSession:beginframe] images ready + decoded (487ms)
+[initSession:beginframe] fonts ready (491ms)
+[initSession:beginframe] tailwind ready (497ms)
+[initSession:beginframe] static-frame dedup: disabled (capture mode beginframe, not screenshot) (504ms)
+[INFO] [Render:trace] {"renderJobId":"d71f45ab-6781-4889-b12f-ec5e8fe82409","phase":"assemble","status":"start","elapsedMs":149710,"hasAudio":false}
+[2K  ██████████████████████░░░  90%  Assembling final video[INFO] [Render:trace] {"renderJobId":"d71f45ab-6781-4889-b12f-ec5e8fe82409","phase":"assemble","status":"end","elapsedMs":149848,"durationMs":137}
+[2K  █████████████████████████  100%  Render complete[INFO] [Render:trace] {"renderJobId":"d71f45ab-6781-4889-b12f-ec5e8fe82409","phase":"pipeline","status":"checkpoint","elapsedMs":149849,"message":"completed","totalElapsedMs":149849}
+◇  /work/autoboost-neon-videos/journal-ia-2026-08-21/renders/public_2026-08-21_00-31-44.mp4
+   3.5 MB · 2m 29.9s · completed
+rendu de base : /work/autoboost-neon-videos/journal-ia-2026-08-21/renders/public_2026-08-21_00-31-44.mp4
+
+═══ [00:34:14] 6c · passe 2 · incrustation avatar + audio final
+BASE=/work/autoboost-neon-videos/journal-ia-2026-08-21/renders/public_2026-08-21_00-31-44.mp4
+[STREAM]
+video
+1080
+1920
+[/STREAM]
+[STREAM]
+audio
+[/STREAM]
+[FORMAT]
+18.900000
+[/FORMAT]
+vidéo finale : 18.900000s · 4 Mo
+[blotato] DRY — plan écrit dans /work/autoboost-neon-videos/journal-ia-2026-08-21/work/blotato-plan.json
+
+═══ [00:34:32] 7/8 · publication sur previsualisation (journal-ia-2026-08-21)
+[previs_page] /work/previsualisation/journal-ia-2026-08-21/index.html
+⚠ COOLIFY_ACCESS_TOKEN/COOLIFY_BASE_URL absents — déploiement previsualisation sauté.
+  La vidéo est poussée sur GitHub, la programmation Blotato continue.
+
+═══ [00:34:36] 8/8 · programmation Blotato (5 réseaux)
+créneau : 2026-08-21T03:00:00Z
+[blotato] BLOTATO_API_KEY absente — plan écrit dans /work/autoboost-neon-videos/journal-ia-2026-08-21/work/blotato-plan.json, planification déléguée à l'appelant.
+
+STATUS: OK route https://previsualisation.automatisationboost.com/journal-ia-2026-08-21 (18.900000s) · ⚠ deploiement Coolify non declenche (COOLIFY_ACCESS_TOKEN/COOLIFY_BASE_URL absents du shell) — plan Blotato écrit dans /work/autoboost-neon-videos/journal-ia-2026-08-21/work/blotato-plan.json (clé API absente, planification à faire par l'appelant)

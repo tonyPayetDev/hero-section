@@ -1,0 +1,27 @@
+========================================================================
+ PROMPT EXEMPLE — "ULTRA INSTINCT" (prompt-reveal-branded)
+ Ce prompt est celui envoyé EN DM après le CTA. Dans la vidéo il est
+ volontairement coupé/flouté puis verrouillé — jamais montré en entier.
+========================================================================
+
+--- LIENS DE RÉFÉRENCE ---
+Réf format / rendu concurrent : https://higgsfield.ai/s/nkXuLIHR2VE
+Concurrent (reel Instagram)    : https://www.instagram.com/reel/Db3GUsLJ2WR/
+Image de référence #1 : https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd2ol7oe51mr4n9.cloudfront.net%2Fuser_2vGQOoubtVF0UIRc1JGPoKN6d52%2F5550710c-0489-457d-bb64-cbceac8f61bb.jpg&w=1280&q=85
+Image de référence #2 : https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd2ol7oe51mr4n9.cloudfront.net%2Fuser_2vGQOoubtVF0UIRc1JGPoKN6d52%2Fe0aac9b4-8632-4523-b2e5-eb56b99c9326.png&w=1280&q=85
+
+--- PROMPT COMPLET ---
+@[Image 1](image_1) and @[Image 2](image_2)
+CONTINUE DIRECTLY FROM THE PREVIOUS SHOT.
+IMPORTANT: preserve the exact identity, face, hairstyle, clothing, body proportions and appearance of both reference characters. No morphing, no redesign, no character replacement.
+0–2s: The dimensional energy around @[Image 1](image_1) suddenly disappears. He stands completely still in the tournament arena. @[Image 2](image_2) immediately launches a lightning-fast punch directly toward his face.
+2–4s: Just before the punch connects, @[Image 1](image_1) VANISHES INSTANTLY. No visible teleportation animation. No portal. No transformation. He simply disappears from his original position in a single frame.
+4–6s: @[Image 2](image_2)'s punch cuts through empty air. The camera quickly moves behind @[Image 2](image_2). @[Image 1](image_1) is suddenly standing DIRECTLY BEHIND HIM, completely calm, only a few centimeters away.
+6–8s: @[Image 2](image_2) slowly realizes that the opponent is behind him. Extreme close-up on his eyes. @[Image 1](image_1) raises his fist. The mysterious ring begins glowing intensely.
+8–10s: @[Image 2](image_2) spins around and attacks again. @[Image 1](image_1) instantly disappears once more and reappears at another angle behind him. The camera rapidly circles both characters, creating the feeling that @[Image 1](image_1) is moving faster than the eye can follow.
+10–12s: @[Image 1](image_1) appears directly behind @[Image 2](image_2) one final time. He pulls his fist backward. The entire arena becomes silent.
+12–15s: Extreme close-up of the glowing ring and clenched fist. @[Image 1](image_1) suddenly launches a devastating punch toward @[Image 2](image_2). FREEZE THE ACTION JUST BEFORE THE IMPACT. End on a massive cinematic cliffhanger.
+Fast cinematic camera movement, fluid martial-arts choreography, instant teleportation effect, dramatic close-ups, powerful impact anticipation, high-energy anime-inspired action, realistic physics, consistent character identity, no morphing, no extra characters, no text, no watermark.
+
+--- DM TYPE (rappel) ---
+Voir references/blotato-dm-gate.md — coller le bloc PROMPT COMPLET ci-dessus dans le message DM.

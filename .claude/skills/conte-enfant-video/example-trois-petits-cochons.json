@@ -1,0 +1,67 @@
+{
+  "title": "Les Trois Petits Cochons",
+  "theme": "constructif",
+  "learning": "Structures solides, effort, sécurité",
+  "duration_total": 45,
+  "intro": "Salut les amis! Aujourd'hui on rencontre trois petits cochons très créatifs qui vont construire leurs maisons!",
+  "segments": [
+    {
+      "id": "seg_01",
+      "duration_sec": 8,
+      "narration": "Voici Pik, Pak et Pok, trois petits cochons qui quittent la maison. Ils doivent construire leur propre maison avant l'hiver.",
+      "visual_cue": "Trois cochons mignons (style Bluey) qui marchent dans une campagne verte. Paysage simple, coloré, invitant.",
+      "learning_moment": "Autonomie, responsabilité"
+    },
+    {
+      "id": "seg_02",
+      "duration_sec": 7,
+      "narration": "Pik dit: 'Je vais construire ma maison avec de la paille, c'est rapide!' Il la termine en quelques heures.",
+      "visual_cue": "Pik entasse de la paille joyeusement. Maison de paille simple mais fragile. Pik sourit fièrement.",
+      "learning_moment": "Impatience vs qualité"
+    },
+    {
+      "id": "seg_03",
+      "duration_sec": 7,
+      "narration": "Pak choisit du bois. 'C'est mieux que la paille!' Il travaille plus longtemps et construit une maison solide.",
+      "visual_cue": "Pak construit avec des bûches. Maison de bois, plus résistante. Pak transpire mais continue.",
+      "learning_moment": "Effort = meilleur résultat"
+    },
+    {
+      "id": "seg_04",
+      "duration_sec": 8,
+      "narration": "Pok prend de la brique et du ciment. 'Ça prend du temps, mais ça vaut la peine!' Il travaille fort, très fort.",
+      "visual_cue": "Pok pose des briques avec soin. Maison de brique, solide et belle. Pok fier de son travail minutieux.",
+      "learning_moment": "Patience, craftsmanship"
+    },
+    {
+      "id": "seg_05",
+      "duration_sec": 8,
+      "narration": "L'hiver arrive, et avec lui, le grand loup affamé! Il souffle sur les maisons. POUF! La maison de paille s'envole!",
+      "visual_cue": "Loup gentil mais espiègle (pas méchant). Maison de paille qui vole. Pik saute dans la maison de Pak.",
+      "learning_moment": "Conséquences des choix rapides"
+    },
+    {
+      "id": "seg_06",
+      "duration_sec": 7,
+      "narration": "Le loup souffle sur la maison de bois. CRAAAC! Le bois cède. Pik et Pak se sauvent vers la maison de Pok!",
+      "visual_cue": "Maison de bois qui tremble, puis s'écroule (mais pas violemment). Pik et Pak courent vers Pok.",
+      "learning_moment": "Effort moyen n'est pas suffisant"
+    },
+    {
+      "id": "seg_07",
+      "duration_sec": 8,
+      "narration": "Le loup souffle TRÈS fort sur la maison de brique. Mais... elle tient bon! Même le loup en est surpris. 'Bravo Pok!'",
+      "visual_cue": "Loup souffle, maison tient. Lumière chaleureuse de l'intérieur. Trois cochons regardent par la fenêtre, en sécurité.",
+      "learning_moment": "Qualité + patience = sécurité"
+    }
+  ],
+  "outro": "Les trois cochons ont appris: l'effort compte. Pok invite les autres à prendre du thé dans sa maison sûre. FIN!",
+  "teaching_points": [
+    "Impatience = fragilité",
+    "Effort constant = solidité",
+    "Choix avisés = sécurité",
+    "La patience a une récompense"
+  ],
+  "subtitles_enabled": true,
+  "music_suggestion": "Royalty-free, enfants, positif, ~80 BPM"
+}

@@ -1,0 +1,14 @@
+Journal IA · 2026-08-17 · 2026-08-17T08:20:20Z · log=/work/.claude/skills/veille-journal-ia/logs/2026-08-17-082020.log
+MemAvailable 5772 Mo
+
+═══ [08:20:20] 1/8 · récupération de l'édition
+édition récupérée depuis origin/journal-ia-2026-08-17
+édition : /work/previsualisation/journal-ia/2026-08-17.md (6234 octets)
+
+═══ [08:20:21] 2/8 · parsing déterministe du script
+[parse] 2026-08-17 · 4 brèves · 2 gags · 11 segments · ~46.9s de parole estimée
+
+═══ [08:20:21] 3/8 · voix clonée (11 segments)
+  ✓ intro (22896 o, essai 1)
+  ✓ g1 (21168 o, essai 1)
+  ✓ b1 (65592 o, essai 1)

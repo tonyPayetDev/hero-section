@@ -1,0 +1,36 @@
+{
+ "generated": "2026-08-18",
+ "batch": "SPIDER — 1 Seedance 2.5 clip (spider-suit, home studio néon), split into 2 bank entries",
+ "source": "clips-spider/_source_spider_full.mp4 — 720x1280, 24 fps, 10.08 s, 241 frames",
+ "wardrobe": "spider-suit",
+ "seam": "NO SEAM. Measured 4.40-5.70 s frame by frame (10 fps contact sheet): one continuous rise out of the crouch, no cut, no muted pause. Unlike the D batch, this 10.08 s file is a SINGLE take, not two 5.04 s takes stitched.",
+ "crop": { "w": 260, "h": 150, "x": 235, "y": 420 },
+ "cropNote": "Re-measured for this framing. The mouth sits near (365,495) in the native 720x1280 frame — higher than the D/car batch (355,565) and slightly lower than the A/B/C batch (360,470). The D box (225,490) lands on the CHIN here; the A/B/C box (280,360) lands on the NOSE/EYES. Box size kept at 260x150 so the numbers stay comparable with the D batch.",
+ "thresh": 4.5,
+ "threshNote": "RAISED from the bank default 1.6. This clip carries constant film grain + neon flicker + a slow head drift, so the STILL baseline sits at 1.6-2.7 instead of the 0-1.2 measured on the A/B/C clips. At thresh=1.6 the talking entry reads as active 0.04-2.00 — i.e. the whole clip — which is flatly false. Speech peaks at 8-20. 4.5 separates the two cleanly.",
+ "clips": {
+  "HOOK_spider_entree.mp4": {
+   "duration": 8.0,
+   "frames": 192,
+   "fps": 24,
+   "speaks": false,
+   "active": [],
+   "correction": "FORCED TO EMPTY BY HAND. The machine reported 0.04-3.17 and 4.38-7.67 at thresh=4.5 (and 0.04-3.29 / 4.29-7.96 at 1.6). Both are meaningless: for 0-7.5 s there is no face inside the mouth box at all — the box sees a city at night, a window, dust and motion blur, and the whole frame is moving. Mouth-motion detection is undefined on a clip with no locked face. Tony does NOT speak once in this entry. Never place it under an active voice.",
+   "content": "0.0-2.5 swing on a lit cable between two towers, night city, heavy speed blur · 2.5-4.5 crashes through a window, lands in a crouch in a neon home studio, dust · 4.5-6.0 stands up and shoots a web at the lens · 6.0-7.55 the web yanks the camera in, violent dolly-in, yellow lines streaking · 7.55-8.0 dolly lands on presenter framing, the gloved hand clears the frame at ~7.88",
+   "usage": "OPENING ONLY. Pure visual hook, SFX only, no voice-over on top."
+  },
+  "SPIDER_talking.mp4": {
+   "duration": 2.042,
+   "frames": 49,
+   "fps": 24,
+   "speaks": true,
+   "active": [
+    { "start": 0.63, "end": 1.71 }
+   ],
+   "activeTotal": 1.08,
+   "correction": "HAND-CORRECTED ON BOTH ENDS. (a) At the bank's default thresh=1.6 the machine returned 0.04-2.00, the entire clip — false positive, see threshNote. (b) At thresh=4.5 it returned 0.58-1.71. Frame-by-frame visual check of all 49 mouth crops: lips are CLOSED for frames 0-15 (0.000-0.625), the purse before the first vowel starts at frame 15 (0.625), the mouth is open from frame 16 (0.667); it closes back over frames 43-47 (1.792-1.958). Start moved 0.58 -> 0.63 (keep the conservative edge), end kept at 1.71.",
+   "framing": "locked presenter shot, camera fixed, bust, hands out of frame",
+   "usage": "CTA or punctuation ONLY. The usable window is 1.08 s — it CANNOT carry a continuous passage. A shot placed under an active voice must fit entirely inside 0.63-1.71, i.e. at most 32 output frames at 30 fps and speed 1.0."
+  }
+ }
+}

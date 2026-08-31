@@ -1,0 +1,98 @@
+Journal IA · 2026-08-25 · 2026-08-25T00:30:03Z · log=/work/.claude/skills/veille-journal-ia/logs/2026-08-25-003003.log
+MemAvailable 3212 Mo
+
+═══ [00:30:03] 1/8 · récupération de l'édition
+édition : /work/previsualisation/journal-ia/2026-08-25.md (12361 octets)
+
+═══ [00:30:09] 2/8 · parsing déterministe du script
+[parse] 2026-08-25 · 6 brèves · 2 gags · 13 segments · ~64.9s de parole estimée
+
+═══ [00:30:11]    → 6 brèves reconnues
+
+═══ [00:30:11] 3/8 · voix clonée (13 segments)
+  ✓ intro (33000 o, essai 1)
+  ✓ b1 (56904 o, essai 1)
+  ✓ g1 (17568 o, essai 1)
+  ✓ b2 (58488 o, essai 1)
+  ✓ b4 (54504 o, essai 1)
+  ✓ b3 (60480 o, essai 1)
+  ✓ g4 (18240 o, essai 1)
+  ✓ b5 (53088 o, essai 1)
+  ✓ outro (21888 o, essai 1)
+  ✓ b6 (57456 o, essai 1)
+  ✓ cd (11016 o, essai 1)
+  ✓ cta (56616 o, essai 1)
+  ✓ tag (14472 o, essai 1)
+
+═══ [00:33:16] 3b · traitement voix (silences coupés, atempo, normalisation)
+
+═══ [00:33:16] 4/8 · calage temporel
+[layout] durée totale 68.8s  ⚠ hors cible 45-60s
+   intro     0.45 →   4.797  (4.347s)
+   b1       5.197 →  12.440  (7.243s)
+   g1       12.84 →  14.705  (1.865s)
+   b2      15.105 →  21.904  (6.799s)
+   b3      22.304 →  29.965  (7.661s)
+   b4      30.364 →  36.943  (6.579s)
+   g4      37.343 →  39.431  (2.088s)
+   b5      39.831 →  46.491  (6.66s)
+   b6       46.89 →  53.019  (6.129s)
+   outro   53.419 →  56.383  (2.964s)
+   cta     56.783 →  63.425  (6.642s)
+   cd      63.825 →  66.120  (2.295s)
+   tag      66.52 →  68.246  (1.726s)
+
+═══ [00:33:17] 5/8 · composition HTML + audio + clips avatar
+[build_html] /work/autoboost-neon-videos/journal-ia-2026-08-25/public/index.html · 6 brèves · 2 gags · 5 fenêtres avatar · 68.8s
+[gen_ffmpeg] build_audio.sh · 13 segments · 13 SFX
+[gen_ffmpeg] pass2.sh + prep_clips.sh · 5 fenêtres avatar
+cta.mp4 6.933333
+g1.mp4 2.066667
+g4.mp4 2.266667
+intro.mp4 4.433333
+outro.mp4 3.100000
+68.800000
+
+═══ [00:33:34] 6/8 · snapshot de contrôle
+
+═══ [00:33:41] 6b · rendu HyperFrames (68.8s, ~10-20 min)
+[initSession:beginframe] pollSubCompositionTimelines complete (488ms)
+[initSession:beginframe] applyVideoMetadataHints complete (488ms)
+[initSession:beginframe] pollVideosReady complete (491ms)
+[initSession:beginframe] images ready + decoded (502ms)
+[initSession:beginframe] fonts ready (504ms)
+[initSession:beginframe] tailwind ready (506ms)
+[initSession:beginframe] static-frame dedup: disabled (capture mode beginframe, not screenshot) (510ms)
+[INFO] [Render:trace] {"renderJobId":"1af1f6ec-f65f-4f50-b7a6-086f5b0dbfcc","phase":"assemble","status":"start","elapsedMs":406212,"hasAudio":false}
+[2K  ██████████████████████░░░  90%  Assembling final video[INFO] [Render:trace] {"renderJobId":"1af1f6ec-f65f-4f50-b7a6-086f5b0dbfcc","phase":"assemble","status":"end","elapsedMs":406387,"durationMs":175}
+[2K  █████████████████████████  100%  Render complete[INFO] [Render:trace] {"renderJobId":"1af1f6ec-f65f-4f50-b7a6-086f5b0dbfcc","phase":"pipeline","status":"checkpoint","elapsedMs":406389,"message":"completed","totalElapsedMs":406387}
+◇  /work/autoboost-neon-videos/journal-ia-2026-08-25/renders/public_2026-08-25_00-33-41.mp4
+   10.4 MB · 6m 46.4s · completed
+rendu de base : /work/autoboost-neon-videos/journal-ia-2026-08-25/renders/public_2026-08-25_00-33-41.mp4
+
+═══ [00:40:28] 6c · passe 2 · incrustation avatar + audio final
+BASE=/work/autoboost-neon-videos/journal-ia-2026-08-25/renders/public_2026-08-25_00-33-41.mp4
+[STREAM]
+video
+1080
+1920
+[/STREAM]
+[STREAM]
+audio
+[/STREAM]
+[FORMAT]
+68.800000
+[/FORMAT]
+vidéo finale : 68.800000s · 11 Mo
+[blotato] DRY — plan écrit dans /work/autoboost-neon-videos/journal-ia-2026-08-25/work/blotato-plan.json
+
+═══ [00:41:17] 7/8 · publication sur previsualisation (journal-ia-2026-08-25)
+[previs_page] /work/previsualisation/journal-ia-2026-08-25/index.html
+⚠ COOLIFY_ACCESS_TOKEN/COOLIFY_BASE_URL absents — déploiement previsualisation sauté.
+  La vidéo est poussée sur GitHub, la programmation Blotato continue.
+
+═══ [00:41:22] 8/8 · programmation Blotato (5 réseaux)
+créneau : 2026-08-25T03:00:00Z
+[blotato] BLOTATO_API_KEY absente — plan écrit dans /work/autoboost-neon-videos/journal-ia-2026-08-25/work/blotato-plan.json, planification déléguée à l'appelant.
+
+STATUS: OK route https://previsualisation.automatisationboost.com/journal-ia-2026-08-25 (68.800000s) · ⚠ deploiement Coolify non declenche (COOLIFY_ACCESS_TOKEN/COOLIFY_BASE_URL absents du shell) — plan Blotato écrit dans /work/autoboost-neon-videos/journal-ia-2026-08-25/work/blotato-plan.json (clé API absente, planification à faire par l'appelant)

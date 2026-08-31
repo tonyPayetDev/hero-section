@@ -1,0 +1,87 @@
+Journal IA · 2026-08-17 · 2026-08-17T08:55:40Z · log=/work/.claude/skills/veille-journal-ia/logs/2026-08-17-085540.log
+MemAvailable 5830 Mo
+
+═══ [08:55:40] 1/8 · récupération de l'édition
+édition : /work/previsualisation/journal-ia/2026-08-17.md (6234 octets)
+
+═══ [08:55:41] 2/8 · parsing déterministe du script
+[parse] 2026-08-17 · 4 brèves · 2 gags · 11 segments · ~45.1s de parole estimée
+
+═══ [08:55:41] 3/8 · voix clonée (11 segments)
+  ✓ intro (22080 o, essai 1)
+  ✓ b1 (63888 o, essai 1)
+  ✓ g1 (14952 o, essai 1)
+  ✓ b2 (61200 o, essai 1)
+  ✓ b4 (42240 o, essai 1)
+  ✓ b3 (55536 o, essai 1)
+  ✓ outro (33648 o, essai 1)
+  ✓ g4 (15312 o, essai 1)
+  ✓ cd (11208 o, essai 1)
+  ✓ cta (22344 o, essai 1)
+  ✓ tag (15504 o, essai 1)
+
+═══ [08:57:54] 3b · traitement voix (silences coupés, atempo, normalisation)
+
+═══ [08:57:54] 4/8 · calage temporel
+[layout] durée totale 47.47s
+   intro     0.45 →   2.941  (2.491s)
+   b1       3.341 →  10.730  (7.389s)
+   g1      11.129 →  12.777  (1.648s)
+   b2      13.178 →  20.337  (7.159s)
+   b3      20.737 →  27.095  (6.358s)
+   b4      27.495 →  32.530  (5.035s)
+   g4       32.93 →  34.807  (1.877s)
+   outro   35.207 →  39.079  (3.872s)
+   cta     39.479 →  42.285  (2.806s)
+   cd      42.685 →  44.575  (1.89s)
+   tag     44.975 →  46.916  (1.941s)
+
+═══ [08:57:55] 5/8 · composition HTML + audio + clips avatar
+[build_html] /work/autoboost-neon-videos/journal-ia-2026-08-17/public/index.html · 4 brèves · 2 gags · 5 fenêtres avatar · 47.47s
+[gen_ffmpeg] build_audio.sh · 11 segments · 11 SFX
+[gen_ffmpeg] pass2.sh + prep_clips.sh · 5 fenêtres avatar
+cta.mp4 3.100000
+g1.mp4 1.866667
+g4.mp4 2.066667
+intro.mp4 2.566667
+outro.mp4 4.033333
+47.440000
+
+═══ [08:58:06] 6/8 · snapshot de contrôle
+
+═══ [08:58:10] 6b · rendu HyperFrames (47.47s, ~10-20 min)
+[initSession:beginframe] pollSubCompositionTimelines complete (299ms)
+[initSession:beginframe] applyVideoMetadataHints complete (299ms)
+[initSession:beginframe] pollVideosReady complete (301ms)
+[initSession:beginframe] images ready + decoded (305ms)
+[initSession:beginframe] fonts ready (307ms)
+[initSession:beginframe] tailwind ready (308ms)
+[initSession:beginframe] static-frame dedup: disabled (capture mode beginframe, not screenshot) (311ms)
+[INFO] [Render:trace] {"renderJobId":"8703c26d-5012-4d7a-bd7b-3061df2b2edf","phase":"assemble","status":"start","elapsedMs":224379,"hasAudio":false}
+[2K  ██████████████████████░░░  90%  Assembling final video[INFO] [Render:trace] {"renderJobId":"8703c26d-5012-4d7a-bd7b-3061df2b2edf","phase":"assemble","status":"end","elapsedMs":224435,"durationMs":56}
+[2K  █████████████████████████  100%  Render complete[INFO] [Render:trace] {"renderJobId":"8703c26d-5012-4d7a-bd7b-3061df2b2edf","phase":"pipeline","status":"checkpoint","elapsedMs":224435,"message":"completed","totalElapsedMs":224435}
+◇  /work/autoboost-neon-videos/journal-ia-2026-08-17/renders/public_2026-08-17_08-58-10.mp4
+   7.5 MB · 3m 44.4s · completed
+rendu de base : /work/autoboost-neon-videos/journal-ia-2026-08-17/renders/public_2026-08-17_08-58-10.mp4
+
+═══ [09:01:55] 6c · passe 2 · incrustation avatar + audio final
+BASE=/work/autoboost-neon-videos/journal-ia-2026-08-17/renders/public_2026-08-17_08-58-10.mp4
+[STREAM]
+video
+1080
+1920
+[/STREAM]
+[STREAM]
+audio
+[/STREAM]
+[FORMAT]
+47.500000
+[/FORMAT]
+vidéo finale : 47.500000s · 8 Mo
+
+═══ [09:02:24] 7/8 · publication sur previsualisation (journal-ia-2026-08-17)
+[previs_page] /work/previsualisation/journal-ia-2026-08-17/index.html
+déploiement Coolify déclenché — attente du 200…
+✓ https://previsualisation.automatisationboost.com/journal-ia-2026-08-17 — HTTP 200
+
+STATUS: OK route https://previsualisation.automatisationboost.com/journal-ia-2026-08-17 (HTTP 200, 47.500000s) — Blotato désactivé (--no-social)

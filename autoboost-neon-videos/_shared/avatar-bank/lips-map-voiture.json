@@ -1,0 +1,83 @@
+{
+ "generated": "2026-08-20",
+ "crop": {
+  "w": 240,
+  "h": 180,
+  "x": 225,
+  "y": 430
+ },
+ "thresh": 1.6,
+ "clips": {
+  "D1_hook_frontal.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.54,
+     "end": 4.63
+    },
+    {
+     "start": 4.96,
+     "end": 8.42
+    },
+    {
+     "start": 8.67,
+     "end": 9.67
+    }
+   ],
+   "activeTotal": 8.55
+  },
+  "D2_insistance_doigts.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.58,
+     "end": 2.46
+    },
+    {
+     "start": 2.71,
+     "end": 4.63
+    },
+    {
+     "start": 5.04,
+     "end": 9.75
+    }
+   ],
+   "activeTotal": 8.51
+  },
+  "D2_pointe_boucle.mp4": {
+   "duration": 3.25,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.08,
+     "end": 2.96
+    }
+   ],
+   "activeTotal": 2.88
+  },
+  "D3_cta_lunettes.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.04,
+     "end": 9.75
+    }
+   ],
+   "activeTotal": 9.71
+  },
+  "D4_relance_barbe.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    {
+     "start": 0.54,
+     "end": 9.67
+    }
+   ],
+   "activeTotal": 9.13
+  }
+ }
+}

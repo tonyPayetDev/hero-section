@@ -3,6 +3,168 @@ name: veille-to-video
 description: Autoboost Neon Video — transforme un script/brief texte en vidéo promo sociale 9:16 (matte black + accents néon jaune/violet/orange), avec avatar/setup, voix clonée WaveSpeed, captions TikTok mot-à-mot, et publie sur Blotato. Source des vidéos à produire = Google Sheet de suivi.
 ---
 
+## Charte — ne pas la redéfinir ici
+
+**Lire `/work/autoboost-neon-videos/_shared/CHARTE.md` avant toute production.**
+Palette, typographie, avatar, voix, musique, CTA et pièges de rendu y sont fixés
+une seule fois. Ce skill ne redéclare aucune couleur.
+
+**Fonds animés : piocher dans `_shared/broll-abstrait/` avant d’en créer un.**
+Dix motifs existent — reseau, flux, grille, planetes, workflow, constellation,
+onde, circuit, spirale, tunnel. Le README du dossier dit ce que chacun signifie.
+N’en dessiner un nouveau que si aucun des dix ne dit ce qu’il faut dire.
+
+---
+
+## ⏸️ EN PAUSE POUR LES NOUVELLES VIDÉOS (décision Tony, 2026-08-20)
+
+**Ne pas produire de nouvelle vidéo avec ce pipeline.** Le style « avatar détouré posé
+sur une compo HTML » (fond vert retiré au `geq`, avatar-still en boucle) est mis en pause.
+Les nouvelles vidéos passent par **`veille-to-video-v3`**, qui assemble des micro-clips
+réels de la banque d'avatar — vrai lip-sync, vrai décor, pas de détourage.
+
+Ce skill reste lisible pour : rejouer une vidéo existante à l'identique, et servir de
+référence sur le sound design et la ligne néon beat-sync.
+
+**Ce qui a été retenu et porté en v3** : le **cercle néon jaune** (anneau + pulse sur le
+beat). Tony le trouve réussi — il est repris comme cadrage d'avatar dans v3, appliqué
+cette fois à un clip réel et non à un détourage.
+
+---
+
+---
+
+## ⚠️ Le look de référence — VALEURS MESURÉES, ne pas réinventer
+
+Retour de Tony le 2026-07-17 : « les anciennes vidéos étaient mieux en présentation, découpage de
+l'écran et motion design ». Vérifié en lisant le CSS de #18 / #22 / #24 (toutes en 1080x1920, comme
+les nouvelles) — les nouvelles #34/#35/#36 s'en étaient éloignées sur **trois points précis**.
+Ces valeurs sont la référence, elles ne se rediscutent pas :
+
+| | Référence (#18/#22/#24) | Dérive à ne PAS refaire (#34/#35/#36) |
+|---|---|---|
+| Taille des captions | **27px** | 68px — 2,5× trop gros, lourdaud à l'écran |
+| Fond de l'écran du haut | **dégradé gris/violet par scène** | `#060606` noir plat |
+| Contenu des scènes | **vrais panneaux UI, mockups, flux à icônes** | piles de cartes de texte |
+
+**1. Captions à 27px.** Pas 68. Le reste du bloc, tel quel :
+```css
+.caption {
+  position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap;
+  font-size: 27px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; line-height: 1.2;
+  text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+               -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000;
+  opacity: 0;
+}
+```
+La bande reste à `top: 960px; height: 140px` (voir Règles Captions).
+
+**2. L'écran du haut est légèrement gris, avec un effet — jamais noir plat.** Chaque scène porte son
+propre dégradé, en **alternant linéaire et radial** d'une scène à l'autre (c'est l'alternance qui
+fait « respirer » le montage) :
+```css
+.scene-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); }
+.scene-2 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); }
+.scene-3 { background: linear-gradient(135deg, #0a0a0a 0%, #12081f 100%); }
+.scene-4 { background: radial-gradient(circle at 50% 40%, #1a0a2a 0%, #050505 70%); }
+```
+
+**3. Vrais panneaux UI, pas des cartes de texte.** Voir la section `Visuels` plus haut — c'est la
+règle qui existait déjà et que #35/#36 v1 ont enfreinte. Le vocabulaire des anciennes :
+- **kicker** court et coloré (violet) → **titre** avec un mot en couleur → **le visuel**
+- fenêtre avec barre de titre + 3 points + un nom de domaine/fichier (`higgsfield.ai / pricing`)
+- flux horizontal : `.node` de 168px reliés par des `.link` (52px, flèche CSS + point pulsé)
+- mockup d'interface réaliste (bulle Telegram avec « envoyé ✓ », sidebar d'app, dashboard)
+
+**Avant de rendre, comparer une frame à une ancienne vidéo** (`ffmpeg -ss <t> -i <ancienne.mp4>` +
+`-i <nouvelle.mp4>` + `hstack`) — c'est le seul moyen fiable d'attraper ce genre de dérive, aucun
+`validate`/`inspect` ne la détecte.
+
+---
+
+---
+
+### Palette SFX réutilisable (v1 — validée sur #37 Fable, 2026-07-19)
+
+Palette complète de 12 SFX + table des rôles, volumes et pièges :
+**`autoboost-neon-videos/_shared/sfx-palette/v1/`** (assets + `README.md`).
+
+Point de départ par défaut pour toute nouvelle vidéo : copier les `sfx-*.mp3` dans
+`public/assets/`, reprendre les rôles/volumes du README, et **re-caler les `data-start` sur les
+coupes de la nouvelle vidéo** (les rôles se transposent, pas les timestamps).
+
+Deux règles qui viennent de #37 :
+- **Whooshes** : bruts, ils durent 5,5 s avec le pic à 2,5 s. Les recouper pour que le pic tombe
+  *pile* sur la coupe (démarrer ~1,2 s avant la coupe, pas dessus).
+- **Volume BGM selon la piste** : `flowers_horror.mp3` est mesurée à -12,4 LUFS → `0.05`.
+  `bgm-ascension.mp3` est à -19,1 LUFS → `0.09`. 7 dB d'écart : mesurer avant de choisir,
+  sinon la musique passe devant la voix.
+
+**Versionnement** : `v1/` est figé. Toute évolution du mix crée `v2/` — on ne modifie ni ne
+supprime les versions précédentes, pour que chaque vidéo déjà rendue garde sa palette d'origine.
+L'ancien pass à 4 SFX (whoosh 3,80 / 10,90 / 16,40 + chime 20,40) reste documenté comme v0 dans
+le README de v1.
+
+
+- **Ne jamais synthétiser le sound design par défaut (ffmpeg sinusoïdes/bruit filtré)** si une
+  vraie source libre de droits est accessible — un pad/whoosh/chime synthétisé "fait maison" est
+  perceptiblement moins bon qu'une vraie piste, même courte. Ne l'utiliser qu'en dernier recours
+  documenté (aucune source dispo) et le remplacer dès qu'une devient disponible.
+- **Epidemic Sound MCP** (`mcp__epidemic-sound__*`, si configuré dans `.claude/settings.json`) :
+  `SearchRecordings`/`SearchSoundEffects` fonctionnent pour explorer le catalogue, mais
+  `DownloadRecording`/`DownloadSoundEffect` peuvent renvoyer `FORBIDDEN` — recherche et
+  téléchargement sont deux permissions séparées côté API, indépendantes du fait que le serveur MCP
+  soit bien chargé. Vérifier qu'un téléchargement réussit réellement avant de t'appuyer dessus, et
+  ne jamais utiliser les `lqmp3Url` de preview renvoyés par la recherche comme substitut dans une
+  vidéo publiée (previews non licenciées pour du contenu final).
+- **HeyGen** (skill `media-use`, `resolve.mjs --type bgm/sfx`) : nécessite le CLI `heygen` installé
+  (`curl -fsSL https://static.heygen.ai/cli/install.sh | bash`) + `HEYGEN_API_KEY` en env — ni l'un
+  ni l'autre n'est présent par défaut dans ce sandbox. Si absent, `resolve.mjs` échoue proprement
+  ("no provider could resolve"), ne pas essayer de contourner.
+- **Mixkit.co — méthode vérifiée et fonctionnelle, sans clé API, recherche + téléchargement OK**
+  (musique, SFX, et vidéo stock — voir section broll plus bas). Licence "Mixkit Free" : usage
+  commercial libre, sans attribution requise. Méthode (testée 2026-07-08) :
+  1. `curl -s -A "Mozilla/5.0" "https://mixkit.co/free-stock-music/<tag>/"` (ou `free-sound-effects/<tag>/`)
+     → parser le JSON-LD `<script type="application/ld+json">` embarqué dans le HTML pour les
+     morceaux de musique : chaque entrée `MusicRecording` a un champ `"url"` = lien mp3 direct
+     (`https://assets.mixkit.co/music/<id>/<id>.mp3`), déjà téléchargeable tel quel.
+  2. Pour un SFX, la page catégorie n'expose que l'URL de preview (`.../active_storage/sfx/<id>/<id>-preview.mp3`,
+     souvent suffisante) ; pour le fichier "download" officiel (souvent `.wav`), appeler
+     `curl "https://mixkit.co/free-sound-effects/download/<id>/?context=item+grid"` et lire
+     `data-download--modal-url-value="https://assets.mixkit.co/active_storage/sfx/<id>/<id>.wav"`
+     dans la réponse — c'est le vrai fichier, pas une preview.
+  3. Retirer toute pochette/cover art embarquée avec `ffmpeg -vn` avant d'utiliser le fichier comme
+     `<audio>` (une pochette mjpeg attachée peut ajouter un flux vidéo parasite au fichier).
+  - **Pexels bloque ce type de scraping direct** (testé : `curl` sur une page de recherche vidéo
+    renvoie `403`, protection anti-bot) — ne pas perdre de temps à réessayer sans clé API officielle
+    (`api.pexels.com`, inscription gratuite requise, pas configurée dans ce sandbox). Mixkit est la
+    source par défaut tant que Pexels n'a pas de clé.
+- **Piste de marque fournie par l'utilisateur** (ex. `assets.automatisationboost.com/music/...`) :
+  toujours prioritaire sur une source tierce si l'utilisateur en donne une — télécharger, retirer
+  la cover art (`-vn`), trim/fade sur la durée de la vidéo.
+
+---
+
+### 🔒 Choré avatar + ligne néon + sound design (VERROUILLÉ 2026-08-06, demande Tony)
+
+Règles imposées par Tony — les appliquer par défaut sur toute vidéo Autoboost, sauf contre-ordre explicite :
+
+- **L'avatar n'est PAS présent en continu.** Il apparaît par fenêtres courtes de **3 à 5 s** puis disparaît (fade). Entre deux apparitions, l'écran ne montre que les scènes + la ligne néon. Ne jamais laisser l'avatar visible toute la durée.
+- **Deux formes d'avatar, en alternance** (même asset `assets/avatar-loop.mp4`, juste un cadrage CSS différent) :
+  1. **Cercle** néon (anneau jaune + orbit + pulse sur le beat) — typiquement sur le hook/début.
+  2. **Bandeau 3:4 plein largeur en bas** (`#avatar-wide` : `width:1080px; height:762px; bottom:0`, vidéo en `width:1080;height:1440;object-fit:cover;object-position:top;translate(-50%,-42%)`, bords fondus au fond par un dégradé latéral + bas) — typiquement sur le CTA, la voix off au premier plan. Le `data-start/duration` de chaque `<video>` est limité à sa fenêtre pour ne pas décoder l'avatar tout le long.
+- **Ligne néon réactive à la musique** (`#neon-line`) : barre horizontale plein largeur (~5px, dégradé jaune→violet→jaune, glow), présente toute la vidéo, **clignote sur CHAQUE beat** (pulse `scaleY` 2.2–3.2 → 1 + `opacity`, downbeat plus fort tous les 4). Placée à `top:1158px` = elle sert aussi de **bord haut du bandeau 3:4** quand il est visible (alignement exact `1920-762`).
+- **Sound design** (réf. cible Tony : TikTok `https://vm.tiktok.com/ZN8dTTfxy/`) :
+  - Musique de fond **duckée bas (~0.16)** en permanence sous la **voix off à 1.0** — la voix doit toujours dominer (mesure de contrôle : fenêtre parlée ~10-12 dB au-dessus de la musique seule via `volumedetect`).
+  - **Beat-sync réel** : mesurer le beat sur le fichier musical (grille `BEAT0`/`BEATP`, ~80.8 BPM = `BEATP≈0.743s` sur `flowers_horror.mp3`) et piloter ligne néon + pulses avatar + flashs dessus. Ne jamais inventer un tempo au hasard.
+  - **SFX impact** sur chaque drop de scène (volume ~0.24-0.28), palette `_shared/sfx-palette/v1` (voir mémoire `reference_sfx_palette_v1`).
+  - ⚠️ **Track exact non encore verrouillé** : la réf TikTok n'est pas téléchargeable ici (tokscript non-Pro + capture headless TikTok bloquée). Demander à Tony le `.mp3` de la trend pour figer le morceau ; en attendant, `flowers_horror.mp3` reste la base beat-sync.
+
+---
+
+---
+
+
 # veille-to-video — Autoboost Neon Video
 
 **Input :** script/brief texte (ou une ligne du Google Sheet de suivi) + voix + avatar

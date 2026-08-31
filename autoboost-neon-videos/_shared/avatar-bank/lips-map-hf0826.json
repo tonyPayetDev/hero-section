@@ -1,0 +1,70 @@
+{
+  "generated": "2026-08-27",
+  "crop": {
+    "w": 300,
+    "h": 240,
+    "x": 280,
+    "y": 360
+  },
+  "thresh": 1.6,
+  "clips": {
+    "E0_hook_postits.mp4": {
+      "duration": 7.072,
+      "fps": 24,
+      "active": [
+        {
+          "start": 1.08,
+          "end": 5.38
+        }
+      ],
+      "activeTotal": 4.3
+    },
+    "E1_trois_doigts.mp4": {
+      "duration": 7.072,
+      "fps": 24,
+      "active": [
+        {
+          "start": 0.04,
+          "end": 1.5
+        },
+        {
+          "start": 1.88,
+          "end": 4.17
+        },
+        {
+          "start": 4.67,
+          "end": 6.04
+        }
+      ],
+      "activeTotal": 5.12,
+      "exclu": true,
+      "motifExclusion": "Retire par Tony le 2026-08-27 (geste deux doigts). La mesure le confirme : 2,29 s utiles au mieux, hachees en trois plages — la pire prise du set studio. Ne pas remonter."
+    },
+    "E2_confidence.mp4": {
+      "duration": 7.072,
+      "fps": 24,
+      "active": [
+        {
+          "start": 1.96,
+          "end": 7
+        }
+      ],
+      "activeTotal": 5.04
+    },
+    "E3_neutre.mp4": {
+      "duration": 7.042,
+      "fps": 24,
+      "active": [
+        {
+          "start": 0.96,
+          "end": 1.33
+        },
+        {
+          "start": 1.67,
+          "end": 6.79
+        }
+      ],
+      "activeTotal": 5.49
+    }
+  }
+}

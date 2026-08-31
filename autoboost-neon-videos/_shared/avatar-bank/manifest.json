@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "avatar": "tony",
+  "description": "Banque d'avatar réutilisable : 24 micro-clips tournés une fois, réassemblés par rôle narratif pour produire des vidéos sans re-tournage. Voix remplacée par clone ElevenLabs.",
+  "lookRefs": [
+    "_shared/avatar-bank/refs/hf-avatar-1-desk.png (bureau/MacBook, énergie explication)",
+    "_shared/avatar-bank/refs/hf-avatar-2-portrait.png (portrait softbox, énergie hook)"
+  ],
+  "voice": {
+    "provider": "elevenlabs",
+    "voiceId": "TODO_apres_clone",
+    "sourceRecording": "voice-tony-source.wav",
+    "spec": "3-5 min, micro propre, pièce sans écho, ton naturel (script fourni + 1-2 min freestyle)"
+  },
+  "format": {
+    "aspect": "9:16",
+    "fps": 30,
+    "sourceResolution": "4K si possible",
+    "framing": "buste, tête dans le tiers supérieur, zone tiers inférieur dégagée (sous-titres)",
+    "captionsZone": "tiers inférieur"
+  },
+  "editingRules": [
+    "1s de position neutre (bouche fermée, regard caméra) AVANT et APRÈS chaque phrase = cuts invisibles",
+    "Tourner 5-6s de parole, garder 3-4s au montage",
+    "Setup identique sur tous les clips (tenue, fond, lumière, cadrage, trépied fixe)",
+    "2 prises minimum par clip",
+    "Le mouvement du visage doit être authentique même si l'audio sera remplacé (garder le micro pour caler le lip-sync)"
+  ],
+  "roles": {
+    "hook": "ouverture 0-4s, énergie haute — categorie A",
+    "explain": "corps, énergie moyenne/neutre — categorie B",
+    "cta": "conclusion/appel à l'action — categorie C"
+  },
+  "clips": [
+    { "id": "A1", "role": "hook", "energy": "high", "file": "A1_hook_frontal.mp4", "targetDuration": [3, 4], "gesture": "léger pas vers la caméra, regard direct, sourcils levés", "spoken": "Attends, attends, faut que je te montre un truc que personne n'utilise." },
+    { "id": "A2", "role": "hook", "energy": "high", "file": "A2_pointe_camera.mp4", "targetDuration": [3, 4], "gesture": "index pointé vers l'objectif au début de la phrase", "spoken": "Toi, là. Tu perds trois heures par semaine sur un truc qu'une machine fait en deux minutes." },
+    { "id": "A3", "role": "hook", "energy": "high", "file": "A3_surprise_revelation.mp4", "targetDuration": [3, 4], "gesture": "mains qui s'ouvrent en éventail, tête légèrement en arrière", "spoken": "J'ai testé ce truc hier soir et honnêtement, je m'attendais pas à ça." },
+    { "id": "A4", "role": "hook", "energy": "high", "file": "A4_chiffre_choc.mp4", "targetDuration": [3, 4], "gesture": "trois doigts levés, puis main qui retombe", "spoken": "Trois outils. Zéro ligne de code. Et tout tourne pendant que tu dors." },
+    { "id": "A5", "role": "hook", "energy": "high", "file": "A5_complicite.mp4", "targetDuration": [3, 4], "gesture": "léger penché vers la caméra, confidence, demi-sourire", "spoken": "Bon, je devrais peut-être pas partager ça, mais tant pis, je te le donne." },
+    { "id": "A6", "role": "hook", "energy": "high", "file": "A6_negation_energique.mp4", "targetDuration": [3, 4], "gesture": "main qui balaie horizontalement (geste de non)", "spoken": "Non, non, non. Arrête de faire ça manuellement, sérieux, on est en 2026." },
+
+    { "id": "B1", "role": "explain", "energy": "medium", "file": "B1_neutre_mains_basses.mp4", "targetDuration": [3, 4], "gesture": "quasi immobile, micro-hochements de tête", "spoken": "En fait le principe est simple : chaque étape déclenche automatiquement la suivante, sans intervention." },
+    { "id": "B2", "role": "explain", "energy": "medium", "file": "B2_main_droite.mp4", "targetDuration": [3, 4], "gesture": "main droite qui accompagne le rythme, paume ouverte", "spoken": "D'abord tu connectes ton compte, ensuite tu définis le déclencheur, et enfin tu choisis l'action." },
+    { "id": "B3", "role": "explain", "energy": "medium", "file": "B3_main_gauche.mp4", "targetDuration": [3, 4], "gesture": "main gauche qui explique, paume ouverte", "spoken": "Le système récupère les données, les analyse, puis les envoie exactement où tu veux." },
+    { "id": "B4", "role": "explain", "energy": "medium", "file": "B4_enumeration.mp4", "targetDuration": [3, 4], "gesture": "compte un, deux, trois sur les doigts", "spoken": "Premièrement le gain de temps, deuxièmement la régularité, troisièmement zéro oubli." },
+    { "id": "B5", "role": "explain", "energy": "medium", "file": "B5_comparaison_deux_mains.mp4", "targetDuration": [3, 4], "gesture": "main gauche puis main droite, comme deux plateaux de balance", "spoken": "D'un côté tu as la méthode classique, de l'autre la version automatisée. Devine laquelle gagne." },
+    { "id": "B6", "role": "explain", "energy": "medium", "file": "B6_hochement_approbateur.mp4", "targetDuration": [3, 4], "gesture": "hochements de tête francs, léger sourire", "spoken": "Et oui, ça fonctionne aussi pour les petites structures, c'est justement ça qui est fort." },
+    { "id": "B7", "role": "explain", "energy": "medium", "file": "B7_penche_curieux.mp4", "targetDuration": [3, 4], "gesture": "tête légèrement inclinée, sourcils froncés puis détendus", "spoken": "La question qu'on me pose tout le temps, c'est : est-ce que c'est compliqué à mettre en place ?" },
+    { "id": "B8", "role": "explain", "energy": "medium", "file": "B8_geste_circulaire.mp4", "targetDuration": [3, 4], "gesture": "main qui dessine un cercle ou une boucle", "spoken": "Et le cycle recommence : publication, analyse, ajustement, republication. En boucle, tout seul." },
+    { "id": "B9", "role": "explain", "energy": "medium", "file": "B9_haussement_epaules.mp4", "targetDuration": [3, 4], "gesture": "épaules qui montent, mains ouvertes paumes vers le ciel", "spoken": "Franchement ? Une fois que c'est configuré, tu n'y touches plus jamais." },
+    { "id": "B10", "role": "explain", "energy": "medium", "file": "B10_serieux_mise_en_garde.mp4", "targetDuration": [3, 4], "gesture": "immobile, regard appuyé, index levé brièvement", "spoken": "Par contre, attention : si tes données de départ sont mauvaises, le résultat sera mauvais aussi." },
+    { "id": "B11", "role": "explain", "energy": "medium", "file": "B11_transition_regard_cote.mp4", "targetDuration": [3, 4], "gesture": "regard qui part côté droit (écran hors champ) puis revient caméra", "spoken": "Regarde ce qui se passe ici quand je lance le workflow. Tu vois ? Instantané." },
+    { "id": "B12", "role": "explain", "energy": "medium", "file": "B12_reflexion.mp4", "targetDuration": [3, 4], "gesture": "main au menton une seconde, puis qui redescend", "spoken": "Alors comment on choisit le bon outil ? En vrai, ça dépend d'un seul critère." },
+
+    { "id": "C1", "role": "cta", "energy": "medium", "file": "C1_pointe_bas.mp4", "targetDuration": [3, 4], "gesture": "index pointé vers le bas (description/commentaires), sourire", "spoken": "Tout est dans la description juste en dessous, sers-toi, c'est cadeau." },
+    { "id": "C2", "role": "cta", "energy": "medium", "file": "C2_commente_motcle.mp4", "targetDuration": [3, 4], "gesture": "mime de taper sur un clavier/téléphone, puis regard caméra", "spoken": "Commente le mot AUTOMATION et je t'envoie le template directement en message privé.", "note": "mot-clé AUTOMATION (corrigé depuis 'automne'), remplaçable au montage/voix selon la vidéo" },
+    { "id": "C3", "role": "cta", "energy": "medium", "file": "C3_abonnement.mp4", "targetDuration": [3, 4], "gesture": "pouce levé puis main qui appuie sur un bouton invisible", "spoken": "Abonne-toi, j'en poste un nouveau chaque semaine, tu vas pas vouloir rater le prochain." },
+    { "id": "C4", "role": "cta", "energy": "medium", "file": "C4_conclusion_posee.mp4", "targetDuration": [3, 4], "gesture": "mains qui se rejoignent calmement, hochement final", "spoken": "Voilà, tu sais tout. Maintenant la seule chose qui manque, c'est que tu le fasses." },
+    { "id": "C5", "role": "cta", "energy": "medium", "file": "C5_tease_episode.mp4", "targetDuration": [3, 4], "gesture": "index levé attends, demi-sourire complice", "spoken": "Et dans la prochaine vidéo, je te montre la version encore plus poussée de ce système." },
+    { "id": "C6", "role": "cta", "energy": "high", "file": "C6_salut_final.mp4", "targetDuration": [3, 4], "gesture": "petit salut de la main, sourire franc", "spoken": "Allez, c'était Tony, à très vite pour la suite. Ciao !" }
+  ]
+}

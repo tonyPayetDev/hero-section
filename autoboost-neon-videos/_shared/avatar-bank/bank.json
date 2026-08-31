@@ -1,0 +1,76 @@
+{
+  "version": 2,
+  "avatar": "tony",
+  "updated": "2026-08-18",
+  "purpose": "Index of every REAL, on-disk clip of the avatar bank, tagged by wardrobe and by narrative role, so a random selector can pick shots without producing a wardrobe jump. manifest.json (v1) stays the shooting brief for the 24 planned A/B/C clips; bank.json is what actually exists and what the selector must read.",
+
+  "wardrobeRule": {
+    "field": "wardrobe",
+    "rule": "A single video MUST NOT mix two wardrobes inside one block. Two wardrobes are allowed in one video ONLY when the second one is confined to the OPENING or the CLOSING, where the hard cut reads as a deliberate effect. Everywhere else the selector must filter candidates to the wardrobe already used.",
+    "why": "The bank grew across three shoots with different clothes and different sets. Drawing a spider-suit shot at random in the middle of a video shot in a car makes Tony change clothes mid-sentence for no reason.",
+    "selectorContract": [
+      "1. Pick the wardrobe FIRST (usually the one of the body of the video), then draw shots only inside it.",
+      "2. An opening or closing block may use a different wardrobe; mark the block `wardrobeBreak: true` and put a hard cut (no dissolve) at the boundary.",
+      "3. Never place two wardrobes on either side of a cut that is meant to read as continuous speech.",
+      "4. `speaks: false` entries are never eligible under an active voice track, whatever the wardrobe."
+    ]
+  },
+
+  "wardrobes": {
+    "chemise-noire-studio": {
+      "look": "plain matte-black shirt, glasses, gold chain",
+      "set": "dark studio, octabox softbox camera-left, slatted wood wall",
+      "clips": "clips/",
+      "lipsMap": "lips-map.json"
+    },
+    "chemise-noir-jaune": {
+      "look": "matte-black shirt with a neon-yellow placket, glasses",
+      "set": "driver's seat, daylight through the windscreen",
+      "clips": "clips-new/",
+      "lipsMap": "lips-map-d.json"
+    },
+    "spider-suit": {
+      "look": "matte-black spider-hero suit with yellow neon lines (original design, no existing emblem), no glasses",
+      "set": "night city rooftops, then a neon home studio",
+      "clips": "clips-spider/",
+      "lipsMap": "lips-map-spider.json",
+      "note": "INCOMPATIBLE with the two shirt wardrobes anywhere except an opening or a closing."
+    }
+  },
+
+  "entries": [
+    { "id": "A1", "file": "clips/A1_hook_frontal.mp4",            "wardrobe": "chemise-noire-studio", "role": "hook",    "speaks": true,  "duration": 5.056, "randomizable": true },
+    { "id": "B1", "file": "clips/B1_principe.mp4",                 "wardrobe": "chemise-noire-studio", "role": "explain", "speaks": true,  "duration": 5.056, "randomizable": true },
+    { "id": "C2", "file": "clips/C2_commente_motcle.mp4",          "wardrobe": "chemise-noire-studio", "role": "cta",     "speaks": true,  "duration": 5.056, "randomizable": true },
+
+    { "id": "D1", "file": "clips-new/D1_hook_frontal.mp4",         "wardrobe": "chemise-noir-jaune",   "role": "hook",    "speaks": true,  "duration": 10.08, "randomizable": true },
+    { "id": "D2", "file": "clips-new/D2_insistance_doigts.mp4",    "wardrobe": "chemise-noir-jaune",   "role": "explain", "speaks": true,  "duration": 10.08, "randomizable": true, "note": "the pointing-fingers gesture only exists in the 5.04-9.75 take" },
+    { "id": "D3", "file": "clips-new/D3_cta_lunettes.mp4",         "wardrobe": "chemise-noir-jaune",   "role": "cta",     "speaks": true,  "duration": 10.08, "randomizable": true },
+    { "id": "D4", "file": "clips-new/D4_relance_barbe.mp4",        "wardrobe": "chemise-noir-jaune",   "role": "explain", "speaks": true,  "duration": 10.08, "randomizable": true },
+
+    {
+      "id": "HOOK_spider_entree",
+      "file": "clips-spider/HOOK_spider_entree.mp4",
+      "wardrobe": "spider-suit",
+      "role": "hook-visuel",
+      "speaks": false,
+      "duration": 8.0,
+      "randomizable": false,
+      "slot": "opening-only",
+      "audio": "SFX only — no voice-over over this entry",
+      "note": "Pure visual hook: swing between towers, crash through a window, web shot at the lens, dolly-in. No speech at any point. Its lips map is deliberately empty; see lips-map-spider.json."
+    },
+    {
+      "id": "SPIDER_talking",
+      "file": "clips-spider/SPIDER_talking.mp4",
+      "wardrobe": "spider-suit",
+      "role": "cta",
+      "speaks": true,
+      "duration": 2.042,
+      "randomizable": false,
+      "slot": "cta-or-punctuation",
+      "maxShotFrames30": 32,
+      "note": "Locked presenter framing. Only 1.08 s of lips-active (0.63-1.71). Too short to carry a continuous passage — one punch or one CTA line, never a body block."
+    }
+  ]
+}

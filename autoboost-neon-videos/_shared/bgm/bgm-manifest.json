@@ -1,0 +1,453 @@
+{
+ "$comment": "Bibliotheque BGM Autoboost. Construite le 2026-08-18. Ne pas ecraser : ajouter des entrees. Mesures ffmpeg (extrait 45 s a partir de 10 s pour les bandes, morceau entier pour le LUFS).",
+ "version": 2,
+ "updated": "2026-08-24",
+ "metrics_explained": {
+  "voice_band_dbfs": "Niveau moyen mesure dans 1 kHz - 3,5 kHz (la bande ou vit l'intelligibilite de la voix).",
+  "voice_headroom_db": "voice_band_dbfs moins le LUFS du morceau. C'est LE critere de tri : plus il est negatif, moins le morceau encombre la voix a volume percu egal. Objectif >= -16. En dessous de -13, la piste se battra avec la voix.",
+  "lufs_integrated": "Loudness du morceau entier, tel que telecharge.",
+  "start_gain_db": "Gain a appliquer pour amener le lit musical a -30 LUFS, soit ~14-16 LU sous une voix montee a -16 LUFS. C'est un POINT DE DEPART sous voix continue, pas une valeur finale.",
+  "start_peak_dbfs": "Crete resultante une fois start_gain_db applique. C'est la valeur en dBFS demandee : le lit doit demarrer autour de cette crete."
+ },
+ "license_reference": {
+  "mixkit_free_music": {
+   "name": "Mixkit Stock Music Free License",
+   "url": "https://mixkit.co/license/#musicFree",
+   "license_text_endpoint": "https://mixkit.co/license/modal/musicFree/",
+   "verified": "2026-08-18",
+   "cost": "0 EUR",
+   "attribution_required": false,
+   "commercial_use": true,
+   "allowed": [
+    "posts video sur les reseaux sociaux",
+    "publicites marketing en ligne",
+    "podcasts",
+    "usage educatif",
+    "YouTube (avec asterisque, voir caveats)"
+   ],
+   "forbidden": [
+    "CD et DVD",
+    "diffusion TV et radio",
+    "jeux video",
+    "remixer ou integrer dans un morceau purement musical",
+    "revendiquer la propriete du morceau",
+    "enregistrer le morceau aupres d'un service de gestion de droits (Content ID)"
+   ],
+   "caveats": [
+    "TV/radio exclues : si Tony passe un jour en spot TV ou radio, ces pistes ne suivent pas.",
+    "YouTube porte un asterisque officiel : une reclamation Content ID reste possible. Mixkit demande de faire suivre le detail a team@mixkit.co."
+   ],
+   "networks_covered": [
+    "TikTok",
+    "Instagram",
+    "YouTube",
+    "Facebook",
+    "LinkedIn"
+   ]
+  },
+  "production_maison": {
+   "name": "Production maison — partition domaine public",
+   "verified": "2026-08-18",
+   "cost": "0 EUR",
+   "attribution_required": false,
+   "commercial_use": true,
+   "score": "Tchaikovski, Casse-Noisette op. 71a n.6 — domaine public (compositeur mort en 1893)",
+   "sequencing": "ecrit par nous (notes, durees, velocites, harmonisation, orchestration, plan dynamique) — voir valse-des-fleurs-maison/source/score.mjs. Aucun MIDI tiers dans la chaine de rendu.",
+   "sample_bank": "FluidR3_GM.sf2, Frank Wen, licence MIT (usage commercial et redistribution autorises)",
+   "synth": "FluidSynth 2.3.1 (LGPL)",
+   "phonogram_owner": "Tony PAYET / Automation Boost",
+   "allowed": [
+    "tous reseaux sociaux",
+    "publicite",
+    "YouTube",
+    "TV et radio",
+    "tout support"
+   ],
+   "forbidden": [],
+   "caveats": [
+    "Aucune empreinte Content ID ne peut exister : le phonogramme n a jamais ete distribue.",
+    "A ne pas confondre avec un enregistrement du commerce de la meme oeuvre : le fichier LSO 1989 fourni au depart est protege par droits voisins jusqu en 2059 et ne doit etre publie sous aucune forme."
+   ],
+   "networks_covered": [
+    "TikTok",
+    "Instagram",
+    "YouTube",
+    "Facebook",
+    "LinkedIn"
+   ]
+  }
+ },
+ "tracks": [
+  {
+   "file": "journal-moon-walk-88.mp3",
+   "family": "journal / veille",
+   "formats": [
+    "veille-journal-ia",
+    "script-pspc",
+    "build in public"
+   ],
+   "title": "Moon Walk",
+   "genre": "Electronica",
+   "bpm": 88,
+   "bpm_confidence": "bonne",
+   "duration_s": 204,
+   "source": "Mixkit #609 - https://assets.mixkit.co/music/609/609.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -10.1,
+   "voice_band_dbfs": -32.2,
+   "voice_headroom_db": -20.6,
+   "start_gain_db": -19.9,
+   "start_peak_dbfs": -19.9,
+   "instrumental_verified": "spectrogramme 40 s : lit grave stable, medium clairsemé, aucun formant ni vibrato. Pas de voix.",
+   "notes": "Le meilleur lit 'informatif et tendu' de la bibliotheque. Pulsation regulière, aucune montee qui viendrait se battre avec la voix. 204 s couvrent largement un journal de 45-60 s."
+  },
+  {
+   "file": "journal-digital-clouds-128.mp3",
+   "family": "journal / veille (variante claire)",
+   "formats": [
+    "veille-journal-ia",
+    "corporate court",
+    "showcase site client"
+   ],
+   "title": "Digital Clouds",
+   "genre": "Chillout",
+   "bpm": 128,
+   "bpm_confidence": "bonne",
+   "duration_s": 101,
+   "source": "Mixkit #175 - https://assets.mixkit.co/music/175/175.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -11,
+   "voice_band_dbfs": -29.5,
+   "voice_headroom_db": -18,
+   "start_gain_db": -19,
+   "start_peak_dbfs": -19,
+   "instrumental_verified": "spectrogramme 40 s : nappes synthé quantifiées a 950 / 1400 / 1900 Hz, lignes droites, pas de formants. Pas de voix.",
+   "notes": "Version moins sombre que Moon Walk, tempo double. ATTENTION : ses nappes tiennent 950-1900 Hz en continu, donc moins transparent qu'annonce par le chiffre seul. A ducker un peu plus fort."
+  },
+  {
+   "file": "hook-epical-drums-02-80.mp3",
+   "family": "hook puissant / action",
+   "formats": [
+    "hook-puissant-branded",
+    "yapping-facecam",
+    "combat beat-sync",
+    "tu veux le meme systeme"
+   ],
+   "title": "Epical Drums 02",
+   "genre": "Percussion Trailer",
+   "bpm": 80,
+   "bpm_confidence": "moyenne (peu de pulsation continue, beaucoup de frappes isolees)",
+   "duration_s": 123,
+   "source": "Mixkit #677 - https://assets.mixkit.co/music/677/677.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -15.5,
+   "voice_band_dbfs": -32.6,
+   "voice_headroom_db": -17.1,
+   "start_gain_db": -14.5,
+   "start_peak_dbfs": -16,
+   "instrumental_verified": "percussions seules, aucun instrument melodique soutenu dans le medium.",
+   "notes": "Percussif, impacts et montees, sans nappe qui traine. Deja fort en dynamique et faible en LUFS : garde beaucoup de headroom, donc il encaisse un gain plus eleve que les autres."
+  },
+  {
+   "file": "mindset-epical-drums-03-80.mp3",
+   "family": "revelation A/B, mindset, epique",
+   "formats": [
+    "revelation-ab-branded",
+    "essai-contemplatif",
+    "j'interpelle une star",
+    "VSL formation"
+   ],
+   "title": "Epical Drums 03",
+   "genre": "Orchestral Hybrid",
+   "bpm": 80,
+   "bpm_confidence": "faible (le detecteur hesite entre 78 et 160 - probablement 80 en double-temps)",
+   "duration_s": 183,
+   "source": "Mixkit #678 - https://assets.mixkit.co/music/678/678.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -14.8,
+   "voice_band_dbfs": -31.3,
+   "voice_headroom_db": -16.6,
+   "start_gain_db": -15.2,
+   "start_peak_dbfs": -16.3,
+   "instrumental_verified": "orchestral hybride, cuivres et percussions ; pas de ligne vocale.",
+   "notes": "Epique et mental, retenu. Deja qualifie independamment sur autoboost-61. 183 s : le plus long des epiques, utile pour un format 45-60 s sans boucler."
+  },
+  {
+   "file": "mindset-epical-drums-05-75.mp3",
+   "family": "revelation A/B, mindset, epique (version courte)",
+   "formats": [
+    "revelation-ab-branded",
+    "prompt-reveal",
+    "keynote remix"
+   ],
+   "title": "Epical Drums 05",
+   "genre": "Orchestral Hybrid",
+   "bpm": 75,
+   "bpm_confidence": "faible (pas de pulsation nette)",
+   "duration_s": 102,
+   "source": "Mixkit #680 - https://assets.mixkit.co/music/680/680.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -16,
+   "voice_band_dbfs": -32.4,
+   "voice_headroom_db": -15.4,
+   "start_gain_db": -14,
+   "start_peak_dbfs": -16.6,
+   "instrumental_verified": "cuivres + batterie orchestrale, pas de voix.",
+   "notes": "Meme famille que Epical Drums 03, plus court et plus retenu. Le morceau le plus discret de la bibliotheque en absolu (-16 LUFS a la source)."
+  },
+  {
+   "file": "food-cat-walk-128.mp3",
+   "family": "FoodBoost / vitrine",
+   "formats": [
+    "foodboost-vitrine-video",
+    "showcase site client"
+   ],
+   "title": "Cat Walk",
+   "genre": "House",
+   "bpm": 128,
+   "bpm_confidence": "excellente",
+   "duration_s": 124,
+   "source": "Mixkit #371 - https://assets.mixkit.co/music/371/371.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -9.5,
+   "voice_band_dbfs": -28.9,
+   "voice_headroom_db": -18.8,
+   "start_gain_db": -20.5,
+   "start_peak_dbfs": -20.5,
+   "instrumental_verified": "spectrogramme 40 s : kick regulier + stabs synthé quantifies. Aucun formant, aucun vibrato. Pas de voix.",
+   "notes": "Chaleureux et rythmé sans encombrer la voix - rare dans cette famille. ATTENTION : a partir de ~29 s le medium se remplit nettement (nappes 950-2400 Hz). Sur une vitrine de 18-22 s on reste dans la premiere partie, donc c'est sans risque ; au-dela, ducker plus fort ou boucler les 28 premieres secondes."
+  },
+  {
+   "file": "food-deep-urban-122.mp3",
+   "family": "FoodBoost / vitrine (long, tres stable)",
+   "formats": [
+    "foodboost-vitrine-video",
+    "VSL formation",
+    "build in public"
+   ],
+   "title": "Deep Urban",
+   "genre": "House",
+   "bpm": 122,
+   "bpm_confidence": "bonne",
+   "duration_s": 288,
+   "source": "Mixkit #623 - https://assets.mixkit.co/music/623/623.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -7.6,
+   "voice_band_dbfs": -26.8,
+   "voice_headroom_db": -18.1,
+   "start_gain_db": -22.4,
+   "start_peak_dbfs": -22.4,
+   "instrumental_verified": "spectrogramme 40 s : tres bottom-weighted, l'energie s'eteint au-dessus de 1,4 kHz, aucune ligne vocale.",
+   "notes": "Le lit le plus previsible de la bibliotheque : aucune section qui se remplit, sur 288 s. C'est le choix par defaut quand la voix parle sans interruption et qu'on ne veut aucune surprise. Morceau tres fort a la source (-7,6 LUFS) : le gain a appliquer est le plus bas de tous, ne pas le recopier depuis une autre piste."
+  },
+  {
+   "file": "horror-piano-horror-ambient.mp3",
+   "family": "horror / beat-sync / tension",
+   "formats": [
+    "horror-beatsync-video",
+    "site immersif",
+    "essai-contemplatif"
+   ],
+   "title": "Piano Horror",
+   "genre": "Drone Music",
+   "bpm": null,
+   "bpm_confidence": "aucune pulsation exploitable - ne pas beat-syncer dessus",
+   "duration_s": 113,
+   "source": "Mixkit #671 - https://assets.mixkit.co/music/671/671.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -11.7,
+   "voice_band_dbfs": -32.4,
+   "voice_headroom_db": -20.8,
+   "start_gain_db": -18.3,
+   "start_peak_dbfs": -18.4,
+   "instrumental_verified": "drone / piano prepare, pas de voix.",
+   "notes": "Ex aequo meilleur score de transparence de toute la bibliotheque. Complete flowers_horror.mp3 : la trend sert quand on cale sur les drops, celle-ci sert quand il faut de la tension SOUS un texte parle. Pas de grille rythmique : c'est une nappe, pas un montage."
+  },
+  {
+   "file": "horror-echoes-ambient.mp3",
+   "family": "horror / documentaire sombre / tension longue",
+   "formats": [
+    "site immersif",
+    "essai-contemplatif",
+    "horror-beatsync-video"
+   ],
+   "title": "Echoes",
+   "genre": "Atmospheres",
+   "bpm": null,
+   "bpm_confidence": "aucune pulsation exploitable",
+   "duration_s": 226,
+   "source": "Mixkit #188 - https://assets.mixkit.co/music/188/188.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -13.1,
+   "voice_band_dbfs": -36.7,
+   "voice_headroom_db": -20.1,
+   "start_gain_db": -16.9,
+   "start_peak_dbfs": -17.9,
+   "instrumental_verified": "atmosphere pure, aigus quasi absents (-55 dB au-dessus de 3,5 kHz).",
+   "notes": "Le medium le plus vide de la bibliotheque en valeur absolue (-36,7 dBFS). Quasi invisible sous une voix. A l'inverse, seul il sonne presque vide : ne pas l'utiliser sur une ouverture sans voix sans compenser (voir README)."
+  },
+  {
+   "file": "vsl-voxscape-ambient.mp3",
+   "family": "corporate / VSL / long format",
+   "formats": [
+    "VSL formation",
+    "essai-contemplatif",
+    "luxe",
+    "editorial avant/apres"
+   ],
+   "title": "Voxscape",
+   "genre": "Ambient",
+   "bpm": null,
+   "bpm_confidence": "aucune pulsation exploitable",
+   "duration_s": 299,
+   "source": "Mixkit #571 - https://assets.mixkit.co/music/571/571.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -9.3,
+   "voice_band_dbfs": -33.9,
+   "voice_headroom_db": -20.8,
+   "start_gain_db": -20.7,
+   "start_peak_dbfs": -20.7,
+   "instrumental_verified": "spectrogramme 40 s verifie EXPRES a cause du nom 'Vox' : bandes horizontales stables a 950 / 2000 / 2400 Hz, aucun vibrato, aucun glissement de formant, aucune attaque de syllabe. Ce sont des nappes de synthé, pas des voix.",
+   "notes": "Ex aequo meilleur score de transparence. 299 s : le seul morceau qui couvre une VSL de 101 s sans boucle. Pose, credible, sans evenement."
+  },
+  {
+   "file": "bgm-cyberpunk-city.mp3",
+   "family": "hook / neon / cyberpunk",
+   "formats": [
+    "hook-puissant-branded",
+    "tu veux le meme systeme"
+   ],
+   "title": "Cyberpunk City",
+   "genre": "Ambient",
+   "bpm": null,
+   "bpm_confidence": "non mesure",
+   "duration_s": 99,
+   "source": "Mixkit #140 - https://assets.mixkit.co/music/140/140.mp3",
+   "license": "Mixkit Stock Music Free License",
+   "lufs_integrated": -9,
+   "voice_band_dbfs": -18.3,
+   "voice_headroom_db": -9.3,
+   "start_gain_db": -21,
+   "start_peak_dbfs": -21,
+   "instrumental_verified": "verifie au spectrogramme lors de sa selection pour autoboost-62 : lignes harmoniques droites sous 2 kHz, pas de formants.",
+   "notes": "AJOUTE PAR UN AUTRE AGENT pour autoboost-62, conserve tel quel. Attention : son medium est CHARGE (headroom -9,3, de loin le pire de la bibliotheque). Il a ete choisi pour son identite cyberpunk et son lit stable, pas pour sa transparence - il exige un sidechain reel, pas un simple gain fixe."
+  },
+  {
+   "file": "flowers_horror.mp3",
+   "family": "horror beat-sync (son de trend)",
+   "formats": [
+    "horror-beatsync-video"
+   ],
+   "title": "YOU CAN ASK THE FLOWERS (HORROR MIX)",
+   "genre": "trend / horror mix",
+   "bpm": null,
+   "bpm_confidence": "grille mesuree dans le skill horror-beatsync-video (drop 2,34 s, mini-drops toutes les 8,02 s, beat 0,50125 s)",
+   "duration_s": 96,
+   "source": "son de trend social - origine non documentee",
+   "license": "NON ETABLIE - son de trend, pas de licence commerciale verifiee",
+   "lufs_integrated": -11.6,
+   "voice_band_dbfs": -26.5,
+   "voice_headroom_db": -14.9,
+   "start_gain_db": -18.4,
+   "start_peak_dbfs": -18.4,
+   "instrumental_verified": "non verifie",
+   "notes": "PREEXISTANT, conserve. Sa licence n'est PAS etablie : c'est un son de trend, pas une piste libre de droits. Sur un compte de marque, TikTok considere le catalogue general comme non pre-autorise pour du contenu commercial, et rien ne couvre Instagram / YouTube / Facebook / LinkedIn. A traiter comme un risque assume sur le format beat-sync, pas comme une piste de bibliotheque."
+  },
+  {
+   "family": "classique maison / valse",
+   "formats": [
+    "autoboost-62-valse-full",
+    "hook contraste + lit sous voix"
+   ],
+   "title": "Valse des fleurs (Casse-Noisette op. 71a n.6)",
+   "genre": "Valse symphonique",
+   "bpm": 180,
+   "bpm_confidence": "exacte (sequence par nous : noire = 180, donc 1 mesure = 1,000 s)",
+   "duration_s": 35.4,
+   "source": "production maison — voir valse-des-fleurs-maison/README.md et son dossier source/",
+   "license": "Production maison — partition domaine public",
+   "license_ref": "production_maison",
+   "file": "valse-des-fleurs-maison-tutti.mp3",
+   "variant": "A — TUTTI (orchestre complet)",
+   "instruments": [
+    "flute",
+    "hautbois",
+    "clarinette",
+    "violons I et II",
+    "trompette",
+    "timbales",
+    "+ toute la section grave"
+   ],
+   "active_window_s": "0,000 -> 6,667 (silence ensuite)",
+   "lufs_integrated": -18.4,
+   "voice_band_dbfs": -23.6,
+   "voice_headroom_db": -5.2,
+   "band_gap_lufs_db": 2,
+   "start_gain_db": -11.6,
+   "start_peak_dbfs": -13.7,
+   "instrumental_verified": "rendu par nous a partir de notre propre sequence : aucune voix, par construction.",
+   "notes": "A NE PAS utiliser sous une voix : c est un tutti, il occupe la bande 1-3,5 kHz (headroom -5,2). C est voulu. Sa place est un hook sans parole. Profil dynamique cale sur autoboost-62 : quasi absent 0-1,2 s, entree du tutti a 1,0, respiration 2,8-5,2, sommet (la5) tenu 6,00-6,667 puis resolution sur le re. Se somme avec la version evidee — les deux sont le meme enregistrement pris a deux endroits de l orchestre."
+  },
+  {
+   "family": "classique maison / valse",
+   "formats": [
+    "autoboost-62-valse-full",
+    "hook contraste + lit sous voix"
+   ],
+   "title": "Valse des fleurs (Casse-Noisette op. 71a n.6)",
+   "genre": "Valse symphonique",
+   "bpm": 180,
+   "bpm_confidence": "exacte (sequence par nous : noire = 180, donc 1 mesure = 1,000 s)",
+   "duration_s": 35.4,
+   "source": "production maison — voir valse-des-fleurs-maison/README.md et son dossier source/",
+   "license": "Production maison — partition domaine public",
+   "license_ref": "production_maison",
+   "file": "valse-des-fleurs-maison-evidee.mp3",
+   "variant": "B — EVIDEE (orchestration creusee, pensee pour passer sous une voix)",
+   "instruments": [
+    "cor doux",
+    "violoncelles",
+    "contrebasse",
+    "altos graves",
+    "harpe",
+    "pizzicati"
+   ],
+   "active_window_s": "0,000 -> 35,400 (continu)",
+   "lufs_integrated": -28.1,
+   "voice_band_dbfs": -48.9,
+   "voice_headroom_db": -20.8,
+   "band_gap_lufs_db": 20.4,
+   "band_gap_lufs_db_avant_filtrage": 12.5,
+   "start_gain_db": -1.9,
+   "start_peak_dbfs": -13.7,
+   "instrumental_verified": "rendu par nous a partir de notre propre sequence : aucune voix, par construction.",
+   "notes": "LE LIT LE PLUS TRANSPARENT DE LA BIBLIOTHEQUE (headroom -20,8). Le thème reste reconnaissable : c est la meme valse, jouee par le bas de l orchestre. L orchestration seule donne deja +12,5 dB d ecart de bande AVANT tout filtrage — le shelf -9 dB a 1,4 kHz et le passe-bas 5 kHz ne sont qu une marge. Une version a +23 dB (passe-bas 1,15 kHz) a ete ecartee : thème plus reconnaissable. Se somme avec la version tutti sans couture : sur 0-6,667 s elle EST la moitie basse du tutti."
+  },
+  {
+   "family": "classique / valse — enregistrement intégral",
+   "formats": [
+    "split-prompts (waltz-v1)",
+    "hook contraste",
+    "lit sous voix, avec précaution"
+   ],
+   "title": "Waltz Of The Flowers (Casse-Noisette op. 71a n.6)",
+   "genre": "Valse symphonique",
+   "bpm": 70.8,
+   "bpm_confidence": "mesurée sur la bande du kick (analyser.mjs) : 221 attaques, un temps toutes les 0,8475 s, premier temps à 0,023 s",
+   "duration_s": 211,
+   "source": "fichier fourni par Tony le 2026-08-24 (Waltz_Of_The_Flowers.mp3)",
+   "license": "NON ÉTABLIE — la partition de Tchaïkovski est dans le domaine public, mais CET enregistrement a ses propres droits et sa provenance est inconnue.",
+   "license_ref": "a_etablir",
+   "file": "valse-des-fleurs-integrale-71.mp3",
+   "variant": "enregistrement complet, 211 s",
+   "lufs_integrated": -20.6,
+   "voice_band_dbfs": -35.1,
+   "voice_headroom_db": -14.5,
+   "start_gain_db": -9.4,
+   "start_peak_dbfs": -11.5,
+   "instrumental_verified": "oui — orchestre seul, aucune voix.",
+   "fenetre_utilisee": "182,1 -> 209,3 s sur split-prompts/waltz-v1 (décalage mesuré par corrélation d enveloppe sur les fenêtres SANS voix : r=0,51 contre -0,04 au hasard).",
+   "notes": "Headroom -14,5 : entre -13 et -16, donc utilisable sous une voix mais PAS en aveugle — sidechain obligatoire, le tutti monte dans la bande 1-3,5 kHz sur les sommets (35 s, 118-121 s, 197-202 s). Distincte des deux versions -maison-, qui sont nos propres rendus de 35 s : celle-ci est l enregistrement complet envoyé par Tony."
+  }
+ ]
+}

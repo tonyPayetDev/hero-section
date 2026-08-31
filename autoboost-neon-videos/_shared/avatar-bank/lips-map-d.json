@@ -1,0 +1,52 @@
+{
+ "generated": "2026-08-18",
+ "batch": "D — 4 talking-head clips (car, black+neon shirt), Seedance 2.5, 2026-08-18",
+ "note": "Framing differs from the A/B/C bank: the mouth sits near (350,545) instead of (360,470), so the bank's default crop lands on the EYES here. Measured with LIPS_CROP=260,150,225,490. Two windows per clip because each 10.08s file is two 5.04s takes stitched: D1, D2 and D4 all pause at the seam (~4.2-5.0s). D3 does not. Machine-measured windows were hand-corrected where a HAND crossed the mouth box and faked activity — see perClip.correction.",
+ "crop": { "w": 260, "h": 150, "x": 225, "y": 490 },
+ "thresh": 1.6,
+ "clips": {
+  "D1_hook_frontal.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    { "start": 0.54, "end": 4.25 },
+    { "start": 4.92, "end": 9.58 }
+   ],
+   "activeTotal": 8.37,
+   "correction": "none — machine measurement matched the visual check frame by frame",
+   "gesture": "fixed gaze to camera, no hands in frame"
+  },
+  "D2_insistance_doigts.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    { "start": 0.58, "end": 4.25 },
+    { "start": 5.04, "end": 9.75 }
+   ],
+   "activeTotal": 8.38,
+   "correction": "none",
+   "gesture": "hands down 0.0-5.2 ; POINTING FINGERS UP from ~5.3 to the end. The gesture only exists in the second take, so any 'insistance' shot must be cut from the 5.04-9.75 window."
+  },
+  "D3_cta_lunettes.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    { "start": 0.7, "end": 9.75 }
+   ],
+   "activeTotal": 9.05,
+   "correction": "machine said active from 0.04 — FALSE POSITIVE: he is putting his GLASSES on and the hand crosses the mouth box. Verified frame by frame at 0.25s: lips start moving at ~0.70. Start hand-corrected 0.04 -> 0.70.",
+   "gesture": "puts glasses on 0.0-0.7 (SILENT — usable only under a silent beat), beard stroke 2.1-3.7, clean from 3.8. No seam pause."
+  },
+  "D4_relance_barbe.mp4": {
+   "duration": 10.08,
+   "fps": 24,
+   "active": [
+    { "start": 0.54, "end": 4.2 },
+    { "start": 4.88, "end": 9.58 }
+   ],
+   "activeTotal": 8.36,
+   "correction": "machine said one continuous window 0.54-9.58 — FALSE POSITIVE across the seam: the hand rests on the chin inside the mouth box and its motion masked the pause. Verified visually: lips are still 4.20-4.85. Split into two windows.",
+   "gesture": "clean 0.0-2.8, beard stroke 3.0-5.2, adjusts glasses 5.3-7.5, clean 7.8-9.8"
+  }
+ }
+}

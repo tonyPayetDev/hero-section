@@ -1,0 +1,84 @@
+Journal IA · 2026-08-19 · 2026-08-19T01:30:03Z · log=/work/.claude/skills/veille-journal-ia/logs/2026-08-19-013003.log
+MemAvailable 5435 Mo
+
+═══ [01:30:03] 1/8 · récupération de l'édition
+édition récupérée depuis origin/journal-ia-2026-08-19
+édition : /work/previsualisation/journal-ia/2026-08-19.md (6445 octets)
+
+═══ [01:30:07] 2/8 · parsing déterministe du script
+[parse] 2026-08-19 · 4 brèves · 2 gags · 11 segments · ~48.4s de parole estimée
+
+═══ [01:30:07] 3/8 · voix clonée (11 segments)
+  ✓ b1 (64368 o, essai 1)
+  ✓ intro (25080 o, essai 1)
+  ✓ g1 (16008 o, essai 1)
+  ✓ b2 (52800 o, essai 1)
+  ✓ b4 (66960 o, essai 1)
+  ✓ b3 (72456 o, essai 1)
+  ✓ g4 (15408 o, essai 1)
+  ✓ outro (31032 o, essai 1)
+  ✓ cd (12768 o, essai 1)
+  ✓ cta (26400 o, essai 1)
+  ✓ tag (14184 o, essai 1)
+
+═══ [01:32:49] 3b · traitement voix (silences coupés, atempo, normalisation)
+
+═══ [01:32:49] 4/8 · calage temporel
+[layout] durée totale 53.07s
+   intro     0.45 →   3.230  (2.78s)
+   b1        3.63 →  11.703  (8.073s)
+   g1      12.104 →  13.821  (1.717s)
+   b2       14.22 →  20.953  (6.733s)
+   b3      21.353 →  29.996  (8.643s)
+   b4      30.396 →  38.463  (8.067s)
+   g4      38.863 →  40.642  (1.779s)
+   outro   41.042 →  44.684  (3.642s)
+   cta     45.083 →  48.249  (3.166s)
+   cd       48.65 →  50.416  (1.766s)
+   tag     50.816 →  52.519  (1.703s)
+
+═══ [01:32:50] 5/8 · composition HTML + audio + clips avatar
+[build_html] /work/autoboost-neon-videos/journal-ia-2026-08-19/public/index.html · 4 brèves · 2 gags · 5 fenêtres avatar · 53.07s
+[gen_ffmpeg] build_audio.sh · 11 segments · 11 SFX
+[gen_ffmpeg] pass2.sh + prep_clips.sh · 5 fenêtres avatar
+cta.mp4 3.466667
+g1.mp4 1.900000
+g4.mp4 1.966667
+intro.mp4 2.866667
+outro.mp4 3.766667
+53.040000
+
+═══ [01:33:12] 6/8 · snapshot de contrôle
+
+═══ [01:33:20] 6b · rendu HyperFrames (53.07s, ~10-20 min)
+[initSession:beginframe] pollSubCompositionTimelines complete (433ms)
+[initSession:beginframe] applyVideoMetadataHints complete (433ms)
+[initSession:beginframe] pollVideosReady complete (435ms)
+[initSession:beginframe] images ready + decoded (438ms)
+[initSession:beginframe] fonts ready (440ms)
+[initSession:beginframe] tailwind ready (441ms)
+[initSession:beginframe] static-frame dedup: disabled (capture mode beginframe, not screenshot) (445ms)
+[INFO] [Render:trace] {"renderJobId":"4e80d33d-a141-4ff1-bfa7-1a3e787ad836","phase":"assemble","status":"start","elapsedMs":472721,"hasAudio":false}
+[2K  ██████████████████████░░░  90%  Assembling final video[INFO] [Render:trace] {"renderJobId":"4e80d33d-a141-4ff1-bfa7-1a3e787ad836","phase":"assemble","status":"end","elapsedMs":472791,"durationMs":70}
+[2K  █████████████████████████  100%  Render complete[INFO] [Render:trace] {"renderJobId":"4e80d33d-a141-4ff1-bfa7-1a3e787ad836","phase":"pipeline","status":"checkpoint","elapsedMs":472792,"message":"completed","totalElapsedMs":472791}
+◇  /work/autoboost-neon-videos/journal-ia-2026-08-19/renders/public_2026-08-19_01-33-20.mp4
+   7.9 MB · 7m 52.8s · completed
+rendu de base : /work/autoboost-neon-videos/journal-ia-2026-08-19/renders/public_2026-08-19_01-33-20.mp4
+
+═══ [01:41:14] 6c · passe 2 · incrustation avatar + audio final
+BASE=/work/autoboost-neon-videos/journal-ia-2026-08-19/renders/public_2026-08-19_01-33-20.mp4
+[STREAM]
+video
+1080
+1920
+[/STREAM]
+[STREAM]
+audio
+[/STREAM]
+[FORMAT]
+53.100000
+[/FORMAT]
+vidéo finale : 53.100000s · 8 Mo
+
+═══ [01:42:04] 7/8 · publication sur previsualisation (journal-ia-2026-08-19)
+/work/.claude/skills/veille-journal-ia/render-publish.sh: line 198: COOLIFY_ACCESS_TOKEN: token Coolify absent
