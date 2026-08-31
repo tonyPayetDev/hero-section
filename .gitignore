@@ -7,3 +7,4 @@ package-lock.json
 **/renders/work-*/
 **/renders/.*.hf-transaction-*/
 autoboost-neon-videos/*/renders/
+autoboost-neon-videos/*/public/renders/
