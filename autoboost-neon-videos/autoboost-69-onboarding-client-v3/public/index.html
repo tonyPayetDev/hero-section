@@ -7,112 +7,127 @@
 :root{
   --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
   --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57;
+  --win:#f5f5f2; --win-tb:#ececE8; --win-line:#e0e0da; --win-card:#ffffff; --win-ink:#26262c; --win-dim:#8a8a92;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 #root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
   font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
 
-/* ---------- SCENES (plein cadre : le fond remplit toute la hauteur, l'avatar est intermittent) ---------- */
+/* ---------- SCENES (fond néon plein cadre) ---------- */
 .scene{position:absolute;top:0;left:0;width:1080px;height:1920px;opacity:0;overflow:hidden;}
-.scene-1{background:linear-gradient(160deg,#0a0a0a 0%,#2a0a0a 60%,#050505 100%);}
-.scene-2{background:radial-gradient(circle at 50% 34%,#12081f 0%,#050505 74%);}
-.scene-3{background:linear-gradient(160deg,#0a0a0a 0%,#12081f 60%,#050505 100%);}
-.scene-4{background:radial-gradient(circle at 50% 34%,#1a0a2a 0%,#050505 70%);}
-.scene-5{background:linear-gradient(160deg,#0a0a0a 0%,#1a0a2a 60%,#050505 100%);}
+.scene-1{background:linear-gradient(160deg,#0a0a0a 0%,#241033 55%,#050505 100%);}
+.scene-2{background:radial-gradient(circle at 50% 30%,#150a24 0%,#050505 72%);}
+.scene-3{background:linear-gradient(160deg,#0a0a0a 0%,#1a1030 55%,#050505 100%);}
+.scene-4{background:radial-gradient(circle at 50% 30%,#1f0f10 0%,#050505 70%);}
+.scene-5{background:linear-gradient(160deg,#0a0a0a 0%,#241033 55%,#050505 100%);}
 .scene-broll{background:#000;}
 
-.pad{position:absolute;left:70px;right:70px;top:130px;}
-.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
-.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
-.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+/* kicker au-dessus de la fenêtre */
+.kick{position:absolute;left:70px;top:70px;font-size:28px;font-weight:800;letter-spacing:4px;text-transform:uppercase;
+  color:var(--violet);opacity:0;}
+.kick .y{color:var(--accent-yellow);}
 
-.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;
-  color:#060606;background:var(--accent-yellow);opacity:0;box-shadow:0 0 40px rgba(255,230,0,.45);}
+/* ---------- FENÊTRE APP CLAIRE (style premium) ---------- */
+.appwin{position:absolute;left:56px;right:56px;top:150px;height:760px;background:var(--win);border-radius:30px;
+  box-shadow:0 26px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,230,0,.16),0 0 70px rgba(168,85,247,.14);
+  opacity:0;overflow:hidden;color:var(--win-ink);}
+.appwin .tb{position:relative;height:72px;display:flex;align-items:center;gap:13px;padding:0 30px;background:var(--win-tb);border-bottom:1px solid var(--win-line);}
+.tb .d{width:16px;height:16px;border-radius:50%;}
+.tb .d.r{background:#ff5f57;} .tb .d.a{background:#febc2e;} .tb .d.v{background:var(--violet);}
+.tb .ttl{position:absolute;left:0;right:0;text-align:center;font-size:26px;font-weight:800;color:#3a3a42;letter-spacing:.4px;}
+.tb .mk{color:var(--accent-yellow);-webkit-text-stroke:1px #b59b00;}
+.tb .gear{margin-left:auto;width:28px;height:28px;border-radius:50%;border:4px solid #c8c8c2;z-index:1;}
+.body{position:absolute;left:0;right:0;top:72px;bottom:0;padding:46px 48px;}
 
-/* ---------- CARTES / FENÊTRES ---------- */
-.card{position:absolute;left:90px;right:90px;top:440px;background:#0d0d12;border:1px solid #2a2140;
-  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
-.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
-.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.v{background:var(--violet);}
-.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
-.row{display:flex;align-items:center;justify-content:space-between;font-size:32px;line-height:1.9;color:#cfd2da;}
-.row .t{color:#e8e8ee;} .row .m{color:#6b7280;font-weight:700;font-size:28px;}
-.verdict{position:absolute;left:90px;right:90px;top:850px;text-align:center;font-size:44px;font-weight:900;
-  color:var(--orange);opacity:0;letter-spacing:.5px;}
+/* checklist (scene 1) */
+.crow{display:flex;justify-content:space-between;align-items:center;background:var(--win-card);border:1px solid #ececE6;
+  border-radius:20px;padding:26px 30px;margin-bottom:22px;font-size:35px;font-weight:700;color:var(--win-ink);
+  box-shadow:0 8px 24px rgba(0,0,0,.05);opacity:0;}
+.crow .tt{font-size:30px;font-weight:800;color:var(--win-dim);}
+.bigpill{position:absolute;left:48px;right:48px;bottom:40px;display:flex;align-items:center;justify-content:center;gap:16px;
+  background:linear-gradient(90deg,rgba(255,230,0,.18),rgba(168,85,247,.16));border:2px solid var(--accent-yellow);
+  border-radius:20px;padding:22px;font-size:38px;font-weight:900;color:#2a2a30;opacity:0;}
+.bigpill b{color:#7c3aed;}
 
-/* ---------- DÉCLENCHEUR + FLUX (scene 2) ---------- */
-.trig{position:absolute;left:50%;top:430px;transform:translateX(-50%);opacity:0;
-  padding:16px 34px;border-radius:16px;background:rgba(168,85,247,.14);border:1px solid var(--violet);
-  font-size:32px;font-weight:900;letter-spacing:2px;color:#e9d5ff;white-space:nowrap;text-transform:uppercase;}
-.steps{position:absolute;left:80px;right:80px;top:540px;display:flex;flex-direction:column;gap:22px;}
-.step{display:flex;align-items:center;gap:24px;padding:26px 30px;border-radius:20px;
-  background:#0d0d12;border:1px solid #2a2140;font-size:36px;font-weight:800;color:#e8e8ee;opacity:0;
-  box-shadow:0 0 30px rgba(255,230,0,.10);}
-.step .tag{width:52px;height:52px;flex:0 0 52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:28px;font-weight:900;color:#060606;background:var(--accent-yellow);}
+/* node canvas (scene 2) */
+.nodewrap{position:absolute;inset:0;}
+.nsvg{position:absolute;left:48px;top:150px;width:876px;height:360px;overflow:visible;}
+.ntrig{position:absolute;left:50%;top:30px;transform:translateX(-50%);background:#fff;border:2px solid var(--violet);
+  border-radius:18px;padding:18px 34px;font-size:32px;font-weight:900;color:#5b2ea6;white-space:nowrap;opacity:0;
+  box-shadow:0 10px 30px rgba(168,85,247,.18);}
+.ncard{position:absolute;top:380px;width:260px;background:var(--win-card);border:1px solid #e8e8e2;border-radius:20px;
+  padding:22px 20px;box-shadow:0 10px 30px rgba(0,0,0,.06);opacity:0;}
+.ncard .ic{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent-yellow),#ffd200);
+  display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#2a2a30;margin-bottom:14px;}
+.ncard .lb{font-size:26px;font-weight:800;color:#33333a;line-height:1.2;min-height:64px;}
+.ncard .tgrow{display:flex;align-items:center;gap:10px;margin-top:12px;}
+.tg{width:70px;height:38px;border-radius:99px;background:#d8d8d2;position:relative;flex:0 0 70px;}
+.tg .knob{position:absolute;top:4px;left:4px;width:30px;height:30px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);}
+.tg .st{margin-left:2px;font-size:22px;font-weight:800;color:var(--win-dim);}
+.ncard.c1{left:0;} .ncard.c2{left:308px;} .ncard.c3{left:616px;}
 
-/* ---------- MESSAGE CLAUDE (scene 3) ---------- */
-.chat{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
-  border-radius:26px;padding:30px 34px;opacity:0;box-shadow:0 30px 80px rgba(0,0,0,.6);}
-.chat .head{display:flex;align-items:center;gap:14px;margin-bottom:24px;color:var(--muted);font-size:26px;font-weight:700;}
-.chat .head .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--violet),#7c3aed);}
-.bubble{background:#16121f;border:1px solid #2a2140;border-radius:20px 20px 20px 6px;padding:26px 28px;
-  font-size:34px;line-height:1.45;color:#eaeaf0;}
-.bubble .hl{color:var(--accent-yellow);font-weight:800;}
-.bubble .hl2{color:var(--violet);font-weight:800;}
-.chat .meta{margin-top:20px;display:flex;align-items:center;gap:12px;color:#8A8A8A;font-size:25px;font-weight:700;}
-.chk{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--accent-yellow);position:relative;}
-.chk::after{content:"";position:absolute;left:9px;top:4px;width:6px;height:13px;border:solid #060606;
-  border-width:0 3px 3px 0;transform:rotate(45deg);}
+/* chat / form (scene 3) */
+.formcard{position:absolute;left:60px;right:60px;top:60px;background:#fff;border:1px solid #ececE6;border-radius:22px;
+  padding:34px 36px;box-shadow:0 12px 34px rgba(0,0,0,.06);opacity:0;}
+.formcard .fl{font-size:26px;font-weight:800;color:var(--win-dim);margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.formcard .fl .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--violet),#7c3aed);}
+.tw{font-size:34px;line-height:1.5;color:#2a2a30;font-weight:600;min-height:180px;}
+.tw .hl{color:#a86b00;background:rgba(255,230,0,.35);border-radius:6px;padding:0 6px;font-weight:800;}
+.tw .hl2{color:#6d28d9;background:rgba(168,85,247,.16);border-radius:6px;padding:0 6px;font-weight:800;}
+.tw .cur{display:inline-block;width:3px;height:34px;background:#7c3aed;transform:translateY(6px);margin-left:2px;}
+.sendbtn{margin-top:26px;display:inline-flex;align-items:center;gap:14px;background:var(--violet);color:#fff;
+  font-size:30px;font-weight:800;padding:16px 30px;border-radius:14px;opacity:0;box-shadow:0 10px 26px rgba(168,85,247,.3);}
+.sendbtn .chk{width:26px;height:26px;border-radius:50%;background:#fff;position:relative;}
+.sendbtn .chk::after{content:"";position:absolute;left:9px;top:5px;width:6px;height:12px;border:solid var(--violet);border-width:0 3px 3px 0;transform:rotate(45deg);}
 
-/* ---------- AVANT / APRÈS (scene 4) ---------- */
-.ba{position:absolute;left:80px;right:80px;top:440px;display:flex;flex-direction:column;gap:26px;}
-.panel{position:relative;padding:30px 34px;border-radius:22px;background:#0d0d12;border:1px solid #2a2140;opacity:0;}
-.panel .lab{font-size:28px;font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
-.panel .line{font-size:38px;font-weight:800;color:#e8e8ee;line-height:1.25;}
-.panel.ko{border-color:var(--bad);box-shadow:0 0 30px rgba(255,95,87,.14);}
-.panel.ko .lab{color:var(--bad);}
-.panel.ok{border-color:var(--accent-yellow);box-shadow:0 0 34px rgba(255,230,0,.20);}
-.panel.ok .lab{color:var(--accent-yellow);}
+/* résultat avant/après (scene 4) */
+.stat{position:absolute;left:60px;right:60px;background:var(--win-card);border:1px solid #ececE6;border-radius:22px;
+  padding:30px 34px;box-shadow:0 10px 30px rgba(0,0,0,.05);opacity:0;display:flex;align-items:center;justify-content:space-between;}
+.stat .lab{font-size:28px;font-weight:900;letter-spacing:2px;text-transform:uppercase;}
+.stat .val{font-size:56px;font-weight:900;font-variant-numeric:tabular-nums;}
+.stat .sub{font-size:26px;font-weight:700;color:var(--win-dim);margin-top:6px;}
+.stat.ko{top:70px;border-left:8px solid var(--bad);} .stat.ko .lab{color:var(--bad);} .stat.ko .val{color:#c0322c;}
+.stat.ok{top:320px;border-left:8px solid #b59b00;box-shadow:0 12px 40px rgba(255,210,0,.2);} .stat.ok .lab{color:#a86b00;} .stat.ok .val{color:#7c3aed;font-size:46px;}
+.gainpill{position:absolute;left:60px;right:60px;bottom:44px;text-align:center;font-size:38px;font-weight:900;color:#2a2a30;
+  background:linear-gradient(90deg,rgba(255,230,0,.2),rgba(168,85,247,.18));border:2px solid var(--accent-yellow);border-radius:18px;padding:20px;opacity:0;}
+.gainpill b{color:#7c3aed;}
+
+/* ---------- CTA (scene 5) ---------- */
+.limit{position:absolute;left:150px;right:150px;top:360px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:18px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--violet));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+.cta-word{position:absolute;left:0;right:0;top:470px;text-align:center;font-size:120px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:650px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-sub b{color:var(--accent-yellow);}
+.cta-follow{position:absolute;left:80px;right:80px;top:790px;text-align:center;font-size:30px;font-weight:700;color:var(--violet);opacity:0;letter-spacing:1px;}
 
 /* ---------- BROLL ---------- */
 #broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.55);opacity:0;z-index:1;}
 .broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
-.broll-word{position:absolute;left:70px;right:70px;top:820px;text-align:center;font-size:52px;font-weight:900;
+.broll-word{position:absolute;left:70px;right:70px;top:760px;text-align:center;font-size:52px;font-weight:900;
   letter-spacing:3px;text-transform:uppercase;color:#fff;opacity:0;z-index:2;text-shadow:0 4px 24px rgba(0,0,0,.8);}
 .broll-word .v{color:var(--violet);}
 
-/* ---------- CTA (scene 5) ---------- */
-.limit{position:absolute;left:150px;right:150px;top:400px;opacity:0;}
-.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
-.limit .lab b{color:var(--accent-yellow);}
-.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
-.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
-  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
-.cta-word{position:absolute;left:0;right:0;top:500px;text-align:center;font-size:118px;font-weight:900;
-  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
-.cta-sub{position:absolute;left:80px;right:80px;top:680px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
-.cta-follow{position:absolute;left:80px;right:80px;top:820px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
-
-/* ---------- CAPTIONS (27px) ---------- */
-#caption-band{position:absolute;top:1080px;left:0;width:1080px;height:180px;z-index:8;}
+/* ---------- CAPTIONS (27px jaune néon) ---------- */
+#caption-band{position:absolute;top:1000px;left:0;width:1080px;height:180px;z-index:8;}
 #cap-plate{position:absolute;left:0;top:5px;width:1080px;height:90px;
   background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
 .cap-bar{position:absolute;left:50%;width:760px;height:4px;margin-left:-380px;border-radius:3px;
   background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
   box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
-#cap-bar-top{top:0;}
-#cap-bar-bot{top:95px;}
+#cap-bar-top{top:0;} #cap-bar-bot{top:95px;}
 .caption{position:absolute;left:50%;top:32px;transform:translateX(-50%);white-space:nowrap;
   font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
-  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
-  opacity:0;}
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);opacity:0;}
 .caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
 .caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
 .caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
 
-/* ---------- AVATAR — fenêtre néon INTERMITTENTE (avatar réel incrusté en passe 2 ffmpeg) ---------- */
+/* ---------- AVATAR (incrusté passe 2) ---------- */
 #avatar-frame{position:absolute;bottom:96px;left:50%;width:560px;height:560px;margin-left:-280px;
   border-radius:50%;overflow:hidden;background:#050505;border:6px solid var(--accent-yellow);
   box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;opacity:0;}
@@ -126,39 +141,42 @@ audio{display:none;}
 </style>
 </head>
 <body>
-<!-- v3 : avatar = vrais clips banque BUREAU (A1/B1/C2) incrustés en passe 2 dans #avatar-frame.
-     Fenêtres avatar (sous voix active, dans les zones lèvres-actives de lips-map.json) :
-     0.55-3.70 (A1) / 5.40-8.50 (B1) / 14.30-17.10 (B1) / 20.70-23.70 (A1) / 26.70-29.45 (C2)
-     Coupes de scène sur silences mesurés : 5.27 / 12.73 / broll / 14.30 / 17.26 / 20.76 / 25.01 -->
+<!-- v3 : avatar = clips banque BUREAU incrustés passe 2 dans #avatar-frame.
+     Fenêtres avatar : 0.55-3.70(A1) / 5.40-8.50(B1) / 14.30-17.10(B1) / 20.70-23.70(A1) / 26.70-29.50(C2)
+     Coupes scène : 5.27 / 12.73 / broll / 14.30 / 17.26 / 20.76 / 25.01 -->
 <div id="root" data-composition-id="autoboost69onboardingv3" data-start="0" data-width="1080" data-height="1920" data-duration="29.60">
 
-  <!-- SCENE 1 — HOOK -->
+  <!-- SCENE 1 — HOOK : fenêtre "Accueil client" checklist manuelle -->
   <div class="scene scene-1" data-s="0" data-d="5.27">
-    <div class="pad">
-      <div class="kicker" data-role="k1">n8n + Claude Code</div>
-      <div class="title" data-role="t1"><span class="y">6 heures</span><br>par semaine</div>
+    <div class="kick" data-role="k1"><span class="y">6 heures</span> / semaine — l'accueil client</div>
+    <div class="appwin" data-role="w1">
+      <div class="tb"><span class="d r"></span><span class="d a"></span><span class="d v"></span><span class="ttl">Accueil client — à la main</span><span class="gear"></span></div>
+      <div class="body">
+        <div class="crow" data-role="r1a"><span>Créer le dossier client</span><span class="tt">15 min</span></div>
+        <div class="crow" data-role="r1b"><span>Envoyer le brief</span><span class="tt">20 min</span></div>
+        <div class="crow" data-role="r1c"><span>Caler le 1er appel</span><span class="tt">10 min</span></div>
+        <div class="crow" data-role="r1d"><span>Écrire le message perso</span><span class="tt">15 min</span></div>
+        <div class="bigpill" data-role="p1">≈ <b>1 heure</b> par client — et un détail oublié</div>
+      </div>
     </div>
-    <div class="card" data-role="c1">
-      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot v"></span><span class="file">accueil-client — à la main</span></div>
-      <div class="row" data-role="r1a"><span class="t">Créer le dossier client</span><span class="m">15 min</span></div>
-      <div class="row" data-role="r1b"><span class="t">Envoyer le brief</span><span class="m">20 min</span></div>
-      <div class="row" data-role="r1c"><span class="t">Caler le 1er appel</span><span class="m">10 min</span></div>
-      <div class="row" data-role="r1d"><span class="t">Écrire le message perso</span><span class="m">15 min</span></div>
-    </div>
-    <div class="verdict" data-role="v1">Récupérées. Chaque semaine.</div>
   </div>
 
-  <!-- SCENE 2 — DÉCLENCHEUR + 3 étapes -->
+  <!-- SCENE 2 — DÉCLENCHEUR : canvas de nœuds n8n -->
   <div class="scene scene-2" data-s="5.27" data-d="7.46">
-    <div class="pad">
-      <div class="kicker" data-role="k2">Le déclencheur</div>
-      <div class="title" data-role="t2" style="font-size:70px;">Contrat signé =<br><span class="y">tout s'automatise</span></div>
-    </div>
-    <div class="trig" data-role="trig">▸ Contrat signé</div>
-    <div class="steps">
-      <div class="step" data-role="s1"><span class="tag">1</span>Dossier partagé créé</div>
-      <div class="step" data-role="s2"><span class="tag">2</span>Questionnaire de brief envoyé</div>
-      <div class="step" data-role="s3"><span class="tag">3</span>Premier appel calé dans l'agenda</div>
+    <div class="kick" data-role="k2">Le déclencheur — <span class="y">tout s'automatise</span></div>
+    <div class="appwin" data-role="w2">
+      <div class="tb"><span class="d r"></span><span class="d a"></span><span class="d v"></span><span class="ttl"><span class="mk">✦</span> Workflow · n8n</span><span class="gear"></span></div>
+      <div class="body">
+        <div class="ntrig" data-role="ntrig">▸ Contrat signé</div>
+        <svg class="nsvg" viewBox="0 0 876 360" fill="none">
+          <path data-role="wire1" d="M438 40 L130 210" stroke="#A855F7" stroke-width="4" stroke-dasharray="6 10" stroke-linecap="round"/>
+          <path data-role="wire2" d="M438 40 L438 210" stroke="#FFE600" stroke-width="4" stroke-dasharray="6 10" stroke-linecap="round"/>
+          <path data-role="wire3" d="M438 40 L746 210" stroke="#A855F7" stroke-width="4" stroke-dasharray="6 10" stroke-linecap="round"/>
+        </svg>
+        <div class="ncard c1" data-role="n1"><div class="ic">📁</div><div class="lb">Dossier partagé créé</div><div class="tgrow"><span class="tg" data-role="tg1"><span class="knob"></span></span><span class="st">ON</span></div></div>
+        <div class="ncard c2" data-role="n2"><div class="ic">✉</div><div class="lb">Questionnaire de brief</div><div class="tgrow"><span class="tg" data-role="tg2"><span class="knob"></span></span><span class="st">ON</span></div></div>
+        <div class="ncard c3" data-role="n3"><div class="ic">📅</div><div class="lb">1er appel calé</div><div class="tgrow"><span class="tg" data-role="tg3"><span class="knob"></span></span><span class="st">ON</span></div></div>
+      </div>
     </div>
   </div>
 
@@ -167,51 +185,47 @@ audio{display:none;}
   <div class="scene scene-broll" data-s="12.73" data-d="1.57"><div class="broll-grad"></div></div>
   <div class="broll-word" data-role="bw">et <span class="v">Claude</span> prend le relais</div>
 
-  <!-- SCENE 3 — MESSAGE PERSO -->
+  <!-- SCENE 3 — MESSAGE : fenêtre Claude, message tapé -->
   <div class="scene scene-3" data-s="14.30" data-d="2.96">
-    <div class="pad">
-      <div class="kicker" data-role="k3">Le petit plus</div>
-      <div class="title" data-role="t3" style="font-size:70px;">Un message perso<br>signé <span class="v">Claude</span></div>
-    </div>
-    <div class="chat" data-role="chat">
-      <div class="head"><span class="av"></span>Message de bienvenue</div>
-      <div class="bubble">Bonjour <span class="hl" data-role="hl1">Marie</span>, ravi de démarrer sur votre projet <span class="hl2" data-role="hl2">e-commerce</span>. Voici votre espace et les prochaines étapes.</div>
-      <div class="meta"><span class="chk"></span>généré par Claude · prêt à envoyer</div>
+    <div class="kick" data-role="k3">Le petit plus — un message signé <span class="y">Claude</span></div>
+    <div class="appwin" data-role="w3">
+      <div class="tb"><span class="d r"></span><span class="d a"></span><span class="d v"></span><span class="ttl"><span class="mk">✦</span> Claude</span><span class="gear"></span></div>
+      <div class="body">
+        <div class="formcard" data-role="w3card">
+          <div class="fl"><span class="av"></span>Message de bienvenue — généré</div>
+          <div class="tw"><span data-role="tw">Bonjour Marie, ravi de démarrer sur votre projet e-commerce. Voici votre espace et les prochaines étapes.</span><span class="cur" data-role="cur"></span></div>
+          <div class="sendbtn" data-role="send"><span class="chk"></span>généré par Claude · prêt à envoyer</div>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- SCENE 4 — AVANT / APRÈS -->
   <div class="scene scene-4" data-s="17.26" data-d="7.75">
-    <div class="pad" style="top:150px;">
-      <div class="kicker" data-role="k4" style="color:var(--accent-yellow);">Avant / Après</div>
-    </div>
-    <div class="ba">
-      <div class="panel ko" data-role="pko">
-        <div class="lab">Avant</div>
-        <div class="line">1 heure par client<br>et un détail toujours oublié</div>
-      </div>
-      <div class="panel ok" data-role="pok">
-        <div class="lab">Après</div>
-        <div class="line">Instantané, identique<br>bien plus pro qu'un mail</div>
+    <div class="kick" data-role="k4"><span class="y">Avant</span> / Après</div>
+    <div class="appwin" data-role="w4">
+      <div class="tb"><span class="d r"></span><span class="d a"></span><span class="d v"></span><span class="ttl">Résultat</span><span class="gear"></span></div>
+      <div class="body">
+        <div class="stat ko" data-role="s4a"><div><div class="lab">Avant</div><div class="sub">et un détail toujours oublié</div></div><div class="val" data-role="s4aval">1 h</div></div>
+        <div class="stat ok" data-role="s4b"><div><div class="lab">Après</div><div class="sub">instantané · identique · pro</div></div><div class="val">0 s</div></div>
+        <div class="gainpill" data-role="s4g">bien plus <b>pro</b> qu'un mail copié-collé</div>
       </div>
     </div>
   </div>
 
   <!-- SCENE 5 — CTA -->
   <div class="scene scene-5" data-s="25.01" data-d="4.59">
-    <div class="pad" style="top:150px;text-align:center;">
-      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Le temps que tu récupères</div>
-    </div>
+    <div class="kick" data-role="k5" style="color:var(--accent-yellow);left:0;right:0;text-align:center;">Le temps que tu récupères</div>
     <div class="limit" data-role="lim">
       <div class="lab"><span>par semaine</span><span><b>6 h</b> gagnées</span></div>
       <div class="track"><div class="fill" data-role="fill"></div></div>
     </div>
     <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">ACCUEIL</div>
-    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">ACCUEIL</span><br>je t'envoie le workflow complet</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <b>ACCUEIL</b><br>je t'envoie le workflow complet</div>
     <div class="cta-follow" data-role="ctafollow">— mais seulement si tu me suis</div>
   </div>
 
-  <!-- AVATAR — fenêtre néon (vide en passe 1, avatar incrusté en passe 2) -->
+  <!-- AVATAR -->
   <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="29.60"></div>
   <div id="avatar-frame" data-layout-allow-overflow="true"></div>
   <div id="avatar-badge" data-layout-allow-overflow="true"><span class="live"></span>LIVE</div>
@@ -226,8 +240,6 @@ audio{display:none;}
   <!-- AUDIO -->
   <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="29.31" data-volume="1"></audio>
   <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="29.60" data-volume="0.05"></audio>
-
-  <!-- SFX -->
   <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
   <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
   <audio id="sfx-r1a"       src="assets/sfx-click-soft.mp3"  data-start="1.90"  data-volume="0.12"></audio>
@@ -237,15 +249,14 @@ audio{display:none;}
   <audio id="sfx-verdict"   src="assets/sfx-notify.mp3"      data-start="4.00"  data-volume="0.16"></audio>
   <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="4.07"  data-volume="0.17"></audio>
   <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="5.27"  data-volume="0.15"></audio>
-  <audio id="sfx-trig"      src="assets/sfx-confirm.mp3"     data-start="5.35"  data-volume="0.18"></audio>
+  <audio id="sfx-trig"      src="assets/sfx-confirm.mp3"     data-start="5.95"  data-volume="0.18"></audio>
   <audio id="sfx-s1"        src="assets/sfx-pop.mp3"         data-start="7.80"  data-volume="0.16"></audio>
   <audio id="sfx-s2"        src="assets/sfx-pop.mp3"         data-start="9.26"  data-volume="0.16"></audio>
   <audio id="sfx-s3"        src="assets/sfx-pop.mp3"         data-start="10.68" data-volume="0.16"></audio>
   <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="11.53" data-volume="0.17"></audio>
   <audio id="sfx-broll"     src="assets/sfx-whoosh-v2.mp3"   data-start="11.90" data-volume="0.18"></audio>
   <audio id="sfx-chat"      src="assets/sfx-notify.mp3"      data-start="14.35" data-volume="0.16"></audio>
-  <audio id="sfx-hl1"       src="assets/sfx-click.mp3"       data-start="15.30" data-volume="0.15"></audio>
-  <audio id="sfx-hl2"       src="assets/sfx-click.mp3"       data-start="16.49" data-volume="0.15"></audio>
+  <audio id="sfx-send"      src="assets/sfx-confirm.mp3"     data-start="16.70" data-volume="0.16"></audio>
   <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="16.06" data-volume="0.17"></audio>
   <audio id="sfx-ko"        src="assets/sfx-glitch-soft.mp3" data-start="17.30" data-volume="0.15"></audio>
   <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="19.56" data-volume="0.18"></audio>
@@ -276,43 +287,66 @@ document.querySelectorAll(".broll-vid").forEach((el)=>{
   tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
 });
 
-/* scene 1 */
-tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
-tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
-tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.10);
-tl.fromTo(R("r1a"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.28},1.90);
-tl.fromTo(R("r1b"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.28},2.30);
-tl.fromTo(R("r1c"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.28},2.70);
-tl.fromTo(R("r1d"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.28},3.10);
-tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},4.00);
+/* window opener helper */
+function openWin(role,t){tl.fromTo(R(role),{opacity:0,y:34,scale:0.97},{opacity:1,y:0,scale:1,duration:0.45,ease:"power3.out"},t);}
 
-/* scene 2 */
-tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},5.35);
-tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},5.55);
-tl.fromTo(R("trig"),{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.8)"},5.95);
-tl.fromTo(R("s1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},7.80);
-tl.fromTo(R("s2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},9.26);
-tl.fromTo(R("s3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},10.68);
+/* scene 1 */
+tl.fromTo(R("k1"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4},0.10);
+openWin("w1",0.30);
+tl.fromTo(R("r1a"),{opacity:0,x:-18},{opacity:1,x:0,duration:0.3,ease:"back.out(1.6)"},1.90);
+tl.fromTo(R("r1b"),{opacity:0,x:-18},{opacity:1,x:0,duration:0.3,ease:"back.out(1.6)"},2.30);
+tl.fromTo(R("r1c"),{opacity:0,x:-18},{opacity:1,x:0,duration:0.3,ease:"back.out(1.6)"},2.70);
+tl.fromTo(R("r1d"),{opacity:0,x:-18},{opacity:1,x:0,duration:0.3,ease:"back.out(1.6)"},3.10);
+tl.fromTo(R("p1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.7)"},4.00);
+
+/* scene 2 — trigger, wires draw, cards pop, toggles flip */
+tl.fromTo(R("k2"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4},5.35);
+openWin("w2",5.45);
+tl.fromTo(R("ntrig"),{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.8)"},5.95);
+function drawWire(role,t){tl.fromTo(R(role),{attr:{"stroke-dashoffset":400},opacity:0.2},{attr:{"stroke-dashoffset":0},opacity:1,duration:0.5,ease:"power2.out"},t);}
+function popCard(role,tgRole,t){
+  tl.fromTo(R(role),{opacity:0,y:24,scale:0.9},{opacity:1,y:0,scale:1,duration:0.4,ease:"back.out(1.7)"},t);
+  tl.to(R(tgRole),{backgroundColor:"#A855F7",duration:0.25},t+0.25);
+  tl.to(R(tgRole).querySelector(".knob"),{left:36,duration:0.25,ease:"power2.out"},t+0.25);
+}
+drawWire("wire1",7.55); popCard("n1","tg1",7.80);
+drawWire("wire2",9.00); popCard("n2","tg2",9.26);
+drawWire("wire3",10.45); popCard("n3","tg3",10.68);
 
 /* broll word */
 tl.fromTo(R("bw"),{opacity:0,y:16},{opacity:1,y:0,duration:0.3},13.00);
 tl.to(R("bw"),{opacity:0,duration:0.25},14.05);
 
-/* scene 3 */
-tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},14.40);
-tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},14.55);
-tl.fromTo(R("chat"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},14.85);
-tl.fromTo(R("hl1"),{scale:1.25},{scale:1,duration:0.35,ease:"back.out(2)"},15.30);
-tl.fromTo(R("hl2"),{scale:1.25},{scale:1,duration:0.35,ease:"back.out(2)"},16.49);
+/* scene 3 — typewriter */
+tl.fromTo(R("k3"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4},14.40);
+openWin("w3",14.45);
+tl.fromTo(R("w3card"),{opacity:0,y:20},{opacity:1,y:0,duration:0.35},14.60);
+(function(){
+  const full="Bonjour Marie, ravi de démarrer sur votre projet e-commerce. Voici votre espace et les prochaines étapes.";
+  const el=R("tw");
+  const obj={n:0};
+  tl.to(obj,{n:full.length,duration:1.9,ease:"none",onUpdate:function(){
+    const k=Math.round(obj.n);
+    let s=full.slice(0,k);
+    s=s.replace("Marie",'<span class="hl">Marie</span>').replace("e-commerce",'<span class="hl2">e-commerce</span>');
+    el.innerHTML=s;
+  }},14.75);
+})();
+tl.to(R("cur"),{opacity:0,duration:0.2,repeat:9,yoyo:true},14.75);
+tl.to(R("cur"),{opacity:0,duration:0.15},16.65);
+tl.fromTo(R("send"),{opacity:0,y:14},{opacity:1,y:0,duration:0.35,ease:"back.out(1.6)"},16.70);
 
-/* scene 4 */
-tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},17.32);
-tl.fromTo(R("pko"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.45,ease:"power3.out"},17.55);
-tl.fromTo(R("pok"),{opacity:0,x:30},{opacity:1,x:0,duration:0.45,ease:"power3.out"},20.80);
-tl.to(R("pok"),{boxShadow:"0 0 54px rgba(255,230,0,.42)",duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},21.30);
+/* scene 4 — avant / après */
+tl.fromTo(R("k4"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4},17.32);
+openWin("w4",17.40);
+tl.fromTo(R("s4a"),{opacity:0,x:-26},{opacity:1,x:0,duration:0.45,ease:"power3.out"},17.60);
+(function(){var o={n:60};tl.to(o,{n:60,duration:0.01,onUpdate:function(){R("s4aval").textContent=Math.round(o.n)+" min";}},17.60);})();
+tl.fromTo(R("s4b"),{opacity:0,x:26},{opacity:1,x:0,duration:0.45,ease:"power3.out"},20.80);
+tl.to(R("s4b"),{boxShadow:"0 14px 50px rgba(255,210,0,.4)",duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},21.20);
+tl.fromTo(R("s4g"),{opacity:0,scale:0.94},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.6)"},23.20);
 
-/* scene 5 */
-tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.10);
+/* scene 5 — CTA */
+tl.fromTo(R("k5"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4},25.10);
 tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.10);
 tl.fromTo(R("fill"),{scaleX:0},{scaleX:1,duration:1.2,ease:"power2.out"},25.30);
 tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},27.40);
@@ -356,9 +390,7 @@ caps.forEach((c,i)=>{
   const [start,txt,tag]=c;
   const end=(i<caps.length-1)?caps[i+1][0]:29.38;
   const el=document.createElement("div");el.className="caption";
-  if(tag){
-    const [cls,word]=tag.split(":");
-    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+  if(tag){const [cls,word]=tag.split(":");const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
     if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
     else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
   } else {el.textContent=txt;}
@@ -369,7 +401,7 @@ caps.forEach((c,i)=>{
 tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:28,yoyo:true},0);
 tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:27,yoyo:true},0.52);
 
-/* ---- FENÊTRES AVATAR (le vrai clip est incrusté en passe 2 sur ces mêmes fenêtres) ---- */
+/* FENÊTRES AVATAR */
 const AV=[[0.55,3.70],[5.40,8.50],[14.30,17.10],[20.70,23.70],[26.70,29.50]];
 AV.forEach(function(w){
   const dur=w[1]-w[0];
