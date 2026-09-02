@@ -42,14 +42,19 @@
 
 ### Email 4 — J+8
 **Fichier :** `email-4-j8-offre-cta-stripe.html`
-**Objet :** `Ton business mérite d'être automatisé.`
-**Objet alternatif A/B :** `Voilà ce que je propose (places limitées)`
+**Objet :** `Une automatisation qui tourne chez toi sous 7 jours.`
+**Objet alternatif A/B :** `Livré sous 7 jours, ou remboursé (990€)`
 **Délai :** 3 jours après email 3 (= J+8 depuis inscription)
+**Offre :** « Le Déclencheur » — **990 € ferme**, prix écrit en dur dans le HTML (plus de variable).
+Voir `docs/offre-automation-boost-refonte.md` pour l'échelle complète (990 € / 2 900 € / 690 €/mois).
 **Variables à remplacer :**
-- `{{PRIX}}` → ex: 497
-- `{{PRIX_BARRE}}` → ex: 797
-- `{{STRIPE_PAYMENT_URL}}` → lien Stripe Checkout
-- `{{CALENDLY_URL}}` → lien Calendly appel découverte
+- `{{STRIPE_PAYMENT_URL}}` → lien Stripe Checkout « Le Déclencheur — 990 € »
+- `{{CALENDLY_URL}}` → lien Calendly « La carte des fuites » (30 min, gratuit)
+
+> ⚠️ Le prix n'est **plus** paramétrable : `{{PRIX}}` et `{{PRIX_BARRE}}` n'étaient jamais
+> remplacés et l'email partait sans prix. Pour changer le tarif, éditer le HTML (3 occurrences
+> de `990`). Le prix barré a été supprimé volontairement — un prix barré non justifié coûte
+> plus de crédibilité qu'il ne fait gagner de conversions.
 
 ---
 
@@ -65,10 +70,11 @@
 ## Checklist avant activation
 
 - [ ] Uploader le PDF guide sur le serveur ou Drive → remplacer `{{GUIDE_URL}}`
-- [ ] Créer le lien Stripe → remplacer `{{STRIPE_PAYMENT_URL}}`
-- [ ] Renseigner Calendly → remplacer `{{CALENDLY_URL}}`
+- [ ] Créer le lien Stripe « Le Déclencheur — 990 € » → remplacer `{{STRIPE_PAYMENT_URL}}`
+- [ ] Créer l'événement Calendly « La carte des fuites » (30 min) → remplacer `{{CALENDLY_URL}}`
 - [ ] Uploader le JSON n8n → remplacer `{{WORKFLOW_JSON_URL}}`
-- [ ] Renseigner prix dans email 4 → `{{PRIX}}` et `{{PRIX_BARRE}}`
+- [ ] Préparer le template PDF « La carte des fuites » envoyé après l'appel du palier 0
+- [ ] Préparer la réponse type au mot-clé `SPRINT` (P.S. de l'email 4 → offre 2 900 €)
 - [ ] Tester avec une adresse perso avant activation
 - [ ] Vérifier rendu mobile (Brevo preview intégré)
 - [ ] Activer SPF/DKIM sur le domaine automatisationboost.com
