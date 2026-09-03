@@ -4,6 +4,9 @@
 > il contient des scripts de vente destinés à être copiés-collés tels quels vers des
 > prospects francophones. Le rendre en anglais le rendrait inutilisable.
 >
+> **Scripts de vente (DM, appel 30 min, objections, relances) :**
+> voir `docs/offre-declencheur-scripts-vente.md`.
+>
 > Date : 2026-09-02 · Sources internes : `STRATEGIE.md` (run du 31/08/2026),
 > `automation-boost-emails/email-4-j8-offre-cta-stripe.html`, arborescence des sites clients.
 
