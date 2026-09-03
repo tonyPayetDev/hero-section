@@ -145,6 +145,66 @@ C'est **l'offre qui vaut 1 000 €** — celle qu'on peut vendre au téléphone 
   heure vaut 50 €, elle te coûte 3 000 € par an. Le Déclencheur coûte 990 € une fois. Le
   remboursement est atteint au 4ᵉ mois, et ensuite ça tourne tout seul. »
 
+### Pourquoi 990 € et pas 500 €
+
+C'est la question qui revient en premier, et l'intuition « je serais plus crédible moins cher »
+est fausse dans les quatre dimensions à la fois.
+
+**1. À 500 €, tu travailles à perte.** Le Déclencheur, c'est ~10 h de ton temps (cadrage 45 min,
+construction du workflow, vidéo de passation, 14 jours de support). Un indépendant facture en
+moyenne **50 % de son temps** — l'autre moitié part en prospection, appels non conclus, admin,
+no-shows. Donc :
+
+| Prix | € / h facturée | € / h réelle (÷2) |
+|---|---|---|
+| 500 € | 50 € | **25 €** |
+| 990 € | 99 € | **50 €** |
+
+À 25 € de l'heure réelle, charges comprises, tu ne finances ni ton matériel, ni tes
+abonnements, ni les mois creux. Ce n'est pas un prix bas, c'est un prix qui ne tient pas.
+
+**2. Il faut deux fois plus de tout pour le même revenu.** Pour atteindre 3 500 €/mois :
+
+| | à 990 € | à 500 € |
+|---|---|---|
+| Ventes / mois | 3,5 | **7** |
+| Appels à tenir (à 30 % de closing) | 12 | **24** |
+| Heures de livraison / mois | 35 h | **70 h** |
+
+70 h de livraison plus 24 appels par mois, seul, en continuant à publier : c'est mécaniquement
+impossible. Le prix bas ne rend pas l'offre plus accessible, il rend le business infaisable.
+
+**3. Entre 500 € et 990 €, le client ne franchit aucune nouvelle barrière.** Pour un dirigeant,
+les vrais seuils de décision sont autour de **2 000 €** (il en parle à quelqu'un) et **5 000 €**
+(il compare formellement plusieurs devis). En dessous, c'est une dépense pro qu'il décide seul,
+déductible, TVA récupérable. 500 € et 990 € sont exactement la même décision pour lui — mais
+pas pour toi.
+
+**4. Sous 1 000 €, tu changes de catégorie mentale.** Sur un marché où l'acheteur ne sait pas
+juger la qualité technique, le prix est un des rares signaux disponibles. Une automatisation à
+500 € se range dans « bricolage d'un freelance », à 990 € dans « prestation d'un pro ». Tu ne
+gagnes pas les clients hésitants en baissant, tu perds les clients sérieux.
+
+**5. Sans marge, la garantie devient impossible.** « Livré sous 7 jours ou remboursé » suppose
+que tu puisses absorber un remboursement de temps en temps. À 25 € de l'heure réelle, un seul
+remboursement efface un mois.
+
+### La seule remise honnête : le tarif fondateur
+
+Si tu n'arrives pas encore à dire « 990 € » sans hésiter, la réponse n'est pas de baisser le
+prix — c'est de faire un **échange explicite, limité et justifié** :
+
+> « Je lance cette offre ce mois-ci. Pour les 3 premiers, c'est 690 € au lieu de 990 € — en
+> échange je vous demande deux choses : le droit de publier votre cas avec les chiffres, et un
+> témoignage une fois que le workflow tourne. Après ces 3-là, c'est 990 € pour tout le monde. »
+
+Ce n'est pas une remise, c'est un troc : tu échanges 300 € contre la preuve chiffrée qui te
+manque (§1, probabilité perçue 3/10). C'est daté, c'est motivé, et ça ne dévalue pas l'offre —
+contrairement à un prix qu'on casse parce que le client tire dessus.
+
+**Trois clients, pas plus, et tu remontes.** Si tu es encore à 690 € au 10ᵉ client, ce n'est
+plus un tarif fondateur, c'est ton prix.
+
 ### Palier 2 — « Sprint Automatisation » · 2 900 € · 30 jours
 
 L'offre actuelle, prix fixé et garantie ajoutée.
