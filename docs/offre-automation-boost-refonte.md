@@ -44,69 +44,102 @@ précises :
    Le vrai goulot est en §1 : l'offre n'a **pas de prix**, **pas de garantie**, et
    **pas de preuve chiffrée**, alors que 104 dossiers de sites clients existent dans le repo.
 
-### Mise à jour — après lecture du récap de réunion (buildyoursaas.tech)
+### Mise à jour — après lecture intégrale du récap (buildyoursaas.tech, 4 pages)
 
-> Source : `https://buildyoursaas.tech/recap-tony-payet.html`, page rédigée et hébergée par le
-> vendeur, se terminant par son WhatsApp. C'est un document de vente, pas un compte rendu
-> neutre — ce qui n'empêche pas son contenu d'être en partie juste.
+> Source : `https://buildyoursaas.tech/recap-tony-payet.html`, signée Jean-Baptiste Roy,
+> `noindex, nofollow`, se terminant par son WhatsApp. **Ce n'est pas un compte rendu : c'est une
+> relance commerciale.** La page le dit elle-même page 3 : *« tu m'as dit non hier pour des
+> raisons de budget »*. Tony a donc déjà refusé une première fois.
 
-#### Ce qu'il dit qui est vrai, et qu'il faut garder
+#### Correction de l'analyse précédente
 
-Le diagnostic est bon sur trois points, et deux d'entre eux confirment ce que dit ce document :
+La version courte de cette page lue plus tôt m'avait fait écrire qu'il n'y avait probablement
+jamais eu de remise. **C'est faux, et la page complète le dit noir sur blanc** : l'offre à
+1 000 € est *« faite sur mesure pour ton budget »*. C'est donc bien un down-sell construit après
+le refus, pas un tarif catalogue.
+
+Ce n'est pas malhonnête en soi — descendre en gamme après un refus est une pratique courante.
+Mais le tell est là : **le contenu du pack (2 × 30 min) a été dimensionné sur le portefeuille de
+Tony, pas sur son problème.** Un problème ne rétrécit pas parce que le budget rétrécit.
+
+#### Ce qui est juste dans la page, et à appliquer gratuitement
+
+Le diagnostic est bon, et sur plusieurs points il confirme ce document de façon indépendante :
 
 | Son point | Verdict |
 |---|---|
-| « Les gens n'achètent pas à un avatar, ils achètent à une personne » → passer en face-cam | **Juste et gratuit à tester.** Le skill `yapping-facecam-branded` existe déjà dans le repo. À faire cette semaine, indépendamment de toute décision d'achat. |
-| « Le problème n'est pas que c'est trop cher, c'est que c'est trop bas » (offre à 29 €/mois) | **Juste, et identique à l'analyse §2 de ce document.** Un prix trop bas attire les clients les plus coûteux à servir. Confirmation indépendante. |
-| Positionnement « j'apprends l'IA aux entrepreneurs de La Réunion » | **Le meilleur conseil de la page.** C'est un angle réellement différenciant que personne d'autre ne peut copier. À intégrer partout. |
-| « Une offre est perçue comme valant environ dix fois son prix » | **Faux tel qu'énoncé.** Le principe réel est l'inverse : une offre doit *délivrer* ~10x son prix en valeur perçue. Formulé dans ce sens, ça dit que monter le prix monte la valeur perçue sans rien faire d'autre — c'est comme ça qu'on se retrouve avec une offre chère et vide. |
+| Passer de l'avatar au face-cam — *« les gens n'achètent pas à un avatar »* | **Juste et gratuit.** Le skill `yapping-facecam-branded` existe déjà dans le repo. À faire cette semaine. |
+| *« Le problème n'est pas que c'est trop cher. C'est que c'est trop bas. »* | **Juste**, et identique à l'analyse §2 de ce document. |
+| Angle *« j'apprends l'IA aux entrepreneurs de La Réunion »* | **Le meilleur conseil de la page.** Différenciant, incopiable, gratuit. À mettre en bio, en post, en présentation. |
+| Déroulé d'appel : partir des douleurs, ne rien pitcher avant d'avoir compris, proposer ensuite entre 2 000 et 3 000 € | **Juste** — c'est exactement le script d'appel de `offre-declencheur-scripts-vente.md`. Confirmation indépendante. |
+| Le perfectionnisme comme frein (*« c'est pas super nickel donc j'ai pas envoyé »*) | **Probablement juste**, et c'est le point le plus personnel de la page. |
+| *« Un client valorise une offre à environ dix fois son prix »* | **Faux tel qu'énoncé.** Le principe réel est l'inverse : une offre doit *délivrer* ~10x son prix en valeur perçue. Dans son sens, ça revient à dire que monter le prix suffit à monter la valeur. C'est comme ça qu'on fabrique une offre chère et vide. |
 
-**Sa recommandation de repositionner entre 2 000 et 3 000 € est déjà appliquée** : c'est le
-palier 2 « Sprint Automatisation » à 2 900 €. Le palier 1 à 990 € n'est pas une contradiction,
-c'est la porte d'entrée qui rend le 2 900 € vendable à des gens qui ne te connaissent pas encore.
+**Sa recommandation de viser 2 000–3 000 € est déjà appliquée** : c'est le palier 2 à 2 900 €.
+Le palier 1 à 990 € est la porte d'entrée qui le rend vendable, pas une contradiction.
 
-#### Ce que le récap révèle sur le prix
+#### Ce qui ne tient pas
 
-**Pack 1 mois — 1 000 € = deux appels de 30 minutes.** Soit **1 000 € de l'heure**. Un consultant
-senior facture 300–500 €/h. C'est 2 à 3 fois ce tarif.
+**1. Le prix ramené à l'heure.** 1 000 € pour deux appels de 30 minutes = **1 000 € de
+l'heure**. Un consultant senior facture 300–500 €/h. Et le diagnostic qui justifie ce prix est
+déjà livré, gratuitement, sur cette page — les trois blocages, le repositionnement, les quatre
+actions. Ce qui resterait à acheter, c'est l'accompagnement de l'exécution ; une heure
+n'accompagne aucune exécution.
 
-Et surtout : **le diagnostic qu'il vendrait dans ces deux heures, il l'a déjà livré** — les trois
-blocages, le repositionnement, les quatre actions de la semaine sont écrits sur cette page,
-gratuitement. Ce qui resterait à acheter, ce n'est pas l'analyse, c'est l'accompagnement de
-l'exécution. Une heure ne suffit à accompagner aucune exécution.
+**2. La garantie a deux conditions, pas une.** *« Remboursement intégral si tu n'as généré aucun
+lead qualifié en 30 jours, à condition d'avoir appliqué la méthode en entier. »* Deux verrous, et
+c'est le vendeur qui juge des deux : ce qui compte comme « lead qualifié », et si la méthode a
+été appliquée « en entier ». Un seul DM entrant, ou une seule étape non faite, et elle ne se
+déclenche pas.
 
-**Sur le « 3 000 € ramené à 1 000 € »** : la page ne liste que deux packs, **1 000 €** et
-**5 000 €**. Le chiffre de 2 000–3 000 € y figure uniquement comme le prix que *Tony* devrait
-facturer *ses* clients. Il est donc probable qu'il n'y ait jamais eu de remise : 1 000 € serait
-son tarif d'entrée normal. **Si c'est le cas, le reproche de « remise de 66 % » fait plus haut
-dans ce document tombe** — à vérifier auprès de lui, mais l'hypothèse la plus simple est une
-confusion entre les deux chiffres pendant l'appel.
+À comparer avec la garantie du Déclencheur (§2) : *« livré sous 7 jours ouvrés ou remboursé »* —
+une condition, binaire, vérifiable au calendrier, entièrement sous le contrôle du vendeur. C'est
+la différence entre une garantie qui transfère le risque et une garantie qui le décore.
 
-#### Sa garantie ne tient pas
+**3. L'argument de clôture retourne le refus contre celui qui l'a formulé.** Page 3 et page 4 :
 
-« Remboursement si zéro lead en 30 jours. » Un seul lead — un commentaire, un DM — l'annule.
-Tony reçoit déjà 0 à 2 commentaires par vidéo : la condition ne se déclenchera quasiment jamais.
-C'est une garantie construite pour ne pas être payée.
+> *« investir en soi quand on est à 0, c'est précisément ce qui fait sortir de 0 »*
+> *« Ceux qui investissent appliquent. Ceux qui attendent d'avoir les moyens restent à 0. »*
 
-À comparer avec celle du Déclencheur (§2) : « livré sous 7 jours ouvrés ou remboursé » —
-binaire, vérifiable, entièrement sous le contrôle du vendeur. C'est ça, une garantie qui
-transfère le risque. Le contraste est instructif venant de quelqu'un qui vend de la conception
-d'offre.
+C'est adressé à quelqu'un qui vient de dire non **pour des raisons de budget**, qui a quitté son
+CDI il y a deux mois et **qui a une famille** — la page le mentionne elle-même. Le raisonnement
+transforme une contrainte financière réelle en défaut de caractère : si tu n'achètes pas, ce
+n'est pas que tu ne peux pas, c'est que tu n'es pas de ceux qui réussissent.
 
-#### Verdict révisé
+Ce n'est pas un argument, c'est un levier. Il faut le voir pour ce qu'il est, sans en faire un
+procès : la même page contient aussi *« si tu préfères d'abord appliquer seul ce qu'il y a dans
+ce récap, la porte reste ouverte, sans pression »* — une sortie honnête, et c'est celle qu'il
+faut prendre.
 
-**Toujours non sur le pack à 1 000 €**, mais pour une raison plus propre qu'avant : *tu as déjà
-le livrable*. Le diagnostic est sur la page, il est en partie juste, et il est gratuit. Applique
-les quatre actions de la semaine — elles ne coûtent rien.
+#### Verdict
 
-**Le pack cohérent chez lui, c'est celui à 5 000 € sur 4 mois**, pas celui à 1 000 € : un
-accompagnement se mesure en mois, pas en deux appels. Mais 5 000 € quand on n'est pas encore à
-3 500 €/mois de CA, c'est un pari qu'on ne peut pas prendre.
+**Non, et le refus initial était le bon.** Tony a dit non pour une raison valable ; rien dans la
+page ne change cette raison, et la page elle-même autorise explicitement à appliquer seul.
 
-**La bonne séquence** : appliquer son diagnostic gratuitement (face-cam + angle réunionnais +
-prix relevé), tenir 3 appels qualifiés par semaine pendant un mois. Si à ce moment-là le closing
-bloque vraiment, tu reviens vers lui avec des données réelles — et tu négocies le pack 4 mois,
-pas le pack 2 heures.
+Le pack cohérent chez lui reste celui à **5 000 € sur 4 mois** — un accompagnement se mesure en
+mois, pas en deux appels. À reconsidérer *après* avoir atteint un CA régulier, jamais avant.
+
+**La séquence** : appliquer les quatre actions gratuitement (face-cam, angle réunionnais, offre
+relevée, prospection avec la nouvelle offre), tenir 3 appels qualifiés par semaine pendant un
+mois. Si le closing bloque encore à ce moment-là, revenir avec des données réelles — et négocier
+le pack 4 mois, pas le pack 2 heures.
+
+#### ⚠️ Contradiction à lever avant d'utiliser ce document
+
+La page affirme **« tu es à 0 € »**, *10 abonnés Instagram, 150 TikTok, zéro lead*. Or ce
+document (§1, §4) recommande de s'appuyer sur **104 dossiers de sites clients** comme preuve et
+comme premier canal de vente.
+
+Les deux ne peuvent pas être vrais en même temps. Deux lectures possibles :
+
+- **Ces 104 sites ont été payés** → le « tu es à 0 € » de la page est faux ou ne parle que de
+  l'activité Automation Boost, et le canal 1 (relance des anciens clients) reste le meilleur
+  levier disponible.
+- **Ces 104 sites sont des démos non vendues** (générées pour de la prospection) → alors ce ne
+  sont ni des clients ni une preuve, le canal 1 s'effondre, et la priorité redevient la
+  prospection froide avec les 3 premières études de cas encore à créer.
+
+**Tant que ce point n'est pas tranché, ne pas lancer la campagne de relance du canal 1.**
 
 ### Les 6 questions à poser avant de payer (si tu veux quand même y aller)
 
