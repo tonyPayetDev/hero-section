@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#0a0a0f; --surface:#111117; --border:#232330;
+  --gold:#eab308; --gold-light:#BEF264; --violet:#8b5cf6; --violet-deep:#7c3aed;
+  --ink:#EDEDED; --muted:#8A8A8A; --bad:#ff6b6b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- HOOK PLEIN CADRE (scene 1) ---------- */
+#hookScene{position:absolute;inset:0;opacity:1;background:#000;}
+#hookWin{position:absolute;inset:0;overflow:hidden;background:#050505;}
+#hookTitle{position:absolute;left:70px;right:70px;bottom:170px;font-size:56px;font-weight:900;
+  line-height:1.18;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.8);opacity:0;}
+#hookTitle .y{color:var(--gold);}
+#hookKick{position:absolute;left:70px;top:120px;font-size:26px;font-weight:800;letter-spacing:3px;
+  text-transform:uppercase;color:var(--violet);opacity:0;}
+#hookVign{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(0,0,0,0) 45%,rgba(0,0,0,.65) 100%);}
+
+/* ---------- SCENES (fond, cadre travaillé) ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1920px;opacity:0;overflow:hidden;}
+.scene-2{background:linear-gradient(160deg,#0a0a0f 0%,#1c1330 55%,#08080c 100%);}
+.scene-3{background:radial-gradient(circle at 50% 25%,#1a0f0f 0%,#08080c 70%);}
+.scene-4{background:linear-gradient(160deg,#0a0a0f 0%,#141026 55%,#08080c 100%);}
+.scene-5{background:radial-gradient(circle at 50% 25%,#0f1a12 0%,#08080c 70%);}
+.scene-6{background:linear-gradient(160deg,#0a0a0f 0%,#1c1330 55%,#08080c 100%);}
+
+.hdr{position:absolute;left:56px;top:60px;display:flex;align-items:center;gap:14px;opacity:0;}
+.hdr .logo{font-size:28px;font-weight:900;letter-spacing:1px;color:#fff;}
+.hdr .logo b{color:var(--gold);}
+.kicker{position:absolute;left:56px;top:112px;display:inline-flex;padding:10px 22px;border-radius:999px;
+  background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.4);font-size:24px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--violet);opacity:0;}
+
+/* ---------- FENÊTRE NÉON AVATAR (648x1152 @ 216,150) ---------- */
+#avatarWin{position:absolute;left:216px;top:150px;width:648px;height:1152px;border-radius:28px;
+  background:transparent;overflow:visible;border:3px solid rgba(234,179,8,.6);
+  box-shadow:0 0 60px rgba(234,179,8,.18);pointer-events:none;
+  z-index:9;opacity:0;}
+#avatarBadge{position:absolute;left:246px;top:180px;z-index:6;opacity:0;
+  display:flex;align-items:center;gap:8px;background:rgba(6,6,6,.75);border:1px solid rgba(255,95,87,.6);
+  padding:6px 16px;border-radius:999px;font-size:22px;font-weight:800;color:#fff;letter-spacing:1px;}
+#avatarBadge .live{width:12px;height:12px;border-radius:50%;background:#ff3b30;box-shadow:0 0 10px #ff3b30;}
+
+/* ---------- SCENE 2 : PAIN — message client énervé ---------- */
+.phone{position:absolute;left:246px;width:588px;top:520px;background:var(--surface);border:1px solid var(--border);
+  border-radius:26px;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.5);opacity:0;overflow:hidden;}
+.phone .pb{padding:26px 30px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.phone .pb .who{font-size:28px;font-weight:800;color:#fff;}
+.phone .pb .time{font-size:24px;font-weight:700;color:var(--bad);}
+.phone .msg{margin:26px 30px;background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.4);
+  border-radius:18px;padding:24px 26px;font-size:32px;font-weight:700;color:#fff;line-height:1.35;opacity:0;}
+.phone .msg2{margin:0 30px 30px;background:rgba(138,138,146,.10);border:1px solid var(--border);
+  border-radius:18px;padding:22px 26px;font-size:28px;font-weight:600;color:var(--muted);line-height:1.35;opacity:0;}
+
+/* ---------- SCENE 3 / 5 : cartons AVANT / APRÈS ---------- */
+.statcard{position:absolute;left:246px;width:588px;top:750px;background:var(--surface);border-radius:26px;
+  padding:44px 40px;box-shadow:0 24px 70px rgba(0,0,0,.5);opacity:0;}
+.statcard.ko{border-left:10px solid var(--bad);}
+.statcard.ok{border-left:10px solid var(--gold);}
+.statcard .lab{font-size:32px;font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:22px;}
+.statcard.ko .lab{color:var(--bad);}
+.statcard.ok .lab{color:var(--gold);}
+.statcard .val{font-size:74px;font-weight:900;line-height:1.15;color:#fff;margin-bottom:14px;}
+.statcard .sub{font-size:30px;font-weight:700;color:var(--muted);}
+
+/* ---------- SCENE 4 : CANVAS n8n ---------- */
+.canvasWrap{position:absolute;left:246px;width:588px;top:560px;height:680px;
+  background:var(--surface);border:1px solid var(--border);border-radius:26px;overflow:visible;opacity:0;}
+.gridbg{position:absolute;inset:0;border-radius:26px;overflow:hidden;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:40px 40px;}
+.nsvg{position:absolute;left:0;top:0;width:588px;height:680px;overflow:visible;}
+.nnode{position:absolute;width:508px;left:40px;background:#181820;border:1px solid var(--border);border-radius:20px;
+  padding:22px 24px;display:flex;align-items:center;gap:20px;opacity:0;box-shadow:0 14px 40px rgba(0,0,0,.4);}
+.nnode .ic{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:34px;font-weight:900;flex:0 0 64px;}
+.nnode.n1 .ic{background:linear-gradient(135deg,var(--gold),#a16207);color:#1a1400;}
+.nnode.n2 .ic{background:linear-gradient(135deg,var(--violet),var(--violet-deep));color:#fff;}
+.nnode.n3 .ic{background:linear-gradient(135deg,#3a3a44,#232330);color:var(--bad);}
+.nnode .tx .nm{font-size:30px;font-weight:800;color:#fff;line-height:1.2;}
+.nnode .tx .tp{font-size:22px;font-weight:600;color:var(--muted);margin-top:4px;}
+.nnode.n1{top:20px;}
+.nnode.n2{top:250px;}
+.nnode.n3{top:480px;}
+
+/* ---------- SCENE 6 : CTA ---------- */
+.ctapill{position:absolute;left:70px;right:70px;top:1570px;display:flex;align-items:center;justify-content:center;
+  gap:16px;background:linear-gradient(90deg,rgba(234,179,8,.16),rgba(139,92,246,.14));border:2px solid var(--gold);
+  border-radius:24px;padding:30px;font-size:42px;font-weight:900;color:#fff;text-align:center;opacity:0;}
+.ctapill b{color:var(--gold);}
+.ctasub{position:absolute;left:70px;right:70px;top:1710px;text-align:center;font-size:30px;font-weight:700;
+  color:var(--violet);opacity:0;letter-spacing:.5px;}
+
+/* ---------- CAPTIONS (sous la fenêtre avatar, jamais dessus) ---------- */
+#capBand{position:absolute;top:1392px;left:0;width:1080px;height:150px;z-index:8;}
+#capPlate{position:absolute;left:0;top:0;width:1080px;height:96px;
+  background:linear-gradient(90deg,rgba(10,10,15,0) 0%,rgba(10,10,15,.9) 12%,rgba(10,10,15,.9) 88%,rgba(10,10,15,0) 100%);}
+.caption{position:absolute;left:50%;top:26px;transform:translateX(-50%);max-width:960px;text-align:center;
+  font-size:38px;font-weight:800;text-transform:uppercase;letter-spacing:1px;line-height:1.25;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--gold);}
+.caption .vhot{color:var(--violet);}
+
+/* ---------- HOOK plein cadre : cadrage média (rempli passe 2) ---------- */
+#hookMedia{position:absolute;inset:0;background:#050505;z-index:0;}
+</style>
+</head>
+<body>
+<!-- v3 (décor VOITURE) — avatar = clips banque clips-new/ (D1 hook, D4 pain, D2 canvas, D3 après+CTA) incrustés passe 2.
+     Fenêtres avatar (timeline) : 0.00-2.87 plein cadre (D1 ss0.54) / 8.00-11.50 fenêtre (D4 ss1.00) /
+     17.50-20.50 fenêtre (D2 ss5.04) / 23.00-25.50 fenêtre (D3 ss0.50) / 26.30-31.00 fenêtre (D3 ss3.50)
+     Scènes : 0-2.87 HOOK / 2.87-12.05 PAIN / 12.05-14.38 AVANT / 14.38-22.28 CANVAS / 22.28-26.16 APRES / 26.16-31.014 CTA -->
+<div id="root" data-composition-id="autoboost72desamorce" data-start="0" data-width="1080" data-height="1920" data-duration="31.014">
+
+  <!-- SCENE 1 — HOOK plein cadre -->
+  <div id="hookScene" data-s="0" data-d="2.87">
+    <div id="hookMedia" data-layout-allow-overflow="true"></div>
+    <div id="hookVign"></div>
+    <div id="hookKick">Storytime — client difficile</div>
+    <div id="hookTitle">Un client difficile <span class="y">toutes les semaines</span></div>
+  </div>
+
+  <!-- SCENE 2 — PAIN : message énervé -->
+  <div class="scene scene-2" data-s="2.87" data-d="9.18">
+    <div class="hdr" data-role="hdr2"><span class="logo">AUTO<b>BOOST</b></span></div>
+    <div class="kicker" data-role="k2">Le problème</div>
+    <div class="phone" data-role="phone">
+      <div class="pb"><span class="who">Client — WhatsApp</span><span class="time">22:04</span></div>
+      <div class="msg" data-role="msg1">« Toujours pas de nouvelles ?? C'est inadmissible… »</div>
+      <div class="msg2" data-role="msg2">Toi — lu le lendemain matin, trop tard</div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — AVANT -->
+  <div class="scene scene-3" data-s="12.05" data-d="2.33">
+    <div class="hdr" data-role="hdr3"><span class="logo">AUTO<b>BOOST</b></span></div>
+    <div class="kicker" data-role="k3" style="background:rgba(255,107,107,.14);border-color:rgba(255,107,107,.4);color:var(--bad);">Avant</div>
+    <div class="statcard ko" data-role="s3">
+      <div class="lab">Résultat</div>
+      <div class="val">3 relances<br>manuelles</div>
+      <div class="sub">et un client qui doute de toi</div>
+    </div>
+  </div>
+
+  <!-- SCENE 4 — CANVAS n8n -->
+  <div class="scene scene-4" data-s="14.38" data-d="7.90">
+    <div class="hdr" data-role="hdr4"><span class="logo">AUTO<b>BOOST</b></span></div>
+    <div class="kicker" data-role="k4">Maintenant — l'agent IA</div>
+    <div class="canvasWrap" data-role="canvas">
+      <div class="gridbg"></div>
+      <svg class="nsvg" viewBox="0 0 588 680" fill="none">
+        <path data-role="wireA" d="M294 84 L294 250" stroke="#eab308" stroke-width="4" stroke-dasharray="6 10" stroke-linecap="round"/>
+        <path data-role="wireB" d="M294 314 L294 480" stroke="#8b5cf6" stroke-width="4" stroke-dasharray="6 10" stroke-linecap="round"/>
+      </svg>
+      <div class="nnode n1" data-role="n1"><div class="ic">✉</div><div class="tx"><div class="nm">Message reçu</div><div class="tp">Trigger — WhatsApp</div></div></div>
+      <div class="nnode n2" data-role="n2"><div class="ic">✦</div><div class="tx"><div class="nm">Agent IA répond</div><div class="tp">&lt; 2 minutes · bon ton</div></div></div>
+      <div class="nnode n3" data-role="n3"><div class="ic">⚠</div><div class="tx"><div class="nm">Alerte si dépassé</div><div class="tp">Escalade vers toi</div></div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — APRES -->
+  <div class="scene scene-5" data-s="22.28" data-d="3.88">
+    <div class="hdr" data-role="hdr5"><span class="logo">AUTO<b>BOOST</b></span></div>
+    <div class="kicker" data-role="k5" style="background:rgba(234,179,8,.14);border-color:rgba(234,179,8,.4);">Après</div>
+    <div class="statcard ok" data-role="s5">
+      <div class="lab">Résultat</div>
+      <div class="val">Contrat<br>gardé</div>
+      <div class="sub">le client ne voit jamais l'attente</div>
+    </div>
+  </div>
+
+  <!-- SCENE 6 — CTA -->
+  <div class="scene scene-6" data-s="26.16" data-d="4.854">
+    <div class="hdr" data-role="hdr6"><span class="logo">AUTO<b>BOOST</b></span></div>
+    <div class="ctapill" data-role="ctapill">Commente le mot <b>DESAMORCE</b></div>
+    <div class="ctasub" data-role="ctasub">— je t'envoie comment j'ai construit l'agent</div>
+  </div>
+
+  <!-- FENÊTRE AVATAR (scènes 2 à 6) -->
+  <div id="avatarWin" data-layout-allow-overflow="true"></div>
+  <div id="avatarBadge" data-layout-allow-overflow="true"><span class="live"></span>LIVE</div>
+
+  <!-- CAPTIONS -->
+  <div id="capBand"><div id="capPlate"></div></div>
+
+  <!-- AUDIO (référence — mixage réel fait en passe 2 ffmpeg) -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="31.014" data-volume="1"></audio>
+  <audio id="bgm" src="assets/bgm.mp3" data-start="0" data-duration="31.014" data-volume="0.30"></audio>
+</div>
+
+<script>
+const compId="autoboost72desamorce";
+const DUR=31.014;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* HOOK */
+tl.fromTo("#hookKick",{opacity:0,y:16},{opacity:1,y:0,duration:0.35,ease:"power2.out"},0.15);
+tl.fromTo("#hookTitle",{opacity:0,y:22},{opacity:1,y:0,duration:0.45,ease:"power3.out"},0.35);
+tl.to("#hookScene",{opacity:0,duration:0.25,ease:"power2.in"},2.62);
+
+/* SCENES generic in/out */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.25,ease:"power2.in"},s+d-0.25);
+});
+function fadeIn(role,t,y){tl.fromTo(R(role),{opacity:0,y:y||18},{opacity:1,y:0,duration:0.4,ease:"power3.out"},t);}
+
+/* SCENE 2 — pain */
+fadeIn("hdr2",3.0); fadeIn("k2",3.05);
+tl.fromTo(R("phone"),{opacity:0,y:30,scale:0.97},{opacity:1,y:0,scale:1,duration:0.45,ease:"power3.out"},3.15);
+fadeIn("msg1",4.0);
+fadeIn("msg2",8.6);
+
+/* SCENE 3 — avant */
+fadeIn("hdr3",12.15); fadeIn("k3",12.2);
+tl.fromTo(R("s3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.45,ease:"power3.out"},12.35);
+
+/* SCENE 4 — canvas */
+fadeIn("hdr4",14.48); fadeIn("k4",14.53);
+tl.fromTo(R("canvas"),{opacity:0,scale:0.97},{opacity:1,scale:1,duration:0.4,ease:"power3.out"},14.6);
+tl.fromTo(R("n1"),{opacity:0,y:20,scale:0.92},{opacity:1,y:0,scale:1,duration:0.4,ease:"back.out(1.7)"},14.9);
+function drawWire(role,t){tl.fromTo(R(role),{attr:{"stroke-dashoffset":260},opacity:0.2},{attr:{"stroke-dashoffset":0},opacity:1,duration:0.5,ease:"power2.out"},t);}
+drawWire("wireA",17.6);
+tl.fromTo(R("n2"),{opacity:0,y:20,scale:0.92},{opacity:1,y:0,scale:1,duration:0.4,ease:"back.out(1.7)"},17.9);
+drawWire("wireB",20.6);
+tl.fromTo(R("n3"),{opacity:0,y:20,scale:0.92},{opacity:1,y:0,scale:1,duration:0.4,ease:"back.out(1.7)"},20.9);
+
+/* SCENE 5 — apres */
+fadeIn("hdr5",22.38); fadeIn("k5",22.43);
+tl.fromTo(R("s5"),{opacity:0,x:30},{opacity:1,x:0,duration:0.45,ease:"power3.out"},22.55);
+tl.to(R("s5"),{boxShadow:"0 20px 60px rgba(234,179,8,.35)",duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},22.9);
+
+/* SCENE 6 — CTA */
+fadeIn("hdr6",26.26);
+tl.fromTo(R("ctapill"),{opacity:0,scale:0.85},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.7)"},26.5);
+tl.to(R("ctapill"),{scale:1.035,duration:0.5,ease:"sine.inOut",repeat:5,yoyo:true},27.0);
+fadeIn("ctasub",27.4);
+
+/* AVATAR WINDOW visibility (masqué pendant le hook plein cadre) */
+tl.set("#avatarWin",{opacity:0},0);
+const AVW=[[2.87,31.014]]; // fenêtre visible en continu à partir de la fin du hook
+AVW.forEach(function(w){
+  tl.to("#avatarWin",{opacity:1,duration:0.3,ease:"power2.out"},w[0]);
+});
+
+/* CAPTIONS */
+const caps=[
+ [0.22,"ETHAN HUNT A UNE"],
+ [1.10,"MISSION IMPOSSIBLE TOUTES LES"],
+ [1.99,"CINQ MINUTES DANS LE"],
+ [2.87,"FILM. MOI J'AVAIS UN","hot:FILM."],
+ [3.92,"CLIENT DIFFICILE TOUTES LES"],
+ [4.96,"SEMAINES, ET À CHAQUE"],
+ [5.83,"FOIS LA MÊME SCÈNE"],
+ [6.74,"UN MESSAGE ÉNERVÉ","hot:ÉNERVÉ"],
+ [7.78,"À VINGT-DEUX HEURES,","hot:VINGT-DEUX HEURES"],
+ [8.51,"ET MOI QUI DÉCOUVRE"],
+ [9.46,"ÇA LE LENDEMAIN MATIN,"],
+ [10.40,"FURIEUX D'AVOIR RATÉ LA"],
+ [11.34,"FENÊTRE DE RÉPONSE."],
+ [12.05,"AVANT, RÉSULTAT,","hot:AVANT,"],
+ [12.52,"TROIS RELANCES MANUELLES ET","hot:TROIS RELANCES"],
+ [13.45,"UN CLIENT QUI DOUTE"],
+ [14.38,"DE MOI."],
+ [14.79,"MAINTENANT, UN AGENT IA","hot:MAINTENANT,"],
+ [15.62,"LIT LE MESSAGE DÈS"],
+ [16.45,"QU'IL ARRIVE,"],
+ [16.94,"RÉPOND AVEC LE BON"],
+ [17.91,"TON EN MOINS DE"],
+ [18.88,"DEUX MINUTES,","hot:DEUX MINUTES,"],
+ [19.36,"ET ME PRÉVIENT SEULEMENT"],
+ [20.33,"SI LA SITUATION DÉPASSE"],
+ [21.30,"CE QU'IL PEUT GÉRER"],
+ [22.28,"SEUL. LE CLIENT NE"],
+ [23.25,"VOIT JAMAIS L'ATTENTE,","vhot:L'ATTENTE,"],
+ [23.97,"MOI JE DORS TRANQUILLE"],
+ [24.95,"ET JE GARDE LE"],
+ [25.92,"CONTRAT. FOLLOW POUR LA","hot:CONTRAT."],
+ [26.89,"SUITE, LIEN EN BIO,"],
+ [27.86,"ET SI TU VEUX"],
+ [28.83,"VOIR COMMENT J'AI CONSTRUIT"],
+ [29.80,"CET AGENT,"],
+ [30.29,"COMMENTE LE MOT DESAMORCE.","hot:DESAMORCE."]
+];
+const band=document.getElementById("capBand");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:DUR;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){const [cls,word]=tag.split(":");const cl=cls==="hot"?"hot":"vhot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:10},{opacity:1,y:0,duration:0.14,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.12},Math.max(start+0.05,end-0.14));
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
