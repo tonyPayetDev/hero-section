@@ -44,6 +44,70 @@ précises :
    Le vrai goulot est en §1 : l'offre n'a **pas de prix**, **pas de garantie**, et
    **pas de preuve chiffrée**, alors que 104 dossiers de sites clients existent dans le repo.
 
+### Mise à jour — après lecture du récap de réunion (buildyoursaas.tech)
+
+> Source : `https://buildyoursaas.tech/recap-tony-payet.html`, page rédigée et hébergée par le
+> vendeur, se terminant par son WhatsApp. C'est un document de vente, pas un compte rendu
+> neutre — ce qui n'empêche pas son contenu d'être en partie juste.
+
+#### Ce qu'il dit qui est vrai, et qu'il faut garder
+
+Le diagnostic est bon sur trois points, et deux d'entre eux confirment ce que dit ce document :
+
+| Son point | Verdict |
+|---|---|
+| « Les gens n'achètent pas à un avatar, ils achètent à une personne » → passer en face-cam | **Juste et gratuit à tester.** Le skill `yapping-facecam-branded` existe déjà dans le repo. À faire cette semaine, indépendamment de toute décision d'achat. |
+| « Le problème n'est pas que c'est trop cher, c'est que c'est trop bas » (offre à 29 €/mois) | **Juste, et identique à l'analyse §2 de ce document.** Un prix trop bas attire les clients les plus coûteux à servir. Confirmation indépendante. |
+| Positionnement « j'apprends l'IA aux entrepreneurs de La Réunion » | **Le meilleur conseil de la page.** C'est un angle réellement différenciant que personne d'autre ne peut copier. À intégrer partout. |
+| « Une offre est perçue comme valant environ dix fois son prix » | **Faux tel qu'énoncé.** Le principe réel est l'inverse : une offre doit *délivrer* ~10x son prix en valeur perçue. Formulé dans ce sens, ça dit que monter le prix monte la valeur perçue sans rien faire d'autre — c'est comme ça qu'on se retrouve avec une offre chère et vide. |
+
+**Sa recommandation de repositionner entre 2 000 et 3 000 € est déjà appliquée** : c'est le
+palier 2 « Sprint Automatisation » à 2 900 €. Le palier 1 à 990 € n'est pas une contradiction,
+c'est la porte d'entrée qui rend le 2 900 € vendable à des gens qui ne te connaissent pas encore.
+
+#### Ce que le récap révèle sur le prix
+
+**Pack 1 mois — 1 000 € = deux appels de 30 minutes.** Soit **1 000 € de l'heure**. Un consultant
+senior facture 300–500 €/h. C'est 2 à 3 fois ce tarif.
+
+Et surtout : **le diagnostic qu'il vendrait dans ces deux heures, il l'a déjà livré** — les trois
+blocages, le repositionnement, les quatre actions de la semaine sont écrits sur cette page,
+gratuitement. Ce qui resterait à acheter, ce n'est pas l'analyse, c'est l'accompagnement de
+l'exécution. Une heure ne suffit à accompagner aucune exécution.
+
+**Sur le « 3 000 € ramené à 1 000 € »** : la page ne liste que deux packs, **1 000 €** et
+**5 000 €**. Le chiffre de 2 000–3 000 € y figure uniquement comme le prix que *Tony* devrait
+facturer *ses* clients. Il est donc probable qu'il n'y ait jamais eu de remise : 1 000 € serait
+son tarif d'entrée normal. **Si c'est le cas, le reproche de « remise de 66 % » fait plus haut
+dans ce document tombe** — à vérifier auprès de lui, mais l'hypothèse la plus simple est une
+confusion entre les deux chiffres pendant l'appel.
+
+#### Sa garantie ne tient pas
+
+« Remboursement si zéro lead en 30 jours. » Un seul lead — un commentaire, un DM — l'annule.
+Tony reçoit déjà 0 à 2 commentaires par vidéo : la condition ne se déclenchera quasiment jamais.
+C'est une garantie construite pour ne pas être payée.
+
+À comparer avec celle du Déclencheur (§2) : « livré sous 7 jours ouvrés ou remboursé » —
+binaire, vérifiable, entièrement sous le contrôle du vendeur. C'est ça, une garantie qui
+transfère le risque. Le contraste est instructif venant de quelqu'un qui vend de la conception
+d'offre.
+
+#### Verdict révisé
+
+**Toujours non sur le pack à 1 000 €**, mais pour une raison plus propre qu'avant : *tu as déjà
+le livrable*. Le diagnostic est sur la page, il est en partie juste, et il est gratuit. Applique
+les quatre actions de la semaine — elles ne coûtent rien.
+
+**Le pack cohérent chez lui, c'est celui à 5 000 € sur 4 mois**, pas celui à 1 000 € : un
+accompagnement se mesure en mois, pas en deux appels. Mais 5 000 € quand on n'est pas encore à
+3 500 €/mois de CA, c'est un pari qu'on ne peut pas prendre.
+
+**La bonne séquence** : appliquer son diagnostic gratuitement (face-cam + angle réunionnais +
+prix relevé), tenir 3 appels qualifiés par semaine pendant un mois. Si à ce moment-là le closing
+bloque vraiment, tu reviens vers lui avec des données réelles — et tu négocies le pack 4 mois,
+pas le pack 2 heures.
+
 ### Les 6 questions à poser avant de payer (si tu veux quand même y aller)
 
 À poser telles quelles, par écrit, et à garder :
