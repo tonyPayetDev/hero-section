@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Portrait stylise numero 2">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#101a34"/><stop offset="1" stop-color="#0a0a0f"/>
+    </linearGradient>
+    <linearGradient id="dress2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#1a3fa8"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#bg2)"/>
+  <circle cx="200" cy="230" r="132" fill="none" stroke="#60a5fa" stroke-width="2" opacity=".35"/>
+  <circle cx="200" cy="230" r="164" fill="none" stroke="#60a5fa" stroke-width="1" opacity=".16"/>
+  <rect x="178" y="292" width="44" height="76" rx="16" fill="#e6c6a8"/>
+  <path d="M56 500c0-82 64-142 144-142s144 60 144 142z" fill="url(#dress2)"/>
+  <path d="M158 366q42 30 84 0l-20 134h-44z" fill="#0d1730" opacity=".45"/>
+  <path d="M152 452h96l-6 24h-84z" fill="#eab308" opacity=".9"/>
+  <ellipse cx="200" cy="248" rx="70" ry="84" fill="#f0d5bd"/>
+  <path d="M114 246c0-76 38-122 86-122s86 46 86 122c0 14-4 26-4 26-4-32-8-54-18-70-32 22-110 22-134-2-10 18-12 46-12 72 0 0-4-12-4-26z" fill="#1c1329"/>
+  <circle cx="200" cy="118" r="30" fill="#1c1329"/>
+  <path d="M172 112q28-24 56 0" stroke="#eab308" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M166 254h28M206 254h28" stroke="#2a2040" stroke-width="8" stroke-linecap="round"/>
+  <path d="M184 294q16 14 32 0" stroke="#2a2040" stroke-width="5" stroke-linecap="round" fill="none"/>
+</svg>
