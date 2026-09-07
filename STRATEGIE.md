@@ -3,163 +3,151 @@
 > Document de pilotage lu par le skill `veille-to-video` et l'agent `business-orchestrator`.
 > Patterns copiables et règles fermes en fin de sections.
 
-- **Date de l'analyse** : 2026-08-31 (complété en deux temps — voir note ci-dessous)
-- **Période couverte** : Instagram `@automatisationboost` — 100 posts remontés depuis le 2026-07-03, focus sur les 8 posts publiés depuis le 24/08 · TikTok `@automationboost7` et concurrent `@jb.roy_` — données de compte **et** données vidéo-par-vidéo, fenêtre 24/08→31/08 (comparable à la fenêtre 17/08→23/08 du run précédent) · LinkedIn — statut de publication vérifié via `blotato_list_posts`, toujours aucune métrique d'engagement
-- **Comptes analysés** : TikTok `@automationboost7` (compte actif, source = `tokscript get_tiktok_user` pour les stats de compte + Apify `clockworks/tiktok-scraper` via le workflow n8n `YUJjz5NNsYo41t8q` pour le détail vidéo) · Instagram `@automatisationboost` compte Blotato 54617 · LinkedIn Payet Tony (compte Blotato 25882) · Concurrent TikTok `@jb.roy_` (même source Apify) · Exclu : `@tonypayet4` (toujours mort, 0 abonné/0 vidéo, reconfirmé) et Instagram foodboost (55611, hors périmètre)
-- **ℹ️ Run complété en deux temps** : la routine hebdo a d'abord tourné le 31/08 avec n8n inaccessible (voir historique en §0.1) — Instagram, LinkedIn et les stats de compte TikTok avaient pu être rafraîchis, mais pas le détail vidéo-par-vidéo TikTok ni l'onglet Sheet. **n8n a été réautorisé plus tard dans la journée du 31/08** ; ce complément a relancé le scraping Apify (profils `automationboost7` et `jb.roy_` séparément, comme recommandé) et écrit l'onglet Analyse Perf. Les deux lacunes sont désormais comblées — plus de bandeau "run dégradé".
+- **Date de l'analyse** : 2026-09-07 (run hebdo automatisé, session cloud à froid)
+- **Période couverte** : TikTok `@automationboost7` — 40 dernières vidéos scrapées via Apify (~22/08→05/09) + stats de compte (07/09) · Concurrent TikTok `@jb.roy_` — même méthode, 40 dernières vidéos (~25/08→02/09) + stats de compte · Instagram `@automatisationboost` — 50 posts remontés par Blotato depuis le 01/07 (fenêtre large, filtrage manuel appliqué — voir §0.1) · LinkedIn — statut de publication vérifié via `blotato_list_posts` depuis le 31/08
+- **Comptes analysés** : TikTok `@automationboost7` (compte Blotato `36488` **inactif/mort**, l'actif physiquement posté est `@automationboost7` — source = `tokscript get_tiktok_user` pour les stats de compte + Apify `clockworks/tiktok-scraper` via le workflow n8n `YUJjz5NNsYo41t8q` pour le détail vidéo) · Instagram `@automatisationboost` compte Blotato `54617` · LinkedIn Payet Tony (compte Blotato `25882`) · Concurrent TikTok `@jb.roy_` (même source Apify) · **Exclu** : `@tonypayet4` (reconfirmé mort, 0/0/0/0) et Instagram `foodboost` (`55611`, hors périmètre — voir §0.1 pour un problème de contamination croisée découvert ce run)
 
 ---
 
 ## 0. Anomalies et découvertes clés de ce run
 
-1. **🟢 RÉSOLU — n8n était inaccessible en début de journée, réautorisé le 31/08.** Au premier passage de la routine, la session cloud n'avait pas pu s'authentifier auprès du serveur MCP n8n (authentification OAuth requise, impossible en session non-interactive), ce qui avait bloqué : le scraping Apify vidéo-par-vidéo, la vérification de `n5dIUNEk5D6Pj3Vf`, et l'écriture de l'onglet Analyse Perf. **Tony a réautorisé le connecteur n8n plus tard dans la journée.** Ce complément a donc pu, dans la foulée :
-   - Relancer le workflow `YUJjz5NNsYo41t8q` en **deux exécutions séparées** (une par profil, `automationboost7` puis `jb.roy_`, méthodologie du run du 24/08 pour éviter le bug de paramétrage déjà rencontré) → détail vidéo par vidéo obtenu pour les deux comptes, fenêtre 24/08→31/08 (voir §2, §5, §6, §7).
-   - Vérifier `n5dIUNEk5D6Pj3Vf` : **toujours 0 exécution, workflow non opérationnel** (voir point 6 ci-dessous) — pas un problème d'accès n8n, le workflow lui-même n'a jamais été branché sur de vraies API.
-   - Écrire l'onglet **Analyse Perf** du Sheet (SINK 2 fait ce run, vérifié par export CSV — voir résumé final).
-   - L'ajout des 5 scripts de la semaine dans la file de production (Étape B, §10) reste **hors périmètre de ce complément** — à faire dans une prochaine session dédiée maintenant que n8n est de nouveau accessible.
-2. **🟠 tokscript en mode dégradé.** `get_tiktok_user_videos` (liste vidéo + stats) renvoie *"Listing user videos requires a Pro or Premium subscription"* — l'abonnement Pro/Premium tokscript n'est pas actif sur ce compte. Seul `get_tiktok_user` (stats de compte agrégées : abonnés, nb vidéos, likes cumulés) a pu être utilisé, sans Apify en secours (bloqué par #1). Résultat : aucun hook, aucune vidéo top, aucune donnée de durée ou de cadence horaire cette semaine.
-3. **🟢 Bonne nouvelle : LinkedIn n'est PAS en panne.** Contrairement à l'alerte du run du 24/08 ("compte expiré"), `blotato_list_posts` montre que le dernier post LinkedIn a été **publié avec succès le 30/08 à 15:15:06 UTC** (ID 6590486). Les 10 échecs LinkedIn observés sont datés du **28/08 entre 21:18 et 21:47 UTC**, avec l'erreur `"Failed to fetch media URL: 403 Forbidden"` — **pas** `"LinkedIn account has expired"`. Ce même message 403 touche identiquement TikTok (10 échecs) et Instagram (10 échecs) sur la même fenêtre de 30 minutes : c'était une panne ponctuelle et transverse (source média inaccessible), pas un problème de compte LinkedIn. Tout a repris normalement dès le lendemain. **Aucune action requise.**
-4. **🟡 Instagram : rebond à confirmer, données à nettoyer.** Sur les 8 posts publiés depuis le 24/08 : vues moyenne **41,9** / médiane **22** — en hausse vs moyenne 33,2 / médiane 11 le 24/08 (qui concluait à une 3ᵉ semaine de baisse consécutive). **Prudence** : échantillon très petit (n=8) et l'outil `blotato_list_top_posts` ne renvoie aucun champ d'identification de compte dans sa réponse — un des 8 posts (ID 6571153, "Ce burger n'existe pas...", 18 vues, 1 commentaire) a un sujet qui ressemble à du contenu foodboost et n'a pas pu être exclu avec certitude. À vérifier manuellement avant de considérer le rebond comme confirmé.
-5. **Le handle `tonypayet4` reste confirmé mort** côté TikTok public (`tokscript get_tiktok_user` → 0 abonné/0 vidéo), même compte physique que `@automationboost7` — rien de nouveau, aucune action requise.
-6. **🔴 `n5dIUNEk5D6Pj3Vf` n'est pas un workflow opérationnel — ce n'est pas un problème d'accès.** `get_execution` (via `search_executions`) confirme **0 exécution depuis sa création** (2026-07-21), et `get_workflow_details` montre que ses nœuds HTTP Request (Instagram Graph API, TikTok API) et son nœud Telegram contiennent encore des valeurs placeholder non résolues (`<__PLACEHOLDER_VALUE__...>` en URL et en chat ID) — il n'a jamais été câblé avec de vraies credentials/IDs. Il est inactif (`active: false`) et son trigger (Lundi 8h) n'a donc jamais pu se déclencher. **Recommandation : soit le configurer réellement (obtenir un token API Instagram Graph + TikTok + un chat ID Telegram), soit l'archiver** — dans son état actuel il ne produit et ne produira aucune donnée, et le vrai reporting hebdo passe déjà par Blotato + tokscript + Apify.
-7. **🟢 Découverte forte : au niveau vidéo, Tony surperforme désormais `jb.roy_` malgré 10x moins d'abonnés.** Sur la même fenêtre (24/08→31/08) : Tony moyenne **306 vues/vidéo** (médiane 193, n=20) vs `jb.roy_` **190 vues/vidéo** (médiane 159, n=33) — alors que `jb.roy_` a 1580 abonnés contre 151 pour Tony. Rapporté aux abonnés gagnés par vidéo postée sur 7 jours, Tony est ~4x plus efficace (15 abonnés / 19 vidéos ≈ 0,79/vidéo) que `jb.roy_` (6 abonnés / 34 vidéos ≈ 0,18/vidéo). Voir §7 pour le détail.
+1. **🔴 DÉCOUVERTE MAJEURE — contamination croisée confirmée et quantifiée sur les données Instagram Blotato.** `blotato_list_top_posts` ne renvoie **aucun champ d'identification de compte** dans sa réponse : il agrège les posts de **tous** les comptes Instagram connectés au workspace Blotato (`automatisationboost` 54617, mais aussi `foodboost` 55611, `animeirl85` 37180, `ozeroz1984` 35077). Ce run a **filtré par contenu** (mots-clés restaurant/food : "plat", "restaurant", "menu", "sushi", "ardoise", etc.) sur les 50 posts remontés depuis le 01/07 : **17 posts sur 50 (34 %)** sont des templates food/restaurant récurrents ("La lumière change tout 🌴", "Pas besoin de photographe 🌴", "Ton menu travaille pour toi 🌴"...), **tous publiés systématiquement à 07h00-07h01 UTC** — un pattern horaire totalement distinct du pivot Autoboost à 14h00 UTC. Après filtrage, il reste **33 posts propres** Autoboost. **Conséquence directe** : les moyennes de vues Instagram publiées dans les runs précédents (ex. 24/08, 31/08) mélangeaient probablement ces deux populations sans le savoir — les chiffres de ce run (§1, §2) sont les premiers calculés sur données nettoyées et ne sont **pas directement comparables** aux moyennes brutes des runs antérieurs. **Action requise** : appliquer ce filtre par mots-clés à chaque run futur tant que Blotato ne fournit pas d'identifiant de compte dans sa réponse.
+2. **🟢 Signal fort — l'écart de croissance avec `@jb.roy_` se creuse alors que les cadences de publication convergent.** Cette semaine, `@automationboost7` et `@jb.roy_` ont publié quasiment le même nombre de vidéos (+13 chacun, ≈1,9/j) — la sur-publication de `jb.roy_` qui expliquait une partie de l'écart les semaines précédentes n'est plus un facteur différenciant. Résultat : Tony gagne **+15 abonnés** cette semaine (151→166) contre **+2 seulement** pour `jb.roy_` (1580→1582, croissance quasi nulle). Rapporté aux vidéos publiées, Tony est désormais **~7,7x plus efficace** (1,15 abonné/vidéo vs 0,15) contre ~4x le run précédent. Avec la cadence neutralisée comme variable, l'écart pointe plus fort que jamais vers la **qualité du hook/contenu**, pas le rythme de publication (voir §7).
+3. **🟡 Hypothèse infirmée — l'horaire du format "Journal IA" ne suit pas le schéma attendu.** Le run du 31/08 concluait (sur 1 seul point de comparaison) que l'édition de nuit (03h UTC) tuait le format (11 vues) contre un créneau après-midi. Ce run montre le contraire sur deux nouveaux points : l'édition du 23/08 à 03h00 UTC a fait **783 vues** (2e meilleure vidéo de la fenêtre) et celle du 05/09 à 07h30 UTC a fait **774 vues** (3e). L'horaire ne semble donc pas être le facteur déterminant pour ce format — **hypothèse à retester avec un vrai plan de test contrôlé**, pas de conclusion causale possible avec ces échantillons.
+4. **🟢 LinkedIn toujours opérationnel.** 12 posts publiés entre le 31/08 et le 06/09 (Journal IA quotidien + posts uniques), **aucun échec**. Toujours aucune métrique d'engagement disponible (Blotato ne collecte pas d'analytics LinkedIn) — statut de publication uniquement.
+5. **🔴 `n5dIUNEk5D6Pj3Vf` — toujours non opérationnel, aucun changement depuis le 31/08.** Reconfirmé : **0 exécution** depuis sa création (21/07), `active: false`, nœuds HTTP Request (Instagram Graph API, TikTok API) et Telegram toujours avec des valeurs placeholder (`<__PLACEHOLDER_VALUE__...>`) jamais renseignées. Ce n'est toujours pas un problème d'accès n8n (l'accès fonctionne, voir §0.6 ci-dessous) — le workflow n'a simplement jamais été câblé. **Recommandation inchangée : le configurer réellement ou l'archiver.**
+6. **🟢 n8n accessible et fonctionnel ce run.** Le workflow concurrent `YUJjz5NNsYo41t8q` a été exécuté deux fois (exécutions `83829` pour `automationboost7`, `83830` pour `jb.roy_`, méthodologie identique aux runs précédents : modification temporaire du champ `profiles` du node Apify, exécution, puis **remise en état d'origine** — vérifiée après coup, le node cible de nouveau `automationboost7`).
+7. **`tonypayet4` reste confirmé mort** côté TikTok public (0 abonné / 0 vidéo / 0 like), même compte physique que `@automationboost7` — aucune action requise, à ne plus revérifier chaque semaine sauf changement signalé par Tony.
 
 ---
 
 ## 1. Chiffres clés par plateforme
 
-### TikTok `@automationboost7` — compte + vidéo par vidéo (fenêtre 24/08→31/08, n=20 vidéos)
-| Métrique | Valeur (31/08) | vs run 24/08 |
+### TikTok `@automationboost7` — compte + 40 dernières vidéos (Apify, fenêtre ≈22/08→05/09)
+| Métrique | Valeur (07/09) | vs run 31/08 |
 |---|---|---|
-| Abonnés | **151** | +15 en 7j (136→151) |
-| Vidéos publiées (total compte) | **122** | +19 en 7j (103→122, ≈2,7/j — cadence toujours au-dessus de la cible 1/j) |
-| Likes cumulés (total compte) | 584 | non comparable (métrique non suivie la semaine dernière) |
-| Vues moyenne / médiane (24/08→31/08, n=20) | **306 / 193** | Nette hausse vs le max historique de 912 vues sur une seule vidéo au run du 24/08 — c'est la moyenne, pas un pic isolé, qui grimpe. Échantillon encore petit, à confirmer. |
-| Durée moyenne / médiane | 48,6 s / **38 s** | proche de la cible 30–35 s recommandée, légère dérive vers le plus long à surveiller |
+| Abonnés | **166** | +15 en 7j (151→166) |
+| Vidéos publiées (total compte) | **135** | +13 en 7j (122→135, ≈1,9/j — cadence en baisse, se rapproche de la cible) |
+| Likes cumulés (total compte) | 643 | +59 en 7j (584→643) |
+| Vues moyenne / médiane (n=40 dernières vidéos) | **354 / 268** | En hausse vs 306/193 le run précédent (fenêtre glissante, pas strictement comparable, n différent) |
+| Commentaires moyens/vidéo | 1,1 | Léger mieux, reste faible |
+| Engagement/vue moyen | 11,79 % | — |
+| Durée moyenne / médiane | — / **34 s** | Proche de la cible, stable |
 
-### Concurrent TikTok `@jb.roy_` — compte + vidéo par vidéo (fenêtre 24/08→31/08, n=33 vidéos)
-| Métrique | Valeur (31/08) | vs run 24/08 |
+### Concurrent TikTok `@jb.roy_` — compte + 40 dernières vidéos (fenêtre ≈25/08→02/09)
+| Métrique | Valeur (07/09) | vs run 31/08 |
 |---|---|---|
-| Abonnés | **1580** | +6 en 7j (1574→1580) — croissance quasi nulle |
-| Vidéos publiées (total compte) | **149** | **+34 en 7j** (115→149, ≈4,9/j — rafale toujours en cours, pire que Tony) |
-| Likes cumulés (total compte) | 7674 | non comparable |
-| Vues moyenne / médiane (24/08→31/08, n=33) | 190 / 159 | — inférieur aux moyennes de Tony cette semaine, voir §0.7 |
-| Durée moyenne / médiane | 46,2 s / 44 s | légèrement plus long que Tony |
+| Abonnés | **1582** | **+2 en 7j seulement** (1580→1582) — croissance quasi à l'arrêt |
+| Vidéos publiées (total compte) | **162** | +13 en 7j (149→162, ≈1,9/j — même cadence que Tony désormais) |
+| Likes cumulés (total compte) | 7807 | +133 en 7j |
+| Vues moyenne / médiane (n=40 dernières vidéos) | 212 / 157 | Inférieur à Tony |
+| Commentaires moyens/vidéo | 0,2 | Quasi nul |
+| Engagement/vue moyen | 4,39 % | — |
+| Durée moyenne / médiane | — / 48 s | Plus long que Tony |
 
-**Lecture** : le signal "sur-publication ne paie pas" du run précédent se confirme et se précise au niveau vidéo — `jb.roy_` poste 65 % plus souvent que Tony (33 vs 20 vidéos sur la même semaine) mais fait **moins de vues en moyenne par vidéo** (190 vs 306) et gagne 4x moins d'abonnés par vidéo publiée. Voir §0.7 et §7.
+**Lecture** : cadences désormais quasi identiques (≈1,9 vidéo/jour chacun) — la variable "sur-publication" n'explique plus l'écart. Tony fait **+67 % de vues moyennes/vidéo**, **2,7x l'engagement/vue**, et surtout **+15 abonnés contre +2** cette semaine. Voir §0.2 et §7.
 
-### Instagram `@automatisationboost` (54617) — source Blotato, 8 posts depuis le 24/08 (voir §0.4 pour la réserve sur 1 post)
-| Métrique | Valeur | vs run 24/08 |
+### Instagram `@automatisationboost` (54617) — Blotato, données nettoyées de la contamination food (voir §0.1)
+| Métrique | Valeur | Note |
 |---|---|---|
-| Vues | moyenne **41,9**, médiane **22** | ↑ vs moy 33,2 / méd 11 — rebond à confirmer (n petit, voir §0.4) |
-| Reach | moyenne 37,25, médiane 19,5 | suit les vues de très près |
-| Commentaires | 1 post sur 8 a ≥1 commentaire | quasi-inchangé |
-| Heure dominante (depuis le 05/08, n élargi) | 14:00 UTC (16/44 posts) | confirmé pour la 4ᵉ fois consécutive, signal le plus robuste du rapport |
+| Top 5 propres depuis le 01/07 | 243 / 223 / 216 / 214 / 178 vues | Voir §2 pour le détail des hooks |
+| Vues récentes depuis le 31/08 (n=2, propre) | moyenne **136** (166 et 106) | Échantillon très petit — 1 seul post exclu comme food ("19 plats en 19 secondes", 171 vues, 01/09 07h01 UTC) |
+| Vues récentes depuis le 24/08 (n=5, propre) | moyenne **122,4**, médiane **106** | **Non comparable** aux moyennes des runs précédents (contaminées, voir §0.1) |
+| Heure dominante (n=14 posts propres depuis le 05/08) | **14:00 UTC** (9/14, 64 %) | 5e confirmation consécutive, signal le plus robuste du rapport |
+| Commentaires | 0 sur tous les posts examinés | CTA "Commente X" toujours sans effet mesurable |
 
 ### LinkedIn (Payet Tony, compte Blotato 25882)
-**Compte opérationnel.** Dernier post publié avec succès le **30/08 15:15:06 UTC**. La panne signalée le 24/08 ("compte expiré") ne s'est pas reproduite ; les échecs du 28/08 (403 sur récupération média) étaient une panne transverse multi-plateforme résolue le jour même (voir §0.3). Toujours aucune métrique d'engagement disponible (Blotato ne collecte pas d'analytics LinkedIn).
+**Compte opérationnel.** 12 posts publiés entre le 31/08 et le 06/09, **0 échec**. Toujours aucune métrique d'engagement (Blotato ne collecte pas d'analytics LinkedIn — statut de publication uniquement).
 
 ---
 
 ## 2. Top 3 vidéos / posts (période récente)
 
-### Top 3 TikTok `@automationboost7` (fenêtre 24/08→31/08, source Apify `clockworks/tiktok-scraper`)
-1. **782 vues** — « Au Népal cette semaine, une avalanche de glace a bloqué une rivière. Un barrage s'est formé tout seul, puis il a cédé... » — 109 s, 28/08 08:00 UTC. *Actu réelle + curiosité (comment ça se termine ?), format long assumé.*
-2. **772 vues** — « Avant / Après : d'un site figé à un site qui bosse pour toi — pages en ligne + relances clients envoyées en automatique. Commente SITE » — 25 s, 26/08 14:00 UTC. *Avant/après très court et concret, meilleur ratio vues/durée de la semaine.*
-3. **740 vues** — « Six catégories, trois outils par catégorie, et un fait derrière chaque verdict — pas un adjectif » (comparatif Seedance) — 88 s, 25/08 15:30 UTC. *Comparatif chiffré, promesse de fait vérifiable plutôt que d'opinion.*
+### Top 3 TikTok `@automationboost7` (n=40 dernières vidéos, source Apify `clockworks/tiktok-scraper`)
+1. **794 vues** — « Au Népal cette semaine, une avalanche de glace a bloqué une rivière. Un barrage s'est formé tout seul, puis il a cédé... » — 109 s, 28/08 08:00 UTC. *Actualité insolite grand public, hors registre outil IA habituel — meilleur score de la fenêtre.*
+2. **783 vues** — « Journal IA — Dim. 23 août 2026 » — 68 s, 23/08 03:00 UTC. *Format récurrent, publié à 03h UTC (contredit l'hypothèse "horaire de nuit = mauvais", voir §0.3).*
+3. **774 vues** — « Journal IA — Sam. 5 septembre 2026 » — 84 s, 05/09 07:30 UTC. *Même format, autre horaire, performance quasi identique — l'horaire ne semble pas être le facteur déterminant pour ce format.*
 
-**À noter — retournement du format « Journal IA »** : ce format était le winner confirmé du run du 24/08 (764–775 vues). Sur cette fenêtre, l'édition du 25/08 03:00 UTC n'a fait que **11 vues** — l'édition du 29/08 (17:10 UTC, hors créneau habituel de 03:00) a fait 609 vues, nettement mieux. Signal possible : c'est l'heure de publication qui a fait la différence, pas le format lui-même — à creuser (voir §5).
+*Suivent de près : 773 vues (Avant/Après site, 25 s, 26/08 14:00 UTC — meilleur ratio vues/durée) et 757 vues (« Tu veux gagner du temps ? », 32 s, 02/09 08:20 UTC).*
 
-### Top 3 Instagram `@automatisationboost` (depuis le 01/07, données fraîches)
+### Top 3 Instagram `@automatisationboost` (depuis le 01/07, données filtrées — voir §0.1)
 1. **243 vues / 224 reach** — « Là, tout de suite, pendant que t'attends dans la queue ou chez le coiffeur... Commente TERMINAL et je t'envoie le guide » (Claude Code + VPS + Coolify + MCP, 3 étapes) — 27/07 14:29 UTC.
-2. **223 vues / 195 reach** — « Anthropic vient de sortir Opus 5, 4e Claude en 2 mois. Follow pour la suite + commente OPUS » — 29/07 14:30 UTC. *Actualité produit nommée dans les 10 premiers mots, très réactif.*
+2. **223 vues / 195 reach** — « Anthropic vient de sortir Opus 5, 4e Claude en 2 mois. Follow pour la suite + commente OPUS » — 29/07 14:30 UTC. *Actualité produit nommée dans les 10 premiers mots.*
 3. **216 vues / 202 reach** — « L'alternative gratuite à Claude Code pour créer des sites automatiquement. Kilo Code + n8n = même résultat, zéro abonnement. Commente KILO » — 13/07 19:00 UTC.
 
-*Ces 3 posts dépassent nettement le Top 3 du run précédent (136/121/113 vues) — à noter que ce Top 3 provient d'une fenêtre plus large (depuis le 01/07 vs les 30 derniers jours au run précédent), donc pas strictement comparable en tendance, mais les formulations restent des patterns solides.*
+### Top vidéos concurrent `@jb.roy_` (n=40 dernières vidéos, fenêtre ≈25/08→02/09)
+1. **1234 vues** — 02/09 14:30 UTC, 21 s, légende « Follow @jb.roy_ pour imploser l'IA dans ton activité » (variante avec coquille "imploser" au lieu de "implémenter").
+2. **725 vues** — 28/08 15:00 UTC, 44 s.
+3. **530 vues** — 25/08 17:16 UTC, 42 s.
 
-### Top vidéos concurrent `@jb.roy_` (fenêtre 24/08→31/08)
-1. **684 vues** — 28/08 15:00 UTC, 44 s.
-2. **512 vues** — 25/08 17:16 UTC, 42 s.
-3. **372 vues** — 25/08 17:16 UTC, 68 s (publié la même minute que le #2 — probable double-post/variante).
-
-Les 33 vidéos de la fenêtre portent **toutes** la même légende générique « Follow @jb.roy_ pour implémenter l'IA dans ton activité » (ou variante avec espace insécable) — confirmé : le hook reste **parlé dans la vidéo**, jamais écrit dans le texte du post, et aucun hashtag n'est utilisé sur les 33 posts. Impossible d'identifier le hook exact sans transcription vidéo (hors périmètre de cette collecte).
+Toujours la même légende générique (variantes mineures), **aucun hashtag** sur les 40 vidéos — le hook reste parlé dans la vidéo, jamais écrit dans le texte du post (confirmé pour la 3e fois consécutive).
 
 ---
 
 ## 3. Hooks qui marchent — formulations réutilisables
 
-1. **Actualité produit/outil connu nommée dans les 10 premiers mots + un chiffre ou un fait précis** — confirmé à nouveau ce run (« Anthropic vient de sortir Opus 5, 4e Claude en 2 mois » = #2 Instagram, 223 vues). C'est le pattern qui correspond le mieux à la règle CTA de la routine.
-2. **Bénéfice chiffré personnel très concret** dans les 10 premiers mots — ex. « 200€/mois économisés ». Confirmé sur plusieurs runs consécutifs (voir historique 24/08).
-3. **Alternative gratuite à un outil payant connu**, nommé explicitement — ex. « Kilo Code + n8n = même résultat [que Claude Code], zéro abonnement » — #3 Instagram ce run (216 vues).
-4. **Tutoriel actionnable en 3 étapes** avec estimation de temps réaliste — ex. « VPS, Coolify, Claude Code + MCP... 3 à 7h de setup » — #1 Instagram ce run (243 vues, meilleur post Instagram sur 2 mois).
-5. **Debunk d'une promesse irréaliste + solution vérifiable** — pattern confirmé les runs précédents (Lamborghini/IA), pas de nouvel exemple cette semaine.
-6. **Format « Journal IA » récurrent** (TikTok) — signal mitigé cette semaine : 609 vues le 29/08 à 17h10 UTC, mais seulement 11 vues le 25/08 à 03h00 UTC. L'horaire de publication semble être le facteur déterminant, pas le format lui-même (voir §2, §8.2) — à republier sur un créneau 14h–17h UTC pour confirmer.
+1. **Actualité produit/outil connu nommée dans les 10 premiers mots + un chiffre ou un fait précis** — toujours le pattern le plus robuste, confirmé sur Instagram (Opus 5) et en filigrane sur TikTok (chiffres du Journal IA).
+2. **Actualité insolite grand public, hors registre IA/outils** — l'avalanche au Népal (794 vues, #1 TikTok de la semaine) confirme et renforce le signal "à retester" du run précédent (passé de n=1 à un pattern qui se répète, à généraliser prudemment).
+3. **Alternative gratuite à un outil payant connu**, nommé explicitement — ex. « Kilo Code + n8n = même résultat [que Claude Code], zéro abonnement » (#3 Instagram, 216 vues).
+4. **Tutoriel actionnable en 3 étapes** avec estimation de temps réaliste — ex. « VPS, Coolify, Claude Code + MCP... 3 à 7h de setup » (#1 Instagram, 243 vues, meilleur post Instagram sur 2 mois).
+5. **Avant/Après concret et court** — « d'un site figé à un site qui bosse pour toi » (25 s, 773 vues) — meilleur ratio vues/durée de la fenêtre TikTok.
+6. **Format « Journal IA » récurrent** — reste performant (783 et 774 vues), et cette semaine son horaire ne semble PAS déterminant contrairement à ce qu'on pensait — à conserver comme pilier quotidien sans sur-optimiser l'heure de publication pour l'instant.
 
-Règle : **nommer un outil/une actualité connue + un chiffre ou un fait précis dans les 10 premiers mots** — le pattern le plus robuste sur Instagram cette semaine et sur plusieurs runs TikTok précédents.
+Règle : **nommer un outil/une actualité connue + un chiffre ou un fait précis dans les 10 premiers mots** reste le pattern le plus robuste ; **l'actualité insolite grand public** (hors IA) devient une deuxième famille de hook à tester plus systématiquement.
 
 ---
 
 ## 4. Ce qu'il ne faut PLUS faire
 
-- ❌ **Publier plus d'1 fois par jour sur TikTok.** Toujours vrai directionnellement : `jb.roy_` a posté 34 vidéos en 7j pour seulement +6 abonnés (quasi stagnation). Tony reste à ≈2,7/j (mieux qu'avant mais toujours au-dessus de la cible). **Ne pas relâcher cette règle tant qu'on n'a pas de données vidéo-par-vidéo pour la vérifier.**
-- ❌ **Compter sur « Commente le mot X » comme unique CTA** sans variante — confirmé de nouveau cette semaine : sur les 20 vidéos TikTok de la fenêtre, la moyenne de commentaires reste quasi nulle (0 à 2 commentaires par vidéo, la majorité à 0) malgré le CTA.
-- ❌ **Hook vague sans contexte concret** — « Ici tu ne cliques pas sur suivant. Tu écris. » a été republié deux fois cette semaine (25/08 et 27/08) avec des résultats incohérents (12 puis 225 vues) : sans fait précis ni nom d'outil, le hook ne donne rien de fiable à accrocher.
-- ❌ **Traiter la baisse Instagram comme confirmée sur 4 semaines sans vérifier les comptes mélangés** — voir §0.4, un post ambigu (foodboost ?) a pu fausser le calcul cette semaine. Vérifier manuellement les 8 posts avant de communiquer un chiffre de rebond.
-- ❌ **Supposer que LinkedIn est en panne sans revérifier `blotato_list_posts`** — le run précédent a mal diagnostiqué un problème ponctuel (403 média) comme une expiration de compte. Toujours lire le message d'erreur exact avant de conclure.
-- ⚠️ **Nouveau risque à surveiller** : si n8n reste inaccessible plusieurs semaines de suite, aucune donnée vidéo-par-vidéo TikTok ne sera disponible et l'onglet Analyse Perf du Sheet cessera d'être à jour. Prioriser la reconnexion n8n.
+- ❌ **Calculer une moyenne Instagram sans filtrer le contenu food/restaurant.** Confirmé et quantifié ce run : 34 % des posts remontés par `blotato_list_top_posts` (17/50) sont des templates food publiés à 07h00 UTC, mélangés sans identifiant de compte dans la réponse API (voir §0.1). Toujours filtrer par mots-clés avant tout calcul.
+- ❌ **Compter sur « Commente le mot X » comme unique CTA.** Confirmé de nouveau : `jb.roy_` à 0,2 commentaire/vidéo en moyenne ; Tony légèrement mieux à 1,1 mais toujours loin d'un vrai levier d'engagement. Zéro commentaire sur l'échantillon Instagram examiné.
+- ❌ **Attribuer l'écart de croissance avec `jb.roy_` uniquement à sa cadence de publication.** Ce run montre que les deux comptes publient désormais au même rythme (≈1,9/j) et que l'écart de croissance (+15 vs +2 abonnés) persiste et s'accentue — c'est la qualité du hook/contenu qui pèse, pas seulement le volume.
+- ❌ **Conclure sur l'horaire du format "Journal IA" à partir d'un seul point de comparaison.** Le run précédent a tiré une conclusion (nuit = mauvais) sur 1 exemple ; ce run la contredit avec 2 nouveaux points. Il faut un vrai plan de test (même contenu, plusieurs horaires, plusieurs semaines) avant de figer une règle.
+- ⚠️ **Ne plus considérer les moyennes Instagram des runs du 24/08 et du 31/08 comme fiables** pour des comparaisons de tendance — elles n'appliquaient pas le filtre food découvert ce run (voir §0.1). Repartir de la baseline nettoyée de ce run pour les comparaisons futures.
 
 ---
 
 ## 5. Meilleures heures de publication
 
-- **Instagram** : créneau **14:00 UTC** toujours dominant (16 posts sur 44 depuis le 05/08) — confirmé pour la 4ᵉ semaine consécutive, signal le plus robuste de ce rapport.
-- **TikTok `@automationboost7`** (n=20, fenêtre 24/08→31/08) : **14:00 UTC domine** avec 6 des 20 publications (30 %), suivi de 15:00 UTC (4) et 08:00 UTC (4). Cohérent avec le créneau pivot Instagram — première confirmation croisée entre les deux plateformes ce run. Reste à confirmer sur plusieurs semaines (n encore petit).
-- **Concurrent `@jb.roy_`** (n=33) : créneau très différent, concentré à **16:00–18:00 UTC** (28 des 33 posts, soit 85 %) — décalage net avec le pivot 14:00 UTC de Tony. Pas de conclusion à en tirer sans donnée de conversion, mais utile pour éviter de calquer aveuglément l'horaire du concurrent.
-- **Recommandation** : garder **14:00 UTC** comme créneau pivot sur Instagram *et* TikTok — première semaine où les deux plateformes s'alignent sur ce créneau.
+- **Instagram** : créneau **14:00 UTC** toujours dominant (9 posts sur 14 propres depuis le 05/08, soit 64 %) — 5e confirmation consécutive, signal le plus robuste de ce rapport. **À garder comme pivot par défaut.**
+- **TikTok `@automationboost7`** : pas de pivot horaire net cette semaine — le Top 3 est réparti sur 08:00, 03:00 et 07:30 UTC, et le format Journal IA performe de façon comparable à 03h et 07h30 (voir §0.3). Le créneau 14:00 UTC reste présent dans le Top 5 (773 vues) mais n'est plus dominant à lui seul.
+- **Concurrent `@jb.roy_`** : sa meilleure vidéo de la semaine (1234 vues) est publiée à 14:30 UTC, dans le même créneau que le pivot Instagram de Tony — coïncidence à surveiller plutôt qu'un signal exploitable en l'état (n=1).
+- **Recommandation** : garder **14:00 UTC** comme créneau pivot sur Instagram (signal solide). Pour TikTok, lancer un **test contrôlé sur plusieurs semaines** avant de fixer une règle d'horaire, notamment pour le format Journal IA.
 
 ---
 
 ## 6. Durée cible de vidéo
 
-Fenêtre 24/08→31/08 : médiane **38 s** (Tony, n=20, moyenne 48,6 s) vs **44 s** (`jb.roy_`, n=33, moyenne 46,2 s). Léger allongement chez Tony vs le 34 s du run du 24/08, tiré par quelques formats plus longs testés cette semaine (« Journal IA » 76–88 s, extraits d'essai contemplatif jusqu'à 109 s). Le Top 3 de la semaine (§2) est cependant dominé par une vidéo courte (25 s, #2) et une longue (109 s, #1) — la durée seule n'explique pas la performance, le hook prime. **Cible recommandée : 25–45 s**, élargie par rapport à 30–35 s pour laisser de la place aux formats actu courts (25–30 s) et aux comparatifs/explainers plus longs (80–110 s) qui ont bien marché cette semaine, tout en évitant de dériver au-delà de ~110 s.
+`@automationboost7` : médiane **34 s** (n=40) — stable. `@jb.roy_` : médiane **48 s** (n=40) — toujours plus long. Le Top 3 de la semaine chez Tony est dominé par des formats longs à fort hook (68-109 s, Journal IA + actualité) mais une vidéo courte (25 s, Avant/Après) reste dans le Top 5 avec le meilleur ratio vues/durée. **Cible recommandée inchangée : 25–45 s** pour le format quotidien court, avec une tolérance jusqu'à ~90–110 s pour les formats actu/comparatifs à hook fort (Journal IA, actualité insolite) — la durée seule n'explique pas la performance, le hook prime toujours.
 
 ---
 
-## 7. Ce que fait le concurrent `@jb.roy_` qui marche
+## 7. Ce que fait le concurrent `@jb.roy_` qui marche (et ce qui ne marche plus)
 
-Détail vidéo par vidéo obtenu ce run (fenêtre 24/08→31/08, n=33, source Apify `clockworks/tiktok-scraper`) :
-
-- **Le rythme de publication ne compense pas la qualité par vidéo.** `jb.roy_` a ajouté 34 vidéos en 7 jours (115→149) pour seulement +6 abonnés (1574→1580), et sur la même fenêtre fait **190 vues/vidéo en moyenne contre 306 pour Tony** — malgré 10x plus d'abonnés (1580 vs 151). Rapporté aux abonnés gagnés par vidéo publiée, Tony est ≈4x plus efficace (0,79 abonné/vidéo vs 0,18). C'est le signal le plus actionnable de ce run (voir §0.7) : la stratégie de Tony (publication plus rare, hooks nommés/actu) rapporte mieux par publication que la rafale du concurrent.
-- **Créneau de publication très différent** : `jb.roy_` concentre 85 % de ses posts entre 16h et 18h UTC, contre 14h pour Tony (voir §5) — pas de conclusion causale à en tirer, mais confirme que copier l'horaire du concurrent n'est pas nécessaire.
-- **Légende toujours générique, aucun hashtag** : les 33 posts de la fenêtre portent la même légende « Follow @jb.roy_ pour implémenter l'IA dans ton activité », sans un seul hashtag. Le hook réel est donc **parlé dans la vidéo**, invisible dans les métadonnées scrapées — confirme que le format texte-hook de Tony (hook écrit dans les 10 premiers mots de la légende) reste une différenciation structurelle, pas seulement un choix créatif.
-- **Durée légèrement plus longue** : médiane 44 s (`jb.roy_`) vs 38 s (Tony) — écart resserré par rapport au run du 24/08 (33,5 s vs 34 s), les deux comptes dérivent un peu vers des formats plus longs.
-- **Limite de méthode** : sans accès à la légende/voix réelle des vidéos `jb.roy_`, impossible d'extraire ses formulations de hook exactes pour alimenter §3 — seule l'observation structurelle (rythme, créneau, durée, absence de hook écrit) est disponible depuis Apify.
+- **La cadence ne compense plus rien : elle a rejoint celle de Tony et la croissance s'est effondrée.** `jb.roy_` a publié +13 vidéos cette semaine (149→162, ≈1,9/j) — quasiment identique à Tony — mais n'a gagné que **+2 abonnés** (1580→1582) contre **+15** pour Tony. L'efficacité par vidéo publiée est désormais de **7,7x en faveur de Tony** (1,15 vs 0,15 abonné/vidéo), en forte hausse par rapport au ratio de ~4x du run précédent (voir §0.2). Avec la variable "volume de publication" neutralisée, l'écart pointe sans ambiguïté vers la qualité du contenu/hook.
+- **Vues et engagement toujours nettement inférieurs** : 212 vues/vidéo en moyenne (médiane 157) contre 354 chez Tony (médiane 268) — et un engagement/vue de 4,39 % contre 11,79 % chez Tony (2,7x).
+- **Légende toujours générique, toujours 0 hashtag** : « Follow @jb.roy_ pour implémenter l'IA dans ton activité » (avec variantes/coquilles mineures) sur les 40 vidéos de l'échantillon — confirmé pour la 3e fois consécutive. Le hook réel reste parlé dans la vidéo, invisible dans les métadonnées scrapées.
+- **Durée toujours plus longue** : médiane 48 s vs 34 s chez Tony — écart stable.
+- **Limite de méthode inchangée** : sans transcription vidéo, impossible d'extraire les formulations de hook exactes de `jb.roy_` — seules les observations structurelles (rythme, durée, légende, croissance) sont disponibles depuis Apify.
 
 ---
 
 ## 8. Recommandations prioritaires (semaine suivante)
 
-1. **Continuer à publier moins souvent que `jb.roy_` mais avec un hook nommé/actu en tête de vidéo** — cette semaine Tony fait +61 % de vues moyennes par vidéo (306 vs 190) et ≈4x plus d'abonnés par vidéo publiée que `jb.roy_`, malgré 10x moins d'abonnés au départ (§0.7, §7). Ne pas passer à la rafale de publication.
-2. **Retester le format « Journal IA » à 14h–17h UTC plutôt qu'à 03h UTC** — l'édition du 25/08 à 03h a fait 11 vues, celle du 29/08 à 17h10 en a fait 609 ; l'horaire de nuit semble tuer un format qui marchait bien au run précédent (§2).
-3. **Élargir la cible de durée à 25–45 s** (au lieu de 30–35 s strict) pour laisser de la place aux formats actu courts et aux comparatifs plus longs qui ont dominé le Top 3 de la semaine (§6).
-4. **Vérifier manuellement les 8 derniers posts Instagram** pour confirmer que le post "burger" (ID 6571153) n'est pas un post foodboost mal attribué avant de communiquer sur un rebond des vues.
-5. **Rejouer le pattern confirmé cette semaine** : actualité/outil connu nommé + fait précis dans les 10 premiers mots (ex. sortie de modèle, alternative gratuite à un outil payant, actu réelle type "avalanche au Népal") — meilleurs posts Instagram et TikTok du run.
-6. **Décider du sort de `n5dIUNEk5D6Pj3Vf`** : confirmé non opérationnel (0 exécution, credentials/IDs jamais renseignés, voir §0.6) — à configurer réellement ou à archiver, ce n'est plus une question d'accès n8n.
+1. **Ne plus chercher à publier moins que `jb.roy_` — chercher à publier mieux.** Les deux comptes sont désormais à cadence quasi égale (~1,9/j) ; l'écart de croissance (+15 vs +2 abonnés) est maintenant attribuable au contenu, pas au volume. Concentrer l'effort sur la qualité du hook plutôt que sur la régulation de la cadence.
+2. **Corriger la collecte Instagram : toujours filtrer les posts food/restaurant avant tout calcul de moyenne.** 34 % de contamination confirmée ce run (voir §0.1) — appliquer systématiquement un filtre par mots-clés, et envisager de demander à Blotato un champ d'identification de compte si l'API l'expose un jour.
+3. **Lancer un vrai test contrôlé sur l'horaire du format "Journal IA"** (même contenu à 03h, 07h30 et 14h sur plusieurs semaines) — les deux derniers runs se contredisent, aucune conclusion fiable n'est possible sans plan de test.
+4. **Diversifier les hooks "actualité insolite grand public"** (type avalanche au Népal, 794 vues, meilleur score de la semaine) au-delà du seul registre IA/outils — tester 2-3 nouveaux sujets d'actualité générale la semaine prochaine.
+5. **Décider enfin du sort de `n5dIUNEk5D6Pj3Vf`** : confirmé non opérationnel pour la 2e semaine consécutive (0 exécution depuis sa création le 21/07, placeholders jamais renseignés) — à configurer réellement ou à archiver, ce n'est plus une question d'accès n8n.
 
 ---
 
-## 9. Sources & limites (run du 31/08, complété après réautorisation n8n)
+## 9. Sources & limites (run du 07/09)
 
-- **TikTok compte (Tony + concurrent)** : `tokscript get_tiktok_user` (stats de compte : abonnés, nb vidéos, likes cumulés). `tokscript get_tiktok_user_videos` échoue toujours avec *"Listing user videos requires a Pro or Premium subscription"* (§0.2, abonnement tokscript Pro/Premium non actif).
-- **TikTok vidéo par vidéo (Tony + concurrent)** : workflow n8n `YUJjz5NNsYo41t8q` (Apify `clockworks/tiktok-scraper`), exécuté en deux passes séparées le 31/08 (exécutions `80824` pour `automationboost7`, `80825` pour `jb.roy_`) — profil, durée, vues/likes/comments/shares/saves, horodatage par vidéo. Le node de traitement du workflow retourne les métriques agrégées + top 5 par vues et par engagement ; le détail complet par vidéo a été extrait temporairement en modifiant le Code node pour exposer `allRows` (dédoublonnage des items Apify dupliqués inclus), puis le workflow a été **remis dans son état d'origine** (profil `automationboost7`, code initial) après collecte.
-- **Instagram (Tony)** : `blotato_list_top_posts` (platform=instagram, depuis le 2026-07-01, 100 résultats). La réponse ne contient aucun champ d'identification de compte — le filtrage foodboost n'a pas pu être appliqué avec certitude (voir §0.4).
-- **LinkedIn** : `blotato_list_posts` (tous statuts, depuis le 24/08, 100 items) — a permis de corriger le diagnostic erroné du run précédent (§0.3).
-- **Google Sheet "Analyse Perf"** : mis à jour ce run via un workflow n8n `create_workflow_from_code` (Manual Trigger → Google Sheets `appendOrUpdate`), vérifié par export CSV du gid 1277122579 — voir résumé final de l'agent.
-- **Workflow analytics hebdo `n5dIUNEk5D6Pj3Vf`** : vérifié (§0.6) — 0 exécution depuis sa création, credentials/IDs jamais renseignés (placeholders), non opérationnel.
-- **Étape B (génération de scripts + ajout dans la file de production)** : toujours **non exécutée** — hors périmètre de ce complément (n8n vient d'être réautorisé, la génération de scripts n'a pas été redemandée dans cette passe). Voir §10.
-
----
-
-## 10. Étape B — Scripts (toujours non exécutée)
-
-L'étape B de la routine hebdo (génération de 5 scripts vidéo + ajout dans l'onglet principal du Sheet lu par `veille-to-video`) **n'a pas été exécutée dans ce complément** : ce passage s'est concentré sur les deux lacunes explicitement signalées (données TikTok Apify + onglet Analyse Perf). n8n étant de nouveau accessible, l'étape B peut être relancée dans une prochaine session dédiée.
+- **TikTok compte (Tony + concurrent)** : `tokscript get_tiktok_user` (stats de compte : abonnés, nb vidéos, likes cumulés) — fonctionnel, aucune limitation rencontrée ce run.
+- **TikTok vidéo par vidéo (Tony + concurrent)** : workflow n8n `YUJjz5NNsYo41t8q` (Apify `clockworks/tiktok-scraper`), exécuté en deux passes séparées le 07/09 (exécutions `83829` pour `automationboost7`, `83830` pour `jb.roy_`) via modification temporaire du paramètre `profiles` du node HTTP Request, puis **remise en état d'origine** (profil `automationboost7`) après collecte, vérifiée par relecture du workflow. Chaque passe retourne les 40 dernières vidéos scrapées, avec les métriques agrégées + top 5 par vues et par engagement/vue (pas la liste complète des 40 vidéos, donc la distribution horaire TikTok de ce run repose sur un échantillon de 5, pas 40 — à interpréter avec prudence, voir §5).
+- **Instagram (Tony)** : `blotato_list_top_posts` (platform=instagram, depuis le 2026-07-01, 50 résultats triés par vues). Réponse sans champ d'identification de compte — filtrage manuel par mots-clés appliqué ce run pour exclure le contenu food/restaurant (voir §0.1). Les moyennes de ce run sont les premières calculées sur données nettoyées.
+- **LinkedIn** : `blotato_list_posts` (statuts published+failed, depuis le 31/08, 50 items).
+- **Workflow analytics hebdo `n5dIUNEk5D6Pj3Vf`** : vérifié via `search_executions` — 0 exécution depuis sa création, confirmé pour la 2e semaine consécutive.
+- **Google Sheet "Analyse Perf"** : mis à jour ce run via un workflow n8n `create_workflow_from_code` (Google Sheets, mode append), vérifié par export CSV du gid 1277122579 — voir résumé final de l'agent.
+- **Étape B (génération de scripts + ajout dans la file de production)** : hors périmètre de cette routine (analyse uniquement) — non exécutée.
