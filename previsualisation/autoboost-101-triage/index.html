@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autoboost #101 — Claude trie tes mails prospects</title>
+<style>
+  :root{
+    --bg:#0a0a0f; --surface:#111117; --border:#232330;
+    --gold:#eab308; --violet:#8b5cf6; --ink:#EDEDED; --muted:#8A8A8A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;
+    padding:40px 20px 100px;}
+  .wrap{max-width:720px;margin:0 auto;}
+  h1{font-size:26px;margin:0 0 6px;}
+  .meta{color:var(--muted);font-size:15px;margin-bottom:28px;}
+  video{width:100%;max-width:380px;display:block;margin:0 auto 32px;border-radius:16px;
+    border:2px solid var(--border);background:#000;}
+  h2{font-size:18px;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:8px;margin-top:36px;}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px;}
+  td,th{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{color:var(--muted);font-weight:600;background:var(--surface);}
+  pre{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;
+    white-space:pre-wrap;font-size:14px;line-height:1.5;color:var(--ink);}
+  .pill{display:inline-block;background:rgba(234,179,8,.15);border:1px solid var(--gold);
+    color:var(--gold);border-radius:999px;padding:4px 14px;font-size:13px;font-weight:700;}
+  a{color:var(--violet);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Autoboost #101 — Claude Code + n8n, tri automatique des mails prospects</h1>
+  <div class="meta">Pipeline v3 (assemblage banque avatar, décor BUREAU) · CTA <span class="pill">TRIAGE</span> · durée 34.03s</div>
+
+  <video src="video.mp4" controls playsinline></video>
+
+  <h2>Génération</h2>
+  <p class="meta">Pipeline v3 — assemblage banque avatar, pas de génération IA d'image/vidéo. Pas de
+  prompt Seedance/Higgsfield à fournir ici : ce sont de vraies prises de Tony (banque avatar
+  BUREAU), aucun détourage, aucune image de référence à substituer par son avatar — il l'est
+  déjà.</p>
+
+  <h2>Script voix off (texte intégral)</h2>
+  <pre>3 étapes pour que Claude trie tes mails prospects tout seul, en 20 minutes de setup. Étape 1 : tu connectes ta boîte Gmail à un workflow n8n. Étape 2 : chaque nouveau mail passe devant un agent Claude qui lit le message et détecte s'il vient d'un vrai prospect, d'un client existant, ou juste d'une newsletter. Étape 3 : le workflow range automatiquement dans le bon dossier et t'envoie une notification uniquement pour les mails qui comptent vraiment. Résultat : tu arrêtes de scroller 40 mails par jour pour en trouver 3 utiles. C'est exactement le genre de tâche invisible qui bouffe des heures de freelance chaque semaine, et qui ne demande aucune compétence technique pour être mise en place. Follow pour la suite, lien en bio, et commente le mot TRIAGE, je t'envoie le workflow complet.</pre>
+  <p class="meta">Timing des captions estimé manuellement (pondération longueur de mot + bonus
+  ponctuation, normalisé sur la durée réelle du MP3) — Whisper a renvoyé <code>transcripts: []</code>
+  (quota OpenAI épuisé côté compte Tony), pas de vrai timestamp sur cette vidéo.</p>
+
+  <h2>Texte TikTok + hashtags</h2>
+  <pre>📬 3 étapes pour que Claude trie tes mails prospects tout seul, 20 minutes de setup. Commente TRIAGE pour le workflow complet 👇
+#claude #n8n #automatisation #freelance #productivite</pre>
+
+  <h2>Clips avatar utilisés (vrais rushs Tony, décor BUREAU — aucune génération IA, aucun détourage)</h2>
+  <table>
+    <tr><th>rôle</th><th>clip source</th><th>fenêtre source</th><th>t dans la vidéo</th></tr>
+    <tr><td>hook (plein cadre)</td><td>A1_hook_frontal.mp4</td><td>0.67s → 4.20s</td><td>0.00s → 3.53s</td></tr>
+    <tr><td>intro-démo (fenêtre)</td><td>B1_principe.mp4</td><td>0.08s → 2.08s</td><td>4.60s → 6.60s</td></tr>
+    <tr><td>réalité (fenêtre)</td><td>B1_principe.mp4</td><td>2.08s → 4.71s</td><td>10.00s → 12.63s</td></tr>
+    <tr><td>punch (fenêtre)</td><td>A1_hook_frontal.mp4</td><td>1.00s → 3.83s</td><td>26.50s → 29.33s</td></tr>
+    <tr><td>CTA (fenêtre)</td><td>C2_commente_motcle.mp4</td><td>0.08s → 4.18s</td><td>29.90s → 34.03s</td></tr>
+  </table>
+  <p class="meta">Substitution avatar : sans objet — ce ne sont pas des images générées par IA à
+  remplacer, ce sont de vraies prises de Tony (banque avatar BUREAU). Vérifié par
+  <code>check_lips_rule.mjs</code> : PASS, 0 image fautive sur les 5 plans.</p>
+
+  <h2>Habillage &amp; musique</h2>
+  <p class="meta">Voix clonée (WaveSpeed, relayée via un workflow n8n one-off car le shell sandbox
+  bloque l'accès direct au CloudFront) · fenêtre néon 648×1152 à (216,150) · démonstration
+  workflow en canvas n8n animé (4 nœuds réels : Gmail — nouveau mail → Agent Claude — lecture IA
+  → Switch — tri automatique → Notification ciblée) · carton transformation « 40 MAILS/JOUR ▼ 3
+  UTILES » · musique <code>valse-des-fleurs-maison-evidee.mp3</code> (production maison Automation
+  Boost, partition domaine public, aucun droit tiers) duckée en sidechain sous la voix.</p>
+
+  <p class="meta">Recette complète de reproduction : voir <code>PROMPT.md</code> à la racine du projet
+  <code>autoboost-neon-videos/autoboost-101-triage/</code>.</p>
+</div>
+</body>
+</html>
