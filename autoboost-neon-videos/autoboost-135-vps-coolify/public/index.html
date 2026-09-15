@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#0a0a0f; --surface:#111117; --border:#232330;
+  --gold:#eab308; --gold-light:#BEF264; --violet:#8b5cf6; --violet-deep:#7c3aed;
+  --ink:#EDEDED; --muted:#8A8A8A; --err:#ff6b6b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'DejaVu Sans',Arial,sans-serif;color:var(--ink);}
+
+.bgglow{position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 14%,rgba(139,92,246,.20),transparent 58%),
+             radial-gradient(circle at 50% 92%,rgba(234,179,8,.10),transparent 55%);}
+.griddots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.055) 1.6px,transparent 1.6px);
+  background-size:38px 38px;opacity:.6;}
+
+/* header */
+.brand{position:absolute;left:70px;top:66px;font-size:30px;font-weight:900;letter-spacing:.04em;color:var(--ink);opacity:0;z-index:6;}
+.brand b{color:var(--gold);}
+.kicker{position:absolute;right:70px;top:74px;background:rgba(139,92,246,.16);border:1px solid var(--violet);
+  color:var(--violet);font-size:21px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:10px 22px;border-radius:999px;opacity:0;z-index:6;}
+
+/* hook — plein cadre */
+#avatarFull{position:absolute;left:0;top:0;width:1080px;height:1920px;background:#000;opacity:0;z-index:1;}
+.hookGrad{position:absolute;left:0;right:0;bottom:0;height:760px;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.86) 72%);opacity:0;z-index:2;}
+.hookTitle{position:absolute;left:70px;right:70px;bottom:210px;opacity:0;z-index:3;}
+.hookTitle .l1{font-size:56px;font-weight:900;color:#fff;line-height:1.16;
+  text-shadow:0 6px 26px rgba(0,0,0,.85);}
+.hookTitle .l1 b{color:var(--gold);}
+.hookTitle .l2{margin-top:16px;font-size:36px;font-weight:700;color:var(--ink);
+  text-shadow:0 4px 20px rgba(0,0,0,.85);}
+
+/* content window (avatar overlay OR canvas demo OR cards) */
+#mainWin{position:absolute;left:216px;top:150px;width:648px;height:1152px;border-radius:28px;
+  overflow:hidden;background:#000;border:3px solid rgba(234,179,8,.62);
+  box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 60px rgba(139,92,246,.18);opacity:0;z-index:4;}
+
+#n8nPanel{position:absolute;inset:0;background:var(--surface);opacity:0;}
+.n8ntb{position:relative;height:70px;display:flex;align-items:center;gap:12px;padding:0 26px;
+  background:#0d0d12;border-bottom:1px solid var(--border);}
+.n8ntb .d{width:14px;height:14px;border-radius:50%;background:var(--border);}
+.n8ntb .ttl{position:absolute;left:0;right:0;text-align:center;font-size:23px;font-weight:800;color:var(--muted);letter-spacing:.06em;}
+.n8ntb .ttl b{color:var(--gold);}
+.ncard{position:absolute;left:40px;width:568px;background:#15151c;border:1px solid var(--border);
+  border-radius:18px;padding:22px 24px;opacity:0;box-shadow:0 10px 26px rgba(0,0,0,.4);}
+.ncard .ic{width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,var(--gold),#a16207);
+  display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:12px;}
+.ncard .lb{font-size:24px;font-weight:800;color:var(--ink);line-height:1.2;}
+.ncard .sub{font-size:19px;color:var(--muted);margin-top:6px;font-weight:600;}
+.n1{top:104px;} .n2{top:288px;} .n3{top:668px;} .n4{top:852px;}
+.nwire{position:absolute;left:324px;width:4px;background:linear-gradient(180deg,var(--gold),var(--violet));
+  opacity:0;border-radius:2px;transform-origin:top center;transform:scaleY(0);}
+.w12{top:188px;height:100px;} .w23{top:572px;height:96px;} .w34{top:756px;height:96px;}
+
+.xcard{position:absolute;left:40px;right:40px;top:420px;opacity:0;text-align:center;}
+.xcard .lab{font-size:22px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.xcard .row{margin-top:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.xcard .p1{font-size:46px;font-weight:900;color:var(--err);white-space:nowrap;}
+.xcard .arrow{font-size:36px;color:var(--gold);}
+.xcard .p2{font-size:54px;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(234,179,8,.5);white-space:nowrap;}
+.xcard .note{margin-top:30px;font-size:24px;font-weight:700;color:var(--ink);}
+
+/* CTA (replaces caption band during last beat) */
+.ctaPanel{position:absolute;left:70px;right:70px;top:1370px;text-align:center;opacity:0;z-index:8;}
+.ctaPill{display:inline-block;background:linear-gradient(90deg,rgba(234,179,8,.2),rgba(139,92,246,.16));
+  border:2px solid var(--gold);border-radius:20px;padding:22px 34px;font-size:36px;font-weight:900;color:var(--ink);}
+.ctaPill b{color:var(--gold);}
+.ctaSub{margin-top:16px;font-size:24px;font-weight:700;color:var(--muted);}
+
+/* captions */
+#caption-band{position:absolute;top:1392px;left:0;width:1080px;height:150px;z-index:8;}
+.caption{position:absolute;left:50%;top:20px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,
+    -3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 8px 20px rgba(0,0,0,.6);opacity:0;}
+.caption .hot{color:var(--gold);}
+.caption .vhot{color:var(--violet);}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!--
+  v3 — clips banque BUREAU incrustés en passe 2 ffmpeg dans #avatarFull (plein cadre) et #mainWin (fenêtre 648x1152 @ 216,150).
+  Fenêtres avatar (ss/dur source, timeline composition) :
+    HOOK     A1 ss=0.67 dur=3.53 -> t=[0.000, 3.533]   (plein cadre)
+    INTRO    B1 ss=0.08 dur=2.00 -> t=[4.600, 6.600]   (fenêtre)
+    REALITE  B1 ss=2.08 dur=2.70 -> t=[22.200,24.900]  (fenêtre)
+    PUNCH    A1 ss=1.00 dur=2.80 -> t=[27.800,30.600]  (fenêtre)
+    CTA      C2 ss=0.08 dur=3.384-> t=[30.600,33.984]  (fenêtre)
+  Toutes les plages respectent lips-map.json (zones actives A1 0.67-4.58 / B1 0.08-4.88 / C2 0.08-4.83).
+  Vérifié PASS par check_lips_rule.mjs (voir work/order.json).
+-->
+<div id="root" data-composition-id="autoboost135vpscoolify" data-start="0" data-width="1080" data-height="1920" data-duration="33.984">
+
+  <div class="bgglow"></div>
+  <div class="griddots"></div>
+
+  <div class="brand" data-role="brand">AUTO<b>BOOST</b></div>
+  <div class="kicker" data-role="kicker">VPS + Claude Code</div>
+
+  <!-- HOOK plein cadre -->
+  <div id="avatarFull" data-layout-allow-overflow="true"></div>
+  <div class="hookGrad" data-role="hookgrad"></div>
+  <div class="hookTitle" data-role="hooktitle">
+    <div class="l1">Un VPS à <b>5€/MOIS</b> pour héberger tout toi-même</div>
+    <div class="l2">Claude Code + Coolify, zéro agence.</div>
+  </div>
+
+  <!-- FENÊTRE CONTENU -->
+  <div id="mainWin" data-role="mainwin">
+    <div id="n8nPanel" data-role="n8npanel">
+      <div class="n8ntb"><span class="d"></span><span class="d"></span><span class="d"></span>
+        <span class="ttl">TON <b>STACK</b> · auto-hébergé</span></div>
+      <div class="nwire w12" data-role="w12"></div>
+      <div class="nwire w23" data-role="w23"></div>
+      <div class="nwire w34" data-role="w34"></div>
+      <div class="ncard n1" data-role="n1"><div class="ic">🐳</div><div class="lb">Coolify</div><div class="sub">installe & met à jour tes apps</div></div>
+      <div class="ncard n2" data-role="n2"><div class="ic">🤖</div><div class="lb">Claude Code (MCP)</div><div class="sub">pilote tout depuis le terminal</div></div>
+      <div class="ncard n3" data-role="n3"><div class="ic">🔁</div><div class="lb">n8n + sites + vidéos</div><div class="sub">tournent 24 heures sur 24</div></div>
+      <div class="ncard n4" data-role="n4"><div class="ic">💤</div><div class="lb">Même ordinateur éteint</div><div class="sub">tout continue de tourner sur le VPS</div></div>
+    </div>
+    <div class="xcard" data-role="xcard">
+      <div class="lab">Setup</div>
+      <div class="row"><span class="p1">3 À 7H LA 1RE FOIS</span><span class="arrow">▼</span><span class="p2">PLUS RIEN ENSUITE</span></div>
+      <div class="note">tu n'y touches quasiment plus</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="ctaPanel" data-role="ctapanel">
+    <div class="ctaPill">Commente le mot <b>TERMINAL</b></div>
+    <div class="ctaSub">je t'envoie le guide complet</div>
+  </div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band"></div>
+
+</div>
+<script>
+const compId="autoboost135vpscoolify";
+const DUR=33.984;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* header */
+tl.fromTo(R("brand"),{opacity:0,y:-14},{opacity:1,y:0,duration:0.4},3.70);
+tl.fromTo(R("kicker"),{opacity:0,y:-14},{opacity:1,y:0,duration:0.4},3.80);
+
+/* HOOK plein cadre */
+tl.to("#avatarFull",{opacity:1,duration:0.01},0);
+tl.to("#avatarFull",{opacity:0,duration:0.25,ease:"power2.in"},3.30);
+tl.fromTo(R("hookgrad"),{opacity:0},{opacity:1,duration:0.4},0.10);
+tl.to(R("hookgrad"),{opacity:0,duration:0.25},3.30);
+tl.fromTo(R("hooktitle"),{opacity:0,y:24},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.30);
+tl.to(R("hooktitle"),{opacity:0,duration:0.25},3.30);
+
+/* FENÊTRE CONTENU — apparition/disparition globale */
+tl.fromTo("#mainWin",{opacity:0,y:20,scale:0.97},{opacity:1,y:0,scale:1,duration:0.45,ease:"power3.out"},4.00);
+tl.to("#mainWin",{opacity:0,duration:0.3,ease:"power2.in"},DUR-0.30);
+
+/* n8n-style stack panel — apparaît juste après le plan intro, se cache sous les plans avatar suivants */
+tl.fromTo(R("n8npanel"),{opacity:0},{opacity:1,duration:0.3},6.65);
+function drawWire(role,t){tl.fromTo(R(role),{scaleY:0,opacity:0.2},{scaleY:1,opacity:1,duration:0.4,ease:"power2.out"},t);}
+function popCard(role,t){tl.fromTo(R(role),{opacity:0,y:20,scale:0.94},{opacity:1,y:0,scale:1,duration:0.4,ease:"back.out(1.7)"},t);}
+popCard("n1",6.85);
+drawWire("w12",8.90); popCard("n2",9.10);
+drawWire("w23",12.30); popCard("n3",12.50);
+drawWire("w34",15.50); popCard("n4",15.70);
+tl.to(R("n8npanel"),{opacity:0,duration:0.2},17.00);
+
+/* transformation card 19.20 -> 22.15 (Setup : 3 à 7h la 1re fois -> plus rien ensuite) */
+tl.fromTo(R("xcard"),{opacity:0,scale:0.92},{opacity:1,scale:1,duration:0.35,ease:"back.out(1.6)"},19.20);
+tl.to(R("xcard"),{opacity:0,duration:0.25},22.15);
+
+/* stack panel réapparaît idle (déjà bâti) pendant le "punch" avant la CTA */
+tl.to(R("n8npanel"),{opacity:1,duration:0.3},25.00);
+tl.to(R("n8npanel"),{opacity:0,duration:0.2},27.75);
+
+/* CTA panel — remplace les captions sur le dernier bloc */
+tl.fromTo(R("ctapanel"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4,ease:"power3.out"},30.60);
+
+/* CAPTIONS mot-à-mot (estimation manuelle par pondération longueur/ponctuation, normalisée sur les
+   pauses réelles mesurées par silencedetect sur le MP3 brut — Whisper a renvoyé transcripts:[] vide,
+   quota OpenAI épuisé côté compte Tony, même symptôme déjà documenté sur autoboost-101-triage) */
+const caps=[
+ [3.718,"TROIS",null],
+ [3.861,"ÉTAPES",null],
+ [4.033,"POUR",null],
+ [4.148,"HÉBERGER",null],
+ [4.377,"TOI-MÊME",null],
+ [4.578,"TOUTES",null],
+ [4.750,"TES",null],
+ [4.836,"AUTOMATISATIONS,",null],
+ [5.352,"SANS",null],
+ [5.466,"AGENCE",null],
+ [5.638,"ET",null],
+ [5.696,"SANS",null],
+ [5.810,"Y",null],
+ [5.839,"RETOUCHER",null],
+ [6.097,"APRÈS.",null],
+ [6.734,"COOLIFY","hot:COOLIFY"],
+ [6.914,"INSTALLE",null],
+ [7.121,"ET",null],
+ [7.172,"MET",null],
+ [7.250,"À",null],
+ [7.275,"JOUR",null],
+ [7.378,"TES",null],
+ [7.456,"APPLICATIONS",null],
+ [7.765,"SANS",null],
+ [7.869,"CONFIGURATION",null],
+ [8.204,"À",null],
+ [8.230,"LA",null],
+ [8.281,"MAIN,",null],
+ [9.091,"CLAUDE","vhot:CLAUDE"],
+ [9.406,"CODE","vhot:CODE"],
+ [9.616,"BRANCHÉ",null],
+ [9.984,"EN",null],
+ [10.089,"MCP","hot:MCP"],
+ [10.247,"PILOTE",null],
+ [10.562,"TOUT",null],
+ [10.773,"DEPUIS",null],
+ [11.088,"UN",null],
+ [11.193,"SIMPLE",null],
+ [11.508,"TERMINAL,",null],
+ [12.511,"ET",null],
+ [12.575,"TES",null],
+ [12.670,"WORKFLOWS",null],
+ [12.957,"N8N,","vhot:N8N,"],
+ [13.149,"TES",null],
+ [13.244,"SITES",null],
+ [13.404,"CLIENTS",null],
+ [13.627,"ET",null],
+ [13.690,"TES",null],
+ [13.786,"VIDÉOS",null],
+ [13.977,"TOURNENT",null],
+ [14.232,"VINGT-QUATRE","hot:VINGT-QUATRE"],
+ [14.583,"HEURES",null],
+ [14.774,"SUR",null],
+ [14.870,"VINGT-QUATRE,","hot:VINGT-QUATRE,"],
+ [15.720,"MÊME",null],
+ [15.904,"ORDINATEUR",null],
+ [16.365,"ÉTEINT.",null],
+ [17.160,"COMPTE",null],
+ [17.393,"ENTRE",null],
+ [17.587,"TROIS",null],
+ [17.781,"ET",null],
+ [17.858,"SEPT",null],
+ [18.013,"HEURES",null],
+ [18.246,"POUR",null],
+ [18.401,"TOUT",null],
+ [18.556,"MONTER",null],
+ [18.789,"LA",null],
+ [18.866,"PREMIÈRE",null],
+ [19.177,"FOIS,",null],
+ [19.705,"ENSUITE",null],
+ [20.146,"C'EST",null],
+ [20.398,"FINI,",null],
+ [20.838,"TU",null],
+ [20.964,"N'Y",null],
+ [21.090,"TOUCHES",null],
+ [21.530,"QUASIMENT",null],
+ [22.096,"PLUS.",null],
+ [22.907,"C'EST",null],
+ [23.117,"EXACTEMENT",null],
+ [23.643,"LE",null],
+ [23.748,"SETUP",null],
+ [24.010,"QUE",null],
+ [24.168,"J'UTILISE",null],
+ [24.879,"POUR",null],
+ [25.186,"MES",null],
+ [25.416,"PROPRES",null],
+ [25.953,"AUTOMATISATIONS.",null],
+ [27.830,"SI",null],
+ [27.909,"TU",null],
+ [27.989,"ES",null],
+ [28.068,"FREELANCE",null],
+ [28.425,"ET",null],
+ [28.504,"QUE",null],
+ [28.623,"TU",null],
+ [28.703,"VEUX",null],
+ [28.861,"ARRÊTER",null],
+ [29.139,"DE",null],
+ [29.218,"PAYER",null],
+ [29.417,"UN",null],
+ [29.496,"HÉBERGEUR",null],
+ [29.853,"CHER",null],
+ [30.012,"CHAQUE",null],
+ [30.250,"MOIS,",null]
+];
+const band=document.querySelector("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:30.827;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":"vhot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.16,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.14);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
