@@ -126,6 +126,35 @@ MP4 final : **~33.92 s** (ffprobe), dans la cible 30–35 s du brief (script = 1
 - `public/video.mp4` — rendu final (copié aussi dans
   `previsualisation/autoboost-135-vps-coolify/video.mp4`).
 
+## Correctif 2026-09-28 — captions figées, collision avec le CTA
+
+Cette vidéo était commitée depuis le 15/09 mais jamais passée en revue visuelle image par
+image après le mixage (seul un extrait ffprobe avait été vérifié) : les ~3,5 dernières
+secondes montraient un mot de sous-titre **figé en surimpression sur la pilule CTA**
+(« Commente le mot TERMINAL » illisible, texte fantôme superposé).
+
+**Cause réelle** : dans `public/index.html`, la boucle qui anime chaque mot de `caps[]`
+programmait un fondu de sortie fixe (`duration:0.14`, déclenché à `end-0.14`) alors que
+les mots de ce script arrivent parfois à moins de 100 ms d'écart. Pour ~40 % des mots,
+`end-0.14` tombait **avant** la fin du fondu d'entrée (`start+0.16`) : sur la timeline
+GSAP, le tween de disparition se jouait donc chronologiquement *avant* que le mot ait fini
+d'apparaître, et plus rien ne le faisait ensuite repasser à `opacity:0`. Le mot restait
+figé à l'écran indéfiniment, recouvert par les mots suivants tant qu'il y en avait — mais
+plus rien ne le recouvrait après le dernier mot de caption (`t≈30,25s`), donc il restait
+visible, collé sur la pilule CTA, jusqu'à la fin du rendu (33,98s).
+
+**Correctif** : fondu d'entrée/sortie clampé à `min(0.06, (end-start)/3)` par mot, ce qui
+garantit algébriquement `fadeOutStart ≥ fadeInEnd` pour tous les mots, quel que soit leur
+espacement. Voir le commentaire dans `public/index.html` à cet endroit.
+
+Repassé pass 1 (`npx hyperframes render public -o work/pass1.mp4`) + pass 2 (recette
+inchangée ci-dessous, mêmes `ss`/durées/fenêtres, `public/assets/voice.mp3` réutilisé tel
+quel — aucune régénération voix nécessaire). Contrôlé par extraction de frames sur toute
+la durée (pas seulement au hook) : plus aucune collision, mix audio à -15,7 dB moyen
+(inchangé). **Ce bug de timing de captions est générique au gabarit** (mots rapides,
+fondu fixe) : les autres vidéos v3 utilisant le même patron de boucle captions méritent le
+même contrôle visuel avant d'être considérées livrables.
+
 ## Reproduire
 
 1. Render passe 1 (habillage seul, aucune balise `<video>` dans la composition) :

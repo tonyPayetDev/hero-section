@@ -299,6 +299,14 @@ const band=document.querySelector("#caption-band");
 caps.forEach((c,i)=>{
   const [start,txt,tag]=c;
   const end=(i<caps.length-1)?caps[i+1][0]:30.827;
+  /* FIX 2026-09-28 : avec des mots aussi rapprochés (parfois <100ms), un fondu fixe à
+     0.16s/0.14s programmait le fadeout AVANT la fin du fadein pour ~40% des mots — le
+     tween de fadeout se jouait alors dans le passé du timeline et le mot restait figé à
+     opacity:1 pour le reste de la vidéo (collision visible sur le CTA en fin de vidéo).
+     Fondu clampé à un tiers de la durée d'affichage du mot : fadeOutStart >= fadeInEnd
+     est garanti algébriquement, donc plus aucun mot ne peut rester bloqué visible. */
+  const dur=Math.max(end-start,0.02);
+  const fd=Math.min(0.06,dur/3);
   const el=document.createElement("div");el.className="caption";
   if(tag){
     const [cls,word]=tag.split(":");
@@ -307,8 +315,8 @@ caps.forEach((c,i)=>{
     else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
   } else {el.textContent=txt;}
   band.appendChild(el);
-  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.16,ease:"power2.out"},start);
-  tl.to(el,{opacity:0,duration:0.14},end-0.14);
+  tl.fromTo(el,{opacity:0,y:8},{opacity:1,y:0,duration:fd,ease:"power1.out"},start);
+  tl.to(el,{opacity:0,duration:fd},end-fd);
 });
 
 tl.totalDuration(DUR);
