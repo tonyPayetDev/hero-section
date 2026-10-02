@@ -1,0 +1,11 @@
+{
+  "name": "Histoire du jour - Lettre M",
+  "format": {"width":1080,"height":1920,"fps":30,"durationTargetSec":34},
+  "safeZonePx":120,
+  "language":"fr-FR",
+  "audience":"enfants 5-7 ans avec parent",
+  "visualStyle":"livre jeunesse premium, CGI/cartoon chaleureux, jungle tropicale douce",
+  "signature":"Histoire du jour",
+  "music":"instrumental joyeux très léger, sous la voix",
+  "output":"output/histoire_du_jour_M.mp4"
+}

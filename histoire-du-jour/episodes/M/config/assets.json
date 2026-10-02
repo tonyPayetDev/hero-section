@@ -1,0 +1,9 @@
+{
+  "backgrounds":["background_01.png","background_02.png","background_03.png","background_04.png","background_05.png"],
+  "characters":["milo_closed.png","milo_open.png","milo_wave_open.png","milo_mangue_open.png","milo_walk_1.png","milo_walk_2.png","milo_point_open.png"],
+  "letters":["letter_M_upper.png","letter_m_lower.png"],
+  "props":["sign_mangue.png","mangue.png","maison.png","moto.png","montagne.png","lune.png","chat.png"],
+  "effects":["etoiles.png","magie.png","rayons.png","pop.png","feuilles.png"],
+  "branding":["histoire_du_jour.png","frame_overlay.png"],
+  "sourceReference":"assets/source/assets_master_sheet.png"
+}

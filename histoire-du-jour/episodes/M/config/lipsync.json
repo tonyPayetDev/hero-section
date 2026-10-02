@@ -1,0 +1,11 @@
+{
+  "method":"two-state-mouth",
+  "states":{"closed":"milo_closed.png","open":"milo_open.png"},
+  "rules":[
+    "Sur /m/ et mmm, garder CLOSED presque tout le phonème.",
+    "Pour les syllabes parlées, alterner OPEN/CLOSED selon l'énergie de la voix.",
+    "Ne jamais modifier position, taille, yeux ou pose entre les deux états.",
+    "Ajouter seulement un micro-bob vertical de 2 à 4 px pendant la parole.",
+    "Transitions de bouche franches, sans fondu."
+  ]
+}
