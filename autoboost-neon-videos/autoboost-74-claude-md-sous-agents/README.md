@@ -52,3 +52,52 @@ python3 captions.py    # captions.ass (entre remap et compose)
 
 `build.py` attend le rush source dans `/root/.claude/uploads/.../a5b418dc-video_25.mp4`
 et écrit ses intermédiaires hors du dépôt.
+
+---
+
+# Version motion design (HyperFrames) — `autoboost-74-motion.mp4`
+
+Built with `/hyperframes-read-first` → `/graphic-overlays`, on the same cut
+facecam (39,3 s), after Tony's five visual references (stacked layout, neon
+ring, glass cards, workflow window, brand plate).
+
+## Structure
+
+| t | Écran | Face cam |
+|---|---|---|
+| 0,0 | Hook — « CLAUDE VIENT DE / TUER ASTRA ? », chips ASTRA barré + « un simple fichier » | plein écran |
+| 3,6 | Le problème — jauge d'usage 0→100 %, tampon LIMITE ATTEINTE, 3 tuiles | se replie dans le cercle néon |
+| 8,7 | La vraie question — mauvaise question barrée, la bonne cochée | rectangle empilé + filet lumineux |
+| 15,0 | La solution — fenêtre `CLAUDE.md` tapée ligne à ligne | cercle |
+| 20,0 | Le routage — nœuds CLAUDE.md → tâche simple → modèle léger / tâche complexe → Opus | cercle |
+| 24,6 | L'erreur — OPUS vs LÉGER, tampon GASPILLAGE | cercle |
+| 28,5 | L'objectif — jauges tokens gaspillés ↓ / puissance ↑, 3 coches | rectangle |
+| 33,4 | CTA — plaque AUTOMATISATIONBOOST, COMMENTE **TOKEN**, champ commentaire tapé | grand cercle |
+
+Every screen slides in from the right with a speed streak; the ring breathes
+on each of the 21 beats of the cut grid; captions sit in a plate under the
+facecam, active word gold, key terms violet.
+
+## Choix
+
+- **Aucun chiffre inventé** : les références affichent « +247 % » ; ici les
+  seules valeurs sont celles dites dans la vidéo (100 % d'usage, ½ journée).
+  Les jauges de l'écran Objectif sont illustratives, sans pourcentage.
+- **Aucun vert** : pastilles de fenêtre rouge / or / violet, coches or.
+- Police : DejaVu Sans Bold (charte, rendu local) en dégradés métal / or / violet.
+- La `<video>` est enfant direct de la racine (contrat HyperFrames) : elle est
+  mise en forme par `transform` + `clip-path: inset(... round R)`, seule forme
+  qui s'interpole entre plein écran, rectangle arrondi et cercle.
+
+## Rebuild
+
+```bash
+cd motion
+python3 gen.py                    # public/index.html depuis ../plan_actual.json + template.html
+npx hyperframes lint public       # 0 erreur
+npx hyperframes render public -o motion_silent.mp4 --fps 30 --quality delivery
+python3 audio.py                  # voix + nappe + 21 SFX calés sur le motion
+```
+
+`motion/public/facecam.mp4` n'est pas versionné (dérivé, 25 Mo) : c'est
+`base.mp4` (sortie de `build.py cuts`) ré-encodé muet avec `-g 30 -keyint_min 30`.

@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<style>
+@font-face { font-family: "AB Sans"; src: url("fonts/DejaVuSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+@font-face { font-family: "AB Sans"; src: url("fonts/DejaVuSans.ttf") format("truetype"); font-weight: 400; font-display: block; }
+@font-face { font-family: "AB Mono"; src: url("fonts/DejaVuSansMono-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+
+/* Charte AutomatisationBoost (_shared/CHARTE.md) - no green anywhere */
+:root { --gold:#eab308; --violet:#8b5cf6; --violet-deep:#7c3aed; --bg:#0a0a0f; --surface:#111117;
+        --line:#232330; --ink:#EDEDED; --mute:#8A8A8A; --err:#ff6b6b; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0f;
+  font-family: "AB Sans", "DejaVu Sans", sans-serif; font-weight: 700; color: #EDEDED; }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0f; }
+
+/* ---------- background */
+.bg { position: absolute; inset: 0; z-index: 0; }
+.grid { position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 60px 60px; }
+#glow-a { position: absolute; left: -260px; top: -200px; width: 900px; height: 900px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(234,179,8,.22), transparent 62%); }
+#glow-b { position: absolute; left: 480px; top: 700px; width: 1000px; height: 1000px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,.26), transparent 62%); }
+#bg-svg { position: absolute; left: 0; top: 0; }
+#bg-curve { stroke-dasharray: 2600; stroke-dashoffset: 2600; }
+
+/* ---------- facecam ring (circle mode) */
+#ring { position: absolute; left: 90px; top: 970px; width: 900px; height: 900px; z-index: 3; opacity: 0; }
+#ring-pos, #ring-core { position: absolute; inset: 0; }
+#ring-core .halo { position: absolute; left: 90px; top: 90px; width: 720px; height: 720px; border-radius: 50%;
+  background: radial-gradient(circle, transparent 47%, rgba(234,179,8,.28) 50%, rgba(139,92,246,.18) 58%, transparent 70%); }
+#ring svg { position: absolute; left: 0; top: 0; overflow: visible; }
+#ring-main { stroke-dasharray: 2100; stroke-dashoffset: 2100; filter: drop-shadow(0 0 14px rgba(234,179,8,.9)) drop-shadow(0 0 30px rgba(139,92,246,.7)); }
+.arc { position: absolute; inset: 0; }
+
+/* ---------- stacked mode chrome */
+.rect-fx { position: absolute; z-index: 3; opacity: 0; }
+#rect-line { left: 0; top: 986px; width: 1080px; height: 6px;
+  background: linear-gradient(90deg, transparent, #eab308 18%, #fff3b0 50%, #8b5cf6 82%, transparent);
+  box-shadow: 0 0 24px rgba(234,179,8,.9), 0 0 60px rgba(139,92,246,.6); }
+#rect-frame { left: 24px; top: 1000px; width: 1032px; height: 960px; border-radius: 34px;
+  border: 3px solid rgba(234,179,8,.85); box-shadow: 0 0 30px rgba(234,179,8,.45), inset 0 0 40px rgba(139,92,246,.35); }
+
+/* ---------- screens (top zone, 1080 x 980) */
+.screen { position: absolute; left: 0; top: 0; width: 1080px; height: 980px; z-index: 5; transform: translateX(1080px); }
+.row { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; align-items: center; }
+.char { display: inline-block; opacity: 0; }
+.char.sp { width: .28em; }
+.hd { text-align: center; white-space: nowrap; }
+.hd .l1, .hd .l2 { line-height: 1.04; letter-spacing: -0.02em; text-transform: none; }
+.w { background: linear-gradient(180deg, #ffffff 0%, #e4e4ec 55%, #9b9ba8 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 16px rgba(255,255,255,.18)); }
+.g { background: linear-gradient(180deg, #fff3b0 0%, #facc15 38%, #eab308 70%, #b7791f 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(234,179,8,.55)); }
+.v { background: linear-gradient(180deg, #ede9fe 0%, #a78bfa 45%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(139,92,246,.6)); }
+.r { background: linear-gradient(180deg, #ffd0d0 0%, #ff6b6b 50%, #e5484d 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 16px rgba(255,107,107,.5)); }
+
+.pill { display: inline-flex; align-items: center; gap: 14px; padding: 14px 34px; border-radius: 999px; border: 3px solid;
+  font-size: 28px; letter-spacing: .2em; background: rgba(10,10,15,.88); opacity: 0; }
+.pill.gold { color: #eab308; border-color: #eab308; box-shadow: 0 0 26px rgba(234,179,8,.45); }
+.pill.red { color: #ff6b6b; border-color: #ff6b6b; box-shadow: 0 0 26px rgba(255,107,107,.4); }
+.pill.violet { color: #c4b5fd; border-color: #8b5cf6; box-shadow: 0 0 26px rgba(139,92,246,.5); }
+
+.card, .q, .win, .vc, .tile, .box { background: linear-gradient(180deg, rgba(26,22,40,.95), rgba(14,12,22,.95));
+  border: 2px solid rgba(139,92,246,.6); border-radius: 30px;
+  box-shadow: 0 0 40px rgba(139,92,246,.22), inset 0 1px 0 rgba(255,255,255,.06); position: relative; opacity: 0; }
+.stamp { position: absolute; opacity: 0; transform: rotate(-8deg); padding: 10px 26px; border-radius: 14px; border: 5px solid;
+  font-size: 38px; letter-spacing: .08em; white-space: nowrap; }
+.stamp.red { color: #ff6b6b; border-color: #ff6b6b; background: rgba(40,10,14,.85); box-shadow: 0 0 30px rgba(255,107,107,.45); }
+
+/* S1 */
+.c1 { width: 960px; height: 330px; padding: 30px 40px; }
+.c1 .ch { display: flex; justify-content: space-between; font-size: 24px; letter-spacing: .14em; color: #EDEDED; }
+.mut { color: #8A8A8A; }
+.c1 .pct { font-size: 88px; color: #eab308; margin-top: 8px; line-height: 1.1; font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 24px rgba(234,179,8,.5); }
+.meter { height: 44px; border-radius: 22px; background: #111117; border: 1px solid #232330; overflow: hidden; margin-top: 10px; }
+.fill { width: 100%; height: 100%; transform-origin: left center; transform: scaleX(.02);
+  background: linear-gradient(90deg, #eab308, #f59e0b 55%, #ff6b6b); box-shadow: 0 0 20px rgba(255,107,107,.6); }
+.axis { display: flex; justify-content: space-between; font-size: 22px; color: #8A8A8A; margin-top: 14px; }
+.axis .r { color: #ff6b6b; background: none; filter: none; }
+.c1 .stamp { right: 40px; bottom: 34px; }
+.tiles { gap: 22px; }
+.tile { width: 305px; height: 150px; display: flex; align-items: center; gap: 18px; padding: 22px; border-radius: 26px; }
+.ic { width: 70px; height: 70px; border-radius: 18px; display: flex; align-items: center; justify-content: center; flex: none; }
+.ic.g { color: #eab308; background: rgba(234,179,8,.14); }
+.ic.v { color: #a78bfa; background: rgba(139,92,246,.18); }
+.ic.r { color: #ff6b6b; background: rgba(255,107,107,.14); }
+.tl { font-size: 22px; color: #8A8A8A; font-weight: 400; }
+.tv { font-size: 36px; color: #EDEDED; white-space: nowrap; }
+.tv.r { color: #ff6b6b; background: none; filter: none; }
+
+/* S2 */
+.q { width: 960px; padding: 32px 40px; }
+.qa { border-color: #3a3a48; box-shadow: none; }
+.qb { border-color: #eab308; box-shadow: 0 0 40px rgba(234,179,8,.35); padding-right: 150px; }
+.ql { font-size: 22px; letter-spacing: .18em; color: #8A8A8A; }
+.ql.g { color: #eab308; background: none; filter: none; }
+.qt { font-size: 46px; color: #EDEDED; margin-top: 12px; line-height: 1.2; }
+.strk { position: absolute; left: 50px; top: 92px; overflow: visible; }
+.strike { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+.qa .stamp { right: 18px; top: -52px; }
+.ok { position: absolute; right: 36px; top: 50%; margin-top: -40px; width: 80px; height: 80px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: #0a0a0f; background: #eab308;
+  box-shadow: 0 0 30px rgba(234,179,8,.8); opacity: 0; }
+
+/* S3 / S4 windows */
+.win { width: 960px; overflow: hidden; }
+.bar { height: 64px; display: flex; align-items: center; gap: 12px; padding: 0 26px; border-bottom: 1px solid #232330;
+  font-family: "AB Mono", monospace; font-size: 22px; color: #EDEDED; }
+.bar i { width: 16px; height: 16px; border-radius: 50%; display: block; }
+.bar .d1 { background: #ff6b6b; } .bar .d2 { background: #eab308; } .bar .d3 { background: #8b5cf6; }
+.bar span { margin-left: 12px; }
+.bar b { margin-left: auto; font-family: "AB Sans", sans-serif; font-size: 18px; letter-spacing: .16em; color: #c4b5fd;
+  border: 2px solid rgba(139,92,246,.6); border-radius: 999px; padding: 6px 16px; }
+.code { padding: 26px 40px 30px; font-family: "AB Mono", monospace; font-size: 34px; line-height: 1.62; color: #EDEDED; }
+.ln { white-space: pre; clip-path: inset(0 100% 0 0); }
+.code .g, .code .v { filter: none; }
+.caret { display: inline-block; width: 16px; height: 34px; background: #eab308; margin-left: 6px; vertical-align: -6px; }
+.flow { height: 494px; }
+.wires { position: absolute; left: 0; top: 64px; overflow: visible; }
+.wires path { stroke-dasharray: 1200; stroke-dashoffset: 1200; filter: drop-shadow(0 0 8px currentColor); }
+.node { position: absolute; margin-top: 64px; width: 280px; height: 120px; display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; border-radius: 22px; background: #111117; border: 2px solid #3a3350; color: #EDEDED; opacity: 0; }
+.node.n0 { width: 220px; height: 130px; color: #eab308; border-color: rgba(234,179,8,.7); }
+.node b { display: block; font-size: 27px; color: #EDEDED; white-space: nowrap; }
+.node small { display: block; font-size: 16px; letter-spacing: .12em; color: #8A8A8A; margin-top: 6px; white-space: nowrap; }
+.node.gold { border-color: #eab308; color: #eab308; box-shadow: 0 0 30px rgba(234,179,8,.45); }
+.node.violet { border-color: #8b5cf6; color: #a78bfa; box-shadow: 0 0 30px rgba(139,92,246,.5); }
+
+/* S5 */
+.duo { gap: 26px; }
+.vc { width: 430px; height: 430px; padding: 40px 36px; }
+.cl { border-color: #ff6b6b; box-shadow: 0 0 40px rgba(255,107,107,.3); }
+.cr { border-color: #eab308; box-shadow: 0 0 40px rgba(234,179,8,.35); }
+.vk { font-size: 78px; letter-spacing: -0.01em; color: #a78bfa; text-shadow: 0 0 26px rgba(139,92,246,.7); }
+.vk.g { color: #eab308; background: none; -webkit-background-clip: border-box; filter: none; text-shadow: 0 0 26px rgba(234,179,8,.7); }
+.vd { font-size: 28px; color: #b5b5c0; font-weight: 400; margin-top: 8px; }
+.bar-red, .bar-gold { height: 26px; border-radius: 13px; margin-top: 46px; }
+.bar-red { width: 100%; background: linear-gradient(90deg, #f59e0b, #ff6b6b); box-shadow: 0 0 22px rgba(255,107,107,.7); }
+.bar-gold { width: 42%; background: linear-gradient(90deg, #fff3b0, #eab308); box-shadow: 0 0 22px rgba(234,179,8,.7); }
+.cl .stamp { left: 40px; bottom: 50px; }
+.badge { position: absolute; left: 36px; bottom: 56px; padding: 12px 22px; border-radius: 999px; font-size: 22px; letter-spacing: .08em;
+  color: #0a0a0f; background: #eab308; box-shadow: 0 0 26px rgba(234,179,8,.7); opacity: 0; white-space: nowrap; }
+.vs { width: 84px; height: 84px; border-radius: 50%; border: 3px solid #eab308; display: flex; align-items: center; justify-content: center;
+  font-size: 30px; color: #eab308; background: #0a0a0f; box-shadow: 0 0 26px rgba(234,179,8,.6); flex: none; opacity: 0; }
+
+/* S6 */
+.c6 { width: 960px; padding: 34px 40px; }
+.mrow { margin-bottom: 26px; }
+.ml { display: flex; align-items: center; gap: 12px; font-size: 30px; }
+.ml.r { color: #ff6b6b; background: none; filter: none; }
+.ml.g { color: #eab308; background: none; filter: none; }
+.ml span { color: #EDEDED; }
+.mt { height: 34px; border-radius: 17px; background: #111117; border: 1px solid #232330; margin-top: 12px; overflow: hidden; }
+.m1, .m2 { height: 100%; width: 100%; transform-origin: left center; }
+.m1 { transform: scaleX(1); background: linear-gradient(90deg, #f59e0b, #ff6b6b); box-shadow: 0 0 18px rgba(255,107,107,.6); }
+.m2 { transform: scaleX(.3); background: linear-gradient(90deg, #7c3aed, #a78bfa 50%, #eab308); box-shadow: 0 0 18px rgba(139,92,246,.6); }
+.sep { height: 1px; background: #232330; margin: 6px 0 22px; }
+.ck { display: flex; align-items: center; gap: 18px; font-size: 32px; margin-top: 14px; opacity: 0; }
+.ck i { width: 46px; height: 46px; border-radius: 50%; background: rgba(234,179,8,.16); border: 2px solid #eab308; color: #eab308;
+  display: flex; align-items: center; justify-content: center; flex: none; }
+
+/* S7 */
+#s7 .qa, #s7 .qb { position: absolute; left: 0; top: 0; width: 1080px; height: 980px; }
+#s7 .qb .l2 { opacity: 0; }
+.tok { display: inline-block; color: #eab308; text-shadow: 0 0 30px rgba(234,179,8,.6); letter-spacing: .02em; }
+.brand { display: inline-flex; align-items: center; gap: 16px; padding: 16px 36px; border-radius: 999px; border: 3px solid #eab308;
+  background: rgba(10,10,15,.9); color: #eab308; font-size: 30px; letter-spacing: .14em; opacity: 0;
+  box-shadow: 0 0 26px rgba(234,179,8,.45), inset 0 0 18px rgba(139,92,246,.35); }
+.brand span { color: #EDEDED; } .brand b { color: #eab308; }
+.box { width: 900px; height: 116px; border-radius: 58px; border-color: #eab308; display: flex; align-items: center; gap: 22px; padding: 0 22px;
+  box-shadow: 0 0 40px rgba(234,179,8,.4); }
+.av { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #eab308, #8b5cf6); color: #0a0a0f;
+  display: flex; align-items: center; justify-content: center; font-size: 34px; flex: none; }
+.tc { font-family: "AB Mono", monospace; font-size: 54px; color: #eab308; letter-spacing: .08em; flex: 1; }
+.snd { color: #eab308; opacity: 0; }
+.sub { font-size: 38px; font-weight: 400; color: #EDEDED; opacity: 0; }
+.sub b { color: #eab308; }
+
+/* ---------- hook (full-bleed) */
+.hook { position: absolute; inset: 0; z-index: 6; }
+#shade { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px;
+  background: linear-gradient(180deg, rgba(10,10,15,.92) 0%, rgba(10,10,15,.55) 22%, transparent 40%, transparent 78%, rgba(10,10,15,.7) 100%); }
+#h0-title { position: absolute; inset: 0; }
+.chip { position: absolute; display: flex; align-items: center; gap: 18px; padding: 22px 30px; border-radius: 26px; opacity: 0;
+  background: rgba(14,12,22,.86); border: 2px solid #8b5cf6; box-shadow: 0 0 34px rgba(139,92,246,.5); }
+.chip small { display: block; font-size: 18px; letter-spacing: .16em; color: #8A8A8A; }
+.chip b { display: block; font-size: 42px; color: #EDEDED; margin-top: 4px; }
+.chip em { font-style: normal; color: #eab308; }
+#h0-astra { border-color: #ff6b6b; box-shadow: 0 0 34px rgba(255,107,107,.45); }
+#h0-astra .xl { font-size: 58px; letter-spacing: .1em; color: #EDEDED; }
+#h0-strike { stroke-dasharray: 260; stroke-dashoffset: 260; }
+
+/* ---------- speed streak between screens */
+#streak { position: absolute; left: 0; top: 0; width: 1500px; height: 980px; z-index: 7; transform: translateX(1300px); mix-blend-mode: screen; }
+#streak i { position: absolute; left: 0; display: block; border-radius: 4px; }
+
+/* ---------- caption plate */
+#capbar { position: absolute; left: 60px; top: 1764px; width: 960px; height: 104px; z-index: 8; border-radius: 52px;
+  background: rgba(10,10,15,.88); border: 2px solid rgba(234,179,8,.7);
+  box-shadow: 0 0 30px rgba(234,179,8,.3), inset 0 0 22px rgba(139,92,246,.3); }
+.cap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 0 20px;
+  font-size: 46px; color: #EDEDED; white-space: nowrap; opacity: 0; }
+.cw { display: inline-block; }
+.cw.key { color: #a78bfa; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-74" data-start="0" data-width="1080" data-height="1920"
+     data-duration="39.2667" data-fps="30">
+
+  <div class="bg">
+    <div class="grid"></div>
+    <div id="glow-a"></div>
+    <div id="glow-b"></div>
+    <svg id="bg-svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+      <path id="bg-curve" d="M -40 620 C 160 600, 120 980, 300 1010 S 760 980, 1120 760" fill="none"
+            stroke="#eab308" stroke-width="3" opacity=".35"/>
+    </svg>
+  </div>
+
+  <video id="facecam" src="facecam.mp4" muted playsinline data-start="0" data-duration="39.2667" data-track-index="1"
+         style="position:absolute;left:0;top:0;width:1080px;height:1440px;object-fit:cover;z-index:2;transform-origin:0px 0px;clip-path:inset(0px 0px 0px 0px round 0px);"></video>
+
+  <div id="ring">
+    <div id="ring-pos">
+      <div id="ring-core">
+        <div class="halo"></div>
+        <svg width="900" height="900" viewBox="0 0 900 900">
+          <defs>
+            <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff3b0"/><stop offset=".35" stop-color="#eab308"/>
+              <stop offset=".7" stop-color="#8b5cf6"/><stop offset="1" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+          <circle cx="450" cy="450" r="330" fill="none" stroke="rgba(234,179,8,.35)" stroke-width="2"/>
+          <circle id="ring-main" cx="450" cy="450" r="326" fill="none" stroke="url(#rg)" stroke-width="12" transform="rotate(-90 450 450)"/>
+        </svg>
+        <div id="arc-a" class="arc"><svg width="900" height="900" viewBox="0 0 900 900">
+          <circle cx="450" cy="450" r="372" fill="none" stroke="#8b5cf6" stroke-width="6" stroke-linecap="round"
+                  stroke-dasharray="180 120 60 400 240 200" style="filter:drop-shadow(0 0 10px #8b5cf6)"/></svg></div>
+        <div id="arc-b" class="arc"><svg width="900" height="900" viewBox="0 0 900 900">
+          <circle cx="450" cy="450" r="396" fill="none" stroke="#eab308" stroke-width="4" stroke-linecap="round"
+                  stroke-dasharray="90 300 40 520 160 400" style="filter:drop-shadow(0 0 10px #eab308)"/></svg></div>
+        <div id="arc-c" class="arc"><svg width="900" height="900" viewBox="0 0 900 900">
+          <circle cx="450" cy="450" r="352" fill="none" stroke="#fff3b0" stroke-width="2" stroke-dasharray="4 18" opacity=".6"/>
+          <circle cx="450" cy="54" r="9" fill="#eab308" style="filter:drop-shadow(0 0 10px #eab308)"/>
+          <circle cx="846" cy="450" r="7" fill="#8b5cf6" style="filter:drop-shadow(0 0 10px #8b5cf6)"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="rect-line" class="rect-fx"></div>
+  <div id="rect-frame" class="rect-fx"></div>
+
+<section id="s1" class="screen clip" data-start="3.2667" data-duration="5.7333" data-track-index="2"><div class="row" style="top:56px"><div class="pill red"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M12 3 2 21h20L12 3z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>LE PROBLÈME</span></div></div><div class="row" style="top:150px"><div class="hd"><div class="l1" style="font-size:92px"><span class="char w">L</span><span class="char w">I</span><span class="char w">M</span><span class="char w">I</span><span class="char w">T</span><span class="char w">E</span><span class="char sp">&nbsp;</span><span class="char g">E</span><span class="char g">X</span><span class="char g">P</span><span class="char g">L</span><span class="char g">O</span><span class="char g">S</span><span class="char g">É</span><span class="char g">E</span></div><div class="l2" style="font-size:92px"><span class="char w">E</span><span class="char w">N</span><span class="char sp">&nbsp;</span><span class="char r">½</span><span class="char sp">&nbsp;</span><span class="char r">J</span><span class="char r">O</span><span class="char r">U</span><span class="char r">R</span><span class="char r">N</span><span class="char r">É</span><span class="char r">E</span></div></div></div><div class="row" style="top:410px"><div class="card c1"><div class="ch"><span>SESSION CLAUDE</span><span class="mut">USAGE DES TOKENS</span></div><div class="meter"><div class="fill"></div></div><div class="axis"><span>9h</span><span>11h</span><span class="r">13h · ½ journée</span></div><div class="pct">0 %</div><div class="stamp red">LIMITE ATTEINTE</div></div></div><div class="row tiles" style="top:770px"><div class="tile t1"><div class="ic g"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M4 18a8 8 0 1 1 16 0" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 18l4-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><div><div class="tl">Usage</div><div class="tv">100 %</div></div></div><div class="tile t2"><div class="ic v"><svg viewBox="0 0 24 24" width="40" height="40"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div><div class="tl">Durée</div><div class="tv">½ journée</div></div></div><div class="tile t3"><div class="ic r"><svg viewBox="0 0 24 24" width="40" height="40"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg></div><div><div class="tl">Travail</div><div class="tv r">bloqué</div></div></div></div></section>
+<section id="s2" class="screen clip" data-start="8.4" data-duration="6.9" data-track-index="3"><div class="row" style="top:56px"><div class="pill violet"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/></svg><span>LA VRAIE QUESTION</span></div></div><div class="row" style="top:150px"><div class="hd"><div class="l1" style="font-size:80px"><span class="char w">T</span><span class="char w">U</span><span class="char sp">&nbsp;</span><span class="char w">R</span><span class="char w">E</span><span class="char w">G</span><span class="char w">A</span><span class="char w">R</span><span class="char w">D</span><span class="char w">E</span><span class="char w">S</span></div><div class="l2" style="font-size:80px"><span class="char g">L</span><span class="char g">E</span><span class="char sp">&nbsp;</span><span class="char g">M</span><span class="char g">A</span><span class="char g">U</span><span class="char g">V</span><span class="char g">A</span><span class="char g">I</span><span class="char g">S</span><span class="char sp">&nbsp;</span><span class="char g">C</span><span class="char g">H</span><span class="char g">I</span><span class="char g">F</span><span class="char g">F</span><span class="char g">R</span><span class="char g">E</span></div></div></div><div class="row" style="top:410px"><div class="q qa"><div class="ql">CE QUE TU TE DEMANDES</div><div class="qt">Combien tu utilises Claude ?</div><svg class="strk" width="860" height="40" viewBox="0 0 860 40"><path class="strike" d="M10 26 C 300 10, 560 34, 850 16" fill="none" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round"/></svg><div class="stamp red">MAUVAISE QUESTION</div></div></div><div class="row" style="top:660px"><div class="q qb"><div class="ql g">LA BONNE QUESTION</div><div class="qt">Quel modèle travaille sur quelle tâche ?</div><div class="ok"><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div></section>
+<section id="s3" class="screen clip" data-start="14.7" data-duration="5.6" data-track-index="2"><div class="row" style="top:56px"><div class="pill gold"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/></svg><span>LA SOLUTION</span></div></div><div class="row" style="top:150px"><div class="hd"><div class="l1" style="font-size:92px"><span class="char w">U</span><span class="char w">N</span><span class="char sp">&nbsp;</span><span class="char w">S</span><span class="char w">I</span><span class="char w">M</span><span class="char w">P</span><span class="char w">L</span><span class="char w">E</span></div><div class="l2" style="font-size:112px"><span class="char g">C</span><span class="char g">L</span><span class="char g">A</span><span class="char g">U</span><span class="char g">D</span><span class="char g">E</span><span class="char g">.</span><span class="char g">m</span><span class="char g">d</span></div></div></div><div class="row" style="top:440px"><div class="win"><div class="bar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>CLAUDE.md</span><b>TON PROJET</b></div><div class="code"><div class="ln ln0"><span class="v"># Règles de délégation</span></div><div class="ln ln1">- tâche simple  → <span class="g">sous-agent</span></div><div class="ln ln2">  modèle       : <span class="g">léger</span></div><div class="ln ln3">- tâche complexe → <span class="v">Opus</span></div><div class="ln ln4">- objectif     : <span class="g">moins de tokens</span><i class="caret"></i></div></div></div></div></section>
+<section id="s4" class="screen clip" data-start="19.7" data-duration="5.2" data-track-index="3"><div class="row" style="top:56px"><div class="pill violet"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/></svg><span>LE ROUTAGE</span></div></div><div class="row" style="top:150px"><div class="hd"><div class="l1" style="font-size:88px"><span class="char w">C</span><span class="char w">H</span><span class="char w">A</span><span class="char w">Q</span><span class="char w">U</span><span class="char w">E</span><span class="char sp">&nbsp;</span><span class="char w">T</span><span class="char w">Â</span><span class="char w">C</span><span class="char w">H</span><span class="char w">E</span></div><div class="l2" style="font-size:88px"><span class="char g">S</span><span class="char g">O</span><span class="char g">N</span><span class="char sp">&nbsp;</span><span class="char g">M</span><span class="char g">O</span><span class="char g">D</span><span class="char g">È</span><span class="char g">L</span><span class="char g">E</span></div></div></div><div class="row" style="top:420px"><div class="win flow"><div class="bar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Claude Code — routage</span><b>SOUS-AGENTS</b></div><svg class="wires" width="960" height="430" viewBox="0 0 960 430"><path class="p-top" d="M250 215 C 290 215, 290 110, 330 110" fill="none" stroke="#eab308" stroke-width="5"/><path class="p-top2" d="M600 110 L 660 110" fill="none" stroke="#eab308" stroke-width="5"/><path class="p-bot" d="M250 215 C 290 215, 290 320, 330 320" fill="none" stroke="#8b5cf6" stroke-width="5"/><path class="p-bot2" d="M600 320 L 660 320" fill="none" stroke="#8b5cf6" stroke-width="5"/></svg><div class="node n0" style="left:30px;top:150px"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 2v5h5M9 12h7M9 16h7" stroke="currentColor" stroke-width="2"/></svg><div><b>CLAUDE.md</b><small>RÈGLES</small></div></div><div class="node n1" style="left:330px;top:50px"><div><b>Tâche simple</b><small>RENOMMER, RÉSUMER</small></div></div><div class="node n2 gold" style="left:660px;top:50px"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M20 4C10 4 6 10 5 19l3-3h5c4-2 6-7 7-12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 19 14 10" stroke="currentColor" stroke-width="2"/></svg><div><b>Modèle léger</b><small>RAPIDE · ÉCONOME</small></div></div><div class="node n3" style="left:330px;top:260px"><div><b>Tâche complexe</b><small>ARCHITECTURE</small></div></div><div class="node n4 violet" style="left:660px;top:260px"><svg viewBox="0 0 24 24" width="40" height="40"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3" stroke="currentColor" stroke-width="2"/></svg><div><b>Opus</b><small>PUISSANCE MAX</small></div></div></div></div></section>
+<section id="s5" class="screen clip" data-start="24.3" data-duration="4.4333" data-track-index="2"><div class="row" style="top:56px"><div class="pill red"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M12 3 2 21h20L12 3z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>L'ERREUR</span></div></div><div class="row" style="top:150px"><div class="hd"><div class="l1" style="font-size:92px"><span class="char w">U</span><span class="char w">N</span><span class="char sp">&nbsp;</span><span class="char w">B</span><span class="char w">A</span><span class="char w">Z</span><span class="char w">O</span><span class="char w">O</span><span class="char w">K</span><span class="char w">A</span></div><div class="l2" style="font-size:92px"><span class="char g">P</span><span class="char g">O</span><span class="char g">U</span><span class="char g">R</span><span class="char sp">&nbsp;</span><span class="char g">U</span><span class="char g">N</span><span class="char sp">&nbsp;</span><span class="char g">C</span><span class="char g">L</span><span class="char g">O</span><span class="char g">U</span></div></div></div><div class="row duo" style="top:430px"><div class="vc cl"><div class="vk">OPUS</div><div class="vd">sur une tâche simple</div><div class="bar-red"></div><div class="stamp red">GASPILLAGE</div></div><div class="vs">VS</div><div class="vc cr"><div class="vk g">LÉGER</div><div class="vd">sur une tâche simple</div><div class="bar-gold"></div><div class="badge">JUSTE CE QU'IL FAUT</div></div></div></section>
+<section id="s6" class="screen clip" data-start="28.1333" data-duration="5.5333" data-track-index="3"><div class="row" style="top:56px"><div class="pill gold"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/></svg><span>L'OBJECTIF</span></div></div><div class="row" style="top:150px"><div class="hd"><div class="l1" style="font-size:92px"><span class="char w">M</span><span class="char w">O</span><span class="char w">I</span><span class="char w">N</span><span class="char w">S</span><span class="char sp">&nbsp;</span><span class="char w">D</span><span class="char w">E</span><span class="char sp">&nbsp;</span><span class="char g">T</span><span class="char g">O</span><span class="char g">K</span><span class="char g">E</span><span class="char g">N</span><span class="char g">S</span></div><div class="l2" style="font-size:92px"><span class="char v">G</span><span class="char v">A</span><span class="char v">S</span><span class="char v">P</span><span class="char v">I</span><span class="char v">L</span><span class="char v">L</span><span class="char v">É</span><span class="char v">S</span></div></div></div><div class="row" style="top:420px"><div class="card c6"><div class="mrow"><div class="ml r"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M12 4v15M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tokens gaspillés</span></div><div class="mt"><div class="m1"></div></div></div><div class="mrow"><div class="ml g"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M12 20V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Puissance pour l'important</span></div><div class="mt"><div class="m2"></div></div></div><div class="sep"></div><div class="ck ck0"><i><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Chaque tâche au bon modèle</div><div class="ck ck1"><i><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Opus gardé pour l'important</div><div class="ck ck2"><i><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Moins de tokens gaspillés</div></div></div></section>
+<section id="s7" class="screen clip" data-start="33.0667" data-duration="6.2" data-track-index="2"><div class="row" style="top:50px"><div class="brand"><svg viewBox="0 0 24 24" width="34" height="34"><path d="M14 4c3-1 6-1 6-1s0 3-1 6l-6 6-5-5 6-6z" fill="currentColor"/><path d="M8 11l-4 1 2-4 4-1M13 16l-1 4 4-2 1-4" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.4" fill="#0a0a0f"/></svg><span>AUTOMATISATION<b>BOOST</b></span></div></div><div class="qa"><div class="row" style="top:190px"><div class="hd"><div class="l1" style="font-size:92px"><span class="char w">T</span><span class="char w">U</span><span class="char sp">&nbsp;</span><span class="char w">V</span><span class="char w">E</span><span class="char w">U</span><span class="char w">X</span><span class="char sp">&nbsp;</span><span class="char w">L</span><span class="char w">E</span></div><div class="l2" style="font-size:108px"><span class="char g">C</span><span class="char g">L</span><span class="char g">A</span><span class="char g">U</span><span class="char g">D</span><span class="char g">E</span><span class="char g">.</span><span class="char g">m</span><span class="char g">d</span><span class="char sp">&nbsp;</span><span class="char g">?</span></div></div></div></div><div class="qb"><div class="row" style="top:170px"><div class="hd"><div class="l1" style="font-size:104px"><span class="char w">C</span><span class="char w">O</span><span class="char w">M</span><span class="char w">M</span><span class="char w">E</span><span class="char w">N</span><span class="char w">T</span><span class="char w">E</span></div><div class="l2" style="font-size:190px"><span class="tok">TOKEN</span></div></div></div></div><div class="row" style="top:620px"><div class="box"><div class="av">T</div><div class="tc"><span class="char">T</span><span class="char">O</span><span class="char">K</span><span class="char">E</span><span class="char">N</span></div><div class="snd"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M3 11 21 3l-8 18-2-8-8-2z" fill="currentColor"/></svg></div></div></div><div class="row" style="top:770px"><div class="sub">→ je t'envoie le <b>prompt</b></div></div></section>
+
+<section id="s0" class="hook clip" data-start="0" data-duration="3.9" data-track-index="4"><div id="shade"></div><div id="h0-title"><div class="row" style="top:110px"><div class="hd"><div id="h0-l1" class="l1" style="font-size:98px"><span class="char w">C</span><span class="char w">L</span><span class="char w">A</span><span class="char w">U</span><span class="char w">D</span><span class="char w">E</span><span class="char sp">&nbsp;</span><span class="char w">V</span><span class="char w">I</span><span class="char w">E</span><span class="char w">N</span><span class="char w">T</span><span class="char sp">&nbsp;</span><span class="char w">D</span><span class="char w">E</span></div><div id="h0-l2" class="l2" style="font-size:132px"><span class="char g">T</span><span class="char g">U</span><span class="char g">E</span><span class="char g">R</span><span class="char sp">&nbsp;</span><span class="char g">A</span><span class="char g">S</span><span class="char g">T</span><span class="char g">R</span><span class="char g">A</span><span class="char sp">&nbsp;</span><span class="char g">?</span></div></div></div></div><div id="h0-astra" class="chip" style="left:610px;top:1040px"><span class="xl">ASTRA</span><svg width="220" height="40" viewBox="0 0 220 40" style="position:absolute;left:28px;top:30px"><path id="h0-strike" d="M6 24 L 214 14" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div><div id="h0-chip" class="chip" style="left:40px;top:1280px"><span class="ic g"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 2v5h5M9 12h7M9 16h7" stroke="currentColor" stroke-width="2"/></svg></span><span><small>TOUT ÇA GRÂCE À</small><b>UN SIMPLE <em>FICHIER</em></b></span></div></section>
+
+  <div id="streak">
+    <i style="top:120px;width:900px;height:4px;background:linear-gradient(90deg,transparent,#eab308,transparent)"></i>
+    <i style="top:260px;width:1200px;height:2px;background:linear-gradient(90deg,transparent,#fff3b0,transparent)"></i>
+    <i style="top:410px;width:700px;height:6px;background:linear-gradient(90deg,transparent,#8b5cf6,transparent)"></i>
+    <i style="top:560px;width:1100px;height:3px;background:linear-gradient(90deg,transparent,#eab308,transparent)"></i>
+    <i style="top:700px;width:800px;height:2px;background:linear-gradient(90deg,transparent,#a78bfa,transparent)"></i>
+    <i style="top:840px;width:1000px;height:5px;background:linear-gradient(90deg,transparent,#eab308,transparent)"></i>
+  </div>
+
+  <div id="capbar">
+<div class="cap" id="c0"><span id="c0w0" class="cw">Claude</span> <span id="c0w1" class="cw">vient</span> <span id="c0w2" class="cw">peut-être</span></div>
+<div class="cap" id="c1"><span id="c1w0" class="cw">de</span> <span id="c1w1" class="cw">tuer</span> <span id="c1w2" class="cw key">Astra,</span></div>
+<div class="cap" id="c2"><span id="c2w0" class="cw">et</span> <span id="c2w1" class="cw">tout</span> <span id="c2w2" class="cw">ça</span> <span id="c2w3" class="cw">grâce</span> <span id="c2w4" class="cw">à</span> <span id="c2w5" class="cw">un</span></div>
+<div class="cap" id="c3"><span id="c3w0" class="cw">simple</span> <span id="c3w1" class="cw key">fichier.</span></div>
+<div class="cap" id="c4"><span id="c4w0" class="cw">Si</span> <span id="c4w1" class="cw">toi</span> <span id="c4w2" class="cw">aussi</span> <span id="c4w3" class="cw">tu</span> <span id="c4w4" class="cw">exploses</span></div>
+<div class="cap" id="c5"><span id="c5w0" class="cw">ta</span> <span id="c5w1" class="cw">limite</span> <span id="c5w2" class="cw">de</span> <span id="c5w3" class="cw key">token</span> <span id="c5w4" class="cw">après</span></div>
+<div class="cap" id="c6"><span id="c6w0" class="cw">une</span> <span id="c6w1" class="cw">demi-journée</span> <span id="c6w2" class="cw">de</span></div>
+<div class="cap" id="c7"><span id="c7w0" class="cw">boulot,</span></div>
+<div class="cap" id="c8"><span id="c8w0" class="cw">tu</span> <span id="c8w1" class="cw">connais</span> <span id="c8w2" class="cw">le</span> <span id="c8w3" class="cw">problème.</span></div>
+<div class="cap" id="c9"><span id="c9w0" class="cw">Le</span> <span id="c9w1" class="cw">problème</span> <span id="c9w2" class="cw">c&#x27;est</span></div>
+<div class="cap" id="c10"><span id="c10w0" class="cw">peut-être</span> <span id="c10w1" class="cw">pas</span> <span id="c10w2" class="cw">combien</span> <span id="c10w3" class="cw">tu</span></div>
+<div class="cap" id="c11"><span id="c11w0" class="cw">utilises</span> <span id="c11w1" class="cw">Claude.</span></div>
+<div class="cap" id="c12"><span id="c12w0" class="cw">C&#x27;est</span> <span id="c12w1" class="cw">quel</span> <span id="c12w2" class="cw">modèle</span></div>
+<div class="cap" id="c13"><span id="c13w0" class="cw">travaille</span> <span id="c13w1" class="cw">sur</span> <span id="c13w2" class="cw">quelle</span></div>
+<div class="cap" id="c14"><span id="c14w0" class="cw">tâche.</span></div>
+<div class="cap" id="c15"><span id="c15w0" class="cw">Tu</span> <span id="c15w1" class="cw">crées</span> <span id="c15w2" class="cw">un</span> <span id="c15w3" class="cw key">CLAUDE.md</span> <span id="c15w4" class="cw">et</span></div>
+<div class="cap" id="c16"><span id="c16w0" class="cw">tu</span> <span id="c16w1" class="cw">lui</span> <span id="c16w2" class="cw">demandes</span> <span id="c16w3" class="cw">de</span></div>
+<div class="cap" id="c17"><span id="c17w0" class="cw">déléguer</span> <span id="c17w1" class="cw">certaines</span></div>
+<div class="cap" id="c18"><span id="c18w0" class="cw">tâches</span> <span id="c18w1" class="cw">à</span> <span id="c18w2" class="cw">des</span></div>
+<div class="cap" id="c19"><span id="c19w0" class="cw key">sous-agents.</span> <span id="c19w1" class="cw">Tâche</span></div>
+<div class="cap" id="c20"><span id="c20w0" class="cw">simple,</span> <span id="c20w1" class="cw">modèle</span> <span id="c20w2" class="cw key">léger,</span></div>
+<div class="cap" id="c21"><span id="c21w0" class="cw">tâche</span> <span id="c21w1" class="cw">complexe,</span></div>
+<div class="cap" id="c22"><span id="c22w0" class="cw key">Opus.</span> <span id="c22w1" class="cw">Sinon</span> <span id="c22w2" class="cw">c&#x27;est</span> <span id="c22w3" class="cw">comme</span></div>
+<div class="cap" id="c23"><span id="c23w0" class="cw">utiliser</span> <span id="c23w1" class="cw">un</span> <span id="c23w2" class="cw key">bazooka</span> <span id="c23w3" class="cw">pour</span></div>
+<div class="cap" id="c24"><span id="c24w0" class="cw">planter</span> <span id="c24w1" class="cw">un</span> <span id="c24w2" class="cw key">clou.</span></div>
+<div class="cap" id="c25"><span id="c25w0" class="cw">L&#x27;objectif,</span> <span id="c25w1" class="cw">gaspiller</span></div>
+<div class="cap" id="c26"><span id="c26w0" class="cw">moins</span> <span id="c26w1" class="cw">de</span> <span id="c26w2" class="cw key">tokens</span> <span id="c26w3" class="cw">et</span></div>
+<div class="cap" id="c27"><span id="c27w0" class="cw">garder</span> <span id="c27w1" class="cw">la</span> <span id="c27w2" class="cw">puissance</span> <span id="c27w3" class="cw">pour</span></div>
+<div class="cap" id="c28"><span id="c28w0" class="cw">les</span> <span id="c28w1" class="cw">tâches</span> <span id="c28w2" class="cw">importantes.</span></div>
+<div class="cap" id="c29"><span id="c29w0" class="cw">Tu</span> <span id="c29w1" class="cw">veux</span> <span id="c29w2" class="cw">exactement</span> <span id="c29w3" class="cw">quoi</span></div>
+<div class="cap" id="c30"><span id="c30w0" class="cw">mettre</span> <span id="c30w1" class="cw">dedans,</span></div>
+<div class="cap" id="c31"><span id="c31w0" class="cw key">Commente</span> <span id="c31w1" class="cw key">TOKEN</span> <span id="c31w2" class="cw">et</span> <span id="c31w3" class="cw">je</span></div>
+<div class="cap" id="c32"><span id="c32w0" class="cw">t&#x27;envoie</span> <span id="c32w1" class="cw">le</span> <span id="c32w2" class="cw">prompt.</span></div>
+<div class="cap" id="c33"><span id="c33w0" class="cw">Et</span> <span id="c33w1" class="cw">ça</span> <span id="c33w2" class="cw">pourrait</span> <span id="c33w3" class="cw">tout</span></div>
+<div class="cap" id="c34"><span id="c34w0" class="cw">changer</span></div>
+  </div>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script>
+  (function () {
+    var tl = gsap.timeline({ paused: true });
+tl.set("#facecam",{"x": -180, "y": 0, "scale": 1.33334, "transformOrigin": "0px 0px", "clipPath": "inset(0px 0px 0px 0px round 0px)"},0.0);
+tl.fromTo("#facecam",{"x": -180, "y": 0, "scale": 1.33334, "clipPath": "inset(0px 0px 0px 0px round 0px)"},{"x": 172.34, "y": 1065.96, "scale": 0.68085, "clipPath": "inset(50px 70px 450px 70px round 470px)", "duration": 0.52, "ease": "power3.inOut", "immediateRender": false},3.3);
+tl.fromTo("#facecam",{"x": 172.34, "y": 1065.96, "scale": 0.68085, "clipPath": "inset(50px 70px 450px 70px round 470px)"},{"x": 0, "y": 900, "scale": 1.0, "clipPath": "inset(100px 24px 420px 24px round 34px)", "duration": 0.5, "ease": "power3.inOut", "immediateRender": false},8.4333);
+tl.fromTo("#facecam",{"x": 0, "y": 900, "scale": 1.0, "clipPath": "inset(100px 24px 420px 24px round 34px)"},{"x": 172.34, "y": 1065.96, "scale": 0.68085, "clipPath": "inset(50px 70px 450px 70px round 470px)", "duration": 0.5, "ease": "power3.inOut", "immediateRender": false},14.7333);
+tl.fromTo("#facecam",{"x": 172.34, "y": 1065.96, "scale": 0.68085, "clipPath": "inset(50px 70px 450px 70px round 470px)"},{"x": 0, "y": 900, "scale": 1.0, "clipPath": "inset(100px 24px 420px 24px round 34px)", "duration": 0.5, "ease": "power3.inOut", "immediateRender": false},28.2);
+tl.fromTo("#facecam",{"x": 0, "y": 900, "scale": 1.0, "clipPath": "inset(100px 24px 420px 24px round 34px)"},{"x": 103.4, "y": 939.57, "scale": 0.80851, "clipPath": "inset(50px 70px 450px 70px round 470px)", "duration": 0.5399999999999991, "ease": "power3.inOut", "immediateRender": false},33.1333);
+tl.fromTo("#ring",{"opacity": 0, "scale": 0.82},{"opacity": 1, "scale": 1, "duration": 0.45, "ease": "back.out(1.6)", "immediateRender": false},3.6667);
+tl.fromTo("#ring",{"opacity": 1, "scale": 1},{"opacity": 0, "scale": 1.15, "duration": 0.3, "ease": "power2.in", "immediateRender": false},8.4333);
+tl.fromTo("#ring",{"opacity": 0, "scale": 0.82},{"opacity": 1, "scale": 1, "duration": 0.45, "ease": "back.out(1.6)", "immediateRender": false},15.0);
+tl.fromTo("#ring",{"opacity": 1, "scale": 1},{"opacity": 0, "scale": 1.15, "duration": 0.3, "ease": "power2.in", "immediateRender": false},28.2);
+tl.fromTo("#ring",{"opacity": 0, "scale": 0.82},{"opacity": 1, "scale": 1, "duration": 0.45, "ease": "back.out(1.6)", "immediateRender": false},33.4);
+tl.set("#ring-pos",{"y": 0, "scale": 1},0.0);
+tl.set("#ring-pos",{"y": -60, "scale": 1.1875},33.2);
+(function(){var el=document.querySelector("#ring-main");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:0.7,ease:"power2.inOut",immediateRender:false},3.6667);})();
+tl.fromTo(".rect-fx",{"opacity": 0},{"opacity": 1, "duration": 0.35, "ease": "power2.out", "immediateRender": false},8.7333);
+tl.fromTo(".rect-fx",{"opacity": 1},{"opacity": 0, "duration": 0.3, "ease": "power2.in", "immediateRender": false},14.8667);
+tl.fromTo(".rect-fx",{"opacity": 0},{"opacity": 1, "duration": 0.35, "ease": "power2.out", "immediateRender": false},28.5);
+tl.fromTo(".rect-fx",{"opacity": 1},{"opacity": 0, "duration": 0.3, "ease": "power2.in", "immediateRender": false},33.2);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},5.5333);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},7.4);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},17.4667);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},20.0333);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},21.3);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},22.7667);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},23.9);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},26.1);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},35.2667);
+tl.fromTo("#ring-core",{scale:1.045,filter:"brightness(1.6)"},{scale:1,filter:"brightness(1)",duration:.32,ease:"power2.out",immediateRender:false},37.5);
+tl.fromTo("#s1",{"x": 1080, "opacity": 1},{"x": 0, "opacity": 1, "duration": 0.5, "ease": "power4.out", "immediateRender": false},3.2667);
+tl.fromTo("#s1",{"x": 0},{"x": -1080, "duration": 0.45, "ease": "power3.in", "immediateRender": false},8.4333);
+tl.fromTo("#s2",{"x": 1080, "opacity": 1},{"x": 0, "opacity": 1, "duration": 0.5, "ease": "power4.out", "immediateRender": false},8.4333);
+tl.fromTo("#s2",{"x": 0},{"x": -1080, "duration": 0.45, "ease": "power3.in", "immediateRender": false},14.7333);
+tl.fromTo("#s3",{"x": 1080, "opacity": 1},{"x": 0, "opacity": 1, "duration": 0.5, "ease": "power4.out", "immediateRender": false},14.7333);
+tl.fromTo("#s3",{"x": 0},{"x": -1080, "duration": 0.45, "ease": "power3.in", "immediateRender": false},19.7333);
+tl.fromTo("#s4",{"x": 1080, "opacity": 1},{"x": 0, "opacity": 1, "duration": 0.5, "ease": "power4.out", "immediateRender": false},19.7333);
+tl.fromTo("#s4",{"x": 0},{"x": -1080, "duration": 0.45, "ease": "power3.in", "immediateRender": false},24.3333);
+tl.fromTo("#s5",{"x": 1080, "opacity": 1},{"x": 0, "opacity": 1, "duration": 0.5, "ease": "power4.out", "immediateRender": false},24.3333);
+tl.fromTo("#s5",{"x": 0},{"x": -1080, "duration": 0.45, "ease": "power3.in", "immediateRender": false},28.1667);
+tl.fromTo("#s6",{"x": 1080, "opacity": 1},{"x": 0, "opacity": 1, "duration": 0.5, "ease": "power4.out", "immediateRender": false},28.1667);
+tl.fromTo("#s6",{"x": 0},{"x": -1080, "duration": 0.45, "ease": "power3.in", "immediateRender": false},33.1);
+tl.fromTo("#s7",{"x": 1080, "opacity": 1},{"x": 0, "opacity": 1, "duration": 0.5, "ease": "power4.out", "immediateRender": false},33.1);
+tl.fromTo("#streak",{"x": 1300, "opacity": 1},{"x": -1500, "opacity": 1, "duration": 0.42, "ease": "power2.inOut", "immediateRender": false},3.2);
+tl.fromTo("#streak",{"x": 1300, "opacity": 1},{"x": -1500, "opacity": 1, "duration": 0.42, "ease": "power2.inOut", "immediateRender": false},8.3667);
+tl.fromTo("#streak",{"x": 1300, "opacity": 1},{"x": -1500, "opacity": 1, "duration": 0.42, "ease": "power2.inOut", "immediateRender": false},14.6667);
+tl.fromTo("#streak",{"x": 1300, "opacity": 1},{"x": -1500, "opacity": 1, "duration": 0.42, "ease": "power2.inOut", "immediateRender": false},19.6667);
+tl.fromTo("#streak",{"x": 1300, "opacity": 1},{"x": -1500, "opacity": 1, "duration": 0.42, "ease": "power2.inOut", "immediateRender": false},24.2667);
+tl.fromTo("#streak",{"x": 1300, "opacity": 1},{"x": -1500, "opacity": 1, "duration": 0.42, "ease": "power2.inOut", "immediateRender": false},28.1);
+tl.fromTo("#streak",{"x": 1300, "opacity": 1},{"x": -1500, "opacity": 1, "duration": 0.42, "ease": "power2.inOut", "immediateRender": false},33.0333);
+tl.fromTo("#h0-l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.03,immediateRender:false},0.1);
+tl.fromTo("#h0-l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.5,ease:"back.out(1.8)",stagger:0.045,immediateRender:false},0.5333);
+tl.fromTo("#h0-astra",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},1.2667);
+(function(){var el=document.querySelector("#h0-strike");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:0.3,ease:"power2.inOut",immediateRender:false},1.7);})();
+tl.fromTo("#h0-chip",{"opacity": 0, "y": 60},{"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out", "immediateRender": false},2.8);
+tl.fromTo("#h0-title",{"opacity": 1, "y": 0},{"opacity": 0, "y": -160, "duration": 0.4, "ease": "power3.in", "immediateRender": false},3.2667);
+tl.fromTo("#h0-chip",{"opacity": 1, "x": 0},{"opacity": 0, "x": -300, "duration": 0.35, "ease": "power3.in", "immediateRender": false},3.2667);
+tl.fromTo("#h0-astra",{"opacity": 1, "x": 0},{"opacity": 0, "x": 300, "duration": 0.35, "ease": "power3.in", "immediateRender": false},3.2667);
+tl.fromTo("#shade",{"opacity": 1},{"opacity": 0, "duration": 0.4, "ease": "power2.out", "immediateRender": false},3.3);
+tl.fromTo("#s1 .pill",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},3.7333);
+tl.fromTo("#s1 .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},3.9);
+tl.fromTo("#s1 .l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},5.7333);
+tl.fromTo("#s1 .card",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},4.4);
+tl.fromTo("#s1 .fill",{"scaleX": 0.02},{"scaleX": 1, "duration": 2.6, "ease": "power2.inOut", "immediateRender": false},4.9);
+(function(){var o={v:0};tl.fromTo(o,{v:0},{v:100,duration:2.6,ease:"power2.inOut",immediateRender:false,onUpdate:function(){var el=document.querySelector("#s1 .pct");if(el)el.textContent=Math.round(o.v)+" %";}},4.9);})();
+tl.fromTo("#s1 .t1",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},6.1);
+tl.fromTo("#s1 .t2",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},6.3);
+tl.fromTo("#s1 .t3",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},6.5);
+tl.fromTo("#s1 .stamp",{"opacity": 0, "scale": 2.2, "rotation": -18},{"opacity": 1, "scale": 1, "rotation": -8, "duration": 0.32, "ease": "power4.in", "immediateRender": false},7.5333);
+tl.fromTo("#s2 .pill",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},8.9);
+tl.fromTo("#s2 .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},9.0667);
+tl.fromTo("#s2 .l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},9.4667);
+tl.fromTo("#s2 .qa",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},9.3);
+(function(){var el=document.querySelector("#s2 .strike");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:0.35,ease:"power2.inOut",immediateRender:false},10.7);})();
+tl.fromTo("#s2 .stamp",{"opacity": 0, "scale": 2.2, "rotation": -18},{"opacity": 1, "scale": 1, "rotation": -8, "duration": 0.32, "ease": "power4.in", "immediateRender": false},10.9333);
+tl.fromTo("#s2 .qa",{"opacity": 1},{"opacity": 0.35, "duration": 0.3, "ease": "power2.out", "immediateRender": false},12.8667);
+tl.fromTo("#s2 .qb",{"opacity": 0, "y": 70},{"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out", "immediateRender": false},13.0667);
+tl.fromTo("#s2 .qb .ok",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},14.4667);
+tl.fromTo("#s3 .pill",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},15.2);
+tl.fromTo("#s3 .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},15.3);
+tl.fromTo("#s3 .l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.05,immediateRender:false},15.9333);
+tl.fromTo("#s3 .win",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},16.3);
+tl.fromTo("#s3 .ln0",{"clipPath": "inset(0 100% 0 0)", "opacity": 1},{"clipPath": "inset(0 0% 0 0)", "opacity": 1, "duration": 0.42, "ease": "power2.out", "immediateRender": false},16.7333);
+tl.fromTo("#s3 .ln1",{"clipPath": "inset(0 100% 0 0)", "opacity": 1},{"clipPath": "inset(0 0% 0 0)", "opacity": 1, "duration": 0.42, "ease": "power2.out", "immediateRender": false},17.5333);
+tl.fromTo("#s3 .ln2",{"clipPath": "inset(0 100% 0 0)", "opacity": 1},{"clipPath": "inset(0 0% 0 0)", "opacity": 1, "duration": 0.42, "ease": "power2.out", "immediateRender": false},18.1333);
+tl.fromTo("#s3 .ln3",{"clipPath": "inset(0 100% 0 0)", "opacity": 1},{"clipPath": "inset(0 0% 0 0)", "opacity": 1, "duration": 0.42, "ease": "power2.out", "immediateRender": false},18.8);
+tl.fromTo("#s3 .ln4",{"clipPath": "inset(0 100% 0 0)", "opacity": 1},{"clipPath": "inset(0 0% 0 0)", "opacity": 1, "duration": 0.42, "ease": "power2.out", "immediateRender": false},19.3333);
+tl.fromTo("#s3 .caret",{opacity:1},{opacity:0,duration:.4,ease:"steps(1)",repeat:4,yoyo:true,immediateRender:false},16.4);
+tl.fromTo("#s4 .pill",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},20.2);
+tl.fromTo("#s4 .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},20.3);
+tl.fromTo("#s4 .l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},20.6667);
+tl.fromTo("#s4 .win",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},20.4667);
+tl.fromTo("#s4 .n0",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},20.7);
+(function(){var el=document.querySelector("#s4 .p-top");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:0.4,ease:"power2.inOut",immediateRender:false},20.8667);})();
+tl.fromTo("#s4 .n1",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},21.0);
+(function(){var el=document.querySelector("#s4 .p-top2");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:0.3,ease:"power2.inOut",immediateRender:false},21.3);})();
+tl.fromTo("#s4 .n2",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},21.5333);
+(function(){var el=document.querySelector("#s4 .p-bot");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:0.4,ease:"power2.inOut",immediateRender:false},22.8667);})();
+tl.fromTo("#s4 .n3",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},23.0667);
+(function(){var el=document.querySelector("#s4 .p-bot2");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:0.3,ease:"power2.inOut",immediateRender:false},23.5333);})();
+tl.fromTo("#s4 .n4",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},23.8667);
+tl.fromTo("#s4 .n4",{"boxShadow": "0 0 0px rgba(139,92,246,0)"},{"boxShadow": "0 0 60px rgba(139,92,246,.9)", "duration": 0.3, "ease": "power2.out", "immediateRender": false},24.0667);
+tl.fromTo("#s5 .pill",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},24.8);
+tl.fromTo("#s5 .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},24.9333);
+tl.fromTo("#s5 .l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},26.9);
+tl.fromTo("#s5 .cl",{"opacity": 0, "y": 60},{"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out", "immediateRender": false},25.3333);
+tl.fromTo("#s5 .cl .stamp",{"opacity": 0, "scale": 2.2, "rotation": -18},{"opacity": 1, "scale": 1, "rotation": -8, "duration": 0.32, "ease": "power4.in", "immediateRender": false},26.1333);
+tl.fromTo("#s5 .vs",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},26.5);
+tl.fromTo("#s5 .cr",{"opacity": 0, "y": 60},{"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out", "immediateRender": false},27.0667);
+tl.fromTo("#s5 .cr .badge",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},27.4667);
+tl.fromTo("#s6 .pill",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},28.6667);
+tl.fromTo("#s6 .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},28.8);
+tl.fromTo("#s6 .l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},29.7);
+tl.fromTo("#s6 .card",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},29.4);
+tl.fromTo("#s6 .m1",{"scaleX": 1},{"scaleX": 0.28, "duration": 1.1, "ease": "power2.inOut", "immediateRender": false},29.9333);
+tl.fromTo("#s6 .m2",{"scaleX": 0.3},{"scaleX": 1, "duration": 1.1, "ease": "power2.inOut", "immediateRender": false},31.2);
+tl.fromTo("#s6 .ck0",{"opacity": 0, "x": -40},{"opacity": 1, "x": 0, "duration": 0.35, "ease": "power3.out", "immediateRender": false},31.9);
+tl.fromTo("#s6 .ck1",{"opacity": 0, "x": -40},{"opacity": 1, "x": 0, "duration": 0.35, "ease": "power3.out", "immediateRender": false},32.3);
+tl.fromTo("#s6 .ck2",{"opacity": 0, "x": -40},{"opacity": 1, "x": 0, "duration": 0.35, "ease": "power3.out", "immediateRender": false},32.7);
+tl.fromTo("#s7 .brand",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},33.5333);
+tl.fromTo("#s7 .qa .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.035,immediateRender:false},33.6);
+tl.fromTo("#s7 .qa .l2 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.04,immediateRender:false},34.1333);
+tl.fromTo("#s7 .qa",{"opacity": 1, "y": 0},{"opacity": 0, "y": -60, "duration": 0.25, "ease": "power2.in", "immediateRender": false},35.2);
+tl.fromTo("#s7 .qb .l1 .char",{opacity:0,y:46,scale:.6},{opacity:1,y:0,scale:1,duration:0.42,ease:"back.out(1.8)",stagger:0.03,immediateRender:false},35.4);
+tl.fromTo("#s7 .qb .l2",{"opacity": 0, "scale": 2.6},{"opacity": 1, "scale": 1, "duration": 0.36, "ease": "power4.in", "immediateRender": false},35.7333);
+tl.fromTo("#s7 .box",{"opacity": 0, "y": 50},{"opacity": 1, "y": 0, "duration": 0.4, "ease": "power3.out", "immediateRender": false},36.3);
+tl.fromTo("#s7 .box .tc .char",{opacity:0},{opacity:1,duration:.05,stagger:.08,immediateRender:false},36.5333);
+tl.fromTo("#s7 .box .snd",{"opacity": 0, "scale": 0.55},{"opacity": 1, "scale": 1, "duration": 0.38, "ease": "back.out(2)", "immediateRender": false},37.0667);
+tl.fromTo("#s7 .sub",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.42, "ease": "power3.out", "immediateRender": false},37.2);
+tl.fromTo("#s7 .qb .l2",{"textShadow": "0 0 30px rgba(234,179,8,.6)"},{"textShadow": "0 0 90px rgba(234,179,8,1)", "duration": 0.5, "ease": "power2.out", "immediateRender": false},38.3);
+tl.fromTo("#glow-a",{"x": 0, "y": 0},{"x": 160, "y": 220, "duration": 39.275, "ease": "sine.inOut", "immediateRender": false},0.0);
+tl.fromTo("#glow-b",{"x": 0, "y": 0},{"x": -140, "y": -180, "duration": 39.275, "ease": "sine.inOut", "immediateRender": false},0.0);
+tl.fromTo("#arc-a",{"rotation": 0},{"rotation": 540, "duration": 39.275, "ease": "none", "immediateRender": false},0.0);
+tl.fromTo("#arc-b",{"rotation": 0},{"rotation": -720, "duration": 39.275, "ease": "none", "immediateRender": false},0.0);
+tl.fromTo("#arc-c",{"rotation": 30},{"rotation": 390, "duration": 39.275, "ease": "none", "immediateRender": false},0.0);
+(function(){var el=document.querySelector("#bg-curve");if(!el)return;var L=el.getTotalLength();tl.fromTo(el,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:2.4,ease:"power2.inOut",immediateRender:false},0.2);})();
+tl.fromTo("#c0",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},0.0333);
+tl.set("#c0",{opacity:0},1.0667);
+tl.set("#c0w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},0.1);
+tl.set("#c0w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},0.6);
+tl.set("#c0w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},0.6);
+tl.set("#c0w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},0.7667);
+tl.set("#c0w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},0.7667);
+tl.set("#c0w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},1.0667);
+tl.fromTo("#c1",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},1.0667);
+tl.set("#c1",{opacity:0},2.0);
+tl.set("#c1w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},1.1333);
+tl.set("#c1w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},1.3);
+tl.set("#c1w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},1.3);
+tl.set("#c1w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},1.4667);
+tl.set("#c1w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},1.4667);
+tl.set("#c1w2",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},2.0);
+tl.fromTo("#c2",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},2.0);
+tl.set("#c2",{opacity:0},3.0333);
+tl.set("#c2w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},2.0333);
+tl.set("#c2w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},2.1333);
+tl.set("#c2w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},2.1333);
+tl.set("#c2w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},2.2667);
+tl.set("#c2w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},2.2667);
+tl.set("#c2w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},2.5333);
+tl.set("#c2w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},2.5333);
+tl.set("#c2w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},2.7667);
+tl.set("#c2w4",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},2.7667);
+tl.set("#c2w4",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},2.9);
+tl.set("#c2w5",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},2.9);
+tl.set("#c2w5",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},3.0333);
+tl.fromTo("#c3",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},3.0333);
+tl.set("#c3",{opacity:0},3.8333);
+tl.set("#c3w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},3.0667);
+tl.set("#c3w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},3.3);
+tl.set("#c3w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},3.3);
+tl.set("#c3w1",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},3.8333);
+tl.fromTo("#c4",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},3.8333);
+tl.set("#c4",{opacity:0},5.0667);
+tl.set("#c4w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},3.8667);
+tl.set("#c4w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},4.0333);
+tl.set("#c4w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},4.0333);
+tl.set("#c4w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},4.2667);
+tl.set("#c4w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},4.2667);
+tl.set("#c4w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},4.5667);
+tl.set("#c4w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},4.5667);
+tl.set("#c4w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},4.8);
+tl.set("#c4w4",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},4.8);
+tl.set("#c4w4",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},5.0667);
+tl.fromTo("#c5",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},5.0667);
+tl.set("#c5",{opacity:0},6.0333);
+tl.set("#c5w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},5.1);
+tl.set("#c5w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},5.2667);
+tl.set("#c5w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},5.2667);
+tl.set("#c5w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},5.4333);
+tl.set("#c5w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},5.4333);
+tl.set("#c5w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},5.6333);
+tl.set("#c5w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},5.6333);
+tl.set("#c5w3",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},5.8333);
+tl.set("#c5w4",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},5.8333);
+tl.set("#c5w4",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},6.0333);
+tl.fromTo("#c6",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},6.0333);
+tl.set("#c6",{opacity:0},6.7667);
+tl.set("#c6w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},6.1);
+tl.set("#c6w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},6.2333);
+tl.set("#c6w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},6.2333);
+tl.set("#c6w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},6.6333);
+tl.set("#c6w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},6.6333);
+tl.set("#c6w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},6.7667);
+tl.fromTo("#c7",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},6.7667);
+tl.set("#c7",{opacity:0},7.6);
+tl.set("#c7w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},6.8);
+tl.set("#c7w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},7.6);
+tl.fromTo("#c8",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},7.6);
+tl.set("#c8",{opacity:0},8.7333);
+tl.set("#c8w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},7.6333);
+tl.set("#c8w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},7.8333);
+tl.set("#c8w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},7.8333);
+tl.set("#c8w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},8.1);
+tl.set("#c8w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},8.1);
+tl.set("#c8w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},8.3667);
+tl.set("#c8w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},8.3667);
+tl.set("#c8w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},8.7333);
+tl.fromTo("#c9",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},8.7333);
+tl.set("#c9",{opacity:0},9.3333);
+tl.set("#c9w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},8.8);
+tl.set("#c9w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},8.8667);
+tl.set("#c9w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},8.8667);
+tl.set("#c9w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},9.1667);
+tl.set("#c9w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},9.1667);
+tl.set("#c9w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},9.3333);
+tl.fromTo("#c10",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},9.3333);
+tl.set("#c10",{opacity:0},10.3333);
+tl.set("#c10w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},9.4);
+tl.set("#c10w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},9.6);
+tl.set("#c10w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},9.6);
+tl.set("#c10w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},9.8667);
+tl.set("#c10w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},9.8667);
+tl.set("#c10w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},10.1333);
+tl.set("#c10w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},10.1333);
+tl.set("#c10w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},10.3333);
+tl.fromTo("#c11",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},10.3333);
+tl.set("#c11",{opacity:0},13.0667);
+tl.set("#c11w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},10.3667);
+tl.set("#c11w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},10.6333);
+tl.set("#c11w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},10.6333);
+tl.set("#c11w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},13.0667);
+tl.fromTo("#c12",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},13.0667);
+tl.set("#c12",{opacity:0},13.7333);
+tl.set("#c12w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},13.1);
+tl.set("#c12w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},13.3667);
+tl.set("#c12w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},13.3667);
+tl.set("#c12w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},13.4667);
+tl.set("#c12w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},13.4667);
+tl.set("#c12w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},13.7333);
+tl.fromTo("#c13",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},13.7333);
+tl.set("#c13",{opacity:0},14.5667);
+tl.set("#c13w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},13.8);
+tl.set("#c13w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},14.1667);
+tl.set("#c13w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},14.1667);
+tl.set("#c13w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},14.4333);
+tl.set("#c13w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},14.4333);
+tl.set("#c13w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},14.5667);
+tl.fromTo("#c14",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},14.5667);
+tl.set("#c14",{opacity:0},15.0333);
+tl.set("#c14w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},14.6);
+tl.set("#c14w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},15.0333);
+tl.fromTo("#c15",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},15.0333);
+tl.set("#c15",{opacity:0},16.8);
+tl.set("#c15w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},15.1);
+tl.set("#c15w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},15.2667);
+tl.set("#c15w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},15.2667);
+tl.set("#c15w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},15.6333);
+tl.set("#c15w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},15.6333);
+tl.set("#c15w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},16.0);
+tl.set("#c15w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},16.0);
+tl.set("#c15w3",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},16.6333);
+tl.set("#c15w4",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},16.6333);
+tl.set("#c15w4",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},16.8);
+tl.fromTo("#c16",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},16.8);
+tl.set("#c16",{opacity:0},17.5);
+tl.set("#c16w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},16.8333);
+tl.set("#c16w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},17.0);
+tl.set("#c16w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},17.0);
+tl.set("#c16w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},17.1333);
+tl.set("#c16w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},17.1333);
+tl.set("#c16w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},17.3667);
+tl.set("#c16w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},17.3667);
+tl.set("#c16w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},17.5);
+tl.fromTo("#c17",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},17.5);
+tl.set("#c17",{opacity:0},18.0667);
+tl.set("#c17w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},17.5667);
+tl.set("#c17w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},17.9);
+tl.set("#c17w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},17.9);
+tl.set("#c17w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},18.0667);
+tl.fromTo("#c18",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},18.0667);
+tl.set("#c18",{opacity:0},18.7);
+tl.set("#c18w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},18.1);
+tl.set("#c18w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},18.3667);
+tl.set("#c18w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},18.3667);
+tl.set("#c18w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},18.6);
+tl.set("#c18w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},18.6);
+tl.set("#c18w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},18.7);
+tl.fromTo("#c19",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},18.7);
+tl.set("#c19",{opacity:0},20.9333);
+tl.set("#c19w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},18.7333);
+tl.set("#c19w0",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},20.0667);
+tl.set("#c19w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},20.0667);
+tl.set("#c19w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},20.9333);
+tl.fromTo("#c20",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},20.9333);
+tl.set("#c20",{opacity:0},23.0333);
+tl.set("#c20w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},20.9667);
+tl.set("#c20w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},21.4333);
+tl.set("#c20w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},21.4333);
+tl.set("#c20w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},21.6);
+tl.set("#c20w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},21.6);
+tl.set("#c20w2",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},23.0333);
+tl.fromTo("#c21",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},23.0333);
+tl.set("#c21",{opacity:0},24.0);
+tl.set("#c21w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},23.0667);
+tl.set("#c21w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},23.3);
+tl.set("#c21w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},23.3);
+tl.set("#c21w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},24.0);
+tl.fromTo("#c22",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},24.0);
+tl.set("#c22",{opacity:0},25.5);
+tl.set("#c22w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},24.0333);
+tl.set("#c22w0",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},24.7333);
+tl.set("#c22w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},24.7333);
+tl.set("#c22w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},25.1);
+tl.set("#c22w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},25.1);
+tl.set("#c22w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},25.3333);
+tl.set("#c22w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},25.3333);
+tl.set("#c22w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},25.5);
+tl.fromTo("#c23",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},25.5);
+tl.set("#c23",{opacity:0},26.6667);
+tl.set("#c23w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},25.5667);
+tl.set("#c23w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},25.8667);
+tl.set("#c23w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},25.8667);
+tl.set("#c23w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},26.0667);
+tl.set("#c23w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},26.0667);
+tl.set("#c23w2",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},26.4667);
+tl.set("#c23w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},26.4667);
+tl.set("#c23w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},26.6667);
+tl.fromTo("#c24",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},26.6667);
+tl.set("#c24",{opacity:0},28.5667);
+tl.set("#c24w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},26.7);
+tl.set("#c24w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},26.9667);
+tl.set("#c24w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},26.9667);
+tl.set("#c24w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},27.1667);
+tl.set("#c24w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},27.1667);
+tl.set("#c24w2",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},28.5667);
+tl.fromTo("#c25",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},28.5667);
+tl.set("#c25",{opacity:0},30.2333);
+tl.set("#c25w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},28.6);
+tl.set("#c25w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},29.7333);
+tl.set("#c25w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},29.7333);
+tl.set("#c25w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},30.2333);
+tl.fromTo("#c26",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},30.2333);
+tl.set("#c26",{opacity:0},31.1667);
+tl.set("#c26w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},30.3);
+tl.set("#c26w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},30.6);
+tl.set("#c26w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},30.6);
+tl.set("#c26w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},30.8);
+tl.set("#c26w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},30.8);
+tl.set("#c26w2",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},30.9667);
+tl.set("#c26w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},30.9667);
+tl.set("#c26w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},31.1667);
+tl.fromTo("#c27",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},31.1667);
+tl.set("#c27",{opacity:0},32.4333);
+tl.set("#c27w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},31.2333);
+tl.set("#c27w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},31.4333);
+tl.set("#c27w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},31.4333);
+tl.set("#c27w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},31.6667);
+tl.set("#c27w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},31.6667);
+tl.set("#c27w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},32.2);
+tl.set("#c27w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},32.2);
+tl.set("#c27w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},32.4333);
+tl.fromTo("#c28",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},32.4333);
+tl.set("#c28",{opacity:0},33.4);
+tl.set("#c28w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},32.5);
+tl.set("#c28w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},32.6);
+tl.set("#c28w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},32.6);
+tl.set("#c28w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},32.7667);
+tl.set("#c28w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},32.7667);
+tl.set("#c28w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},33.4);
+tl.fromTo("#c29",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},33.4);
+tl.set("#c29",{opacity:0},34.3333);
+tl.set("#c29w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},33.4667);
+tl.set("#c29w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},33.5);
+tl.set("#c29w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},33.5);
+tl.set("#c29w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},33.7);
+tl.set("#c29w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},33.7);
+tl.set("#c29w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},34.2);
+tl.set("#c29w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},34.2);
+tl.set("#c29w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},34.3333);
+tl.fromTo("#c30",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},34.3333);
+tl.set("#c30",{opacity:0},35.4667);
+tl.set("#c30w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},34.3667);
+tl.set("#c30w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},34.7);
+tl.set("#c30w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},34.7);
+tl.set("#c30w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},35.4667);
+tl.fromTo("#c31",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},35.4667);
+tl.set("#c31",{opacity:0},36.8333);
+tl.set("#c31w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},35.5);
+tl.set("#c31w0",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},35.8);
+tl.set("#c31w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},35.8);
+tl.set("#c31w1",{color:"#a78bfa",textShadow:"0 0 0px rgba(234,179,8,0)"},36.0667);
+tl.set("#c31w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},36.0667);
+tl.set("#c31w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},36.7333);
+tl.set("#c31w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},36.7333);
+tl.set("#c31w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},36.8333);
+tl.fromTo("#c32",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},36.8333);
+tl.set("#c32",{opacity:0},37.8667);
+tl.set("#c32w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},36.8667);
+tl.set("#c32w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},37.0333);
+tl.set("#c32w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},37.0333);
+tl.set("#c32w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},37.2667);
+tl.set("#c32w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},37.2667);
+tl.set("#c32w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},37.8667);
+tl.fromTo("#c33",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},37.8667);
+tl.set("#c33",{opacity:0},38.8667);
+tl.set("#c33w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},37.9);
+tl.set("#c33w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},38.0333);
+tl.set("#c33w1",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},38.0333);
+tl.set("#c33w1",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},38.2);
+tl.set("#c33w2",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},38.2);
+tl.set("#c33w2",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},38.5333);
+tl.set("#c33w3",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},38.5333);
+tl.set("#c33w3",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},38.8667);
+tl.fromTo("#c34",{opacity:0,y:14,scale:.96},{opacity:1,y:0,scale:1,duration:.14,ease:"power2.out",immediateRender:false},38.8667);
+tl.set("#c34",{opacity:0},39.2667);
+tl.set("#c34w0",{color:"#eab308",textShadow:"0 0 18px rgba(234,179,8,.8)"},38.9);
+tl.set("#c34w0",{color:"#EDEDED",textShadow:"0 0 0px rgba(234,179,8,0)"},39.2667);
+    window.__timelines = window.__timelines || {};
+    window.__timelines["autoboost-74"] = tl;
+  })();
+  </script>
+</div>
+</body>
+</html>
