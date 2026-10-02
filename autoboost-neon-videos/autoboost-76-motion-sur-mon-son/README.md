@@ -1,6 +1,6 @@
 # autoboost-76 — « Ce clip-là, je l'ai quasiment pas monté » (CTA MOTION)
 
-9:16 · 1080×1920 · 30 fps · **31,1 s** (932 images)
+9:16 · 1080×1920 · 30 fps · **31,1 s** (932 images) · −15,5 LUFS
 
 Session `/tournage/2026-10-02-140117` (49 s take, 3:4) + `anime_1.mp4`, the clip being
 showcased: Tony's own song with the motion an AI tool generated around it (150 s, 9:16).
