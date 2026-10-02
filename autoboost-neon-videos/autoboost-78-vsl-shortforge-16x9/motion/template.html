@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="kit/kit.css" />
+<style>
+/* minimalist type: Inter (the kit's "AB Sans" slot) + JetBrains Mono for labels */
+@font-face { font-family: "AB Sans"; src: url("fonts/Inter-700-latin.woff2") format("woff2"); font-weight: 700; font-display: block; }
+@font-face { font-family: "AB Sans"; src: url("fonts/Inter-400-latin.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "AB Mono"; src: url("fonts/JetBrainsMono-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+/* Charte AutomatisationBoost - gold / violet on ink, no green, no emoji */
+:root { --gold:#eab308; --violet:#8b5cf6; --bg:#0a0a0f; --ink:#EDEDED; --mute:#8A8A8A; --err:#ff6b6b; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0a0a0f;
+  font-family: "AB Sans", sans-serif; font-weight: 700; color: #EDEDED; }
+#root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #0a0a0f; }
+.bg { position: absolute; inset: 0; }
+.grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px); background-size: 64px 64px; }
+#glow-a { position: absolute; left: -300px; top: -300px; width: 1100px; height: 1100px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(234,179,8,.13), transparent 62%); }
+#glow-b { position: absolute; left: 1100px; top: 200px; width: 1100px; height: 1100px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,.20), transparent 62%); }
+/* neon side tubes (boost niveau) */
+.tube { position: absolute; top: 110px; width: 8px; height: 860px; border-radius: 4px; z-index: 3; }
+#tube-l { left: 52px; background: #eab308; box-shadow: 0 0 18px #eab308, 0 0 46px rgba(234,179,8,.6); }
+#tube-r { left: 1860px; background: #8b5cf6; box-shadow: 0 0 18px #8b5cf6, 0 0 46px rgba(139,92,246,.6); }
+#brand { position: absolute; left: 0; top: 46px; width: 1920px; text-align: center; font-size: 22px; letter-spacing: .32em; color: #EDEDED; z-index: 4; }
+#brand b { color: #eab308; }
+#brand i { display: block; width: 240px; height: 2px; margin: 12px auto 0; background: linear-gradient(90deg, transparent, #eab308, transparent); }
+.lvl { position: absolute; left: 110px; top: 44px; z-index: 6; display: flex; align-items: center; gap: 16px; padding: 10px 20px; border-radius: 12px;
+  background: rgba(10,10,15,.92); border: 2px solid rgba(234,179,8,.85); box-shadow: 0 0 22px rgba(234,179,8,.35); font-size: 24px; letter-spacing: .08em; opacity: 0; }
+.lvl .seg { display: flex; gap: 6px; } .lvl .seg i { display: block; width: 30px; height: 10px; border-radius: 3px; background: #2a2540; }
+.lvl .seg i.on { background: #8b5cf6; box-shadow: 0 0 10px #8b5cf6; } .lvl.max .seg i.on { background: #eab308; box-shadow: 0 0 10px #eab308; }
+/* avatar column */
+#avatar { position: absolute; left: 0; top: 0; width: 600px; height: 600px; z-index: 8; border-radius: 50%; transform-origin: 0px 0px; opacity: 0; }
+#ring { position: absolute; left: 0; top: 0; width: 500px; height: 500px; border-radius: 50%; z-index: 9; opacity: 0; transform-origin: 50% 50%;
+  border: 7px solid #eab308; box-shadow: 0 0 26px rgba(234,179,8,.9), 0 0 70px rgba(234,179,8,.35), inset 0 0 26px rgba(139,92,246,.45); }
+#ring2 { position: absolute; left: 0; top: 0; width: 540px; height: 540px; border-radius: 50%; z-index: 9; opacity: 0;
+  border: 3px dashed rgba(139,92,246,.75); }
+#cap { position: absolute; left: 0; top: 0; width: 700px; height: 86px; z-index: 10; border-radius: 16px; opacity: 0;
+  background: rgba(10,10,15,.92); border: 2px solid rgba(139,92,246,.7); box-shadow: 0 0 26px rgba(139,92,246,.35); }
+.cap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 0 16px; font-size: 40px;
+  text-transform: uppercase; letter-spacing: .01em; white-space: nowrap; opacity: 0; }
+.cw { display: inline-block; color: #EDEDED; }
+/* content area: x 110 -> 1190 */
+.scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 5; }
+.panel { position: absolute; left: 110px; top: 140px; width: 1080px; height: 820px; }
+.brk { position: absolute; width: 46px; height: 46px; border-color: #eab308; border-style: solid; border-width: 0; filter: drop-shadow(0 0 8px rgba(234,179,8,.8)); }
+.brk.a { left: 0; top: 0; border-left-width: 4px; border-top-width: 4px; } .brk.b { right: 0; top: 0; border-right-width: 4px; border-top-width: 4px; }
+.brk.c { left: 0; bottom: 0; border-left-width: 4px; border-bottom-width: 4px; } .brk.d { right: 0; bottom: 0; border-right-width: 4px; border-bottom-width: 4px; }
+.kick { font-family: "AB Mono", monospace; font-size: 22px; letter-spacing: .16em; color: #a78bfa; }
+.h1 { font-size: 84px; line-height: 1.02; letter-spacing: -0.035em; }
+.h2 { font-size: 56px; line-height: 1.08; letter-spacing: -0.03em; }
+.g { color: #eab308; text-shadow: 0 0 28px rgba(234,179,8,.45); } .v { color: #a78bfa; } .r { color: #ff6b6b; } .m { color: #8A8A8A; }
+.char { display: inline-block; opacity: 0; } .char.sp { width: .26em; }
+.card { position: absolute; border-radius: 22px; background: linear-gradient(180deg, rgba(24,21,36,.96), rgba(14,12,22,.96));
+  border: 2px solid rgba(139,92,246,.55); box-shadow: 0 0 34px rgba(139,92,246,.18); }
+/* S0 hook */
+.week { position: absolute; left: 0; top: 470px; display: flex; gap: 18px; }
+.day { width: 132px; height: 170px; border-radius: 20px; background: #111117; border: 2px solid #2b2840; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 16px; opacity: 0; }
+.day b { font-family: "AB Mono", monospace; font-size: 26px; color: #8A8A8A; }
+.day i { display: flex; width: 64px; height: 64px; border-radius: 50%; align-items: center; justify-content: center; }
+.day.ok i { color: #0a0a0f; background: #eab308; box-shadow: 0 0 20px rgba(234,179,8,.7); }
+.day.no i { color: #ff6b6b; border: 3px solid #ff6b6b; }
+.stampx { position: absolute; padding: 6px 26px; border: 7px solid #ff6b6b; border-radius: 16px; color: #ff6b6b; font-size: 74px; letter-spacing: .02em;
+  background: rgba(20,8,12,.85); box-shadow: 0 0 30px rgba(255,107,107,.45); opacity: 0; white-space: nowrap; }
+/* S1 problem */
+.chips { position: absolute; left: 0; top: 300px; display: grid; grid-template-columns: repeat(3, 330px); gap: 22px; }
+.chip { height: 120px; border-radius: 20px; background: #111117; border: 2px solid #2b2840; display: flex; align-items: center; gap: 18px; padding: 0 24px;
+  font-size: 34px; color: #6b6782; }
+.chip i { display: flex; width: 56px; height: 56px; border-radius: 14px; align-items: center; justify-content: center; background: #1b1828; color: #6b6782; }
+.clock { position: absolute; left: 0; top: 610px; display: flex; align-items: baseline; gap: 26px; }
+.clock .t { font-family: "AB Mono", monospace; font-size: 120px; letter-spacing: -0.04em; color: #EDEDED; position: relative; }
+.clock .t span { position: absolute; left: 0; top: 0; opacity: 0; white-space: nowrap; }
+.clock small { font-size: 30px; color: #8A8A8A; font-weight: 400; margin-left: 440px; }
+/* S2 reveal */
+.logo { position: absolute; left: 0; top: 190px; font-size: 150px; letter-spacing: -0.05em; }
+.para { position: absolute; left: 0; top: 520px; width: 400px; height: 210px; padding: 26px 28px; }
+.para i { display: block; height: 14px; border-radius: 7px; background: #3a3350; margin: 14px 0; }
+.arrow { position: absolute; left: 430px; top: 600px; width: 120px; height: 6px; transform-origin: 0 50%; background: linear-gradient(90deg, #8b5cf6, #eab308); box-shadow: 0 0 12px #eab308; }
+.six { position: absolute; left: 580px; top: 520px; width: 480px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.six span { height: 56px; border-radius: 14px; border: 2px solid #eab308; color: #EDEDED; font-size: 22px; display: flex; align-items: center; gap: 10px; padding: 0 14px;
+  background: rgba(234,179,8,.08); opacity: 0; }
+.six span i { display: flex; color: #eab308; }
+/* S3 demo */
+.step { position: absolute; left: 0; width: 520px; padding: 26px 30px; opacity: 0; }
+.step .n { display: inline-flex; width: 50px; height: 50px; border-radius: 50%; align-items: center; justify-content: center; background: #eab308; color: #0a0a0f;
+  font-size: 28px; margin-right: 14px; box-shadow: 0 0 18px rgba(234,179,8,.6); }
+.step .tt { font-size: 34px; display: inline-block; vertical-align: middle; }
+.field { margin-top: 22px; height: 76px; border-radius: 38px; border: 3px solid #eab308; display: flex; align-items: center; padding: 0 26px; position: relative; }
+.field .typed { font-family: "AB Mono", monospace; font-size: 25px; white-space: nowrap; }
+.layers { margin-top: 18px; display: flex; gap: 14px; }
+.layers span { flex: 1; height: 64px; border-radius: 16px; border: 2px solid #3a3350; display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 22px; color: #6b6782; }
+.phone { position: absolute; left: 640px; top: 120px; width: 380px; height: 676px; border-radius: 46px; border: 5px solid #eab308; opacity: 0;
+  box-shadow: 0 0 40px rgba(234,179,8,.55), 0 0 90px rgba(139,92,246,.35); }
+.plabel { position: absolute; left: 640px; top: 820px; width: 380px; text-align: center; font-family: "AB Mono", monospace; font-size: 22px; color: #a78bfa; opacity: 0; }
+.wire { position: absolute; height: 4px; transform-origin: 0 50%; background: repeating-linear-gradient(90deg, #8b5cf6 0 12px, transparent 12px 20px); }
+.exv { position: absolute; left: 0; top: 0; width: 360px; height: 640px; border-radius: 40px; z-index: 7; opacity: 0; transform-origin: 0px 0px; object-fit: cover; }
+/* S4 examples */
+.ph3 { position: absolute; top: 130px; width: 330px; height: 587px; border-radius: 40px; border: 4px solid #eab308; opacity: 0;
+  box-shadow: 0 0 30px rgba(234,179,8,.5); }
+.ph3.v { border-color: #8b5cf6; box-shadow: 0 0 30px rgba(139,92,246,.6); }
+.rend { position: absolute; left: 0; top: 760px; width: 1080px; height: 110px; display: flex; align-items: center; justify-content: center; gap: 40px; }
+.rend .old { position: relative; font-size: 64px; color: #8A8A8A; opacity: 0; }
+.rend .old svg { position: absolute; left: -10px; top: 26px; overflow: visible; }
+.rend .old path { fill: none; stroke: #ff6b6b; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 220; stroke-dashoffset: 220; }
+.rend .to { font-size: 50px; color: #a78bfa; opacity: 0; }
+.rend .new { font-size: 64px; opacity: 0; }
+/* S5 what you get */
+.list { position: absolute; left: 0; top: 260px; width: 1080px; }
+.li { display: flex; align-items: center; gap: 24px; height: 104px; margin-bottom: 18px; padding: 0 30px; border-radius: 20px; background: #111117;
+  border: 2px solid #2b2840; font-size: 40px; letter-spacing: -0.02em; opacity: 0; }
+.li i { display: flex; width: 58px; height: 58px; border-radius: 50%; align-items: center; justify-content: center; flex: none; border: 3px solid #eab308; color: #eab308; }
+.li small { margin-left: auto; font-size: 24px; color: #8A8A8A; font-weight: 400; }
+.cd { position: absolute; left: 110px; top: 140px; width: 1080px; height: 820px; display: flex; align-items: center; justify-content: center; z-index: 7; }
+.cd span { position: absolute; font-size: 560px; letter-spacing: -0.06em; color: #eab308; text-shadow: 0 0 70px rgba(234,179,8,.55); opacity: 0; }
+#dim { position: absolute; left: 80px; top: 120px; width: 1160px; height: 860px; border-radius: 30px; background: rgba(10,10,15,.88); z-index: 6; opacity: 0; }
+/* S6 cta */
+.cta1 { position: absolute; left: 0; top: 150px; font-size: 96px; letter-spacing: -0.03em; }
+.cta2 { position: absolute; left: -6px; top: 250px; font-size: 230px; letter-spacing: -0.05em; }
+.cfield { position: absolute; left: 0; top: 560px; width: 980px; height: 120px; border-radius: 60px; border: 3px solid #8b5cf6; background: #111117;
+  display: flex; align-items: center; gap: 24px; padding: 0 40px; box-shadow: 0 0 34px rgba(139,92,246,.45); opacity: 0; }
+.cfield .pre { font-size: 34px; color: #8A8A8A; font-weight: 400; } .cfield .kw { font-family: "AB Mono", monospace; font-size: 60px; color: #eab308; letter-spacing: .08em; flex: 1; }
+.cfield .snd { display: flex; color: #eab308; opacity: 0; }
+.dmline { position: absolute; left: 0; top: 720px; font-size: 36px; color: #EDEDED; font-weight: 400; opacity: 0; }
+.burst { position: absolute; left: 0; top: 0; opacity: 0; transform-origin: 650px 540px; }
+#flash { position: absolute; inset: 0; z-index: 30; opacity: 0; background: #fff3b0; pointer-events: none; }
+.fb-sticker { z-index: 12; font-size: 52px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-78" data-start="0" data-width="1920" data-height="1080" data-duration="%%TOTAL%%" data-fps="30">
+  <div class="bg"><div class="grid"></div><div id="glow-a"></div><div id="glow-b"></div></div>
+  <i id="tube-l" class="tube"></i><i id="tube-r" class="tube"></i>
+  <div id="brand">AUTOMATISATION<b>BOOST</b><i></i></div>
+%%LEVELS%%
+%%SCENES%%
+  <div id="dim"></div>
+%%COUNT%%
+  <video id="avatar" src="avatar.mp4" muted playsinline data-start="0" data-duration="%%TOTAL%%" data-track-index="6"></video>
+  <video id="ex0" class="exv" src="ex0.mp4" muted playsinline data-start="0" data-duration="%%TOTAL%%" data-track-index="7"></video>
+  <video id="ex1" class="exv" src="ex1.mp4" muted playsinline data-start="0" data-duration="%%TOTAL%%" data-track-index="8"></video>
+  <video id="ex2" class="exv" src="ex2.mp4" muted playsinline data-start="0" data-duration="%%TOTAL%%" data-track-index="9"></video>
+  <video id="ex3" class="exv" src="ex3.mp4" muted playsinline data-start="0" data-duration="%%TOTAL%%" data-track-index="10"></video>
+  <div id="ring2"></div><div id="ring"></div>
+  <div id="cap">%%CAPTIONS%%</div>
+%%OVERLAYS%%
+  <div id="flash"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="kit/kit.js"></script>
+  <script>
+  (function () {
+    var tl = gsap.timeline({ paused: true });
+%%JS%%
+    window.__timelines = window.__timelines || {};
+    window.__timelines["autoboost-78"] = tl;
+  })();
+  </script>
+</div>
+</body>
+</html>

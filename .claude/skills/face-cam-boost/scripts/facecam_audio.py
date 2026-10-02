@@ -55,8 +55,12 @@ run([FF, "-nostdin", "-v", "error", *ins, "-filter_complex",
      + f"amix=inputs={len(events)}:normalize=0,apad,atrim=0:{T:.3f}[a]",
      "-map", "[a]", "-ar", "48000", "-ac", "1", sfx, "-y"])
 
-voice = ("[0:a]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=mono,"
-         "loudnorm=I=-16:TP=-1.5:LRA=11,asplit=2[v][key];")
+# voice normalised FIRST, in its own pass: loudnorm inside the mix graph ends its stream early
+# after the last word, and sidechaincompress then cuts the bed - the music dropped out at the end
+vnorm = os.path.join(work, "voice_norm.wav")
+run([FF, "-nostdin", "-v", "error", "-i", a.voice, "-af", "aformat=sample_fmts=fltp:channel_layouts=mono,loudnorm=I=-16:TP=-1.5:LRA=11,"
+     f"aresample=48000,apad,atrim=0:{T:.3f}", "-ar", "48000", vnorm, "-y"])
+voice = "[0:a]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=mono,asplit=2[v][key];"
 fade = f"atrim=0:{T:.3f},afade=t=in:st=0:d=0.6,afade=t=out:st={T - 1.2:.3f}:d=1.2"
 duck = "[bed][key]sidechaincompress=threshold=0.035:ratio=6:attack=12:release=320[duck];"
 if a.bed_file:
@@ -83,6 +87,6 @@ else:
 
 mix = (f"[v][duck][{sfx_idx}:a]amix=inputs=3:normalize=0:duration=first,alimiter=limit=0.95[a]" if a.bed != "none" or a.bed_file
        else f"[v][{sfx_idx}:a]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]")
-run([FF, "-nostdin", "-v", "error", "-i", a.voice, *inputs, "-i", sfx,
+run([FF, "-nostdin", "-v", "error", "-i", vnorm, *inputs, "-i", sfx,
      "-filter_complex", voice + bed + duck + mix, "-map", "[a]", "-ar", "48000", "-ac", "2", a.out, "-y"])
 print(f"{a.out} ({len(events)} SFX, bed {a.bed_file or a.bed}, {T:.2f}s)")
