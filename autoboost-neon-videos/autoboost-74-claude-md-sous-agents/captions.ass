@@ -1,0 +1,147 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Cap,DejaVu Sans,60,&H00EDEDED,&H000000FF,&H000F0A0A,&H64000000,-1,0,0,0,100,100,0.6,0,1,5,4,2,56,56,96,1
+Style: Pop,DejaVu Sans,54,&H0008B3EA,&H000000FF,&H000F0A0A,&H00000000,-1,0,0,0,100,100,2.4,0,1,3,0,8,40,40,78,1
+Style: Tag,DejaVu Sans,19,&H005A5A5A,&H000000FF,&H000F0A0A,&H00000000,-1,0,0,0,100,100,5.0,0,1,2,0,8,40,40,30,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.09,0:00:00.59,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Claude{\c&H00EDEDED} vient peut-être de
+Dialogue: 0,0:00:00.59,0:00:00.76,Cap,,0,0,0,,Claude {\c&H0008B3EA\3c&H000F0A0A}vient{\c&H00EDEDED} peut-être de
+Dialogue: 0,0:00:00.76,0:00:01.12,Cap,,0,0,0,,Claude vient {\c&H0008B3EA\3c&H000F0A0A}peut-être{\c&H00EDEDED} de
+Dialogue: 0,0:00:01.12,0:00:01.31,Cap,,0,0,0,,Claude vient peut-être {\c&H0008B3EA\3c&H000F0A0A}de{\c&H00EDEDED}
+Dialogue: 0,0:00:01.31,0:00:01.46,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}tuer{\c&H00EDEDED} {\c&H00F65C8B}Astra,{\c&H00EDEDED} et tout ça
+Dialogue: 0,0:00:01.46,0:00:02.03,Cap,,0,0,0,,tuer {\c&H0008B3EA\3c&H000F0A0A}Astra,{\c&H00EDEDED} et tout ça
+Dialogue: 0,0:00:02.03,0:00:02.13,Cap,,0,0,0,,tuer {\c&H00F65C8B}Astra,{\c&H00EDEDED} {\c&H0008B3EA\3c&H000F0A0A}et{\c&H00EDEDED} tout ça
+Dialogue: 0,0:00:02.13,0:00:02.27,Cap,,0,0,0,,tuer {\c&H00F65C8B}Astra,{\c&H00EDEDED} et {\c&H0008B3EA\3c&H000F0A0A}tout{\c&H00EDEDED} ça
+Dialogue: 0,0:00:02.27,0:00:02.54,Cap,,0,0,0,,tuer {\c&H00F65C8B}Astra,{\c&H00EDEDED} et tout {\c&H0008B3EA\3c&H000F0A0A}ça{\c&H00EDEDED}
+Dialogue: 0,0:00:02.54,0:00:02.77,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}grâce{\c&H00EDEDED} à un simple {\c&H00F65C8B}fichier.{\c&H00EDEDED}
+Dialogue: 0,0:00:02.77,0:00:02.91,Cap,,0,0,0,,grâce {\c&H0008B3EA\3c&H000F0A0A}à{\c&H00EDEDED} un simple {\c&H00F65C8B}fichier.{\c&H00EDEDED}
+Dialogue: 0,0:00:02.91,0:00:03.07,Cap,,0,0,0,,grâce à {\c&H0008B3EA\3c&H000F0A0A}un{\c&H00EDEDED} simple {\c&H00F65C8B}fichier.{\c&H00EDEDED}
+Dialogue: 0,0:00:03.07,0:00:03.31,Cap,,0,0,0,,grâce à un {\c&H0008B3EA\3c&H000F0A0A}simple{\c&H00EDEDED} {\c&H00F65C8B}fichier.{\c&H00EDEDED}
+Dialogue: 0,0:00:03.31,0:00:03.86,Cap,,0,0,0,,grâce à un simple {\c&H0008B3EA\3c&H000F0A0A}fichier.{\c&H00EDEDED}
+Dialogue: 0,0:00:03.86,0:00:04.04,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Si{\c&H00EDEDED} toi aussi tu exploses
+Dialogue: 0,0:00:04.04,0:00:04.27,Cap,,0,0,0,,Si {\c&H0008B3EA\3c&H000F0A0A}toi{\c&H00EDEDED} aussi tu exploses
+Dialogue: 0,0:00:04.27,0:00:04.57,Cap,,0,0,0,,Si toi {\c&H0008B3EA\3c&H000F0A0A}aussi{\c&H00EDEDED} tu exploses
+Dialogue: 0,0:00:04.57,0:00:04.80,Cap,,0,0,0,,Si toi aussi {\c&H0008B3EA\3c&H000F0A0A}tu{\c&H00EDEDED} exploses
+Dialogue: 0,0:00:04.80,0:00:05.11,Cap,,0,0,0,,Si toi aussi tu {\c&H0008B3EA\3c&H000F0A0A}exploses{\c&H00EDEDED}
+Dialogue: 0,0:00:05.11,0:00:05.27,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}ta{\c&H00EDEDED} limite de {\c&H00F65C8B}token{\c&H00EDEDED} après
+Dialogue: 0,0:00:05.27,0:00:05.43,Cap,,0,0,0,,ta {\c&H0008B3EA\3c&H000F0A0A}limite{\c&H00EDEDED} de {\c&H00F65C8B}token{\c&H00EDEDED} après
+Dialogue: 0,0:00:05.43,0:00:05.62,Cap,,0,0,0,,ta limite {\c&H0008B3EA\3c&H000F0A0A}de{\c&H00EDEDED} {\c&H00F65C8B}token{\c&H00EDEDED} après
+Dialogue: 0,0:00:05.62,0:00:05.82,Cap,,0,0,0,,ta limite de {\c&H0008B3EA\3c&H000F0A0A}token{\c&H00EDEDED} après
+Dialogue: 0,0:00:05.82,0:00:06.09,Cap,,0,0,0,,ta limite de {\c&H00F65C8B}token{\c&H00EDEDED} {\c&H0008B3EA\3c&H000F0A0A}après{\c&H00EDEDED}
+Dialogue: 0,0:00:06.09,0:00:06.23,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}une{\c&H00EDEDED} demi-journée de
+Dialogue: 0,0:00:06.23,0:00:06.64,Cap,,0,0,0,,une {\c&H0008B3EA\3c&H000F0A0A}demi-journée{\c&H00EDEDED} de
+Dialogue: 0,0:00:06.64,0:00:06.80,Cap,,0,0,0,,une demi-journée {\c&H0008B3EA\3c&H000F0A0A}de{\c&H00EDEDED}
+Dialogue: 0,0:00:06.80,0:00:07.62,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}boulot,{\c&H00EDEDED}
+Dialogue: 0,0:00:07.62,0:00:07.84,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}tu{\c&H00EDEDED} connais le problème.
+Dialogue: 0,0:00:07.84,0:00:08.11,Cap,,0,0,0,,tu {\c&H0008B3EA\3c&H000F0A0A}connais{\c&H00EDEDED} le problème.
+Dialogue: 0,0:00:08.11,0:00:08.38,Cap,,0,0,0,,tu connais {\c&H0008B3EA\3c&H000F0A0A}le{\c&H00EDEDED} problème.
+Dialogue: 0,0:00:08.38,0:00:08.79,Cap,,0,0,0,,tu connais le {\c&H0008B3EA\3c&H000F0A0A}problème.{\c&H00EDEDED}
+Dialogue: 0,0:00:08.79,0:00:08.88,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Le{\c&H00EDEDED} problème c'est
+Dialogue: 0,0:00:08.88,0:00:09.18,Cap,,0,0,0,,Le {\c&H0008B3EA\3c&H000F0A0A}problème{\c&H00EDEDED} c'est
+Dialogue: 0,0:00:09.18,0:00:09.39,Cap,,0,0,0,,Le problème {\c&H0008B3EA\3c&H000F0A0A}c'est{\c&H00EDEDED}
+Dialogue: 0,0:00:09.39,0:00:09.60,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}peut-être{\c&H00EDEDED} pas combien tu
+Dialogue: 0,0:00:09.60,0:00:09.86,Cap,,0,0,0,,peut-être {\c&H0008B3EA\3c&H000F0A0A}pas{\c&H00EDEDED} combien tu
+Dialogue: 0,0:00:09.86,0:00:10.13,Cap,,0,0,0,,peut-être pas {\c&H0008B3EA\3c&H000F0A0A}combien{\c&H00EDEDED} tu
+Dialogue: 0,0:00:10.13,0:00:10.38,Cap,,0,0,0,,peut-être pas combien {\c&H0008B3EA\3c&H000F0A0A}tu{\c&H00EDEDED}
+Dialogue: 0,0:00:10.38,0:00:10.62,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}utilises{\c&H00EDEDED} Claude.
+Dialogue: 0,0:00:10.62,0:00:13.09,Cap,,0,0,0,,utilises {\c&H0008B3EA\3c&H000F0A0A}Claude.{\c&H00EDEDED}
+Dialogue: 0,0:00:13.09,0:00:13.38,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}C'est{\c&H00EDEDED} quel modèle
+Dialogue: 0,0:00:13.38,0:00:13.48,Cap,,0,0,0,,C'est {\c&H0008B3EA\3c&H000F0A0A}quel{\c&H00EDEDED} modèle
+Dialogue: 0,0:00:13.48,0:00:13.79,Cap,,0,0,0,,C'est quel {\c&H0008B3EA\3c&H000F0A0A}modèle{\c&H00EDEDED}
+Dialogue: 0,0:00:13.79,0:00:14.18,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}travaille{\c&H00EDEDED} sur quelle
+Dialogue: 0,0:00:14.18,0:00:14.45,Cap,,0,0,0,,travaille {\c&H0008B3EA\3c&H000F0A0A}sur{\c&H00EDEDED} quelle
+Dialogue: 0,0:00:14.45,0:00:14.59,Cap,,0,0,0,,travaille sur {\c&H0008B3EA\3c&H000F0A0A}quelle{\c&H00EDEDED}
+Dialogue: 0,0:00:14.59,0:00:15.09,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}tâche.{\c&H00EDEDED}
+Dialogue: 0,0:00:15.09,0:00:15.28,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Tu{\c&H00EDEDED} crées un {\c&H00F65C8B}CLAUDE.md{\c&H00EDEDED} et
+Dialogue: 0,0:00:15.28,0:00:15.63,Cap,,0,0,0,,Tu {\c&H0008B3EA\3c&H000F0A0A}crées{\c&H00EDEDED} un {\c&H00F65C8B}CLAUDE.md{\c&H00EDEDED} et
+Dialogue: 0,0:00:15.63,0:00:16.00,Cap,,0,0,0,,Tu crées {\c&H0008B3EA\3c&H000F0A0A}un{\c&H00EDEDED} {\c&H00F65C8B}CLAUDE.md{\c&H00EDEDED} et
+Dialogue: 0,0:00:16.00,0:00:16.62,Cap,,0,0,0,,Tu crées un {\c&H0008B3EA\3c&H000F0A0A}CLAUDE.md{\c&H00EDEDED} et
+Dialogue: 0,0:00:16.62,0:00:16.83,Cap,,0,0,0,,Tu crées un {\c&H00F65C8B}CLAUDE.md{\c&H00EDEDED} {\c&H0008B3EA\3c&H000F0A0A}et{\c&H00EDEDED}
+Dialogue: 0,0:00:16.83,0:00:16.99,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}tu{\c&H00EDEDED} lui demandes de
+Dialogue: 0,0:00:16.99,0:00:17.13,Cap,,0,0,0,,tu {\c&H0008B3EA\3c&H000F0A0A}lui{\c&H00EDEDED} demandes de
+Dialogue: 0,0:00:17.13,0:00:17.36,Cap,,0,0,0,,tu lui {\c&H0008B3EA\3c&H000F0A0A}demandes{\c&H00EDEDED} de
+Dialogue: 0,0:00:17.36,0:00:17.55,Cap,,0,0,0,,tu lui demandes {\c&H0008B3EA\3c&H000F0A0A}de{\c&H00EDEDED}
+Dialogue: 0,0:00:17.55,0:00:17.89,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}déléguer{\c&H00EDEDED} certaines tâches
+Dialogue: 0,0:00:17.89,0:00:18.10,Cap,,0,0,0,,déléguer {\c&H0008B3EA\3c&H000F0A0A}certaines{\c&H00EDEDED} tâches
+Dialogue: 0,0:00:18.10,0:00:18.38,Cap,,0,0,0,,déléguer certaines {\c&H0008B3EA\3c&H000F0A0A}tâches{\c&H00EDEDED}
+Dialogue: 0,0:00:18.38,0:00:18.59,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}à{\c&H00EDEDED} des {\c&H00F65C8B}sous-agents.{\c&H00EDEDED}
+Dialogue: 0,0:00:18.59,0:00:18.75,Cap,,0,0,0,,à {\c&H0008B3EA\3c&H000F0A0A}des{\c&H00EDEDED} {\c&H00F65C8B}sous-agents.{\c&H00EDEDED}
+Dialogue: 0,0:00:18.75,0:00:20.05,Cap,,0,0,0,,à des {\c&H0008B3EA\3c&H000F0A0A}sous-agents.{\c&H00EDEDED}
+Dialogue: 0,0:00:20.05,0:00:20.98,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Tâche{\c&H00EDEDED} simple, modèle
+Dialogue: 0,0:00:20.98,0:00:21.42,Cap,,0,0,0,,Tâche {\c&H0008B3EA\3c&H000F0A0A}simple,{\c&H00EDEDED} modèle
+Dialogue: 0,0:00:21.42,0:00:21.62,Cap,,0,0,0,,Tâche simple, {\c&H0008B3EA\3c&H000F0A0A}modèle{\c&H00EDEDED}
+Dialogue: 0,0:00:21.62,0:00:23.06,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}léger,{\c&H00EDEDED} tâche complexe,
+Dialogue: 0,0:00:23.06,0:00:23.29,Cap,,0,0,0,,léger, {\c&H0008B3EA\3c&H000F0A0A}tâche{\c&H00EDEDED} complexe,
+Dialogue: 0,0:00:23.29,0:00:24.04,Cap,,0,0,0,,léger, tâche {\c&H0008B3EA\3c&H000F0A0A}complexe,{\c&H00EDEDED}
+Dialogue: 0,0:00:24.04,0:00:24.73,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Opus.{\c&H00EDEDED} Sinon c'est comme
+Dialogue: 0,0:00:24.73,0:00:25.10,Cap,,0,0,0,,{\c&H00F65C8B}Opus.{\c&H00EDEDED} {\c&H0008B3EA\3c&H000F0A0A}Sinon{\c&H00EDEDED} c'est comme
+Dialogue: 0,0:00:25.10,0:00:25.35,Cap,,0,0,0,,{\c&H00F65C8B}Opus.{\c&H00EDEDED} Sinon {\c&H0008B3EA\3c&H000F0A0A}c'est{\c&H00EDEDED} comme
+Dialogue: 0,0:00:25.35,0:00:25.56,Cap,,0,0,0,,{\c&H00F65C8B}Opus.{\c&H00EDEDED} Sinon c'est {\c&H0008B3EA\3c&H000F0A0A}comme{\c&H00EDEDED}
+Dialogue: 0,0:00:25.56,0:00:25.87,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}utiliser{\c&H00EDEDED} un bazooka pour
+Dialogue: 0,0:00:25.87,0:00:26.05,Cap,,0,0,0,,utiliser {\c&H0008B3EA\3c&H000F0A0A}un{\c&H00EDEDED} bazooka pour
+Dialogue: 0,0:00:26.05,0:00:26.47,Cap,,0,0,0,,utiliser un {\c&H0008B3EA\3c&H000F0A0A}bazooka{\c&H00EDEDED} pour
+Dialogue: 0,0:00:26.47,0:00:26.70,Cap,,0,0,0,,utiliser un bazooka {\c&H0008B3EA\3c&H000F0A0A}pour{\c&H00EDEDED}
+Dialogue: 0,0:00:26.70,0:00:26.96,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}planter{\c&H00EDEDED} un {\c&H00F65C8B}clou.{\c&H00EDEDED}
+Dialogue: 0,0:00:26.96,0:00:27.18,Cap,,0,0,0,,planter {\c&H0008B3EA\3c&H000F0A0A}un{\c&H00EDEDED} {\c&H00F65C8B}clou.{\c&H00EDEDED}
+Dialogue: 0,0:00:27.18,0:00:28.60,Cap,,0,0,0,,planter un {\c&H0008B3EA\3c&H000F0A0A}clou.{\c&H00EDEDED}
+Dialogue: 0,0:00:28.60,0:00:29.74,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}L'objectif,{\c&H00EDEDED} gaspiller
+Dialogue: 0,0:00:29.74,0:00:30.29,Cap,,0,0,0,,L'objectif, {\c&H0008B3EA\3c&H000F0A0A}gaspiller{\c&H00EDEDED}
+Dialogue: 0,0:00:30.29,0:00:30.61,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}moins{\c&H00EDEDED} de {\c&H00F65C8B}tokens{\c&H00EDEDED} et garder
+Dialogue: 0,0:00:30.61,0:00:30.80,Cap,,0,0,0,,moins {\c&H0008B3EA\3c&H000F0A0A}de{\c&H00EDEDED} {\c&H00F65C8B}tokens{\c&H00EDEDED} et garder
+Dialogue: 0,0:00:30.80,0:00:30.98,Cap,,0,0,0,,moins de {\c&H0008B3EA\3c&H000F0A0A}tokens{\c&H00EDEDED} et garder
+Dialogue: 0,0:00:30.98,0:00:31.22,Cap,,0,0,0,,moins de {\c&H00F65C8B}tokens{\c&H00EDEDED} {\c&H0008B3EA\3c&H000F0A0A}et{\c&H00EDEDED} garder
+Dialogue: 0,0:00:31.22,0:00:31.43,Cap,,0,0,0,,moins de {\c&H00F65C8B}tokens{\c&H00EDEDED} et {\c&H0008B3EA\3c&H000F0A0A}garder{\c&H00EDEDED}
+Dialogue: 0,0:00:31.43,0:00:31.66,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}la{\c&H00EDEDED} puissance pour les
+Dialogue: 0,0:00:31.66,0:00:32.19,Cap,,0,0,0,,la {\c&H0008B3EA\3c&H000F0A0A}puissance{\c&H00EDEDED} pour les
+Dialogue: 0,0:00:32.19,0:00:32.49,Cap,,0,0,0,,la puissance {\c&H0008B3EA\3c&H000F0A0A}pour{\c&H00EDEDED} les
+Dialogue: 0,0:00:32.49,0:00:32.61,Cap,,0,0,0,,la puissance pour {\c&H0008B3EA\3c&H000F0A0A}les{\c&H00EDEDED}
+Dialogue: 0,0:00:32.61,0:00:32.77,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}tâches{\c&H00EDEDED} importantes.
+Dialogue: 0,0:00:32.77,0:00:33.46,Cap,,0,0,0,,tâches {\c&H0008B3EA\3c&H000F0A0A}importantes.{\c&H00EDEDED}
+Dialogue: 0,0:00:33.49,0:00:33.69,Cap,,0,0,0,,Tu {\c&H0008B3EA\3c&H000F0A0A}veux{\c&H00EDEDED} exactement quoi
+Dialogue: 0,0:00:33.69,0:00:34.21,Cap,,0,0,0,,Tu veux {\c&H0008B3EA\3c&H000F0A0A}exactement{\c&H00EDEDED} quoi
+Dialogue: 0,0:00:34.21,0:00:34.37,Cap,,0,0,0,,Tu veux exactement {\c&H0008B3EA\3c&H000F0A0A}quoi{\c&H00EDEDED}
+Dialogue: 0,0:00:34.37,0:00:34.70,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}mettre{\c&H00EDEDED} dedans,
+Dialogue: 0,0:00:34.70,0:00:35.50,Cap,,0,0,0,,mettre {\c&H0008B3EA\3c&H000F0A0A}dedans,{\c&H00EDEDED}
+Dialogue: 0,0:00:35.50,0:00:35.80,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Commente{\c&H00EDEDED} {\c&H00F65C8B}TOKEN{\c&H00EDEDED} et je
+Dialogue: 0,0:00:35.80,0:00:36.07,Cap,,0,0,0,,{\c&H00F65C8B}Commente{\c&H00EDEDED} {\c&H0008B3EA\3c&H000F0A0A}TOKEN{\c&H00EDEDED} et je
+Dialogue: 0,0:00:36.07,0:00:36.74,Cap,,0,0,0,,{\c&H00F65C8B}Commente{\c&H00EDEDED} {\c&H00F65C8B}TOKEN{\c&H00EDEDED} {\c&H0008B3EA\3c&H000F0A0A}et{\c&H00EDEDED} je
+Dialogue: 0,0:00:36.74,0:00:36.87,Cap,,0,0,0,,{\c&H00F65C8B}Commente{\c&H00EDEDED} {\c&H00F65C8B}TOKEN{\c&H00EDEDED} et {\c&H0008B3EA\3c&H000F0A0A}je{\c&H00EDEDED}
+Dialogue: 0,0:00:36.87,0:00:37.05,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}t'envoie{\c&H00EDEDED} le prompt.
+Dialogue: 0,0:00:37.05,0:00:37.28,Cap,,0,0,0,,t'envoie {\c&H0008B3EA\3c&H000F0A0A}le{\c&H00EDEDED} prompt.
+Dialogue: 0,0:00:37.28,0:00:37.90,Cap,,0,0,0,,t'envoie le {\c&H0008B3EA\3c&H000F0A0A}prompt.{\c&H00EDEDED}
+Dialogue: 0,0:00:37.90,0:00:38.05,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}Et{\c&H00EDEDED} ça pourrait tout
+Dialogue: 0,0:00:38.05,0:00:38.20,Cap,,0,0,0,,Et {\c&H0008B3EA\3c&H000F0A0A}ça{\c&H00EDEDED} pourrait tout
+Dialogue: 0,0:00:38.20,0:00:38.55,Cap,,0,0,0,,Et ça {\c&H0008B3EA\3c&H000F0A0A}pourrait{\c&H00EDEDED} tout
+Dialogue: 0,0:00:38.55,0:00:38.90,Cap,,0,0,0,,Et ça pourrait {\c&H0008B3EA\3c&H000F0A0A}tout{\c&H00EDEDED}
+Dialogue: 0,0:00:38.90,0:00:39.27,Cap,,0,0,0,,{\c&H0008B3EA\3c&H000F0A0A}changer{\c&H00EDEDED}
+Dialogue: 0,0:00:00.20,0:00:03.77,Pop,,0,0,0,,{\fad(120,120)}UN SIMPLE FICHIER
+Dialogue: 0,0:00:00.20,0:00:03.77,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:03.77,0:00:08.70,Pop,,0,0,0,,{\fad(120,120)}TA LIMITE DE TOKENS
+Dialogue: 0,0:00:03.77,0:00:08.70,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:08.70,0:00:13.00,Pop,,0,0,0,,{\fad(120,120)}MAUVAISE QUESTION
+Dialogue: 0,0:00:08.70,0:00:13.00,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:13.00,0:00:15.00,Pop,,0,0,0,,{\fad(120,120)}QUEL MODÈLE ?
+Dialogue: 0,0:00:13.00,0:00:15.00,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:15.00,0:00:18.90,Pop,,0,0,0,,{\fad(120,120)}CLAUDE.md
+Dialogue: 0,0:00:15.00,0:00:18.90,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:18.90,0:00:20.90,Pop,,0,0,0,,{\fad(120,120)}DES SOUS-AGENTS
+Dialogue: 0,0:00:18.90,0:00:20.90,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:20.90,0:00:23.00,Pop,,0,0,0,,{\fad(120,120)}SIMPLE → MODÈLE LÉGER
+Dialogue: 0,0:00:20.90,0:00:23.00,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:23.00,0:00:24.60,Pop,,0,0,0,,{\fad(120,120)}COMPLEXE → OPUS
+Dialogue: 0,0:00:23.00,0:00:24.60,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:24.60,0:00:28.40,Pop,,0,0,0,,{\fad(120,120)}PAS DE BAZOOKA
+Dialogue: 0,0:00:24.60,0:00:28.40,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:28.40,0:00:33.30,Pop,,0,0,0,,{\fad(120,120)}MOINS DE TOKENS
+Dialogue: 0,0:00:28.40,0:00:33.30,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
+Dialogue: 0,0:00:33.30,0:00:39.27,Pop,,0,0,0,,{\fad(120,120)}COMMENTE : TOKEN
+Dialogue: 0,0:00:33.30,0:00:39.27,Tag,,0,0,0,,{\fad(120,120)}AUTOMATISATION BOOST
