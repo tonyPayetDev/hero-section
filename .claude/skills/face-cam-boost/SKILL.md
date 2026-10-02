@@ -76,7 +76,7 @@ npx hyperframes render public -o silent.mp4 --fps 30 --quality delivery --no-bro
 python3 $S/facecam_audio.py --voice build/voice.wav --events events.json --frames <nb images> --out mix.wav --bed valse
 ffmpeg -i silent.mp4 -i mix.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -movflags +faststart -shortest final.mp4
 ```
-- Musique par défaut : **Valse des fleurs, version maison évidée** (le script boucle la partie stable mesure 6 → 26). `--bed drums` pour un sujet plus nerveux.
+- Musique par défaut : **Valse des fleurs, version maison évidée** (le script boucle la partie stable mesure 6 → 26). `--bed drums` pour un sujet plus nerveux. `--bed-file` quand la vidéo montre un clip avec sa propre musique.
 - `events.json` : un SFX par slide (whoosh), tampon (impact), sticker (thwip/pop), coche (confirm), CTA (impact-deep, click, notify).
 - Cible : −15 à −16 LUFS intégrés. Vérifier l'image **dans le MP4 final**, pas seulement les snapshots.
 
@@ -84,6 +84,15 @@ ffmpeg -i silent.mp4 -i mix.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -
 - Publier sur prévisualisation, attendre « ✅ » de Tony.
 - **Mot-clé CTA** : vérifier qu'une porte Blotato existe (`blotato_list_automations`). Sinon la créer **avec l'accord de Tony** et l'URL de la ressource — sans porte, les gens commentent et ne reçoivent rien.
 - Planifier sur les 5 réseaux (TikTok 36488 / IG 54617 / YouTube 45006 / FB 43538 + pageId / LinkedIn 25882).
+
+## Variante « clip mis en avant »
+
+Quand Tony montre un résultat, par exemple un clip généré par un outil IA, et que la face cam parle de ce résultat.
+Référence : `autoboost-76-motion-sur-mon-son/` (`clip_track.py` + `motion/gen.py`).
+- `clip_track.py` découpe le clip sur la timeline de la coupe, image et son ensemble. Chaque bloc montre le passage qui lui va. Faire finir la finale sur l'image où commence le hook, pour que la boucle soit invisible.
+- Hook et finale : le clip en plein écran, Tony en **PiP cercle néon** (`facecam_mode` sur une boîte 420×420, `#pip-ring`). Écrans de preuve : le clip rangé dans un cadre téléphone qui suit les écrans.
+- La musique du clip devient la nappe : `facecam_audio.py --bed-file clip_song.wav --bed-gain -13`. Elle est posée telle quelle, à niveau fixe et ducée, sans boucle ni fondu.
+- Pour une timeline d'écran, utiliser la **vraie** forme d'onde du passage (enveloppe RMS du wav). Placer les coupes et keyframes sur ses attaques, et une tête de lecture calée sur ce qui joue.
 
 ## Mode dialogue — Tony + son avatar IA
 

@@ -1,0 +1,5 @@
+[
+ {"id": 1, "tag": "montre", "precision": "Montre 2-3 secondes du clip motion", "t": 6.628, "tFin": 15.45, "effet": "carte"},
+ {"id": 2, "tag": "montre", "precision": "Cut : écran / timeline / résultat", "t": 15.45, "tFin": 46.037, "effet": "carte"},
+ {"id": 3, "tag": "libre", "precision": "Remontre le meilleur passage du clip", "t": 46.037, "tFin": 48.853, "effet": "libre"}
+]

@@ -119,7 +119,7 @@ def cut(src, work):
              "-vf", f"setpts=PTS/{tempo},fps={FPS}", "-af", f"atempo={tempo},aresample=48000",
              "-c:v", "libx264", "-crf", "17", "-preset", "medium", "-pix_fmt", "yuv420p",
              "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "1", "-video_track_timescale", "30000", out, "-y"])
-        files.append(out)
+        files.append(os.path.abspath(out))  # concat resolves relative paths against the list file
     lst = os.path.join(work, "cuts.txt")
     open(lst, "w").write("".join(f"file '{f}'\n" for f in files))
     base = os.path.join(work, "base.mp4")
