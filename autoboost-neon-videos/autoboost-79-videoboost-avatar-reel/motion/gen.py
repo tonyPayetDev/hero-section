@@ -16,7 +16,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PROJ = os.path.dirname(HERE)
 KIT = os.path.abspath(os.path.join(PROJ, "..", "_shared", "facecam-boost-kit"))
 sys.path.insert(0, KIT)
-from kit import icon, chars, sticker, elastic  # noqa: E402
+from kit import icon, chars as _chars, sticker, elastic  # noqa: E402
+
+
+def chars(text, cls=""):
+    """per-char spans, but a line can only break between words"""
+    return '<span class="char sp">&nbsp;</span>'.join(f'<span style="white-space:nowrap">{_chars(w, cls)}</span>' for w in text.split(" "))
 
 BUILD = os.environ.get("BUILD", os.path.join(PROJ, "build"))
 FPS = 30
@@ -39,7 +44,7 @@ for i, w in enumerate(raw):
         W[-1]["w"] += w["w"]; W[-1]["e"] = w["e"]
     else:
         W.append(w)
-T = {w["i"]: w["s"] for w in W}
+T = {i: w["s"] for i, w in enumerate(raw)}          # every raw index, merged fragments included
 
 
 def t(i):
@@ -107,13 +112,13 @@ def lbar():
 
 
 # ------------------------------------------------------------------ the presenter: placed low, punch-in on every cut
-TY = 560
-S("#tony", 0, {"x": 0, "y": TY, "scale": 1})
-R("#tony", 0, {"scale": 1.3, "y": TY + 120}, {"scale": 1, "y": TY}, 0.32, "expo.out")      # hook visual: he slams in
-flash(0, 0.55, 0.25)
-zoom = 1.0
+TY, BASE = 640, 0.94
+S("#tony", 0, {"x": 0, "y": TY, "scale": BASE})
+R("#tony", 0, {"scale": BASE * 1.25, "y": TY + 100}, {"scale": BASE, "y": TY}, 0.32, "expo.out")      # hook visual: he slams in
+flash(0.12, 0.35, 0.22)            # after frame 0: the first frame is the thumbnail
+zoom = BASE
 for k, c in enumerate(CUTS[1:], 1):
-    zoom = 1.07 if zoom == 1.0 else 1.0
+    zoom = BASE * 1.06 if zoom == BASE else BASE
     S("#tony", c, {"scale": zoom})
 R("#tonyglow", 0, {"opacity": 0.7}, {"opacity": 1}, 2, "sine.inOut")
 R("#tony", VDUR - 0.15, {"opacity": 1}, {"opacity": 0}, 0.2, "power2.in")                 # the take ends with the voice
@@ -243,7 +248,8 @@ for k in range(3):
 scene(5, '<div class="ctaw"><div class="a q1">' + chars("Chez toi ?") + '</div></div>'
          '<div class="ctaw c2" style="top:150px"><div class="a">' + chars("ÉCRIS") + '</div><div class="b">' + elastic("BOOST", "") + '</div></div>'
          '<div class="cfield"><span class="pre">écris</span><span class="kw">' + chars("BOOST") + f'</span><i class="snd">{icon("send", 40)}</i></div>', front=True)
-kin("#s5 .q1", t(100) - 0.1, 0.03, 0.28)
+S("#s5 .c2 .b", 0, {"opacity": 0})
+kin("#s5 .q1", t(94), 0.03, 0.28)
 R("#s5 .q1", t(103) - 0.12, {"opacity": 1}, {"opacity": 0}, 0.12, "power2.in")
 kin("#s5 .c2 .a", t(103), 0.03, 0.25)
 R("#s5 .c2 .b", t(104) - 0.02, {"opacity": 0, "scale": 2.2}, {"opacity": 1, "scale": 1}, 0.25, "power4.in")

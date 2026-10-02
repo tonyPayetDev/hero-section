@@ -1,0 +1,6 @@
+{
+ "deep-urban": { "label": "Deep Urban (house, stylé)", "file": "food-deep-urban-122.mp3", "start": 14.258, "loopA": 16.193, "loopB": 70.389, "gain": -22.4, "bpm": 124.0, "license": "Mixkit Free License" },
+ "valse": { "label": "Valse des fleurs (maison)", "file": "valse-des-fleurs-maison-evidee.mp3", "start": 6.667, "loopA": 6.667, "loopB": 33.333, "gain": -5.0, "bpm": 135.0, "license": "production maison (domaine public)" },
+ "drums": { "label": "Epical drums (énergique)", "file": "hook-epical-drums-02-80.mp3", "start": 1.995, "loopA": 1.995, "loopB": 53.995, "gain": -14.5, "bpm": 120.0, "license": "Mixkit Free License" },
+ "none": { "label": "Aucune musique" }
+}

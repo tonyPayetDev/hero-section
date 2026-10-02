@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AutoBoost Studio</title>
+<style>
+@font-face { font-family: "Inter"; src: url("/assets/fonts/Inter-700-latin.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Inter"; src: url("/assets/fonts/Inter-400-latin.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "JB"; src: url("/assets/fonts/JetBrainsMono-Bold.ttf"); }
+:root { --gold: #eab308; --violet: #8b5cf6; --ink: #0a0a0f; --card: #13121b; --line: #2a2738; --txt: #EDEDED; --mute: #8A8A8A; --err: #ff6b6b; }
+* { box-sizing: border-box; }
+body { margin: 0; background: radial-gradient(ellipse at 20% -10%, rgba(234,179,8,.10), transparent 50%), radial-gradient(ellipse at 100% 20%, rgba(139,92,246,.14), transparent 50%), var(--ink);
+  color: var(--txt); font-family: Inter, system-ui, sans-serif; min-height: 100vh; }
+header { display: flex; align-items: center; gap: 14px; padding: 22px 32px; border-bottom: 1px solid var(--line); }
+header h1 { font-size: 20px; letter-spacing: .28em; margin: 0; font-weight: 700; } header h1 b { color: var(--gold); }
+header span { font-family: JB, monospace; font-size: 12px; color: var(--violet); border: 1px solid var(--violet); border-radius: 8px; padding: 4px 10px; }
+main { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 28px; padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 980px) { main { grid-template-columns: 1fr; padding: 16px; } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px; margin-bottom: 18px; }
+.card h2 { margin: 0 0 14px; font-size: 14px; letter-spacing: .18em; color: var(--gold); font-family: JB, monospace; font-weight: 400; }
+.drop { border: 2px dashed #3a3550; border-radius: 16px; padding: 28px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; }
+.drop:hover, .drop.on { border-color: var(--gold); background: rgba(234,179,8,.05); }
+.drop b { display: block; font-size: 18px; margin-bottom: 6px; } .drop small { color: var(--mute); }
+.drop.small { padding: 16px; } .drop .name { color: var(--gold); font-family: JB, monospace; font-size: 13px; margin-top: 8px; display: block; }
+label { display: block; font-size: 13px; color: var(--mute); margin: 14px 0 6px; }
+select, input[type=text], input[type=password], input[type=url] { width: 100%; background: #0d0c13; color: var(--txt); border: 1px solid var(--line); border-radius: 10px;
+  padding: 11px 12px; font: inherit; font-size: 14px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.seg { display: flex; gap: 8px; } .seg label { flex: 1; margin: 0; } .seg input { display: none; }
+.seg span { display: block; text-align: center; padding: 11px 6px; border: 1px solid var(--line); border-radius: 10px; color: var(--mute); cursor: pointer; font-size: 14px; }
+.seg input:checked + span { border-color: var(--gold); color: var(--txt); box-shadow: 0 0 0 1px var(--gold) inset; background: rgba(234,179,8,.07); }
+.tog { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 14px; color: var(--txt); cursor: pointer; }
+.tog small { color: var(--mute); }
+input[type=range] { width: 100%; accent-color: var(--gold); }
+button.go { width: 100%; margin-top: 6px; padding: 16px; border: 0; border-radius: 14px; font: 700 17px Inter, sans-serif; letter-spacing: .04em; color: var(--ink);
+  background: linear-gradient(90deg, #facc15, var(--gold)); box-shadow: 0 0 30px rgba(234,179,8,.35); cursor: pointer; }
+button.go:disabled { opacity: .5; cursor: wait; }
+details summary { cursor: pointer; color: var(--violet); font-size: 14px; } details[open] summary { margin-bottom: 6px; }
+.hint { font-size: 12px; color: var(--mute); margin-top: 6px; line-height: 1.5; }
+.err { color: var(--err); font-size: 14px; margin-top: 10px; min-height: 1em; }
+.job { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; background: #0f0e16; }
+.job .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.job .id { font-family: JB, monospace; font-size: 12px; color: var(--mute); } .job .st { font-size: 14px; }
+.bar { height: 8px; border-radius: 4px; background: #1d1a2a; overflow: hidden; margin: 10px 0; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--violet), var(--gold)); transition: width .4s; }
+.log { font-family: JB, monospace; font-size: 11.5px; color: #a9a6bb; background: #08070c; border-radius: 10px; padding: 10px; max-height: 190px; overflow: auto; white-space: pre-wrap; }
+video { width: 100%; max-height: 70vh; border-radius: 12px; background: #000; margin-top: 10px; }
+.dl { display: inline-block; margin-top: 10px; color: var(--gold); font-weight: 700; text-decoration: none; }
+.done .st { color: var(--gold); } .error .st { color: var(--err); }
+</style>
+</head>
+<body>
+<header><h1>AUTOMATISATION<b>BOOST</b> · STUDIO</h1><span>local · sans IA</span></header>
+<main>
+<form id="f">
+  <div class="card">
+    <h2>1 · TA VIDÉO</h2>
+    <div class="drop" data-for="video"><b>Dépose ta vidéo face caméra</b><small>mp4 / mov · tu parles, l'outil fait le reste</small><span class="name"></span></div>
+    <input type="file" name="video" accept="video/*" hidden required>
+  </div>
+
+  <div class="card">
+    <h2>2 · RÉGLAGES (tout a une valeur par défaut)</h2>
+    <label>Format</label>
+    <div class="seg"><label><input type="radio" name="format" value="9:16" checked><span>9:16 · Reels / TikTok</span></label>
+      <label><input type="radio" name="format" value="16:9"><span>16:9 · YouTube / VSL</span></label></div>
+    <label>Voix</label>
+    <select name="voice">
+      <option value="enhance">Ma voix, améliorée (débruitage, compression, présence) - recommandé</option>
+      <option value="clone-wavespeed">Ma voix clonée (WaveSpeed) - réécrite phrase par phrase</option>
+      <option value="clone-webhook">Ma voix clonée (webhook n8n tts-gen)</option>
+    </select>
+    <div class="hint">Voix clonée : la bouche n'est pas synchronisée au mot près (l'image est recalée sur les phrases).</div>
+    <div class="row">
+      <div><label>Musique</label><select name="music" id="music"></select></div>
+      <div><label>Mot-clé CTA <small>(sinon détecté)</small></label><input type="text" name="cta" placeholder="ex. BOOST"></div>
+    </div>
+    <label>Ou ta propre musique (optionnel)</label>
+    <div class="drop small" data-for="music"><small>Dépose un mp3 / wav</small><span class="name"></span></div>
+    <input type="file" name="music" accept="audio/*" hidden>
+    <label>Vitesse de parole : <b id="tv">1.10</b>×</label>
+    <input type="range" name="tempo" min="1" max="1.25" step="0.01" value="1.1" oninput="tv.textContent=(+this.value).toFixed(2)">
+    <label class="tog"><input type="checkbox" name="cutSilences" checked> Couper les silences <small>(rythme « yapping »)</small></label>
+    <label class="tog"><input type="checkbox" name="cutout"> Supprimer le fond de ma vidéo <small>(beau, mais ~1 s par image sur CPU)</small></label>
+    <label>Marque (en haut des cartes)</label><input type="text" name="brand" placeholder="AUTOMATISATIONBOOST">
+  </div>
+
+  <div class="card">
+    <h2>3 · OPTIONNEL · VIDÉO D'UN CONCURRENT</h2>
+    <div class="drop small" data-for="competitor"><small>L'outil mesure son rythme de montage et le copie</small><span class="name"></span></div>
+    <input type="file" name="competitor" accept="video/*" hidden>
+  </div>
+
+  <div class="card">
+    <details><summary>Clés pour la voix clonée (enregistrées sur ton PC)</summary>
+      <label>Clé API WaveSpeed</label><input type="password" id="k" placeholder="wsk_live_…">
+      <label>URL de ta voix de référence (mp3 public, 10-30 s)</label><input type="url" id="ref" placeholder="https://…/ma-voix.mp3">
+      <label>Webhook n8n tts-gen (optionnel)</label><input type="url" id="wh" placeholder="https://…/webhook/tts-gen">
+      <button type="button" class="go" style="margin-top:14px;padding:10px;font-size:14px" onclick="saveCfg()">Enregistrer</button>
+    </details>
+  </div>
+  <button class="go" id="go">LANCER LE MONTAGE</button>
+  <div class="err" id="err"></div>
+</form>
+
+<section>
+  <div class="card"><h2>MONTAGES</h2><div id="jobs"><div class="hint">Aucun montage pour l'instant.</div></div></div>
+</section>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+document.querySelectorAll(".drop").forEach((d) => {
+  const inp = document.querySelector(`input[name=${d.dataset.for}]`);
+  d.onclick = () => inp.click();
+  d.ondragover = (e) => { e.preventDefault(); d.classList.add("on"); };
+  d.ondragleave = () => d.classList.remove("on");
+  d.ondrop = (e) => { e.preventDefault(); d.classList.remove("on"); inp.files = e.dataTransfer.files; inp.onchange(); };
+  inp.onchange = () => { d.querySelector(".name").textContent = inp.files[0] ? inp.files[0].name : ""; };
+});
+async function opts() {
+  const o = await (await fetch("/api/options")).json();
+  $("#music").innerHTML = o.music.map((m) => `<option value="${m.id}">${m.label}</option>`).join("");
+  const d = o.defaults;
+  if (d.music) $("#music").value = d.music;
+  if (d.voice) document.querySelector("[name=voice]").value = d.voice;
+  if (d.format) document.querySelectorAll("[name=format]").forEach((r) => (r.checked = r.value === d.format));
+  if (d.brand) document.querySelector("[name=brand]").placeholder = d.brand;
+  $("#k").value = d.wavespeedKey || ""; $("#ref").value = d.voiceRefUrl || ""; $("#wh").value = d.webhook || "";
+}
+async function saveCfg() {
+  await fetch("/api/config", { method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ wavespeedKey: $("#k").value, voiceRefUrl: $("#ref").value, webhook: $("#wh").value }) });
+  $("#err").textContent = "Réglages enregistrés.";
+}
+$("#f").onsubmit = async (e) => {
+  e.preventDefault();
+  $("#err").textContent = "";
+  const fd = new FormData($("#f"));
+  if (!fd.get("video") || !fd.get("video").size) { $("#err").textContent = "Ajoute ta vidéo."; return; }
+  fd.set("cutSilences", document.querySelector("[name=cutSilences]").checked ? "on" : "off");
+  ["competitor", "music"].forEach((k) => { const v = fd.get(k); if (v && !v.size) fd.delete(k); });
+  $("#go").disabled = true; $("#go").textContent = "ENVOI…";
+  const r = await fetch("/api/jobs", { method: "POST", body: fd });
+  const j = await r.json();
+  $("#go").disabled = false; $("#go").textContent = "LANCER LE MONTAGE";
+  if (j.error) { $("#err").textContent = j.error; return; }
+  refresh();
+};
+const open = new Set();
+async function refresh() {
+  const list = await (await fetch("/api/jobs")).json();
+  if (!list.length) return;
+  const html = [];
+  for (const j of list) {
+    const full = await (await fetch("/api/jobs/" + j.id)).json();
+    html.push(`<div class="job ${full.status}"><div class="top"><span class="st">${full.status === "done" ? "Terminé" : full.status === "error" ? "Erreur" : full.step}</span>`
+      + `<span class="id">${j.id}</span></div><div class="bar"><i style="width:${full.progress || 0}%"></i></div>`
+      + (full.status === "done" ? `<video src="/jobs/${j.id}/${full.result}" controls preload="metadata"></video><a class="dl" href="/jobs/${j.id}/${full.result}" download>⬇ Télécharger la vidéo</a>` : "")
+      + (full.error ? `<div class="err">${full.error}</div>` : "")
+      + `<details ${open.has(j.id) ? "open" : ""} ontoggle="this.open?open.add('${j.id}'):open.delete('${j.id}')"><summary>Journal</summary><div class="log">${(full.log || []).join("\n")}</div></details></div>`);
+  }
+  const playing = [...document.querySelectorAll("#jobs video")].some((v) => !v.paused);
+  if (!playing) $("#jobs").innerHTML = html.join("");
+}
+opts(); refresh(); setInterval(refresh, 2500);
+</script>
+</body>
+</html>
