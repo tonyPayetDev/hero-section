@@ -110,7 +110,7 @@ for c in CUTS[1:]:
         S(sel, c, {"scale": z})
 
 # ------------------------------------------------------------------ Tony IA: violet circle bottom-right, glitch entrance on its first line
-IAX, IAY, IAS = 640, 1130, 0.62
+IAX, IAY, IAS = 540, 1000, 0.62          # visual centre ~(840, 1300): transform-origin is the circle centre
 S("#iaw", 0, {"x": IAX, "y": IAY, "scale": IAS, "opacity": 0})
 for n, it in enumerate(l for l in L if l["who"] == "ia"):
     a, b = it["start"], it["end"]
