@@ -9,3 +9,5 @@ package-lock.json
 autoboost-neon-videos/*/renders/
 autoboost-neon-videos/*/public/renders/
 autoboost-neon-videos/*/work/
+
+__pycache__/
