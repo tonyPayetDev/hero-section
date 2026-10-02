@@ -240,7 +240,7 @@ export function compose(scenes, words, opts) {
     const width = Math.round(txt.length * (V ? 27 : 30.5) + 88);
     caps.push(`<div class="cap" id="c${k}" style="width:${width}px">` + ch.map((x, j) => `<span class="cw" id="c${k}w${j}">${esc(x.w)}</span>`).join(" ") + "</div>");
     cj.push(`tl.set("#cap",{width:${width},x:${Math.round(capX - width / 2)},opacity:1},${q(Math.max(0, a))});`);
-    cj.push(`tl.fromTo("#c${k}",{opacity:0,y:10},{opacity:1,y:0,duration:.1,ease:"power2.out",immediateRender:false},${q(Math.max(0, a))});`);
+    cj.push(`tl.fromTo("#c${k}",{opacity:0.5,y:6},{opacity:1,y:0,duration:.06,ease:"power2.out",immediateRender:false},${q(Math.max(0, a))});`);   // the pill never shows empty
     cj.push(`tl.set("#c${k}",{opacity:0},${q(b)});`);
     if (k + 1 === chunks.length || chunks[k + 1][0].s - 0.03 > b + 0.02) cj.push(`tl.set("#cap",{opacity:0},${q(b)});`);
     ch.forEach((x, j) => {

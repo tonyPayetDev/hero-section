@@ -296,7 +296,7 @@ for n, it in enumerate(L):
                     + " ".join(f'<span class="cw" id="c{ci}w{j}">{html.escape(x["w"])}</span>' for j, x in enumerate(ch)) + "</div>")
         bc, sh = ("#8b5cf6", "0 0 26px rgba(139,92,246,.7)") if ia else ("#eab308", "0 0 26px rgba(234,179,8,.5)")
         cj.append(f'tl.set("#cap",{{width:{width},x:{540 - width / 2:.0f},opacity:1,borderColor:"{bc}",boxShadow:"{sh}"}},{q(max(0, a))});')
-        cj.append(f'tl.fromTo("#c{ci}",{{opacity:0,y:10}},{{opacity:1,y:0,duration:.1,ease:"power2.out",immediateRender:false}},{q(max(0, a))});')
+        cj.append(f'tl.fromTo("#c{ci}",{{opacity:0.5,y:6}},{{opacity:1,y:0,duration:.06,ease:"power2.out",immediateRender:false}},{q(max(0, a))});')
         cj.append(f'tl.set("#c{ci}",{{opacity:0}},{q(b)});')
         if k2 + 1 == len(chunks):
             cj.append(f'tl.set("#cap",{{opacity:0}},{q(b)});')

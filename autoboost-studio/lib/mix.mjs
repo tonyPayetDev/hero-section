@@ -2,7 +2,7 @@
 // the voice, + SFX on the motion events. Never normalise the sum (charter); amix normalize=0.
 import fs from "node:fs";
 import path from "node:path";
-import { ASSETS, ROOT, ff, duration } from "./tools.mjs";
+import { ASSETS, ROOT, ff, run, FFMPEG, duration } from "./tools.mjs";
 
 const MUSIC = JSON.parse(fs.readFileSync(path.join(ROOT, "templates", "music.json"), "utf8"));
 
@@ -18,7 +18,7 @@ async function bed(music, customFile, T, work) {
   const out = path.join(work, "bed.wav");
   if (customFile) {
     // unknown track: measure it and sit it ~14 LU under the voice
-    const { stderr } = await ff(["-i", customFile, "-af", "ebur128", "-f", "null", "-"], { ok: true });
+    const { stderr } = await run(FFMPEG, ["-nostdin", "-hide_banner", "-i", customFile, "-af", "ebur128", "-f", "null", "-"], { ok: true });
     const I = parseFloat((stderr.match(/I:\s+(-?[\d.]+) LUFS/g) || ["I: -14 LUFS"]).pop().match(/-?[\d.]+/)[0]);
     await ff(["-stream_loop", "-1", "-t", T.toFixed(3), "-i", customFile, "-af", `volume=${(-30 - I).toFixed(1)}dB,afade=t=out:st=${(T - 1).toFixed(2)}:d=1`,
       "-ar", "48000", "-ac", "2", "-c:a", "pcm_f32le", out]);

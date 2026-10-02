@@ -97,6 +97,8 @@ export function plan(words, { cta = "", pace = 3.6, total } = {}) {
       sents.push(s.slice(0, k + 1), s.slice(k + 1));
     } else sents.push(s);
   }
+  // a forced CTA keyword goes on the sentence that says it (Whisper may mangle the verb: « commande token »)
+  const ctaIdx = cta ? (() => { const k = sents.findLastIndex((x) => x.some((w) => norm(w.w) === norm(cta))); return k >= 0 ? k : sents.length - 1; })() : -1;   // last mention: the CTA comes late
   const scenes = [];
   let prevSticker = null, stepN = 0;
   sents.forEach((s, idx) => {
@@ -107,17 +109,17 @@ export function plan(words, { cta = "", pace = 3.6, total } = {}) {
     const nums = s.map((w, i) => ({ v: numOf(w.w), i })).filter((x) => x.v);
     const ord = s.findIndex((w) => ORD.test(clean(w.w)));
     const items = text.split(",").map((x) => x.trim()).filter(Boolean);
-    if (ctaM || (cta && idx === sents.length - 1)) {
+    if (idx === ctaIdx || (ctaM && ctaIdx < 0)) {
       sc.type = "cta";
-      sc.data.keyword = (cta || ctaM[2]).toUpperCase();
+      sc.data.keyword = (cta || (ctaM ? ctaM[2] : "BOOST")).toUpperCase();
       const kw = s.find((w) => norm(w.w) === norm(sc.data.keyword));
       sc.data.at = kw ? kw.s : sc.start + 0.3;
     } else if (ord >= 0 && ord < 3) {
       sc.type = "steps"; sc.data.n = ++stepN;
     } else if (tools.length >= 2) {
       sc.type = "tools"; sc.data.tools = tools.slice(0, 4).map((t) => ({ name: t, at: s.find((w) => toolOf(w.w) === t).s }));
-    } else if (nums.length) {
-      const n = nums[0];
+    } else if (nums.some((n) => +n.v >= 2 || (s[n.i + 1] && UNITS.test(clean(s[n.i + 1].w))))) {      // « tâche 1 » is not a stat
+      const n = nums.find((x) => +x.v >= 2 || (s[x.i + 1] && UNITS.test(clean(s[x.i + 1].w))));
       const unit = s[n.i + 1] && UNITS.test(clean(s[n.i + 1].w)) ? clean(s[n.i + 1].w) : "";
       sc.type = "stat"; sc.data = { value: n.v, unit, at: s[n.i].s, label: headline(s.filter((_, i) => i !== n.i && i !== n.i + 1), 4).words };
     } else if (listLike(text)) {

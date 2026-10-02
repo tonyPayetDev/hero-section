@@ -2,14 +2,15 @@
 // (WaveSpeed qwen3-tts/voice-clone, or the n8n tts-gen webhook) and re-cut the picture to it.
 import fs from "node:fs";
 import path from "node:path";
-import { ff, duration, FPS, sleep } from "./tools.mjs";
+import { ff, run, FFMPEG, duration, FPS, sleep } from "./tools.mjs";
 import { transcribe } from "./transcribe.mjs";
 
 /** local polish: rumble out, denoise, de-ess, gentle compression, presence, then ONE two-pass loudnorm */
 export async function enhance(inWav, outWav) {
   const pre = "highpass=f=80,afftdn=nr=10:nf=-40,deesser=i=0.4,acompressor=threshold=-20dB:ratio=3:attack=8:release=120:makeup=2,"
     + "equalizer=f=3200:t=q:w=1.2:g=2.5,equalizer=f=180:t=q:w=1:g=-1.5";
-  const { stderr } = await ff(["-i", inWav, "-af", pre + ",loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"], { ok: true });
+  // the measure pass must print at info level (ff() runs with -v error)
+  const { stderr } = await run(FFMPEG, ["-nostdin", "-hide_banner", "-i", inWav, "-af", pre + ",loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"], { ok: true });
   const m = JSON.parse(stderr.slice(stderr.lastIndexOf("{"), stderr.lastIndexOf("}") + 1));
   const ln = `loudnorm=I=-16:TP=-1.5:LRA=11:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true`;
   await ff(["-i", inWav, "-af", `${pre},${ln},aresample=48000`, "-ar", "48000", "-ac", "1", outWav]);
