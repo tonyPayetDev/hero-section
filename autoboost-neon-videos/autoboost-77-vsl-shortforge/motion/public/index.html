@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="kit/kit.css" />
+<style>
+@font-face { font-family: "AB Sans"; src: url("fonts/DejaVuSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+@font-face { font-family: "AB Sans"; src: url("fonts/DejaVuSans.ttf") format("truetype"); font-weight: 400; font-display: block; }
+@font-face { font-family: "AB Mono"; src: url("fonts/DejaVuSansMono-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+/* Charte AutomatisationBoost (_shared/CHARTE.md) x pdoom-video plates - no green anywhere */
+:root { --gold:#eab308; --violet:#8b5cf6; --bg:#0a0a0f; --ink:#EDEDED; --mute:#8A8A8A; --err:#ff6b6b; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0f;
+  font-family: "AB Sans", "DejaVu Sans", sans-serif; font-weight: 700; color: #EDEDED; }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0f; }
+#stage { position: absolute; inset: 0; transform-origin: 50% 48%; }
+.bg { position: absolute; inset: 0; }
+.grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 60px 60px; }
+#pulse { position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(234,179,8,.16), rgba(139,92,246,.10) 45%, transparent 72%); }
+.vig { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 48%, transparent 55%, rgba(0,0,0,.55) 100%); z-index: 30; pointer-events: none; }
+.grain { position: absolute; inset: -20px; z-index: 31; opacity: .07; pointer-events: none; mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>"); }
+.scene { position: absolute; inset: 0; z-index: 5; }
+.row { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; align-items: center; }
+.hd { text-align: center; white-space: nowrap; line-height: 1.02; letter-spacing: -0.03em; }
+.char { display: inline-block; opacity: 0; } .char.sp { width: .28em; }
+.w { color: #EDEDED; }
+.g { background: linear-gradient(180deg, #fff3b0 0%, #facc15 38%, #eab308 70%, #b7791f 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 22px rgba(234,179,8,.55)); }
+.r { color: #ff6b6b; }
+.mono { font-family: "AB Mono", monospace; color: #a78bfa; letter-spacing: .04em; }
+.foot { position: absolute; left: 60px; bottom: 150px; font-family: "AB Mono", monospace; font-size: 26px; color: #8b5cf6; letter-spacing: .04em; }
+.foot.dark { color: #5b3fc4; }
+#flash { position: absolute; inset: 0; z-index: 40; opacity: 0; background: #fff3b0; pointer-events: none; }
+#spark { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 20; opacity: 0; }
+#spark i { position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 30%, #fff3b0 45%, #eab308 70%, transparent 72%); box-shadow: 0 0 30px 10px rgba(234,179,8,.8), 0 0 80px 30px rgba(234,179,8,.35); }
+#spark b { position: absolute; right: 10px; top: -1px; width: 520px; height: 2px; background: linear-gradient(90deg, transparent, #eab308); }
+#crops { position: absolute; inset: 40px; z-index: 32; opacity: 0; }
+#crops i { position: absolute; width: 70px; height: 70px; border-color: #EDEDED; border-style: solid; border-width: 0; }
+#crops .a { left: 0; top: 0; border-left-width: 4px; border-top-width: 4px; } #crops .b { right: 0; top: 0; border-right-width: 4px; border-top-width: 4px; }
+#crops .c { left: 0; bottom: 0; border-left-width: 4px; border-bottom-width: 4px; } #crops .d { right: 0; bottom: 0; border-right-width: 4px; border-bottom-width: 4px; }
+#streak { position: absolute; left: 0; top: 500px; width: 1500px; height: 900px; z-index: 19; transform: translateX(1300px); mix-blend-mode: screen; }
+#streak i { position: absolute; left: 0; display: block; border-radius: 4px; }
+/* S0 */
+.big2h { position: absolute; left: 0; top: 630px; width: 1080px; text-align: center; font-size: 560px; line-height: 600px; letter-spacing: -0.06em; white-space: nowrap;
+  color: #ff6b6b; text-shadow: 0 0 60px rgba(255,107,107,.35); }
+.big2h.top { clip-path: inset(0 0 50% 0); } .big2h.bot { clip-path: inset(50% 0 0 0); }
+.ember { position: absolute; left: 0; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #fff3b0; box-shadow: 0 0 12px #eab308; opacity: 0; }
+/* S1 */
+.slam { opacity: 0; }
+.stack { position: absolute; left: 0; top: 560px; width: 1080px; opacity: 0; text-align: center; }
+.stack .sl { font-size: 108px; line-height: 1.0; letter-spacing: -0.04em; transform: scaleX(.9); white-space: nowrap; }
+.stack .st2 { font-size: 180px; } .stack .w { color: #EDEDED; }
+/* S2 */
+.paper { position: absolute; inset: 0; background: #EDEDED; }
+.ink { color: #0a0a0f; letter-spacing: -0.04em; line-height: 1; opacity: 0; }
+.rstamp { font-size: 230px; color: #e5484d; border: 16px solid #e5484d; border-radius: 30px; padding: 0 40px; line-height: 1.05; opacity: 0;
+  letter-spacing: .02em; mix-blend-mode: multiply; }
+/* S3 */
+.clock { position: absolute; left: 0; top: 200px; width: 1080px; height: 220px; text-align: center; }
+.clock b { position: absolute; left: 0; width: 1080px; top: 0; font-family: "AB Mono", monospace; font-size: 150px; color: #EDEDED; opacity: 0; letter-spacing: -.02em; }
+.clock small { position: absolute; left: 0; width: 1080px; top: 170px; font-family: "AB Mono", monospace; font-size: 26px; color: #8b5cf6; letter-spacing: .1em; }
+.rail { position: absolute; left: 130px; top: 470px; width: 4px; height: 830px; background: linear-gradient(#eab308, #8b5cf6); transform-origin: 50% 0; transform: scaleY(0);
+  box-shadow: 0 0 14px rgba(234,179,8,.7); }
+.gt { position: absolute; left: 180px; width: 820px; height: 120px; display: flex; align-items: center; gap: 30px; padding: 0 30px; border-radius: 22px;
+  background: #111117; border: 2px solid #2b2840; opacity: 0; transform-origin: 50% 50%; }
+.gt em { font-style: normal; font-family: "AB Mono", monospace; font-size: 34px; color: #8b5cf6; }
+.gt span { font-size: 60px; letter-spacing: -0.02em; }
+.gt .tick { margin-left: auto; width: 52px; height: 52px; border-radius: 50%; border: 3px solid #eab308; color: #eab308; display: flex; align-items: center; justify-content: center; opacity: 0; }
+/* S4 */
+.tag { font-size: 40px; opacity: 0; }
+/* S5 */
+.plate { transform: translateX(1080px); }
+.lab { position: absolute; left: 0; top: 330px; width: 1080px; text-align: center; font-size: 54px; letter-spacing: .02em; }
+.lab b { display: inline-flex; width: 84px; height: 84px; margin-right: 18px; border-radius: 50%; align-items: center; justify-content: center; vertical-align: middle;
+  background: #eab308; color: #0a0a0f; font-size: 50px; box-shadow: 0 0 26px rgba(234,179,8,.7); }
+.field { position: absolute; left: 70px; top: 860px; width: 940px; height: 140px; border-radius: 70px; border: 4px solid #eab308; background: #111117;
+  display: flex; align-items: center; padding: 0 44px; box-shadow: 0 0 40px rgba(234,179,8,.35); opacity: 0; }
+.typed { font-family: "AB Mono", monospace; font-size: 40px; color: #EDEDED; white-space: nowrap; }
+.caret { position: absolute; left: 50px; top: 44px; width: 6px; height: 52px; background: #eab308; }
+.ret { position: absolute; right: 36px; top: 30px; font-style: normal; font-size: 60px; color: #a78bfa; opacity: 0; }
+.dist { position: absolute; left: 130px; top: 600px; width: 820px; }
+.dr { height: 40px; margin: 16px 0; border-radius: 20px; background: #15131f; overflow: hidden; }
+.dr i { display: block; height: 100%; border-radius: 20px; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+.dr.d0 i { background: linear-gradient(90deg, #b7791f, #eab308); }
+.scope { position: absolute; left: 40px; top: 470px; overflow: visible; }
+.scope path { fill: none; stroke: #eab308; stroke-width: 5; stroke-dasharray: 1400; stroke-dashoffset: 1400; filter: drop-shadow(0 0 10px #eab308); }
+#avatar { position: absolute; left: 280px; top: 720px; width: 520px; height: 520px; border-radius: 50%; z-index: 6; opacity: 0; object-fit: cover; }
+.avc { position: absolute; left: 260px; top: 700px; width: 560px; height: 560px; opacity: 0; }
+.avring { position: absolute; inset: 0; border-radius: 50%; border: 8px solid #eab308; box-shadow: 0 0 40px rgba(234,179,8,.8), 0 0 90px rgba(139,92,246,.5), inset 0 0 30px rgba(139,92,246,.5); }
+.capp { position: absolute; left: 90px; top: 1330px; width: 900px; height: 110px; border-radius: 55px; background: rgba(10,10,15,.9); border: 2px solid rgba(234,179,8,.7);
+  display: flex; align-items: center; justify-content: center; gap: 26px; font-size: 48px; opacity: 0; }
+.phone { position: absolute; left: 320px; top: 470px; overflow: visible; }
+.phone rect { fill: none; stroke: #eab308; stroke-width: 6; stroke-dasharray: 2400; stroke-dashoffset: 2400; filter: drop-shadow(0 0 12px #eab308); }
+.pthumb { position: absolute; left: 340px; top: 490px; width: 400px; height: 711px; border-radius: 44px; object-fit: cover; opacity: 0; }
+.dim { font-size: 34px; color: #8A8A8A; opacity: 0; }
+.gstamp { position: absolute; left: 230px; top: 1050px; padding: 14px 40px; border: 10px solid #eab308; border-radius: 22px; font-size: 76px; color: #eab308;
+  background: rgba(10,10,15,.85); box-shadow: 0 0 40px rgba(234,179,8,.5); opacity: 0; white-space: nowrap; }
+/* S6 */
+.pf { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; opacity: 0; }
+.pshade { position: absolute; inset: 0; background: rgba(10,10,15,.78); opacity: 0; }
+.math { position: absolute; left: 70px; top: 300px; font-size: 40px; }
+.old { position: relative; font-size: 150px; color: #ff6b6b; letter-spacing: -0.03em; opacity: 0; }
+.old svg { position: absolute; left: -20px; top: 60px; overflow: visible; }
+.old path { fill: none; stroke: #ff6b6b; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 700; stroke-dashoffset: 700; }
+.readout { font-family: "AB Mono", monospace; font-size: 196px; color: #eab308; letter-spacing: -0.04em; text-shadow: 0 0 50px rgba(234,179,8,.6); opacity: 0; }
+.tbar { position: absolute; left: 120px; top: 1250px; width: 840px; height: 60px; display: flex; gap: 10px; align-items: flex-end; }
+.tbar i { flex: 1; height: 100%; background: #2b2840; transform-origin: 50% 100%; transform: scaleY(0); }
+.tbar i:first-child { background: #eab308; box-shadow: 0 0 14px #eab308; }
+/* S7 */
+.pcard { position: absolute; left: 70px; top: 360px; width: 940px; padding: 44px 50px; border-radius: 36px; background: #111117; border: 3px solid #eab308;
+  box-shadow: 0 0 60px rgba(234,179,8,.35); opacity: 0; }
+.pcard small { font-family: "AB Mono", monospace; font-size: 26px; color: #a78bfa; letter-spacing: .1em; }
+.prow { display: flex; align-items: baseline; gap: 50px; margin-top: 20px; }
+.p97 { position: relative; font-size: 100px; color: #8A8A8A; white-space: nowrap; }
+.p97 svg { position: absolute; left: -10px; top: 40px; overflow: visible; }
+.p97 path { fill: none; stroke: #ff6b6b; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 260; stroke-dashoffset: 260; }
+.p67 { white-space: nowrap; font-size: 200px; color: #eab308; letter-spacing: -0.04em; text-shadow: 0 0 50px rgba(234,179,8,.55); opacity: 0; }
+.plines { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.plines span { font-size: 40px; color: #EDEDED; opacity: 0; } .plines span::before { content: "— "; color: #8b5cf6; }
+.cfield { position: absolute; left: 70px; top: 1240px; width: 940px; height: 150px; border-radius: 75px; border: 4px solid #8b5cf6; background: #111117;
+  display: flex; align-items: center; gap: 26px; padding: 0 44px; box-shadow: 0 0 40px rgba(139,92,246,.45); opacity: 0; }
+.cfield .pre { font-size: 44px; color: #8A8A8A; font-weight: 400; }
+.cfield .kw { font-family: "AB Mono", monospace; font-size: 74px; color: #eab308; letter-spacing: .08em; flex: 1; }
+.cfield .snd { color: #eab308; display: flex; opacity: 0; }
+/* S8 */
+.num { position: absolute; left: 0; top: 380px; width: 1080px; height: 1100px; opacity: 0; }
+.num span { position: absolute; left: 0; top: 0; width: 1080px; text-align: center; font-size: 980px; line-height: 1100px; letter-spacing: -0.06em; }
+.num .c3 { color: #5b3fc4; } .num .c2 { color: #8b5cf6; } .num .c1 { color: #eab308; text-shadow: 0 0 60px rgba(234,179,8,.5); }
+/* S9 */
+.burst { position: absolute; left: 0; top: 0; transform-origin: 540px 930px; opacity: 0; }
+.fg { font-size: 240px; letter-spacing: -0.02em; opacity: 0; }
+.dim2 { font-size: 38px; opacity: 0; }
+.fb-sticker { z-index: 25; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-77" data-start="0" data-width="1080" data-height="1920" data-duration="32.0" data-fps="30">
+  <div id="stage">
+    <div class="bg"><div class="grid"></div><div id="pulse"></div></div>
+<section id="s0" class="scene clip " data-start="0.0" data-duration="1.0" data-track-index="2"><div class="big2h half top">2 H</div><div class="big2h half bot">2 H</div><i class="ember e0"></i><i class="ember e1"></i><i class="ember e2"></i><i class="ember e3"></i><i class="ember e4"></i><i class="ember e5"></i><i class="ember e6"></i><i class="ember e7"></i><i class="ember e8"></i><i class="ember e9"></i><i class="ember e10"></i><i class="ember e11"></i><div class="foot">fig. 1 · une vidéo à la main</div></section>
+<section id="s1" class="scene clip " data-start="1.0" data-duration="3.0" data-track-index="2"><div class="row slam g0" style="top:800px"><div class="hd" style="font-size:150px"><span class="char w">T</span><span class="char w">U</span><span class="char sp">&nbsp;</span><span class="char w">S</span><span class="char w">A</span><span class="char w">I</span><span class="char w">S</span></div></div><div class="row slam g1" style="top:800px"><div class="hd" style="font-size:140px"><span class="char w">Q</span><span class="char w">U</span><span class="char w">&#x27;</span><span class="char w">I</span><span class="char w">L</span><span class="char sp">&nbsp;</span><span class="char w">F</span><span class="char w">A</span><span class="char w">U</span><span class="char w">T</span></div></div><div class="row slam g2" style="top:800px"><div class="hd" style="font-size:200px"><span class="char g">P</span><span class="char g">O</span><span class="char g">S</span><span class="char g">T</span><span class="char g">E</span><span class="char g">R</span></div></div><div class="row slam g3" style="top:800px"><div class="hd" style="font-size:120px"><span class="char w">T</span><span class="char w">O</span><span class="char w">U</span><span class="char w">S</span><span class="char sp">&nbsp;</span><span class="char w">L</span><span class="char w">E</span><span class="char w">S</span><span class="char sp">&nbsp;</span><span class="char w">J</span><span class="char w">O</span><span class="char w">U</span><span class="char w">R</span><span class="char w">S</span><span class="char w">.</span></div></div><div class="stack"><div class="sl st0"><span class="w">TU SAIS</span></div><div class="sl st1"><span class="w">QU&#x27;IL FAUT</span></div><div class="sl st2"><span class="g">POSTER</span></div><div class="sl st3"><span class="w">TOUS LES JOURS.</span></div></div><div class="foot">fig. 2 · ce que tout le monde sait</div></section>
+<section id="s2" class="scene clip " data-start="4.0" data-duration="2.0" data-track-index="2"><div class="paper"></div><div class="row" style="top:640px"><div class="ink" style="font-size:130px">TU NE LE</div></div><div class="row" style="top:800px"><div class="ink" style="font-size:210px">FAIS</div></div><div class="row" style="top:1050px"><div class="rstamp">PAS.</div></div><div class="foot dark">fig. 3 · la relance (hook n°2)</div></section>
+<section id="s3" class="scene clip " data-start="6.0" data-duration="4.0" data-track-index="2"><div class="clock"><b class="ck0">0 h 00</b><b class="ck1">0 h 20</b><b class="ck2">0 h 40</b><b class="ck3">1 h 00</b><b class="ck4">1 h 20</b><b class="ck5">1 h 40</b><b class="ck6">2 h 00</b><small>temps passé</small></div><i class="rail"></i><div class="gt gt0" style="top:470px"><em>01</em><span>ÉCRIRE</span><i class="tick"><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div><div class="gt gt1" style="top:620px"><em>02</em><span>FILMER</span><i class="tick"><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div><div class="gt gt2" style="top:770px"><em>03</em><span>MONTER</span><i class="tick"><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div><div class="gt gt3" style="top:920px"><em>04</em><span>SOUS-TITRER</span><i class="tick"><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div><div class="gt gt4" style="top:1070px"><em>05</em><span>EXPORTER</span><i class="tick"><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div><div class="gt gt5" style="top:1220px"><em>06</em><span>PUBLIER</span><i class="tick"><svg viewBox="0 0 24 24" width="30" height="30"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i></div><div class="foot">fig. 4 · source : page de vente ShortForge</div></section>
+<section id="s4" class="scene clip " data-start="10.0" data-duration="2.0" data-track-index="2"><div class="row" style="top:760px"><div class="hd big" style="font-size:118px"><span class="fb-elastic"><span class="fb-ech fb-g">S</span><span class="fb-ech fb-g">H</span><span class="fb-ech fb-g">O</span><span class="fb-ech fb-g">R</span><span class="fb-ech fb-g">T</span><span class="fb-ech fb-g">F</span><span class="fb-ech fb-g">O</span><span class="fb-ech fb-g">R</span><span class="fb-ech fb-g">G</span><span class="fb-ech fb-g">E</span></span></div></div><div class="row" style="top:960px"><div class="mono tag">skill Claude Code</div></div><div class="row" style="top:1090px"><div class="hd " style="font-size:70px"><span class="char w">F</span><span class="char w">A</span><span class="char w">I</span><span class="char w">T</span><span class="char sp">&nbsp;</span><span class="char w">L</span><span class="char w">E</span><span class="char w">S</span><span class="char sp">&nbsp;</span><span class="char w">6</span><span class="char sp">&nbsp;</span><span class="char w">É</span><span class="char w">T</span><span class="char w">A</span><span class="char w">P</span><span class="char w">E</span><span class="char w">S</span></div></div><div class="foot">fig. 5 · l&#x27;outil</div></section>
+<section id="s5a" class="scene clip plate" data-start="12.0" data-duration="2.0" data-track-index="2"><div class="lab"><b>1</b> TU COLLES UN BRIEF</div><div class="field"><span class="typed"><span class="char">b</span><span class="char">r</span><span class="char">i</span><span class="char">e</span><span class="char">f</span><span class="char sp">&nbsp;</span><span class="char">:</span><span class="char sp">&nbsp;</span><span class="char">p</span><span class="char">r</span><span class="char">é</span><span class="char">s</span><span class="char">e</span><span class="char">n</span><span class="char">t</span><span class="char">e</span><span class="char sp">&nbsp;</span><span class="char">m</span><span class="char">o</span><span class="char">n</span><span class="char sp">&nbsp;</span><span class="char">o</span><span class="char">f</span><span class="char">f</span><span class="char">r</span><span class="char">e</span><span class="char sp">&nbsp;</span><span class="char">e</span><span class="char">n</span><span class="char sp">&nbsp;</span><span class="char">3</span><span class="char">0</span><span class="char sp">&nbsp;</span><span class="char">s</span></span><i class="caret"></i><i class="ret">⏎</i></div><div class="dist"><div class="dr d0"><i style="width:360px"></i></div><div class="dr d1"><i style="width:220px"></i></div><div class="dr d2"><i style="width:140px"></i></div><div class="dr d3"><i style="width:80px"></i></div></div><div class="foot">fig. 6 · étape 1 / 3</div></section>
+<section id="s5b" class="scene clip plate" data-start="14.0" data-duration="2.0" data-track-index="2"><div class="lab"><b>2</b> VOIX · AVATAR · CAPTIONS</div><svg class="scope" width="1000" height="200" viewBox="0 0 1000 200"><path d="M 0 100.0 L 10 111.8 L 20 124.2 L 30 133.5 L 40 136.7 L 50 131.8 L 60 118.7 L 70 99.6 L 80 78.2 L 90 59.4 L 100 47.7 L 110 46.3 L 120 56.1 L 130 75.7 L 140 101.0 L 150 126.8 L 160 147.6 L 170 158.7 L 180 158.0 L 190 145.5 L 200 124.1 L 210 98.6 L 220 74.4 L 230 56.6 L 240 48.6 L 250 51.4 L 260 63.6 L 270 81.7 L 280 101.4 L 290 118.2 L 300 128.9 L 310 131.9 L 320 127.9 L 330 119.0 L 340 108.4 L 350 99.3 L 360 93.8 L 370 92.7 L 380 95.2 L 390 99.3 L 400 102.6 L 410 103.0 L 420 99.4 L 430 92.4 L 440 83.8 L 450 76.5 L 460 73.5 L 470 76.7 L 480 86.7 L 490 102.2 L 500 120.1 L 510 136.2 L 520 146.3 L 530 147.4 L 540 138.2 L 550 120.1 L 560 96.3 L 570 71.9 L 580 52.2 L 590 41.7 L 600 43.0 L 610 56.0 L 620 78.1 L 630 104.5 L 640 129.7 L 650 148.3 L 660 156.6 L 670 153.2 L 680 139.4 L 690 118.7 L 700 95.8 L 710 75.8 L 720 62.7 L 730 58.5 L 740 63.1 L 750 74.3 L 760 88.8 L 770 102.6 L 780 112.7 L 790 117.4 L 800 116.6 L 810 112.0 L 820 106.1 L 830 101.5 L 840 100.0 L 850 102.1 L 860 106.9 L 870 112.2 L 880 115.5 L 890 114.5 L 900 108.1 L 910 96.9 L 920 83.2 L 930 70.2 L 940 61.7 L 950 60.7 L 960 68.6 L 970 84.6 L 980 105.8 L 990 127.9 L 1000 145.9"/></svg><div class="avc"><i class="avring"></i></div><div class="capp"><span class="cw c0">ta voix</span> <span class="cw c1">ton avatar</span> <span class="cw c2">les captions</span></div><div class="foot">fig. 7 · étape 2 / 3 · un seul tournage</div></section>
+<section id="s5c" class="scene clip plate" data-start="16.0" data-duration="2.0" data-track-index="2"><div class="lab"><b>3</b> UNE VIDÉO VERTICALE</div><svg class="phone" width="440" height="780" viewBox="0 0 440 780"><rect x="6" y="6" width="428" height="768" rx="56"/></svg><img class="pthumb" src="proof/p3.jpg"><div class="row" style="top:1430px"><div class="mono dim">1080 × 1920 · TikTok · Reels · Shorts</div></div><div class="gstamp">PRÊT À POSTER</div><div class="foot">fig. 8 · étape 3 / 3</div></section>
+<section id="s6a" class="scene clip " data-start="18.0" data-duration="2.0" data-track-index="2"><img class="pf pf0" src="proof/p0.jpg"><img class="pf pf1" src="proof/p1.jpg"><img class="pf pf2" src="proof/p2.jpg"><img class="pf pf3" src="proof/p3.jpg"><img class="pf pf4" src="proof/p4.jpg"><img class="pf pf5" src="proof/p5.jpg"><div class="pshade"></div><div class="row" style="top:760px"><div class="hd " style="font-size:120px"><span class="char w">6</span><span class="char sp">&nbsp;</span><span class="char w">F</span><span class="char w">O</span><span class="char w">R</span><span class="char w">M</span><span class="char w">A</span><span class="char w">T</span><span class="char w">S</span></div></div><div class="row" style="top:900px"><div class="hd " style="font-size:110px"><span class="char g">D</span><span class="char g">É</span><span class="char g">J</span><span class="char g">À</span><span class="char sp">&nbsp;</span><span class="char g">P</span><span class="char g">U</span><span class="char g">B</span><span class="char g">L</span><span class="char g">I</span><span class="char g">É</span><span class="char g">S</span></div></div><div class="foot">fig. 9 · images de vidéos déjà sorties</div></section>
+<section id="s6b" class="scene clip " data-start="20.0" data-duration="2.0" data-track-index="2"><div class="mono math">coût / vidéo</div><div class="row" style="top:560px"><div class="old">80–150 €<svg width="640" height="60" viewBox="0 0 640 60"><path d="M10 40 C 200 10, 440 50, 630 18"/></svg></div></div><div class="row" style="top:770px"><div class="mono dim">un monteur freelance</div></div><div class="row" style="top:930px"><div class="readout">≈ 0,50 €</div></div><div class="tbar"><i class="tk0"></i><i class="tk1"></i><i class="tk2"></i><i class="tk3"></i><i class="tk4"></i><i class="tk5"></i><i class="tk6"></i><i class="tk7"></i><i class="tk8"></i><i class="tk9"></i><i class="tk10"></i><i class="tk11"></i><i class="tk12"></i><i class="tk13"></i><i class="tk14"></i><i class="tk15"></i><i class="tk16"></i><i class="tk17"></i><i class="tk18"></i><i class="tk19"></i><i class="tk20"></i><i class="tk21"></i><i class="tk22"></i><i class="tk23"></i></div><div class="foot">fig. 10 · API vocale à ton compte · source : page de vente</div></section>
+<section id="s7" class="scene clip " data-start="22.0" data-duration="4.0" data-track-index="2"><div class="pcard"><small>SHORTFORGE · SKILL CLAUDE CODE</small><div class="prow"><span class="p97">97 €<svg width="230" height="40" viewBox="0 0 230 40"><path d="M6 30 L224 8"/></svg></span><span class="p67">67 €</span></div><div class="plines"><span>prix fondateur</span><span>paiement unique</span><span>garantie 14 jours</span></div></div><div class="cfield"><span class="pre">commente</span><span class="kw"><span class="char">F</span><span class="char">O</span><span class="char">R</span><span class="char">G</span><span class="char">E</span></span><i class="snd"><svg viewBox="0 0 24 24" width="44" height="44"><path d="M3 11 21 3l-8 18-2-8-8-2z" fill="currentColor"/></svg></i></div><div class="foot">fig. 11 · ce que tu reçois</div></section>
+<section id="s8" class="scene clip " data-start="26.0" data-duration="2.0" data-track-index="2"><div class="num n3"><span class="c3">3</span><span class="c2">3</span><span class="c1">3</span></div><div class="num n2"><span class="c3">2</span><span class="c2">2</span><span class="c1">2</span></div><div class="num n1"><span class="c3">1</span><span class="c2">1</span><span class="c1">1</span></div></section>
+<section id="s9" class="scene clip " data-start="28.0" data-duration="4.0" data-track-index="2"><svg class="burst" width="1080" height="1920" viewBox="0 0 1080 1920"><line x1="540" y1="930" x2="1940" y2="930" stroke="#8b5cf6" stroke-width="2"/><line x1="540" y1="930" x2="1931" y2="1085" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="1906" y2="1239" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="1863" y2="1388" stroke="#8b5cf6" stroke-width="3"/><line x1="540" y1="930" x2="1804" y2="1532" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="1775" y2="1590" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="1694" y2="1723" stroke="#8b5cf6" stroke-width="4"/><line x1="540" y1="930" x2="1599" y2="1846" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="1491" y2="1958" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="1371" y2="2057" stroke="#8b5cf6" stroke-width="5"/><line x1="540" y1="930" x2="1318" y2="2094" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="1184" y2="2173" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="1042" y2="2237" stroke="#8b5cf6" stroke-width="6"/><line x1="540" y1="930" x2="894" y2="2285" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="741" y2="2315" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="677" y2="2323" stroke="#8b5cf6" stroke-width="2"/><line x1="540" y1="930" x2="522" y2="2330" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="367" y2="2319" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="214" y2="2291" stroke="#8b5cf6" stroke-width="3"/><line x1="540" y1="930" x2="65" y2="2247" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="4" y2="2223" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="-136" y2="2156" stroke="#8b5cf6" stroke-width="4"/><line x1="540" y1="930" x2="-268" y2="2073" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="-390" y2="1977" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="-500" y2="1867" stroke="#8b5cf6" stroke-width="5"/><line x1="540" y1="930" x2="-542" y2="1818" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="-634" y2="1693" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="-711" y2="1558" stroke="#8b5cf6" stroke-width="6"/><line x1="540" y1="930" x2="-773" y2="1415" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="-819" y2="1266" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="-833" y2="1203" stroke="#8b5cf6" stroke-width="2"/><line x1="540" y1="930" x2="-855" y2="1049" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="-860" y2="894" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="-847" y2="739" stroke="#8b5cf6" stroke-width="3"/><line x1="540" y1="930" x2="-817" y2="586" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="-800" y2="524" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="-746" y2="377" stroke="#8b5cf6" stroke-width="4"/><line x1="540" y1="930" x2="-677" y2="238" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="-593" y2="107" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="-495" y2="-13" stroke="#8b5cf6" stroke-width="5"/><line x1="540" y1="930" x2="-450" y2="-60" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="-334" y2="-164" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="-207" y2="-254" stroke="#8b5cf6" stroke-width="6"/><line x1="540" y1="930" x2="-71" y2="-329" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="72" y2="-390" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="134" y2="-410" stroke="#8b5cf6" stroke-width="2"/><line x1="540" y1="930" x2="285" y2="-447" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="439" y2="-466" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="595" y2="-469" stroke="#8b5cf6" stroke-width="3"/><line x1="540" y1="930" x2="749" y2="-454" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="813" y2="-443" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="964" y2="-404" stroke="#8b5cf6" stroke-width="4"/><line x1="540" y1="930" x2="1109" y2="-349" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="1248" y2="-278" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="1377" y2="-192" stroke="#8b5cf6" stroke-width="5"/><line x1="540" y1="930" x2="1428" y2="-152" stroke="#eab308" stroke-width="2"/><line x1="540" y1="930" x2="1543" y2="-47" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="1645" y2="70" stroke="#8b5cf6" stroke-width="6"/><line x1="540" y1="930" x2="1733" y2="198" stroke="#eab308" stroke-width="3"/><line x1="540" y1="930" x2="1807" y2="335" stroke="#eab308" stroke-width="5"/><line x1="540" y1="930" x2="1833" y2="394" stroke="#8b5cf6" stroke-width="2"/><line x1="540" y1="930" x2="1885" y2="541" stroke="#eab308" stroke-width="4"/><line x1="540" y1="930" x2="1920" y2="693" stroke="#eab308" stroke-width="6"/><line x1="540" y1="930" x2="1938" y2="847" stroke="#8b5cf6" stroke-width="3"/></svg><div class="row" style="top:640px"><div class="hd cm" style="font-size:120px"><span class="char w">C</span><span class="char w">O</span><span class="char w">M</span><span class="char w">M</span><span class="char w">E</span><span class="char w">N</span><span class="char w">T</span><span class="char w">E</span></div></div><div class="row" style="top:800px"><div class="hd fg"><span class="fb-elastic"><span class="fb-ech fb-g">F</span><span class="fb-ech fb-g">O</span><span class="fb-ech fb-g">R</span><span class="fb-ech fb-g">G</span><span class="fb-ech fb-g">E</span></span></div></div><div class="row" style="top:1180px"><div class="mono dim2">→ le lien de ShortForge en DM</div></div></section>
+<div id="st-lent" class="fb-sticker fb-red" style="left:560px;top:1390px"><i class="fb-ico"><svg viewBox="0 0 24 24" width="58" height="58"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 9v4l3 2M10 2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></i><span class="a">TROP</span><span class="b">LENT</span><svg class="fb-spark" viewBox="0 0 56 56"><path d="M10 46 22 20M26 50 46 34M30 40 52 14" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round" style="filter:drop-shadow(0 0 6px #ff6b6b)"/></svg></div>
+    <div id="spark"><b></b><i></i></div>
+    <div id="streak">
+      <i style="top:120px;width:900px;height:4px;background:linear-gradient(90deg,transparent,#eab308,transparent)"></i>
+      <i style="top:300px;width:1200px;height:2px;background:linear-gradient(90deg,transparent,#fff3b0,transparent)"></i>
+      <i style="top:480px;width:700px;height:6px;background:linear-gradient(90deg,transparent,#8b5cf6,transparent)"></i>
+      <i style="top:660px;width:1100px;height:3px;background:linear-gradient(90deg,transparent,#eab308,transparent)"></i>
+    </div>
+  </div>
+  <video id="avatar" src="avatar.mp4" muted playsinline data-start="0" data-duration="32.0" data-track-index="6"></video>
+  <div id="crops"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></div>
+  <div class="vig"></div>
+  <div class="grain"></div>
+  <div id="flash"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="kit/kit.js"></script>
+  <script>
+  (function () {
+    var tl = gsap.timeline({ paused: true });
+tl.fromTo("#s0 .half",{"scale": 1.18},{"scale": 1, "duration": 0.27, "ease": "expo.out", "immediateRender": false},0.0);
+tl.set("#stage",{"x": 5.5, "y": 4.1},0.0);
+tl.set("#stage",{"x": -1.1, "y": -3.2},0.0333);
+tl.set("#stage",{"x": 0.1, "y": -1.0},0.0667);
+tl.set("#stage",{"x": 2.3, "y": -1.6},0.1);
+tl.set("#stage",{"x": -0.1, "y": 0.4},0.1333);
+tl.set("#stage",{"x": 1.1, "y": 0.0},0.1667);
+tl.set("#stage",{"x": 0, "y": 0},0.2);
+tl.fromTo("#spark",{"x": -120, "y": 930, "opacity": 1},{"x": 1180, "y": 930, "opacity": 1, "duration": 0.18, "ease": "power2.in", "immediateRender": false},0.5);
+tl.set("#spark",{"opacity": 0},0.7);
+tl.fromTo("#s0 .top",{"y": 0, "opacity": 1},{"y": -60, "opacity": 0, "duration": 0.38, "ease": "power2.in", "immediateRender": false},0.6);
+tl.fromTo("#s0 .bot",{"y": 0, "opacity": 1},{"y": 60, "opacity": 0, "duration": 0.38, "ease": "power2.in", "immediateRender": false},0.6);
+tl.fromTo("#s0 .e0",{"x": 120, "y": 930, "opacity": 1, "scale": 1},{"x": 98.85993177997949, "y": 748.441570440741, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.5333);
+tl.fromTo("#s0 .e1",{"x": 195, "y": 930, "opacity": 1, "scale": 1},{"x": 213.11213676478246, "y": 707.6668690671222, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.5667);
+tl.fromTo("#s0 .e2",{"x": 270, "y": 930, "opacity": 1, "scale": 1},{"x": 274.30584051680273, "y": 860.1582367945445, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.5667);
+tl.fromTo("#s0 .e3",{"x": 345, "y": 930, "opacity": 1, "scale": 1},{"x": 291.95987097296484, "y": 933.8665812584985, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6);
+tl.fromTo("#s0 .e4",{"x": 420, "y": 930, "opacity": 1, "scale": 1},{"x": 364.4994790130382, "y": 895.4957555044407, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6);
+tl.fromTo("#s0 .e5",{"x": 495, "y": 930, "opacity": 1, "scale": 1},{"x": 443.3826508289543, "y": 717.1707669388098, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6);
+tl.fromTo("#s0 .e6",{"x": 570, "y": 930, "opacity": 1, "scale": 1},{"x": 560.9423026971017, "y": 1099.9631048294598, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6333);
+tl.fromTo("#s0 .e7",{"x": 645, "y": 930, "opacity": 1, "scale": 1},{"x": 599.8562353379575, "y": 786.0842615956476, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6333);
+tl.fromTo("#s0 .e8",{"x": 720, "y": 930, "opacity": 1, "scale": 1},{"x": 735.2919866886707, "y": 1162.808650077643, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6333);
+tl.fromTo("#s0 .e9",{"x": 795, "y": 930, "opacity": 1, "scale": 1},{"x": 804.2523538340998, "y": 876.2738468184057, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6667);
+tl.fromTo("#s0 .e10",{"x": 870, "y": 930, "opacity": 1, "scale": 1},{"x": 927.1506126711504, "y": 694.2229939212333, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6667);
+tl.fromTo("#s0 .e11",{"x": 945, "y": 930, "opacity": 1, "scale": 1},{"x": 988.0162150858415, "y": 820.5968288924716, "opacity": 0, "scale": 0.3, "duration": 0.42, "ease": "power2.out", "immediateRender": false},0.6667);
+tl.fromTo("#s1 .g0",{"opacity": 0, "scale": 1.35},{"opacity": 1, "scale": 1, "duration": 0.22, "ease": "expo.out", "immediateRender": false},1.0);
+tl.set("#s1 .g0 .char",{"opacity": 1},1.0);
+tl.set("#s1 .g0",{"opacity": 0},1.2667);
+tl.fromTo("#s1 .g1",{"opacity": 0, "scale": 1.35},{"opacity": 1, "scale": 1, "duration": 0.22, "ease": "expo.out", "immediateRender": false},1.2667);
+tl.set("#s1 .g1 .char",{"opacity": 1},1.2667);
+tl.set("#s1 .g1",{"opacity": 0},1.6);
+tl.fromTo("#s1 .g2",{"opacity": 0, "scale": 1.35},{"opacity": 1, "scale": 1, "duration": 0.22, "ease": "expo.out", "immediateRender": false},1.6);
+tl.set("#s1 .g2 .char",{"opacity": 1},1.6);
+tl.set("#s1 .g2",{"opacity": 0},1.8667);
+tl.fromTo("#s1 .g3",{"opacity": 0, "scale": 1.35},{"opacity": 1, "scale": 1, "duration": 0.22, "ease": "expo.out", "immediateRender": false},1.8667);
+tl.set("#s1 .g3 .char",{"opacity": 1},1.8667);
+tl.fromTo("#s1 .g2 .char",{"y": 80},{"y": 0, "duration": 0.25, "ease": "back.out(2)", "immediateRender": false},1.6);
+tl.fromTo("#s1 .g3",{"scaleX": 1.15},{"scaleX": 0.86, "duration": 0.5, "ease": "power2.out", "immediateRender": false},1.8667);
+tl.set("#s1 .g3",{"opacity": 0},2.5);
+tl.fromTo("#s1 .stack",{"opacity": 0, "scale": 1.1},{"opacity": 1, "scale": 1, "duration": 0.2, "ease": "expo.out", "immediateRender": false},2.5);
+tl.fromTo("#s1 .stack",{"scale": 1.04},{"scale": 1, "duration": 0.2, "ease": "power2.out", "immediateRender": false},3.0);
+tl.fromTo("#s1 .stack",{"scale": 1.04},{"scale": 1, "duration": 0.2, "ease": "power2.out", "immediateRender": false},3.5);
+tl.fromTo("#stage",{"scale": 1.0},{"scale": 1.06, "duration": 0.12, "ease": "power3.out", "immediateRender": false},2.0);
+tl.fromTo("#stage",{"scale": 1.06},{"scale": 1.0, "duration": 0.3, "ease": "power2.inOut", "immediateRender": false},2.1333);
+tl.fromTo("#s2 .ink",{"opacity": 0, "y": 30},{"opacity": 1, "y": 0, "duration": 0.16, "ease": "power3.out", "immediateRender": false},4.0667);
+tl.fromTo("#s2 .rstamp",{"opacity": 0, "scale": 2.4, "rotation": -16},{"opacity": 1, "scale": 1, "rotation": -7, "duration": 0.2, "ease": "power4.in", "immediateRender": false},4.5667);
+tl.set("#stage",{"x": 5.8, "y": 4.6},4.7667);
+tl.set("#stage",{"x": 7.5, "y": 1.5},4.8);
+tl.set("#stage",{"x": 0.6, "y": 3.2},4.8333);
+tl.set("#stage",{"x": 3.8, "y": 0.9},4.8667);
+tl.set("#stage",{"x": -2.9, "y": -0.3},4.9);
+tl.set("#stage",{"x": 0.3, "y": 1.6},4.9333);
+tl.set("#stage",{"x": 0, "y": 0},4.9667);
+tl.set("#s3 .ck0",{"opacity": 1},6.0);
+tl.fromTo("#s3 .gt0",{"opacity": 0, "x": 120, "scale": 1.15},{"opacity": 1, "x": 0, "scale": 1, "duration": 0.18, "ease": "expo.out", "immediateRender": false},6.0);
+tl.fromTo("#s3 .gt0 .tick",{"opacity": 0, "scale": 0.3},{"opacity": 1, "scale": 1, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},6.1333);
+tl.set("#s3 .ck0",{"opacity": 0},6.0);
+tl.set("#s3 .ck1",{"opacity": 1},6.0);
+tl.fromTo("#s3 .gt1",{"opacity": 0, "x": 120, "scale": 1.15},{"opacity": 1, "x": 0, "scale": 1, "duration": 0.18, "ease": "expo.out", "immediateRender": false},6.7333);
+tl.fromTo("#s3 .gt1 .tick",{"opacity": 0, "scale": 0.3},{"opacity": 1, "scale": 1, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},6.8667);
+tl.set("#s3 .ck1",{"opacity": 0},6.7333);
+tl.set("#s3 .ck2",{"opacity": 1},6.7333);
+tl.fromTo("#s3 .gt2",{"opacity": 0, "x": 120, "scale": 1.15},{"opacity": 1, "x": 0, "scale": 1, "duration": 0.18, "ease": "expo.out", "immediateRender": false},7.3333);
+tl.fromTo("#s3 .gt2 .tick",{"opacity": 0, "scale": 0.3},{"opacity": 1, "scale": 1, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},7.4333);
+tl.set("#s3 .ck2",{"opacity": 0},7.3333);
+tl.set("#s3 .ck3",{"opacity": 1},7.3333);
+tl.fromTo("#s3 .gt3",{"opacity": 0, "x": 120, "scale": 1.15},{"opacity": 1, "x": 0, "scale": 1, "duration": 0.18, "ease": "expo.out", "immediateRender": false},7.8667);
+tl.fromTo("#s3 .gt3 .tick",{"opacity": 0, "scale": 0.3},{"opacity": 1, "scale": 1, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},8.0);
+tl.set("#s3 .ck3",{"opacity": 0},7.8667);
+tl.set("#s3 .ck4",{"opacity": 1},7.8667);
+tl.fromTo("#s3 .gt4",{"opacity": 0, "x": 120, "scale": 1.15},{"opacity": 1, "x": 0, "scale": 1, "duration": 0.18, "ease": "expo.out", "immediateRender": false},8.5333);
+tl.fromTo("#s3 .gt4 .tick",{"opacity": 0, "scale": 0.3},{"opacity": 1, "scale": 1, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},8.6333);
+tl.set("#s3 .ck4",{"opacity": 0},8.5333);
+tl.set("#s3 .ck5",{"opacity": 1},8.5333);
+tl.fromTo("#s3 .gt5",{"opacity": 0, "x": 120, "scale": 1.15},{"opacity": 1, "x": 0, "scale": 1, "duration": 0.18, "ease": "expo.out", "immediateRender": false},8.9333);
+tl.fromTo("#s3 .gt5 .tick",{"opacity": 0, "scale": 0.3},{"opacity": 1, "scale": 1, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},9.0667);
+tl.set("#s3 .ck5",{"opacity": 0},8.9333);
+tl.set("#s3 .ck6",{"opacity": 1},8.9333);
+tl.fromTo("#s3 .rail",{"scaleY": 0},{"scaleY": 1, "duration": 3.0, "ease": "none", "immediateRender": false},6.0);
+tl.fromTo("#spark",{"x": 132, "y": 470, "opacity": 1},{"x": 132, "y": 1300, "opacity": 1, "duration": 3.0, "ease": "none", "immediateRender": false},6.0);
+tl.set("#spark",{"opacity": 0},9.6);
+tl.fromTo("#s3 .clock b",{"color": "#EDEDED"},{"color": "#ff6b6b", "duration": 0.15, "ease": "power2.out", "immediateRender": false},9.6667);
+tl.fromTo("#s3 .clock",{"scale": 1},{"scale": 1.25, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},9.6667);
+FB.sticker(tl,"#st-lent",9.6667,9.8667,-6);
+tl.fromTo("#s3 .gt",{"scaleY": 1, "opacity": 1},{"scaleY": 0, "opacity": 0, "duration": 0.1, "ease": "power4.in", "immediateRender": false},9.9);
+tl.set("#flash",{"backgroundColor": "#8b5cf6"},10.0);
+tl.fromTo("#flash",{"opacity": 0.85},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},10.0);
+tl.fromTo("#s4 .big",{"opacity": 0, "scaleX": 0.55},{"opacity": 1, "scaleX": 1, "duration": 0.3, "ease": "expo.out", "immediateRender": false},10.1);
+FB.elastic(tl,"#s4 .big",10.4,1.4);
+tl.fromTo("#s4 .tag",{"opacity": 0, "y": 20},{"opacity": 1, "y": 0, "duration": 0.2, "ease": "power3.out", "immediateRender": false},10.3667);
+tl.fromTo("#s4 .hd:not(.big) .char",{opacity:0,y:30},{opacity:1,y:0,duration:.2,ease:"back.out(2)",stagger:.02,immediateRender:false},10.6333);
+tl.fromTo("#s5a",{"x": 1080},{"x": 0, "duration": 0.3, "ease": "power4.out", "immediateRender": false},12.0);
+tl.fromTo("#s5a",{"x": 0},{"x": -1080, "duration": 0.28, "ease": "power3.in", "immediateRender": false},13.7333);
+tl.fromTo("#s5b",{"x": 1080},{"x": 0, "duration": 0.3, "ease": "power4.out", "immediateRender": false},14.0);
+tl.fromTo("#s5b",{"x": 0},{"x": -1080, "duration": 0.28, "ease": "power3.in", "immediateRender": false},15.7333);
+tl.fromTo("#s5c",{"x": 1080},{"x": 0, "duration": 0.3, "ease": "power4.out", "immediateRender": false},16.0);
+tl.fromTo("#s5c",{"x": 0},{"x": -1080, "duration": 0.28, "ease": "power3.in", "immediateRender": false},17.7333);
+tl.fromTo("#streak",{"x": 1300},{"x": -1500, "duration": 0.36, "ease": "power2.inOut", "immediateRender": false},11.7);
+tl.fromTo("#streak",{"x": 1300},{"x": -1500, "duration": 0.36, "ease": "power2.inOut", "immediateRender": false},13.7);
+tl.fromTo("#streak",{"x": 1300},{"x": -1500, "duration": 0.36, "ease": "power2.inOut", "immediateRender": false},15.7);
+tl.fromTo("#s5a .field",{"opacity": 0, "scaleX": 0.6},{"opacity": 1, "scaleX": 1, "duration": 0.25, "ease": "expo.out", "immediateRender": false},12.0667);
+FB.type(tl,"#s5a .typed",12.1,0.032);
+tl.fromTo("#s5a .caret",{"x": 0},{"x": 760, "duration": 1.15, "ease": "none", "immediateRender": false},12.1);
+tl.fromTo("#s5a .d0 i",{"scaleX": 0},{"scaleX": 1, "duration": 0.25, "ease": "power3.out", "immediateRender": false},12.3);
+tl.fromTo("#s5a .d1 i",{"scaleX": 0},{"scaleX": 1, "duration": 0.25, "ease": "power3.out", "immediateRender": false},12.3667);
+tl.fromTo("#s5a .d2 i",{"scaleX": 0},{"scaleX": 1, "duration": 0.25, "ease": "power3.out", "immediateRender": false},12.4667);
+tl.fromTo("#s5a .d3 i",{"scaleX": 0},{"scaleX": 1, "duration": 0.25, "ease": "power3.out", "immediateRender": false},12.5333);
+tl.fromTo("#s5a .dist",{"opacity": 1},{"opacity": 0.3, "duration": 0.3, "ease": "power3.out", "immediateRender": false},13.0);
+tl.fromTo("#s5a .ret",{"opacity": 0, "scale": 2},{"opacity": 1, "scale": 1, "duration": 0.18, "ease": "back.out(3)", "immediateRender": false},13.5);
+tl.fromTo("#s5a .field",{"borderColor": "#eab308"},{"borderColor": "#8b5cf6", "duration": 0.15, "ease": "power3.out", "immediateRender": false},13.5);
+tl.fromTo("#s5b .scope path",{"strokeDashoffset": 1400},{"strokeDashoffset": 0, "duration": 0.5, "ease": "power2.out", "immediateRender": false},14.1);
+tl.fromTo("#s5b .scope",{"scaleY": 1.5},{"scaleY": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},14.5);
+tl.fromTo("#s5b .scope",{"scaleY": 1.5},{"scaleY": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},15.0);
+tl.fromTo("#s5b .scope",{"scaleY": 1.5},{"scaleY": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},15.5);
+tl.fromTo("#avatar",{"opacity": 0, "scale": 0.6},{"opacity": 1, "scale": 1, "duration": 0.3, "ease": "back.out(2)", "immediateRender": false},14.8667);
+tl.fromTo("#s5b .avc",{"opacity": 0, "scale": 0.6},{"opacity": 1, "scale": 1, "duration": 0.3, "ease": "back.out(2)", "immediateRender": false},14.8667);
+tl.set("#avatar",{"opacity": 0},15.9333);
+tl.fromTo("#s5b .capp",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.2, "ease": "power3.out", "immediateRender": false},15.5333);
+tl.set("#s5b .c0",{"color": "#eab308", "textShadow": "0 0 18px rgba(234,179,8,.8)"},14.1);
+tl.set("#s5b .c0",{"color": "#EDEDED", "textShadow": "0 0 0px rgba(234,179,8,0)"},14.9333);
+tl.set("#s5b .c1",{"color": "#eab308", "textShadow": "0 0 18px rgba(234,179,8,.8)"},14.9333);
+tl.set("#s5b .c1",{"color": "#EDEDED", "textShadow": "0 0 0px rgba(234,179,8,0)"},15.6333);
+tl.set("#s5b .c2",{"color": "#eab308", "textShadow": "0 0 18px rgba(234,179,8,.8)"},15.6333);
+tl.set("#s5b .c2",{"color": "#EDEDED", "textShadow": "0 0 0px rgba(234,179,8,0)"},16.0);
+tl.fromTo("#s5c .phone rect",{"strokeDashoffset": 2400},{"strokeDashoffset": 0, "duration": 0.55, "ease": "power2.inOut", "immediateRender": false},16.0667);
+tl.fromTo("#s5c .pthumb",{"opacity": 0, "scale": 0.9},{"opacity": 1, "scale": 1, "duration": 0.25, "ease": "power3.out", "immediateRender": false},16.6);
+tl.fromTo("#s5c .dim",{"opacity": 0},{"opacity": 1, "duration": 0.2, "ease": "power3.out", "immediateRender": false},16.8);
+tl.fromTo("#s5c .gstamp",{"opacity": 0, "scale": 2.4, "rotation": -18},{"opacity": 1, "scale": 1, "rotation": -8, "duration": 0.2, "ease": "power4.in", "immediateRender": false},17.3);
+tl.set("#stage",{"x": 5.3, "y": -6.1},17.5);
+tl.set("#stage",{"x": -2.5, "y": 6.2},17.5333);
+tl.set("#stage",{"x": -4.6, "y": -2.2},17.5667);
+tl.set("#stage",{"x": 0.8, "y": -1.5},17.6);
+tl.set("#stage",{"x": 2.2, "y": 1.4},17.6333);
+tl.set("#stage",{"x": 0.4, "y": 0.1},17.6667);
+tl.set("#stage",{"x": 0, "y": 0},17.7);
+tl.set("#s6a .pf0",{"opacity": 1},18.0);
+tl.fromTo("#s6a .pf0",{"scale": 1.08},{"scale": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},18.0);
+tl.set("#s6a .pf1",{"opacity": 1},18.2667);
+tl.fromTo("#s6a .pf1",{"scale": 1.08},{"scale": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},18.2667);
+tl.set("#s6a .pf2",{"opacity": 1},18.5);
+tl.fromTo("#s6a .pf2",{"scale": 1.08},{"scale": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},18.5);
+tl.set("#s6a .pf3",{"opacity": 1},18.7333);
+tl.fromTo("#s6a .pf3",{"scale": 1.08},{"scale": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},18.7333);
+tl.set("#s6a .pf4",{"opacity": 1},19.0);
+tl.fromTo("#s6a .pf4",{"scale": 1.08},{"scale": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},19.0);
+tl.set("#s6a .pf5",{"opacity": 1},19.2667);
+tl.fromTo("#s6a .pf5",{"scale": 1.08},{"scale": 1, "duration": 0.25, "ease": "power2.out", "immediateRender": false},19.2667);
+tl.fromTo("#s6a .pshade",{"opacity": 0},{"opacity": 1, "duration": 0.15, "ease": "power3.out", "immediateRender": false},19.5);
+tl.fromTo("#s6a .hd .char",{opacity:0,y:40},{opacity:1,y:0,duration:.18,ease:"back.out(2)",stagger:.015,immediateRender:false},19.0333);
+tl.fromTo("#s6b .old",{"opacity": 0, "scale": 1.3},{"opacity": 1, "scale": 1, "duration": 0.2, "ease": "expo.out", "immediateRender": false},20.0667);
+tl.fromTo("#s6b .dim",{"opacity": 0},{"opacity": 1, "duration": 0.2, "ease": "power3.out", "immediateRender": false},20.1333);
+tl.fromTo("#s6b .old path",{"strokeDashoffset": 700},{"strokeDashoffset": 0, "duration": 0.22, "ease": "power2.out", "immediateRender": false},20.5);
+tl.fromTo("#s6b .old",{"opacity": 1},{"opacity": 0.4, "duration": 0.2, "ease": "power3.out", "immediateRender": false},20.7);
+tl.fromTo("#s6b .readout",{"opacity": 0, "scale": 1.6},{"opacity": 1, "scale": 1, "duration": 0.24, "ease": "expo.out", "immediateRender": false},20.9);
+tl.set("#stage",{"x": -3.3, "y": -4.4},20.9);
+tl.set("#stage",{"x": -1.1, "y": -6.1},20.9333);
+tl.set("#stage",{"x": -0.9, "y": 0.3},20.9667);
+tl.set("#stage",{"x": 0.9, "y": -3.0},21.0);
+tl.set("#stage",{"x": -1.0, "y": 2.6},21.0333);
+tl.set("#stage",{"x": -1.2, "y": 1.5},21.0667);
+tl.set("#stage",{"x": 0, "y": 0},21.1);
+tl.fromTo("#s6b .tbar i",{scaleY:0},{scaleY:1,duration:.12,ease:"power2.out",stagger:.02,immediateRender:false},21.0);
+tl.fromTo("#s7 .pcard",{"opacity": 0, "y": 80},{"opacity": 1, "y": 0, "duration": 0.25, "ease": "expo.out", "immediateRender": false},22.0);
+tl.fromTo("#s7 .p97 path",{"strokeDashoffset": 260},{"strokeDashoffset": 0, "duration": 0.2, "ease": "power3.out", "immediateRender": false},22.1);
+tl.fromTo("#s7 .p67",{"opacity": 0, "scale": 1.8},{"opacity": 1, "scale": 1, "duration": 0.24, "ease": "expo.out", "immediateRender": false},22.0);
+tl.set("#stage",{"x": 1.2, "y": -0.5},22.0667);
+tl.set("#stage",{"x": -5.0, "y": 2.1},22.1);
+tl.set("#stage",{"x": 0.7, "y": -4.6},22.1333);
+tl.set("#stage",{"x": 2.3, "y": 0.5},22.1667);
+tl.set("#stage",{"x": 2.2, "y": 2.5},22.2);
+tl.set("#stage",{"x": 1.2, "y": -0.1},22.2);
+tl.set("#stage",{"x": 0, "y": 0},22.2667);
+tl.fromTo("#s7 .plines span",{opacity:0,y:20},{opacity:1,y:0,duration:.2,stagger:.12,ease:"power3.out",immediateRender:false},23.2667);
+tl.fromTo("#s7 .cfield",{"opacity": 0, "y": 40},{"opacity": 1, "y": 0, "duration": 0.2, "ease": "power3.out", "immediateRender": false},23.7);
+FB.type(tl,"#s7 .kw",24.2333,0.06);
+tl.fromTo("#s7 .snd",{"opacity": 0, "scale": 0.4},{"opacity": 1, "scale": 1, "duration": 0.2, "ease": "back.out(3)", "immediateRender": false},24.6333);
+FB.press(tl,"#s7 .snd",25.0333);
+tl.fromTo("#s8 .n3",{"opacity": 0, "scale": 1.4},{"opacity": 1, "scale": 1, "duration": 0.16, "ease": "expo.out", "immediateRender": false},26.0);
+tl.fromTo("#s8 .n3 .c2",{"x": 0, "y": 0},{"x": 16, "y": 14, "duration": 0.16, "ease": "power3.out", "immediateRender": false},26.0);
+tl.fromTo("#s8 .n3 .c3",{"x": 0, "y": 0},{"x": 32, "y": 28, "duration": 0.16, "ease": "power3.out", "immediateRender": false},26.0);
+tl.set("#stage",{"x": -5.5, "y": -7.2},26.0);
+tl.set("#stage",{"x": 3.9, "y": 3.0},26.0333);
+tl.set("#stage",{"x": -1.0, "y": -3.5},26.0667);
+tl.set("#stage",{"x": -0.8, "y": 1.4},26.1);
+tl.set("#stage",{"x": 1.0, "y": -0.9},26.1333);
+tl.set("#stage",{"x": 0, "y": 0},26.1667);
+tl.set("#s8 .n3",{"opacity": 0},26.5);
+tl.fromTo("#s8 .n2",{"opacity": 0, "scale": 1.4},{"opacity": 1, "scale": 1, "duration": 0.16, "ease": "expo.out", "immediateRender": false},26.5);
+tl.fromTo("#s8 .n2 .c2",{"x": 0, "y": 0},{"x": 16, "y": 14, "duration": 0.16, "ease": "power3.out", "immediateRender": false},26.5);
+tl.fromTo("#s8 .n2 .c3",{"x": 0, "y": 0},{"x": 32, "y": 28, "duration": 0.16, "ease": "power3.out", "immediateRender": false},26.5);
+tl.set("#stage",{"x": -7.2, "y": 3.5},26.5);
+tl.set("#stage",{"x": 6.2, "y": 3.7},26.5333);
+tl.set("#stage",{"x": -0.4, "y": -3.3},26.5667);
+tl.set("#stage",{"x": -0.4, "y": -1.3},26.6);
+tl.set("#stage",{"x": -1.5, "y": -1.0},26.6333);
+tl.set("#stage",{"x": 0, "y": 0},26.6667);
+tl.set("#s8 .n2",{"opacity": 0},27.0);
+tl.fromTo("#s8 .n1",{"opacity": 0, "scale": 1.4},{"opacity": 1, "scale": 1, "duration": 0.16, "ease": "expo.out", "immediateRender": false},27.0);
+tl.fromTo("#s8 .n1 .c2",{"x": 0, "y": 0},{"x": 16, "y": 14, "duration": 0.16, "ease": "power3.out", "immediateRender": false},27.0);
+tl.fromTo("#s8 .n1 .c3",{"x": 0, "y": 0},{"x": 32, "y": 28, "duration": 0.16, "ease": "power3.out", "immediateRender": false},27.0);
+tl.set("#stage",{"x": -11.7, "y": 14.5},27.0);
+tl.set("#stage",{"x": -5.5, "y": -3.6},27.0333);
+tl.set("#stage",{"x": -5.4, "y": 1.0},27.0667);
+tl.set("#stage",{"x": -5.2, "y": 1.7},27.1);
+tl.set("#stage",{"x": 0.3, "y": 2.8},27.1333);
+tl.set("#stage",{"x": 0, "y": 0},27.1667);
+tl.set("#flash",{"backgroundColor": "#ffffff"},28.0);
+tl.fromTo("#flash",{"opacity": 0.9},{"opacity": 0, "duration": 0.22, "ease": "power2.out", "immediateRender": false},28.0);
+tl.set("#stage",{"x": 0.6, "y": -2.7},28.0);
+tl.set("#stage",{"x": 10.1, "y": 1.3},28.0333);
+tl.set("#stage",{"x": 5.8, "y": 5.3},28.0667);
+tl.set("#stage",{"x": 4.9, "y": -9.3},28.1);
+tl.set("#stage",{"x": 6.4, "y": 7.0},28.1333);
+tl.set("#stage",{"x": -2.8, "y": 3.7},28.1667);
+tl.set("#stage",{"x": -2.2, "y": -0.2},28.2);
+tl.set("#stage",{"x": -0.1, "y": 1.6},28.2333);
+tl.set("#stage",{"x": 0, "y": 0},28.2667);
+tl.fromTo("#s9 .burst",{"opacity": 1, "scale": 0.1},{"opacity": 0, "scale": 1.6, "duration": 0.7, "ease": "expo.out", "immediateRender": false},28.0);
+tl.fromTo("#s9 .cm .char",{opacity:0,y:-50},{opacity:1,y:0,duration:.18,ease:"expo.out",stagger:.02,immediateRender:false},28.0333);
+tl.fromTo("#s9 .fg",{"opacity": 0, "scale": 2.2},{"opacity": 1, "scale": 1, "duration": 0.25, "ease": "power4.in", "immediateRender": false},28.0667);
+FB.elastic(tl,"#s9 .fg",28.4,1.9);
+tl.fromTo("#s9 .dim2",{"opacity": 0},{"opacity": 1, "duration": 0.25, "ease": "power3.out", "immediateRender": false},28.6);
+tl.fromTo("#s9 .fg",{"scale": 1.04},{"scale": 1, "duration": 0.14, "ease": "power2.out", "immediateRender": false},28.5);
+tl.fromTo("#s9 .fg",{"scale": 1.04},{"scale": 1, "duration": 0.14, "ease": "power2.out", "immediateRender": false},29.0);
+tl.fromTo("#s9 .fg",{"scale": 1.04},{"scale": 1, "duration": 0.14, "ease": "power2.out", "immediateRender": false},29.5);
+tl.fromTo("#s9 .fg",{"scale": 1.04},{"scale": 1, "duration": 0.14, "ease": "power2.out", "immediateRender": false},30.0);
+tl.fromTo("#s9 .fg",{"scale": 1.04},{"scale": 1, "duration": 0.14, "ease": "power2.out", "immediateRender": false},30.5);
+tl.fromTo("#s9 .fg",{"scale": 1.04},{"scale": 1, "duration": 0.14, "ease": "power2.out", "immediateRender": false},31.0);
+tl.fromTo("#s9 .fg",{"scale": 1.04},{"scale": 1, "duration": 0.14, "ease": "power2.out", "immediateRender": false},31.5);
+tl.fromTo("#crops",{"opacity": 1, "scale": 1.12},{"opacity": 1, "scale": 1, "duration": 0.6, "ease": "power3.inOut", "immediateRender": false},31.0);
+tl.fromTo("#s9 .row",{"opacity": 1},{"opacity": 0, "duration": 0.4, "ease": "power2.in", "immediateRender": false},31.5333);
+tl.set("#crops",{"opacity": 1},0.0);
+tl.set("#crops",{"opacity": 0},1.0);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},0.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},0.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},1.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},1.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},2.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},2.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},3.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},3.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},4.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},4.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},5.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},5.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},6.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},6.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},7.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},7.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},8.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},8.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},9.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},9.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},10.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},10.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},11.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},11.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},12.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},12.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},13.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},13.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},14.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},14.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},15.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},15.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},16.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},16.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},17.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},17.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},18.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},18.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},19.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},19.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},20.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},20.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},21.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},21.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},22.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},22.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},23.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},23.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},24.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},24.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},25.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},25.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},26.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},26.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},27.0);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},28.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},28.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},29.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},29.5);
+tl.fromTo("#pulse",{"opacity": 0.55},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},30.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},30.5);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},31.0);
+tl.fromTo("#pulse",{"opacity": 0.25},{"opacity": 0, "duration": 0.3, "ease": "power2.out", "immediateRender": false},31.5);
+    window.__timelines = window.__timelines || {};
+    window.__timelines["autoboost-77"] = tl;
+  })();
+  </script>
+</div>
+</body>
+</html>
