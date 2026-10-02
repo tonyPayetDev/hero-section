@@ -85,6 +85,26 @@ ffmpeg -i silent.mp4 -i mix.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -
 - **Mot-clé CTA** : vérifier qu'une porte Blotato existe (`blotato_list_automations`). Sinon la créer **avec l'accord de Tony** et l'URL de la ressource — sans porte, les gens commentent et ne reçoivent rien.
 - Planifier sur les 5 réseaux (TikTok 36488 / IG 54617 / YouTube 45006 / FB 43538 + pageId / LinkedIn 25882).
 
+## Mode dialogue — Tony + son avatar IA
+
+Quand Tony envoie une session `/tournage/` avec un script balisé `[MOI]` / `[IA]` (« fais intervenir mon avatar IA »).
+Il a lu **tout** le script au prompteur, répliques IA comprises. Ces passages sont retirés de sa piste,
+puis remplacés par l'avatar (banque BUREAU, plages lèvres actives) et sa **voix clonée**.
+Référence complète : `autoboost-75-skill-arena/` (script, gen.py, rendu).
+
+```bash
+python3 $S/facecam_cut.py take.mp4 --work build/ --stage transcribe      # transcript.json mot à mot
+python3 $S/facecam_dialogue.py --src take.mp4 --script script.md --work build/ --stage align   # vérifier le tableau imprimé
+python3 $S/facecam_dialogue.py --src take.mp4 --script script.md --work build/ --stage tts     # voix clonée, F0 contrôlé
+python3 $S/facecam_dialogue.py --src take.mp4 --script script.md --work build/ --stage build   # build/asm/{tony,avatar}.mp4, voice.wav, timeline.json
+```
+- **Ignorer les horodatages des repères** du prompteur : ils dérivent de plusieurs secondes. Seul l'alignement script ↔ transcription fait foi.
+- Une réplique IA « non entendue » (Tony l'a sautée) est quand même générée et posée après la réplique précédente.
+- Une note `accélération` sur un bloc `[MOI — …]` l'accélère (`--fast`, 1,18 par défaut, contre `--tempo` 1,10 ailleurs).
+- TTS : pas de guillemets droits dans le texte (le webhook injecte le texte brut dans du JSON). Un F0 autour de 200 Hz signifie que le repli OpenAI a répondu, pas le clone : le script relance l'appel. Chaque réplique coûte un peu de crédit WaveSpeed.
+- Composition : partir de `autoboost-75-skill-arena/motion/gen.py`. Pendant une réplique IA, Tony est figé et assombri. La carte avatar arrive à droite ou à gauche en alternance, la première en glitch. Une bulle affiche la réplique mot à mot et un sticker répond à la vanne.
+- Durée : le script de Tony fait foi (autoboost-75 dure 108 s). La fenêtre 25-40 s ne s'applique pas à ce mode.
+
 ## Checklist
 - [ ] Durée 25-40 s, aucun battement > 4 s sans changement
 - [ ] Hook plein écran dans les 2 premières secondes, promesse avant 5 s
