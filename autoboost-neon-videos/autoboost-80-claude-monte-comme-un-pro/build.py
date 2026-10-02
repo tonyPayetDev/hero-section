@@ -6,8 +6,9 @@
                         two voices read apart; word timings by faster-whisper
   tony_src.mp4          1080x1440, the real take (video_25), muted: talking passages under Tony's
                         lines, silent ones (he listens) under the IA's lines and the gaps
+                        (v1, superseded by resync.py, which matches the take to the voice's rhythm)
   avatar.mp4            600x600, the BUREAU avatar: lips-active ranges under IA lines, still otherwise
-  bed.wav               Deep Urban from its drop (file 14.258 s)
+  bed.wav               Deep Urban from its drop (file 14.258 s) (v1, superseded by bed_valse.py)
 
   python3 build.py TAKE.mp4 TAKE_TRANSCRIPT.json VO_DIR OUT_DIR
 """
