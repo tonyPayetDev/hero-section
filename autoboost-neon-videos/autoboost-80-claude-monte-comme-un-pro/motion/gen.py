@@ -110,7 +110,7 @@ for c in CUTS[1:]:
         S(sel, c, {"scale": z})
 
 # ------------------------------------------------------------------ Tony IA: violet circle bottom-right, glitch entrance on its first line
-IAX, IAY, IAS = 540, 1000, 0.62          # visual centre ~(840, 1300): transform-origin is the circle centre
+IAX, IAY, IAS = 590, 1200, 0.5           # visual centre ~(890, 1500): on his shoulder, never over his face
 S("#iaw", 0, {"x": IAX, "y": IAY, "scale": IAS, "opacity": 0})
 for n, it in enumerate(l for l in L if l["who"] == "ia"):
     a, b = it["start"], it["end"]
@@ -123,8 +123,9 @@ for n, it in enumerate(l for l in L if l["who"] == "ia"):
         R("#iaw", a - 0.15, {"opacity": 0, "x": 1100, "scale": IAS}, {"opacity": 1, "x": IAX, "scale": IAS}, 0.28, "back.out(1.6)")
         EV.append([a - 0.15, "sfx-thwip.mp3", -20])
     R("#iaw", b + 0.05, {"opacity": 1, "x": IAX}, {"opacity": 0, "x": 1100}, 0.22, "power2.in")
-    R("#tony", a - 0.1, {"filter": "brightness(1)"}, {"filter": "brightness(.72)"}, 0.2)        # Tony listens
-    R("#tony", b, {"filter": "brightness(.72)"}, {"filter": "brightness(1)"}, 0.2)
+    # Tony listens: dimmed (inner wrapper, so it never fights the sticker outline) and nudged left
+    R("#tonyi", a - 0.1, {"filter": "brightness(1)", "x": 0}, {"filter": "brightness(.72)", "x": -70}, 0.25)
+    R("#tonyi", b, {"filter": "brightness(.72)", "x": -70}, {"filter": "brightness(1)", "x": 0}, 0.25)
 
 # ------------------------------------------------------------------ 0 hook: Claude monte comme un pro (+ IA line 1)
 scene("s0", 0, st(2) - 0.15,

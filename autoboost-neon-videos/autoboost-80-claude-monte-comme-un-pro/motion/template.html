@@ -31,6 +31,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0b0a1
 /* base (room) layer for the segmentation reveal, and the cutout */
 #basew, #tony { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; transform-origin: 540px 900px; }
 #basew { z-index: 3; opacity: 0; } #tony { z-index: 6; }
+#tonyi { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 #basew video, #tony video { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 #tonyglow { position: absolute; left: 140px; top: 800px; width: 800px; height: 800px; border-radius: 50%; z-index: 2;
   background: radial-gradient(circle, rgba(139,92,246,.22), rgba(234,179,8,.08) 45%, transparent 68%); }
@@ -115,7 +116,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0b0a1
   <div id="tonyglow"></div>
   <div id="basew"><video id="basev" src="tony_src.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="5"></video></div>
 %%SCENES%%
-  <div id="tony"><video id="tonyv" src="tony.webm" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="6"></video></div>
+  <div id="tony"><div id="tonyi"><video id="tonyv" src="tony.webm" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="6"></video></div></div>
   <div id="iaw"><video id="iav" src="avatar.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="7"></video><i class="scan"></i><i class="ring"></i><div class="tag"><b>TONY</b><span>IA</span></div></div>
   <div id="cap">%%CAPTIONS%%</div>
 %%OVERLAYS%%
