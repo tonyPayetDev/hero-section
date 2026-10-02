@@ -101,3 +101,29 @@ python3 audio.py                  # voix + nappe + 21 SFX calés sur le motion
 
 `motion/public/facecam.mp4` n'est pas versionné (dérivé, 25 Mo) : c'est
 `base.mp4` (sortie de `build.py cuts`) ré-encodé muet avec `-g 30 -keyint_min 30`.
+
+---
+
+# v2 — `autoboost-74-motion-v2.mp4` (kit FaceCam Boost)
+
+Même face cam, même timeline, reconstruite sur `_shared/facecam-boost-kit/`
+après les nouvelles références de Tony (planche de stickers, layouts 1-4,
+vidéo « 0,07 $ ») et la page « 8 animations motion design » (CERËGA / SKOOL),
+repassée dans la charte.
+
+| Ajout v2 | Où |
+|---|---|
+| Stickers punch : ÇA PART, ÇA BLOQUE, PLUS CLAIR, BON SYSTÈME, PLUS SIMPLE, DÉJÀ MIEUX, ÇA MONTE, NIVEAU MAX | un par écran, à cheval sur la jointure écran / face cam |
+| Puces NIVEAU 1 → 6 | coin haut gauche, écrans 1 à 6 |
+| Courbe de progression (Notion #3) | écran Problème, à la place de la jauge |
+| Pile de cartes (Notion #5) | la mauvaise question s'envole, la bonne avance |
+| Split vertical (layout 2) | « un bazooka pour un clou » : face cam à gauche, OPUS / LÉGER à droite, séparateur or + VS |
+| Bouton → champ (Notion #1) + TOKEN élastique (Notion #7) | CTA |
+| Finale plein écran (layout 4) | « ÇA POURRAIT / TOUT CHANGER » + trait violet |
+| Musique | Valse des fleurs, version maison évidée, partie stable bouclée (mesure 6 → 26) |
+
+Les motions #2 (recherche), #4 (zoom tuile), #6 (dock) et #8 (particules) sont
+dans le kit (`boards/`) mais pas dans cette vidéo : rien dans le propos ne les
+appelait.
+
+v1 reste reconstructible : `motion/gen_v1.py`.

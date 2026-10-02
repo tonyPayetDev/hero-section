@@ -1,0 +1,112 @@
+/* FaceCam Boost kit - AutomatisationBoost charter (_shared/CHARTE.md).
+ * Gold #eab308 / violet #8b5cf6 on matte black #0a0a0f, error red #ff6b6b
+ * only where it means "wrong". No green anywhere, no emoji glyphs.
+ * Every class is prefixed fb- so the kit can be dropped into any composition.
+ * Font: "AB Sans" (DejaVu Sans Bold, staged by the project into fonts/).      */
+
+:root {
+  --fb-gold: #eab308; --fb-gold-hi: #fff3b0; --fb-violet: #8b5cf6; --fb-violet-hi: #c4b5fd;
+  --fb-bg: #0a0a0f; --fb-surface: #111117; --fb-line: #232330; --fb-ink: #EDEDED;
+  --fb-mute: #8A8A8A; --fb-err: #ff6b6b;
+}
+
+/* ---------- gradient text */
+.fb-w { background: linear-gradient(180deg, #fff 0%, #e4e4ec 55%, #9b9ba8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fb-g { background: linear-gradient(180deg, #fff3b0 0%, #facc15 38%, #eab308 70%, #b7791f 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fb-v { background: linear-gradient(180deg, #ede9fe 0%, #a78bfa 45%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fb-r { background: linear-gradient(180deg, #ffd0d0 0%, #ff6b6b 50%, #e5484d 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- sticker (punch badge): "TROP LENT", "PLUS SIMPLE", "ÇA MONTE"... */
+.fb-sticker { position: absolute; display: inline-flex; align-items: center; gap: 16px; padding: 16px 34px 18px;
+  border-radius: 24px; background: linear-gradient(180deg, #16131f, #0a0a0f); border: 4px solid var(--fb-gold);
+  font-family: "AB Sans", "DejaVu Sans", sans-serif; font-weight: 700; font-size: 66px; line-height: 1;
+  letter-spacing: -0.04em; text-transform: uppercase; white-space: nowrap; opacity: 0; transform: rotate(-4deg);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.9), 0 0 30px rgba(234,179,8,.55), inset 0 0 22px rgba(234,179,8,.18); }
+.fb-sticker .a { background: linear-gradient(180deg, #fff, #d9d9e2 60%, #9b9ba8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fb-sticker .b { background: linear-gradient(180deg, #fff3b0, #facc15 40%, #eab308 75%, #b7791f); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 12px rgba(234,179,8,.6)); }
+.fb-sticker.fb-violet { border-color: var(--fb-violet); box-shadow: 0 0 0 2px rgba(0,0,0,.9), 0 0 32px rgba(139,92,246,.6), inset 0 0 22px rgba(139,92,246,.22); border-radius: 999px; }
+.fb-sticker.fb-red { border-color: var(--fb-err); box-shadow: 0 0 0 2px rgba(0,0,0,.9), 0 0 32px rgba(255,107,107,.55), inset 0 0 22px rgba(255,107,107,.2); transform: rotate(-6deg); }
+.fb-sticker.fb-red .b { background: linear-gradient(180deg, #ffd0d0, #ff6b6b 50%, #e5484d); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 12px rgba(255,107,107,.7)); }
+.fb-sticker .fb-ico { display: flex; color: var(--fb-violet-hi); filter: drop-shadow(0 0 10px var(--fb-violet)); }
+.fb-sticker.fb-gold .fb-ico, .fb-sticker.fb-red .fb-ico { color: var(--fb-gold); filter: drop-shadow(0 0 10px var(--fb-gold)); }
+.fb-sticker .fb-spark { position: absolute; right: -26px; top: -40px; width: 56px; height: 56px; transform-origin: 0% 100%; }
+.fb-sticker .fb-bar { position: absolute; left: 34px; right: 34px; bottom: -18px; height: 16px; border-radius: 8px;
+  background: repeating-linear-gradient(90deg, var(--fb-violet) 0 34px, transparent 34px 40px); box-shadow: 0 0 16px rgba(139,92,246,.8); }
+.fb-sticker .fb-swoosh { position: absolute; left: 60px; right: 10px; bottom: -22px; height: 8px; border-radius: 4px;
+  background: linear-gradient(90deg, transparent, var(--fb-violet), var(--fb-violet-hi)); box-shadow: 0 0 16px var(--fb-violet); }
+
+/* ---------- level chip (ref video): "NIVEAU 2" + segmented progress */
+.fb-level { position: absolute; display: flex; align-items: center; gap: 14px; padding: 10px 18px; border-radius: 12px;
+  background: rgba(10,10,15,.92); border: 2px solid rgba(234,179,8,.8); font-family: "AB Sans", sans-serif; font-weight: 700;
+  font-size: 22px; letter-spacing: .14em; color: var(--fb-ink); opacity: 0; box-shadow: 0 0 18px rgba(234,179,8,.35); }
+.fb-level .seg { display: flex; gap: 5px; }
+.fb-level .seg i { display: block; width: 26px; height: 10px; border-radius: 3px; background: #2a2540; }
+.fb-level .seg i.on { background: var(--fb-violet); box-shadow: 0 0 10px var(--fb-violet); }
+
+/* ---------- neon corner brackets around a panel (ref kit) */
+.fb-brackets { position: absolute; pointer-events: none; }
+.fb-brackets i { position: absolute; width: 46px; height: 46px; border: 4px solid var(--fb-gold); filter: drop-shadow(0 0 8px var(--fb-gold)); }
+.fb-brackets i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-radius: 10px 0 0 0; }
+.fb-brackets i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-radius: 0 10px 0 0; border-color: var(--fb-violet); }
+.fb-brackets i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 10px; border-color: var(--fb-violet); }
+.fb-brackets i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-radius: 0 0 10px 0; }
+
+/* ---------- neon tubes + split divider (ref layouts 2 and 3) */
+.fb-tube { position: absolute; width: 10px; border-radius: 5px; opacity: 0; }
+.fb-tube.gold { background: linear-gradient(180deg, #fff3b0, #eab308); box-shadow: 0 0 20px #eab308, 0 0 60px rgba(234,179,8,.6); }
+.fb-tube.violet { background: linear-gradient(180deg, #ede9fe, #8b5cf6); box-shadow: 0 0 20px #8b5cf6, 0 0 60px rgba(139,92,246,.6); }
+.fb-divider { position: absolute; width: 6px; border-radius: 3px; background: linear-gradient(180deg, transparent, #eab308 12%, #fff3b0 50%, #eab308 88%, transparent);
+  box-shadow: 0 0 22px #eab308, 0 0 60px rgba(234,179,8,.5); opacity: 0; transform-origin: 50% 0%; }
+.fb-knob { position: absolute; width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--fb-gold); background: #0a0a0f;
+  display: flex; align-items: center; justify-content: center; color: var(--fb-gold); font-family: "AB Sans", sans-serif; font-size: 26px;
+  box-shadow: 0 0 24px rgba(234,179,8,.8); opacity: 0; }
+
+/* ---------- chart card (Notion #3 "courbe de progression", ref image "1 reel par mois") */
+.fb-chart { position: relative; }
+.fb-chart .fb-gridline { stroke: rgba(255,255,255,.06); stroke-width: 1; }
+.fb-chart .fb-line { fill: none; stroke: var(--fb-violet); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 10px rgba(139,92,246,.9)); stroke-dasharray: 3000; stroke-dashoffset: 3000; }
+.fb-chart .fb-area { opacity: 0; }
+.fb-chart .fb-dot { opacity: 0; }
+.fb-chart .fb-label { opacity: 0; }
+
+/* ---------- search -> results (Notion #2) */
+.fb-search { display: flex; align-items: center; gap: 18px; height: 96px; padding: 0 30px; border-radius: 48px;
+  background: #111117; border: 3px solid var(--fb-violet); box-shadow: 0 0 26px rgba(139,92,246,.45);
+  font-family: "AB Mono", monospace; font-size: 40px; color: var(--fb-ink); }
+.fb-search .fb-caret { display: inline-block; width: 4px; height: 46px; background: var(--fb-gold); margin-left: 4px; }
+.fb-result { display: flex; align-items: center; gap: 20px; padding: 18px 24px; border-radius: 22px; background: #111117;
+  border: 2px solid #2e2946; opacity: 0; }
+.fb-result .sq { width: 64px; height: 64px; border-radius: 16px; flex: none; }
+.fb-result b { display: block; font-size: 30px; color: var(--fb-ink); }
+.fb-result small { display: block; font-size: 20px; color: var(--fb-mute); font-weight: 400; margin-top: 4px; }
+
+/* ---------- card stack (Notion #5 "pile") */
+.fb-stack { position: relative; }
+.fb-stack .fb-scard { position: absolute; left: 0; top: 0; width: 100%; border-radius: 30px; padding: 30px 38px;
+  background: linear-gradient(180deg, rgba(26,22,40,.98), rgba(14,12,22,.98)); border: 2px solid rgba(139,92,246,.6);
+  box-shadow: 0 18px 50px rgba(0,0,0,.6); transform-origin: 50% 100%; }
+
+/* ---------- dock (Notion #6) */
+.fb-dock { display: flex; align-items: flex-end; gap: 22px; padding: 22px 30px; border-radius: 34px; background: rgba(17,17,23,.95);
+  border: 2px solid #2e2946; box-shadow: 0 0 30px rgba(139,92,246,.3); }
+.fb-dock .fb-di { width: 96px; height: 96px; border-radius: 24px; display: flex; align-items: center; justify-content: center;
+  background: #1b1828; border: 2px solid #3a3350; color: var(--fb-ink); transform-origin: 50% 100%; }
+.fb-dock .fb-di.hot { border-color: var(--fb-gold); color: var(--fb-gold); }
+
+/* ---------- elastic word (Notion #7) */
+.fb-elastic { display: inline-flex; align-items: flex-end; }
+.fb-elastic .fb-ech { display: inline-block; transform-origin: 50% 100%; }
+
+/* ---------- button -> panel (Notion #1) */
+.fb-btn { display: inline-flex; align-items: center; gap: 18px; padding: 22px 44px; border-radius: 999px; background: var(--fb-gold);
+  color: #0a0a0f; font-family: "AB Sans", sans-serif; font-weight: 700; font-size: 40px; letter-spacing: .06em;
+  box-shadow: 0 0 34px rgba(234,179,8,.7), 0 10px 0 #8a6a05; }
+
+/* ---------- caption plate */
+.fb-capbar { position: absolute; border-radius: 52px; background: rgba(10,10,15,.9); border: 2px solid rgba(234,179,8,.7);
+  box-shadow: 0 0 30px rgba(234,179,8,.3), inset 0 0 22px rgba(139,92,246,.3); }
+
+/* ---------- particles canvas (Notion #8) */
+.fb-particles { position: absolute; }

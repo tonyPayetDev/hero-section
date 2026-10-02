@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
+<link rel="stylesheet" href="kit/kit.css" />
 <style>
 @font-face { font-family: "AB Sans"; src: url("fonts/DejaVuSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
 @font-face { font-family: "AB Sans"; src: url("fonts/DejaVuSans.ttf") format("truetype"); font-weight: 400; font-display: block; }
@@ -98,14 +99,14 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0
 
 /* S2 */
 .q { width: 960px; padding: 32px 40px; }
-.qa { border-color: #3a3a48; box-shadow: none; }
-.qb { border-color: #eab308; box-shadow: 0 0 40px rgba(234,179,8,.35); padding-right: 150px; }
+.q.qa { border-color: #3a3a48; box-shadow: none; }
+.q.qb { border-color: #eab308; box-shadow: 0 0 40px rgba(234,179,8,.35); padding-right: 150px; }
 .ql { font-size: 22px; letter-spacing: .18em; color: #8A8A8A; }
 .ql.g { color: #eab308; background: none; filter: none; }
 .qt { font-size: 46px; color: #EDEDED; margin-top: 12px; line-height: 1.2; }
 .strk { position: absolute; left: 50px; top: 92px; overflow: visible; }
 .strike { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
-.qa .stamp { right: 18px; top: -52px; }
+.q.qa .stamp { right: 18px; top: -52px; }
 .ok { position: absolute; right: 36px; top: 50%; margin-top: -40px; width: 80px; height: 80px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; color: #0a0a0f; background: #eab308;
   box-shadow: 0 0 30px rgba(234,179,8,.8); opacity: 0; }
@@ -210,6 +211,28 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0
   font-size: 46px; color: #EDEDED; white-space: nowrap; opacity: 0; }
 .cw { display: inline-block; }
 .cw.key { color: #a78bfa; }
+
+/* ---------- v2 (FaceCam Boost kit) */
+.screen > .inner { position: absolute; left: 0; top: 40px; width: 1080px; height: 980px; }
+.fb-sticker, .fb-level { z-index: 9; }
+.c1 { height: auto; padding: 28px 40px 22px; }
+.chartbox { margin-top: 8px; height: 262px; }
+.c1 .stamp { left: 70px; right: auto; bottom: auto; top: 120px; }
+.pile { width: 960px; height: 300px; opacity: 0; }
+.pile .fb-scard { padding: 32px 40px; }
+.pile .qa { border-color: #3a3a48; }
+.pile .qb { border-color: #eab308; box-shadow: 0 0 40px rgba(234,179,8,.35); padding-right: 150px; }
+.pile .qa .stamp { right: 18px; top: -52px; }
+.pile .qb .ql, .pile .qb .qt { opacity: 0; }
+.col-r { position: absolute; left: 556px; top: 380px; width: 500px; display: flex; flex-direction: column; gap: 30px; }
+#s5 .vc { width: 500px; height: 380px; }
+.btn-wrap { opacity: 0; }
+.tokc { color: #eab308; text-shadow: 0 0 30px rgba(234,179,8,.7); letter-spacing: .02em; }
+.finale { position: absolute; inset: 0; z-index: 7; }
+#fin-shade { position: absolute; inset: 0; opacity: 0;
+  background: linear-gradient(180deg, transparent 0%, transparent 52%, rgba(10,10,15,.82) 72%, rgba(10,10,15,.95) 100%); }
+#fin .sw { display: block; width: 760px; height: 12px; border-radius: 6px; transform-origin: 0% 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, #7c3aed, #a78bfa 55%, #eab308); box-shadow: 0 0 22px #8b5cf6, 0 0 50px rgba(139,92,246,.6); }
 </style>
 </head>
 <body>
@@ -259,6 +282,8 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0
 
   <div id="rect-line" class="rect-fx"></div>
   <div id="rect-frame" class="rect-fx"></div>
+  <div id="split-div" class="fb-divider" style="left:537px;top:420px;height:1290px;z-index:4"></div>
+  <div id="split-knob" class="fb-knob" style="left:508px;top:1030px;z-index:4">VS</div>
 
 %%SCREENS%%
 
@@ -278,6 +303,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0
   </div>
 
   <script src="vendor/gsap.min.js"></script>
+  <script src="kit/kit.js"></script>
   <script>
   (function () {
     var tl = gsap.timeline({ paused: true });

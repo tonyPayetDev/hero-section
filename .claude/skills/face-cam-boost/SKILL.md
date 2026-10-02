@@ -1,0 +1,95 @@
+---
+name: face-cam-boost
+description: FaceCam Boost — transforme un VRAI rush face caméra de Tony (pas l'avatar) en vidéo 9:16 motion design pro HyperFrames, à la charte AutomatisationBoost. Coupe les silences, accélère, transcrit mot à mot, puis habille avec le kit FaceCam Boost - écrans qui slident l'un après l'autre en haut, face cam qui change de forme (plein écran → cercle néon or/violet → rectangle empilé → split vertical → plein écran final), stickers punch (TROP LENT, ÇA MONTE, NIVEAU MAX…), puces NIVEAU, courbes, piles de cartes, CTA « commente MOT » avec champ commentaire tapé, Valse des fleurs sous la voix. Déclencheurs - "face cam boost", "habille ma face cam", "motion design sur ma vidéo", "rends ma vidéo pro", "mets ma vidéo en cercle néon", "écrans qui slident", Tony envoie un .mp4 où il parle face caméra et veut du motion design.
+---
+
+# FaceCam Boost
+
+**Entrée :** un rush .mp4 où Tony parle face caméra (sa vraie voix).
+**Sortie :** une vidéo 1080×1920, 30 fps, 25-40 s, motion design HyperFrames, prête à valider puis à planifier.
+
+Ce skill assemble trois choses déjà éprouvées sur `autoboost-74-claude-md-sous-agents` :
+la coupe façon yapping, le kit FaceCam Boost, et le contrat HyperFrames.
+
+## À lire avant de produire
+
+1. `autoboost-neon-videos/_shared/CHARTE.md` — palette, typo, CTA, pièges de rendu. **Aucun vert. Aucun emoji.**
+2. `autoboost-neon-videos/_shared/facecam-boost-kit/README.md` — layouts, stickers, motions ; regarder `boards/*.png`.
+3. Le skill `/hyperframes-read-first` (le CLAUDE.md l'impose pour tout travail vidéo) puis `/hyperframes-core` pour le contrat : `<video>` **enfant direct de la racine**, une timeline GSAP en pause, aucun `Math.random`.
+4. L'implémentation de référence : `autoboost-74-claude-md-sous-agents/motion/gen.py` + `template.html`. **Partir de là**, ne pas réécrire de zéro.
+
+## Workflow
+
+### 0 · Outils
+```bash
+source .claude/skills/face-cam-boost/scripts/env.sh   # ffmpeg, faster-whisper, Chrome headless shell
+```
+
+### 1 · Transcrire, corriger, couper
+```bash
+S=.claude/skills/face-cam-boost/scripts
+python3 $S/facecam_cut.py take.mp4 --work build/ --stage transcribe     # imprime segment:index:mot
+# écrire build/fixes.json : noms propres, jargon (CLAUDE.md, Opus, n8n...), "commande token" -> "Commente TOKEN"
+python3 $S/facecam_cut.py take.mp4 --work build/ --stage plan --fixes build/fixes.json
+python3 $S/facecam_cut.py take.mp4 --work build/ --stage cut
+```
+- Coupe sur tout silence > 0,55 s, `atempo` 1,14 par défaut (25-40 s visés). Ajuster `--tempo` si la durée sort de la fenêtre.
+- Un mot douteux (un nom propre surtout) : le ré-isoler et le repasser avec un prompt de contexte ; s'il reste douteux, **le signaler à Tony** au lieu de deviner.
+- Le **mot-clé CTA** est souvent dit (« commente X ») : le chercher dans la transcription, Whisper l'écrit mal.
+- Sorties : `plan_actual.json` (timeline réelle au mot près — c'est elle qui pilote captions et apparitions), `facecam.mp4` (muet, keyframe chaque seconde), `voice.wav`.
+
+### 2 · Storyboard (dans la conversation)
+Un écran par idée, 4 à 6 s chacun, et dans chaque écran **un changement toutes les 2-4 s** (règle yapping).
+Structure qui marche : hook plein écran → problème → vraie question → solution → mécanisme → erreur à éviter → objectif → CTA → finale plein écran.
+
+Pour chaque écran choisir : layout de la face cam, motion Notion, sticker, valeurs affichées.
+
+| Moment | Layout face cam | Motion du kit | Sticker |
+|---|---|---|---|
+| Hook | plein écran (L4) + titre métal/or + chips | typo kinetic | ÇA PART |
+| Problème | cercle néon (L1) | courbe #3, tuiles, tampon rouge | rouge (TROP LENT, ÇA BLOQUE) |
+| Question / avant-après | rectangle empilé ou **split vertical (L2)** | pile #5, cartes OPUS vs LÉGER | PLUS CLAIR, DÉJÀ MIEUX |
+| Solution | cercle | fenêtre code tapée, recherche #2 | BON SYSTÈME |
+| Mécanisme | cercle | nœuds reliés (workflow) | PLUS SIMPLE, AUTOMATISE ÇA |
+| Résultat | rectangle (L3) | jauges, coches, zoom tuile #4 | ÇA MONTE, GAIN TEMPS |
+| CTA | grand cercle | bouton → champ #1, mot élastique #7 | NIVEAU MAX |
+| Finale | plein écran (L4) | punchline + trait violet | — |
+
+**Règle absolue : aucun chiffre inventé.** Une stat affichée vient de ce que Tony dit. Sinon : jauge sans pourcentage, ou rien.
+
+### 3 · Composer
+Copier `autoboost-74-.../motion/` dans le nouveau projet (`autoboost-NN-sujet/motion/`), puis dans `gen.py` :
+- `facecam_mode()` du kit pour chaque layout, `MORPHS` pour les transitions (0,5 s, power3.inOut) ;
+- `B` = bornes des écrans ; un écran = `section.screen.clip` qui slide de la droite, traînée de vitesse à chaque changement ;
+- stickers et puces NIVEAU **hors** des écrans (ils chevauchent la jointure écran / face cam) ;
+- textes et timings depuis `plan_actual.json`.
+
+```bash
+python3 gen.py && npx hyperframes lint public          # 0 erreur exigé
+npx hyperframes snapshot public --at <un instant par écran + chaque transition> --no-end
+```
+**Regarder chaque planche.** Pièges déjà rencontrés : espace mangé autour du mot actif (pas de `scale` sur le mot), tête coupée dans le cercle (remonter `focus`), classe générique (`.qb`) qui donne un halo à une boîte 1080×980, carte du dessous de la pile qui laisse voir son texte.
+
+### 4 · Rendre, mixer
+```bash
+npx hyperframes render public -o silent.mp4 --fps 30 --quality delivery --no-browser-gpu   # ~7 min / 40 s en cloud
+python3 $S/facecam_audio.py --voice build/voice.wav --events events.json --frames <nb images> --out mix.wav --bed valse
+ffmpeg -i silent.mp4 -i mix.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -movflags +faststart -shortest final.mp4
+```
+- Musique par défaut : **Valse des fleurs, version maison évidée** (le script boucle la partie stable mesure 6 → 26). `--bed drums` pour un sujet plus nerveux.
+- `events.json` : un SFX par slide (whoosh), tampon (impact), sticker (thwip/pop), coche (confirm), CTA (impact-deep, click, notify).
+- Cible : −15 à −16 LUFS intégrés. Vérifier l'image **dans le MP4 final**, pas seulement les snapshots.
+
+### 5 · Livrer
+- Publier sur prévisualisation, attendre « ✅ » de Tony.
+- **Mot-clé CTA** : vérifier qu'une porte Blotato existe (`blotato_list_automations`). Sinon la créer **avec l'accord de Tony** et l'URL de la ressource — sans porte, les gens commentent et ne reçoivent rien.
+- Planifier sur les 5 réseaux (TikTok 36488 / IG 54617 / YouTube 45006 / FB 43538 + pageId / LinkedIn 25882).
+
+## Checklist
+- [ ] Durée 25-40 s, aucun battement > 4 s sans changement
+- [ ] Hook plein écran dans les 2 premières secondes, promesse avant 5 s
+- [ ] Captions mot à mot justes (noms propres vérifiés), mot actif or, mots-clés violet
+- [ ] Aucun chiffre inventé, aucun vert, aucun emoji
+- [ ] `hyperframes lint` : 0 erreur ; planches regardées écran par écran
+- [ ] Voix au premier plan, nappe à niveau fixe dessous, −15/−16 LUFS
+- [ ] Mot-clé CTA = porte Blotato active
