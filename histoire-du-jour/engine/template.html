@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>%%TITLE%%</title>
+<script src="vendor/gsap.min.js"></script>
+<style>
+@font-face { font-family: "HDJ Round"; src: url("fonts/Outfit-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+:root { --ink: %%INK%%; --accent: %%ACCENT%%; --accent2: %%ACCENT2%%; --card: %%CARD%%; --wood: %%WOOD%%; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #2c5a2e; font-family: "HDJ Round", sans-serif; font-weight: 700; color: var(--ink); }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #2c5a2e; }
+.scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; }
+.bgw { position: absolute; left: -60px; top: -100px; width: 1200px; height: 2133px; }
+.bgw img { display: block; width: 1200px; height: 2133px; }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,30,60,.28) 0%, rgba(10,30,60,0) 30%, rgba(10,30,60,0) 70%, rgba(20,20,10,.25) 100%); }
+/* speech bubble: always inside the 120 px safe zone */
+.bub { position: absolute; left: 120px; width: 840px; display: flex; justify-content: center; opacity: 0; }
+.bub .b { position: relative; display: block; max-width: 840px; padding: 26px 46px 30px; border-radius: 56px; background: var(--card); text-align: center; line-height: 1.12;
+  border: 6px solid #ffffff; box-shadow: 0 10px 0 rgba(122,74,34,.35), 0 18px 40px rgba(0,0,0,.25); letter-spacing: -0.01em; }
+.bub .b::after { content: ""; position: absolute; left: 90px; bottom: -34px; width: 46px; height: 46px; background: var(--card); border-right: 6px solid #fff; border-bottom: 6px solid #fff; transform: rotate(45deg) skew(8deg, 8deg); border-radius: 0 0 12px 0; }
+.bub.top .b::after { display: none; }
+.hl { color: var(--accent); }
+.snd { color: var(--accent); font-size: 1.5em; letter-spacing: .04em; }
+/* hero */
+.hero { position: absolute; width: 10px; height: 10px; }
+.hero .bob { position: absolute; left: 0; top: 0; width: 10px; height: 10px; }
+.hero .pose { position: absolute; bottom: 0; display: block; opacity: 0; }
+.hero .shadow { position: absolute; left: -200px; bottom: -26px; width: 400px; height: 52px; border-radius: 50%; background: radial-gradient(ellipse, rgba(30,20,0,.35), rgba(30,20,0,0) 70%); }
+/* letters */
+.letter { position: absolute; display: block; filter: drop-shadow(0 16px 18px rgba(0,0,0,.28)); }
+.rays { position: absolute; display: block; opacity: 0; }
+.ring { position: absolute; display: block; border-radius: 50%; border: 10px solid rgba(255,255,255,.9); box-shadow: 0 0 30px rgba(255,255,255,.6); opacity: 0; }
+.pill { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; opacity: 0; }
+.pill span { display: block; padding: 12px 34px; border-radius: 999px; background: var(--wood); color: #fff6dd; font-size: 40px; letter-spacing: .04em; white-space: nowrap; box-shadow: 0 8px 0 rgba(0,0,0,.18); }
+/* cards */
+.card { position: absolute; display: block; border-radius: 40px; background: var(--card); border: 7px solid #fff; box-shadow: 0 12px 0 rgba(122,74,34,.30), 0 20px 40px rgba(0,0,0,.25); opacity: 0; }
+.card .im { position: absolute; left: 6%; top: 5%; width: 88%; height: 64%; display: flex; align-items: center; justify-content: center; }
+.card .im img { display: block; max-width: 100%; max-height: 100%; }
+.card .lab { position: absolute; left: 0; bottom: 5%; width: 100%; text-align: center; font-size: 52px; line-height: 1; white-space: nowrap; }
+.card .lab .f { color: var(--accent); }
+.glow { position: absolute; display: block; border-radius: 50%; background: radial-gradient(circle, rgba(255,236,140,.95) 0%, rgba(255,214,90,.55) 35%, rgba(255,200,60,0) 70%); opacity: 0; }
+.burst { position: absolute; display: block; opacity: 0; }
+.dots { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; gap: 34px; }
+.dots i { display: block; width: 40px; height: 40px; border-radius: 50%; background: #fff; box-shadow: 0 6px 0 rgba(0,0,0,.18); opacity: 0; }
+.qmark { position: absolute; display: block; width: 120px; height: 120px; border-radius: 50%; background: var(--accent2); color: #fff; font-size: 92px; line-height: 120px; text-align: center; opacity: 0; box-shadow: 0 8px 0 rgba(0,0,0,.2); }
+/* thought bubble (quest) */
+.think { position: absolute; display: block; opacity: 0; }
+.think .cloud { position: absolute; inset: 0; border-radius: 50%; background: rgba(255,255,255,.94); box-shadow: 0 14px 40px rgba(0,0,0,.25); }
+.think .puff { position: absolute; border-radius: 50%; background: rgba(255,255,255,.94); }
+.think img { position: absolute; display: block; }
+.think .qlab { position: absolute; left: 0; width: 100%; text-align: center; font-size: 46px; color: var(--wood); white-space: nowrap; }
+.leaf { position: absolute; display: block; opacity: 0; }
+/* reward */
+.chip { position: absolute; display: block; padding: 14px 30px; border-radius: 999px; background: var(--card); border: 6px solid #fff; font-size: 56px; line-height: 1; white-space: nowrap; opacity: 0; box-shadow: 0 8px 0 rgba(122,74,34,.3); }
+.chip .f { color: var(--accent); }
+.spark { position: absolute; display: block; opacity: 0; filter: drop-shadow(0 0 12px rgba(255,230,120,.95)); }
+.biglogo { position: absolute; display: block; opacity: 0; filter: drop-shadow(0 12px 18px rgba(0,0,0,.35)); }
+#logo { position: absolute; display: block; opacity: .9; filter: drop-shadow(0 4px 8px rgba(0,0,0,.35)); }
+#veil { position: absolute; inset: 0; background: #fff4dc; opacity: 0; }
+.ph { position: absolute; display: flex; align-items: center; justify-content: center; border: 6px dashed #e53935; border-radius: 24px; background: rgba(255,255,255,.85); color: #e53935; font-size: 30px; text-align: center; padding: 10px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="%%TOTAL%%" data-fps="30">
+%%SCENES%%
+%%GLOBAL%%
+</div>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({ paused: true });
+%%JS%%
+window.__timelines["main"] = tl;
+</script>
+</body>
+</html>

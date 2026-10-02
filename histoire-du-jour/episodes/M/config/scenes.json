@@ -1,7 +1,199 @@
 [
-  {"id":1,"start":0,"end":6,"background":"background_01.png","character":"milo_closed/open","elements":["letter_M_upper.png","letter_m_lower.png"],"voice":"Aujourd’hui, découvre la lettre M. M fait le son… mmm… Répète avec moi : mmm…","animation":"M pop+rebond; Milo entre du bas; ondes douces sur mmm"},
-  {"id":2,"start":6,"end":12,"background":"background_02.png","character":"milo_walk_1/2 + mouth states","elements":["sign_mangue.png"],"voice":"Voici Milo, le petit singe. Il cherche sa mangue magique !","animation":"marche légère; parallaxe jungle; panneau apparaît"},
-  {"id":3,"start":12,"end":20,"background":"background_03.png","character":"milo_point_open + mouth states","elements":["maison.png","moto.png","montagne.png"],"voice":"Milo découvre une maison, une moto et une montagne. Répète : mmm… maison !","animation":"objets pop successifs; mot actif scale 105 vers 100"},
-  {"id":4,"start":20,"end":26,"background":"background_04.png","character":"milo_point_open + mouth states","elements":["lune.png","maison.png","chat.png"],"voice":"Regarde bien… Quel mot commence par mmm ? Dis-le à voix haute !","animation":"3 cartes; pause 2 s; maison glow+rebond"},
-  {"id":5,"start":26,"end":34,"background":"background_05.png","character":"milo_mangue_open + mouth states","elements":["mangue.png","etoiles.png","magie.png","histoire_du_jour.png"],"voice":"Bravo ! Milo a retrouvé sa mangue. M comme Milo, mangue et maison. À demain pour une nouvelle aventure !","animation":"mangue glow; étoiles; récap M m; outro douce"}
+  {
+    "id": 1,
+    "type": "intro",
+    "start": 0,
+    "end": 6,
+    "background": "background_01",
+    "pose": "sit",
+    "elements": [
+      "letter_M_upper",
+      "letter_m_lower",
+      "rayons"
+    ],
+    "segments": [
+      {
+        "say": "Aujourd'hui, découvre la lettre M.",
+        "text": "Aujourd'hui, découvre la lettre M !",
+        "pause": 0.25
+      },
+      {
+        "say": "M fait le son…",
+        "text": "M fait le son…",
+        "pause": 0.1
+      },
+      {
+        "kind": "sound",
+        "pause": 0.4
+      },
+      {
+        "say": "Répète avec moi :",
+        "text": "Répète avec moi !",
+        "pause": 0.1
+      },
+      {
+        "kind": "sound",
+        "pause": 0.2
+      }
+    ],
+    "animation": "M pop+rebond; Milo entre du bas; ondes douces sur mmm",
+    "voice": "Aujourd'hui, découvre la lettre M ! M fait le son… mmm… Répète avec moi ! mmm…"
+  },
+  {
+    "id": 2,
+    "type": "quest",
+    "start": 6,
+    "end": 12,
+    "background": "background_02",
+    "pose": "walk",
+    "elements": [
+      "sign_mangue",
+      "feuilles"
+    ],
+    "segments": [
+      {
+        "say": "Voici Milo, le petit singe.",
+        "text": "Voici Milo, le petit singe !",
+        "pause": 0.3
+      },
+      {
+        "say": "Il cherche sa mangue magique !",
+        "text": "Il cherche sa mangue magique !",
+        "cues": {
+          "mangue": "sign"
+        },
+        "pause": 0.2
+      }
+    ],
+    "animation": "marche légère; parallaxe jungle; panneau apparaît",
+    "voice": "Voici Milo, le petit singe ! Il cherche sa mangue magique !"
+  },
+  {
+    "id": 3,
+    "type": "words",
+    "start": 12,
+    "end": 20,
+    "background": "background_03",
+    "pose": "point",
+    "elements": [
+      "maison",
+      "moto",
+      "montagne"
+    ],
+    "segments": [
+      {
+        "say": "Milo découvre une maison, une moto, et une montagne.",
+        "text": "Milo découvre une maison, une moto et une montagne.",
+        "cues": {
+          "maison": "word0",
+          "moto": "word1",
+          "montagne": "word2"
+        },
+        "pause": 0.35
+      },
+      {
+        "say": "Répète :",
+        "text": "Répète !",
+        "pause": 0.1
+      },
+      {
+        "kind": "sound",
+        "pause": 0.15
+      },
+      {
+        "say": "Maison !",
+        "text": "maison !",
+        "cues": {
+          "maison": "word0"
+        },
+        "pause": 0.2
+      }
+    ],
+    "animation": "objets pop successifs; mot actif scale 105 vers 100",
+    "voice": "Milo découvre une maison, une moto et une montagne. Répète ! mmm… maison !"
+  },
+  {
+    "id": 4,
+    "type": "game",
+    "start": 20,
+    "end": 26,
+    "background": "background_04",
+    "pose": "sit",
+    "elements": [
+      "lune",
+      "maison",
+      "chat",
+      "pop"
+    ],
+    "segments": [
+      {
+        "say": "Regarde bien…",
+        "text": "Regarde bien…",
+        "pause": 0.25
+      },
+      {
+        "say": "Quel mot commence par mmm ?",
+        "text": "Quel mot commence par mmm ?",
+        "pause": 0.15
+      },
+      {
+        "say": "Dis-le à voix haute !",
+        "text": "Dis-le à voix haute !",
+        "pause": "think"
+      },
+      {
+        "say": "Maison !",
+        "text": "maison !",
+        "kind": "answer",
+        "pause": 1.3
+      }
+    ],
+    "animation": "3 cartes; pause 2 s; maison glow+rebond",
+    "voice": "Regarde bien… Quel mot commence par mmm ? Dis-le à voix haute ! maison !",
+    "leadSec": 0.8
+  },
+  {
+    "id": 5,
+    "type": "reward",
+    "start": 26,
+    "end": 34,
+    "background": "background_05",
+    "pose": "mangue",
+    "elements": [
+      "mangue",
+      "etoiles",
+      "magie",
+      "histoire_du_jour"
+    ],
+    "segments": [
+      {
+        "say": "Bravo !",
+        "text": "Bravo !",
+        "pause": 0.2
+      },
+      {
+        "say": "Milo a retrouvé sa mangue.",
+        "text": "Milo a retrouvé sa mangue !",
+        "pause": 0.25
+      },
+      {
+        "say": "M comme Milo, mangue, et maison.",
+        "text": "M comme Milo, mangue et maison.",
+        "cues": {
+          "milo": "recap0",
+          "mangue": "recap1",
+          "maison": "recap2"
+        },
+        "pause": 0.3
+      },
+      {
+        "say": "À demain pour une nouvelle aventure !",
+        "text": "À demain pour une nouvelle aventure !",
+        "kind": "outro",
+        "pause": 0.6
+      }
+    ],
+    "animation": "mangue glow; étoiles; récap M m; outro douce",
+    "voice": "Bravo ! Milo a retrouvé sa mangue ! M comme Milo, mangue et maison. À demain pour une nouvelle aventure !"
+  }
 ]

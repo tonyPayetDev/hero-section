@@ -1,0 +1,363 @@
+{
+ "_doc": "Cells (x, y, w, h) on the master sheet, in pixels of the reference size below. Boxes are generous cells that must EXCLUDE the printed file-name labels; slice_sheet.py trims each cutout to its content. If a new sheet has another size, boxes are scaled proportionally. kind: background | cutout | glow | opaque. focusX (backgrounds) = horizontal centre of the 9:16 crop (0..1).",
+ "reference_size": [
+  1214,
+  1295
+ ],
+ "items": {
+  "background_01": {
+   "kind": "background",
+   "box": [
+    9,
+    55,
+    242,
+    341
+   ],
+   "focusX": 0.55
+  },
+  "background_02": {
+   "kind": "background",
+   "box": [
+    262,
+    55,
+    225,
+    341
+   ],
+   "focusX": 0.5
+  },
+  "background_03": {
+   "kind": "background",
+   "box": [
+    499,
+    55,
+    220,
+    341
+   ],
+   "focusX": 0.5
+  },
+  "background_04": {
+   "kind": "background",
+   "box": [
+    729,
+    58,
+    233,
+    338
+   ],
+   "focusX": 0.55
+  },
+  "background_05": {
+   "kind": "background",
+   "box": [
+    974,
+    55,
+    233,
+    341
+   ],
+   "focusX": 0.5
+  },
+  "milo_closed": {
+   "kind": "cutout",
+   "box": [
+    12,
+    440,
+    203,
+    206
+   ],
+   "hero": true
+  },
+  "milo_open": {
+   "kind": "cutout",
+   "box": [
+    215,
+    440,
+    230,
+    206
+   ],
+   "hero": true
+  },
+  "milo_wave_open": {
+   "kind": "cutout",
+   "box": [
+    462,
+    446,
+    146,
+    196
+   ],
+   "hero": true
+  },
+  "milo_mangue_open": {
+   "kind": "cutout",
+   "box": [
+    608,
+    446,
+    152,
+    196
+   ],
+   "hero": true
+  },
+  "milo_walk_1": {
+   "kind": "cutout",
+   "box": [
+    758,
+    446,
+    148,
+    196
+   ],
+   "hero": true
+  },
+  "milo_walk_2": {
+   "kind": "cutout",
+   "box": [
+    905,
+    446,
+    148,
+    196
+   ],
+   "hero": true
+  },
+  "milo_point_open": {
+   "kind": "cutout",
+   "box": [
+    1052,
+    446,
+    155,
+    196
+   ],
+   "hero": true
+  },
+  "letter_M_upper": {
+   "kind": "cutout",
+   "halo": true,
+   "box": [
+    12,
+    708,
+    182,
+    163
+   ]
+  },
+  "letter_m_lower": {
+   "kind": "cutout",
+   "halo": true,
+   "box": [
+    196,
+    708,
+    190,
+    163
+   ]
+  },
+  "sign_mangue": {
+   "kind": "cutout",
+   "box": [
+    402,
+    708,
+    172,
+    172
+   ]
+  },
+  "mangue": {
+   "kind": "cutout",
+   "box": [
+    12,
+    950,
+    128,
+    126
+   ]
+  },
+  "maison": {
+   "kind": "cutout",
+   "box": [
+    138,
+    948,
+    192,
+    124
+   ]
+  },
+  "moto": {
+   "kind": "cutout",
+   "box": [
+    330,
+    960,
+    192,
+    112
+   ]
+  },
+  "montagne": {
+   "kind": "cutout",
+   "holes": false,
+   "box": [
+    520,
+    948,
+    205,
+    124
+   ]
+  },
+  "lune": {
+   "kind": "cutout",
+   "halo": true,
+   "box": [
+    722,
+    955,
+    118,
+    117
+   ]
+  },
+  "chat": {
+   "kind": "cutout",
+   "holes": false,
+   "box": [
+    840,
+    948,
+    120,
+    124
+   ]
+  },
+  "rocher_plantes": {
+   "kind": "cutout",
+   "box": [
+    958,
+    990,
+    136,
+    82
+   ]
+  },
+  "fleurs": {
+   "kind": "cutout",
+   "box": [
+    1088,
+    948,
+    120,
+    128
+   ]
+  },
+  "etoiles": {
+   "kind": "glow",
+   "box": [
+    12,
+    1140,
+    112,
+    118
+   ]
+  },
+  "magie": {
+   "kind": "glow",
+   "box": [
+    122,
+    1140,
+    134,
+    118
+   ]
+  },
+  "rayons": {
+   "kind": "cutout",
+   "halo": true,
+   "box": [
+    258,
+    1140,
+    146,
+    118
+   ]
+  },
+  "pop": {
+   "kind": "cutout",
+   "halo": true,
+   "holes": false,
+   "box": [
+    404,
+    1136,
+    132,
+    122
+   ]
+  },
+  "feuilles": {
+   "kind": "cutout",
+   "box": [
+    536,
+    1140,
+    136,
+    118
+   ]
+  },
+  "histoire_du_jour": {
+   "kind": "cutout",
+   "box": [
+    696,
+    1140,
+    226,
+    112
+   ]
+  },
+  "frame_overlay": {
+   "kind": "opaque",
+   "box": [
+    958,
+    1140,
+    238,
+    125
+   ]
+  }
+ },
+ "mouths": {
+  "_doc": "Boxes in the coordinates of the CUT png (assets/cut/<name>.png, 2x the sheet). pair = register open_from onto this closed drawing and paste only the mouth; close = procedural closed mouth inside box.",
+  "milo_closed": {
+   "mode": "pair",
+   "open_from": "milo_open",
+   "register_region": [
+    150,
+    70,
+    340,
+    168
+   ],
+   "box": [
+    175,
+    158,
+    150,
+    90
+   ]
+  },
+  "milo_wave_open": {
+   "mode": "close",
+   "box": [
+    122,
+    122,
+    76,
+    62
+   ]
+  },
+  "milo_mangue_open": {
+   "mode": "close",
+   "box": [
+    145,
+    130,
+    76,
+    56
+   ]
+  },
+  "milo_walk_1": {
+   "mode": "close",
+   "box": [
+    190,
+    148,
+    66,
+    38
+   ]
+  },
+  "milo_walk_2": {
+   "mode": "close",
+   "box": [
+    196,
+    148,
+    56,
+    38
+   ]
+  },
+  "milo_point_open": {
+   "mode": "close",
+   "box": [
+    92,
+    140,
+    44,
+    50
+   ]
+  }
+ }
+}

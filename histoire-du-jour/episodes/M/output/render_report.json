@@ -1,0 +1,11 @@
+{
+ "file": "/home/user/hero-section/histoire-du-jour/episodes/M/output/histoire_du_jour_M.mp4",
+ "size": "1080x1920",
+ "fps": "30/1",
+ "frames": 1126,
+ "expected_frames": 1126,
+ "duration": 37.534,
+ "audio": [
+  "aac"
+ ]
+}

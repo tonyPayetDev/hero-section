@@ -1,0 +1,14 @@
+{
+  "id": "milo",
+  "name": "Milo",
+  "description": "Petit singe brun, grands yeux, sac à dos bleu. Héros récurrent de « Histoire du jour ».",
+  "source": "episodes/M/assets/source/assets_master_sheet.png (sliced by tools/slice_sheet.py M --publish-hero milo)",
+  "poses": {
+    "sit":    {"frames": ["milo_closed"], "note": "closed = original drawing, open = original + registered mouth patch from milo_open"},
+    "walk":   {"frames": ["milo_walk_1", "milo_walk_2"], "cycleSec": 0.26},
+    "point":  {"frames": ["milo_point_open"]},
+    "mangue": {"frames": ["milo_mangue_open"], "note": "holds the M quest object; for other letters use 'cheer' or provide <hero>_<quest>_open"},
+    "wave":   {"frames": ["milo_wave_open"], "talk": false, "note": "procedural closed mouth is weak on this pose -> no lipsync"}
+  },
+  "files": "each frame exists as <stem>.png, <stem>__closed.png and <stem>__open.png (same size, only the mouth differs)"
+}

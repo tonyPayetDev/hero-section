@@ -1,11 +1,106 @@
 {
   "name": "Histoire du jour - Lettre M",
-  "format": {"width":1080,"height":1920,"fps":30,"durationTargetSec":34},
-  "safeZonePx":120,
-  "language":"fr-FR",
-  "audience":"enfants 5-7 ans avec parent",
-  "visualStyle":"livre jeunesse premium, CGI/cartoon chaleureux, jungle tropicale douce",
-  "signature":"Histoire du jour",
-  "music":"instrumental joyeux très léger, sous la voix",
-  "output":"output/histoire_du_jour_M.mp4"
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationTargetSec": 34
+  },
+  "safeZonePx": 120,
+  "language": "fr-FR",
+  "audience": "enfants 5-7 ans avec parent",
+  "visualStyle": "livre jeunesse premium, CGI/cartoon chaleureux, jungle tropicale douce",
+  "signature": "Histoire du jour",
+  "music": "instrumental joyeux très léger, sous la voix",
+  "output": "output/histoire_du_jour_M.mp4",
+  "schemaVersion": 1,
+  "episode": {
+    "letter": "M",
+    "upper": "M",
+    "lower": "m",
+    "sound": {
+      "display": "mmm…",
+      "say": "Mmm.",
+      "holdSec": 1.0,
+      "mouth": "closed"
+    },
+    "highlight": [
+      "m",
+      "mmm",
+      "milo",
+      "mangue",
+      "maison",
+      "moto",
+      "montagne"
+    ],
+    "hero": {
+      "id": "milo",
+      "name": "Milo",
+      "intro": "le petit singe"
+    },
+    "quest": {
+      "word": "mangue",
+      "label": "Mangue magique",
+      "asset": "mangue",
+      "sign": "sign_mangue"
+    },
+    "words": [
+      {
+        "word": "maison",
+        "asset": "maison"
+      },
+      {
+        "word": "moto",
+        "asset": "moto"
+      },
+      {
+        "word": "montagne",
+        "asset": "montagne"
+      }
+    ],
+    "game": {
+      "choices": [
+        {
+          "word": "lune",
+          "asset": "lune"
+        },
+        {
+          "word": "maison",
+          "asset": "maison"
+        },
+        {
+          "word": "chat",
+          "asset": "chat"
+        }
+      ],
+      "answer": "maison",
+      "thinkSec": 2.0
+    },
+    "recap": [
+      "Milo",
+      "mangue",
+      "maison"
+    ],
+    "outro": "À demain pour une nouvelle aventure !"
+  },
+  "voice": {
+    "engine": "kokoro",
+    "voice": "ff_siwis",
+    "speed": 0.92,
+    "maxAtempo": 1.15,
+    "leadSec": 0.35,
+    "tailSec": 0.35
+  },
+  "audio": {
+    "voiceLufs": -16,
+    "music": "../../../autoboost-neon-videos/_shared/bgm/valse-des-fleurs-maison-evidee.mp3",
+    "musicLufs": -30
+  },
+  "theme": {
+    "ink": "#1f3a8a",
+    "accent": "#e53935",
+    "accent2": "#1e6fd9",
+    "card": "#fff8e7",
+    "wood": "#7a4a22"
+  }
 }
