@@ -105,13 +105,13 @@ S("#ring", 0, {"x": ax - 250, "y": ay - 250})
 S("#ring2", 0, {"x": ax - 270, "y": ay - 270})
 S("#cap", 0, {"x": ax - 350, "y": 760})
 # hook visual: the avatar slams in on frame 1, ring snaps, flash
-R("#avatar", 0, {"opacity": 0, "scale": ad / 600 * 1.5, "x": ax - ad * 0.75, "y": ay - ad * 0.75},
+R("#avatar", 0, {"opacity": 1, "scale": ad / 600 * 1.5, "x": ax - ad * 0.75, "y": ay - ad * 0.75},
   {"opacity": 1, "scale": ad / 600, "x": ax - ad / 2, "y": ay - ad / 2}, 0.28, "expo.out")
-R("#ring", 0.05, {"opacity": 0, "scale": 1.4}, {"opacity": 1, "scale": 1}, 0.3, "expo.out")
+R("#ring", 0, {"opacity": 1, "scale": 1.4}, {"opacity": 1, "scale": 1}, 0.3, "expo.out")
 R("#ring2", 0.15, {"opacity": 0, "rotation": -60}, {"opacity": 1, "rotation": 0}, 0.4, "power3.out")
 R("#ring2", 0.55, {"rotation": 0}, {"rotation": 360}, TOTAL - 0.6, "none")
 S("#cap", 0, {"y": 760, "opacity": 0})
-flash(0.0, 0.5, 0.25)
+flash(0.1, 0.35, 0.22)          # after frame 0: the first frame is the thumbnail, it must show the avatar
 R("#glow-a", 0, {"x": 0, "y": 0}, {"x": 240, "y": 160}, TOTAL, "sine.inOut")
 R("#glow-b", 0, {"x": 0, "y": 0}, {"x": -200, "y": -120}, TOTAL, "sine.inOut")
 # beat: tubes breathe on every beat, the ring kicks on every downbeat - softer in the breakdown
@@ -148,7 +148,7 @@ scene(0, '<div class="kick" style="position:absolute;left:0;top:40px">LE CONSTAT
           f'<div class="day {"ok" if i in OKD else "no"} d{i}"><b>{d}</b><i>{icon("check" if i in OKD else "cross", 34)}</i></div>'
           for i, d in enumerate(DAYS)) + '</div>'
       + '<div class="stampx" style="left:300px;top:690px;transform:rotate(-7deg)">TU NE LE FAIS PAS.</div>')
-kin("#s0 .l1", w(0, 0), 0.018)
+kin("#s0 .l1", 0.0, 0.018)
 kin("#s0 .l2", wf(0, "poster") - 0.05, 0.03, 0.28)
 kin("#s0 .l3", wf(0, "tous"), 0.02)
 for i in range(7):
