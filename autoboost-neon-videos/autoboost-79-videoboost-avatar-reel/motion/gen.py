@@ -272,7 +272,8 @@ chunks.append(cur)
 CW = {}
 for k, ch in enumerate(chunks):
     a = ch[0]["s"] - 0.03
-    b = min(chunks[k + 1][0]["s"] - 0.03, ch[-1]["e"] + 0.5) if k + 1 < len(chunks) else VDUR
+    nxt = chunks[k + 1][0]["s"] - 0.03 if k + 1 < len(chunks) else VDUR
+    b = nxt if nxt - ch[-1]["e"] < 0.8 else ch[-1]["e"] + 0.4      # no empty pill between close chunks
     txt = " ".join(x["w"] for x in ch)
     width = int(len(txt) * 30.5 + 88)
     caps.append(f'<div class="cap" id="c{ci}" style="width:{width}px">' + " ".join(
@@ -280,6 +281,9 @@ for k, ch in enumerate(chunks):
     cj.append(f'tl.set("#cap",{{width:{width},x:{540 - width / 2:.0f}}},{q(max(0, a))});')
     cj.append(f'tl.fromTo("#c{ci}",{{opacity:0,y:10}},{{opacity:1,y:0,duration:.1,ease:"power2.out",immediateRender:false}},{q(max(0, a))});')
     cj.append(f'tl.set("#c{ci}",{{opacity:0}},{q(b)});')
+    cj.append(f'tl.set("#cap",{{opacity:1}},{q(max(0, a))});')
+    if b < nxt - 0.01:
+        cj.append(f'tl.set("#cap",{{opacity:0}},{q(b)});')
     for j, x in enumerate(ch):
         nxt = min(ch[j + 1]["s"] if j + 1 < len(ch) else b, b)
         cj.append(f'tl.set("#c{ci}w{j}",{{color:"#eab308",textShadow:"0 0 16px rgba(234,179,8,.8)"}},{q(x["s"])});')
