@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="kit/kit.css" />
+<style>
+/* AutoBoost Studio - style « Seedance néon » (from autoboost-100 / gabarit autoboost-40).
+   Dark panel on top (kicker + big title + one card), the camera in a neon frame below, a numbered badge,
+   one caption band on the joint. Palette: yellow #FFE600, violet #A855F7, orange #FF8A3D on #060606. No green. */
+@font-face { font-family: "AB Sans"; src: url("fonts/Inter-700-latin.woff2") format("woff2"); font-weight: 700; font-display: block; }
+@font-face { font-family: "AB Sans"; src: url("fonts/Inter-400-latin.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "AB Mono"; src: url("fonts/JetBrainsMono-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+:root { --y: #FFE600; --v: #A855F7; --o: #FF8A3D; --bad: #ff5f57; --ink: #f5f5f7; --mut: #9aa0aa; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #060606; font-family: "AB Sans", sans-serif; font-weight: 700; color: var(--ink); }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #060606; }
+.bgcam { position: absolute; left: 0; top: 1060px; width: 1080px; height: 860px; background: radial-gradient(ellipse at 50% 40%, #1a0a2a 0%, #060606 70%); }
+
+/* camera: full screen during the hook, then in the bottom frame */
+#cam { position: absolute; left: 0; top: 0; width: %%CAMW%%px; height: %%CAMH%%px; object-fit: cover; z-index: 2; transform-origin: 0px 0px; clip-path: inset(0px 0px 0px 0px round 0px); }
+#camw { position: absolute; left: 0; top: 0; width: %%CAMW%%px; height: %%CAMH%%px; z-index: 2; transform-origin: 0px 0px; }
+#camw video { position: absolute; left: 0; top: 0; width: %%CAMW%%px; height: %%CAMH%%px; }
+#frame { position: absolute; left: 30px; top: 1090px; width: 1020px; height: 800px; border-radius: 36px; z-index: 3; opacity: 0; pointer-events: none;
+  border: 4px solid transparent; background: conic-gradient(from 0deg, #FFE600, #FF8A3D, #A855F7, #FFE600) border-box;
+  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  filter: drop-shadow(0 0 18px rgba(255,230,0,.55)) drop-shadow(0 0 40px rgba(168,85,247,.5)); }
+.cutout #frame { display: none; }
+
+/* top panel */
+.scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1060px; z-index: 4; overflow: hidden; }
+.scene .bgp { position: absolute; inset: 0; }
+.p0 { background: linear-gradient(135deg, #0a0a0a 0%, #2a0a0a 100%); } .p1 { background: radial-gradient(circle at 50% 40%, #12081f 0%, #050505 74%); }
+.p2 { background: linear-gradient(135deg, #0a0a0a 0%, #12081f 100%); } .p3 { background: radial-gradient(circle at 50% 40%, #1a0a2a 0%, #050505 70%); }
+.scene.hook { height: 1920px; } .scene.hook .bgp { background: linear-gradient(180deg, rgba(6,6,6,.9) 0%, rgba(6,6,6,.55) 38%, transparent 62%); }
+.pad { position: absolute; left: 70px; right: 70px; top: 150px; }
+.kicker { font-size: 30px; letter-spacing: 4px; text-transform: uppercase; color: var(--v); opacity: 0; }
+.title { font-size: 86px; line-height: 1.02; letter-spacing: -1px; margin-top: 22px; }
+.pad.mid { top: 320px; } .title.xl { font-size: 116px; line-height: 1.0; letter-spacing: -2px; }
+.title .y { color: var(--y); text-shadow: 0 0 34px rgba(255,230,0,.45); } .title .o { color: var(--o); } .title .v { color: var(--v); }
+.char { display: inline-block; opacity: 0; } .char.sp { width: .26em; }
+.card { margin-top: 44px; background: #0d0d12; border: 1px solid #2a2140; border-radius: 26px; padding: 30px 38px; box-shadow: 0 30px 80px rgba(0,0,0,.6); opacity: 0; }
+.bar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.dot { width: 15px; height: 15px; border-radius: 50%; } .dot.r { background: #ff5f57; } .dot.a { background: #febc2e; } .dot.v { background: var(--v); }
+.bar .file { margin-left: 14px; color: var(--mut); font-family: "AB Mono", monospace; font-size: 24px; }
+/* stat */
+.big { font-size: 200px; line-height: 1; letter-spacing: -4px; color: var(--y); text-shadow: 0 0 50px rgba(255,230,0,.5); }
+.big .u { font-size: 70px; color: var(--o); margin-left: 16px; letter-spacing: 0; }
+.lab { font-size: 38px; color: #cfd2da; margin-top: 12px; line-height: 1.2; }
+/* tools */
+.order { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 50px; }
+.ochip { padding: 18px 26px; border-radius: 16px; background: #0d0d12; border: 1px solid #2a2140; font-size: 34px; color: #cfd2da; opacity: 0; white-space: nowrap; }
+.ochip .n { color: var(--y); margin-right: 10px; } .arw { color: var(--v); font-size: 34px; align-self: center; opacity: 0; }
+/* list */
+.moves { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
+.mv { display: flex; align-items: center; gap: 22px; padding: 20px 28px; border-radius: 20px; background: #0d0d12; border: 1px solid #2a2140; font-size: 34px; color: #cfd2da; opacity: 0; }
+.mv .tag { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #2a2140; color: #6b7280; }
+/* contrast */
+.refs { display: flex; flex-direction: column; gap: 22px; margin-top: 44px; }
+.ref { display: flex; align-items: center; gap: 24px; padding: 26px 30px; border-radius: 20px; background: #0d0d12; border: 1px solid #2a2140; opacity: 0; }
+.ref small { font-family: "AB Mono", monospace; font-size: 26px; width: 230px; flex: 0 0 230px; letter-spacing: 2px; }
+.ref b { font-size: 40px; color: #fff; line-height: 1.1; }
+.ref.ko { border-color: rgba(255,95,87,.45); } .ref.ko small { color: var(--bad); }
+.ref.ok { border-color: var(--y); box-shadow: 0 0 34px rgba(255,230,0,.18); } .ref.ok small { color: var(--y); }
+.strike { position: absolute; left: 260px; right: 30px; top: 50%; height: 4px; background: var(--bad); transform: scaleX(0); transform-origin: left center; border-radius: 2px; }
+/* CTA */
+.ctaw { text-align: center; }
+.ctaw .kicker { font-size: 40px; }
+.ctaw .kw { font-size: 170px; line-height: 1; color: var(--y); letter-spacing: 2px; text-shadow: 0 0 50px rgba(255,230,0,.6); margin-top: 26px; }
+.ctaw .sub { font-size: 42px; color: #fff; margin-top: 30px; opacity: 0; line-height: 1.3; } .ctaw .sub b { color: var(--o); }
+.gbar { width: 760px; height: 16px; margin: 44px auto 0; border-radius: 99px; background: #16161e; border: 1px solid #2a2140; overflow: hidden; opacity: 0; }
+.gbar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--y), var(--o)); transform-origin: left center; transform: scaleX(0);
+  box-shadow: 0 0 20px rgba(255,230,0,.5); }
+/* badge */
+.tipnum { position: absolute; right: 70px; top: 40px; min-width: 96px; height: 88px; padding: 0 26px; border-radius: 44px; z-index: 9;
+  display: flex; align-items: center; justify-content: center; font-size: 36px; color: #060606; background: var(--y); opacity: 0; white-space: nowrap;
+  box-shadow: 0 0 40px rgba(255,230,0,.45); }
+/* caption band on the joint */
+#capband { position: absolute; left: 0; top: 960px; width: 1080px; height: 120px; z-index: 8; opacity: 0;
+  background: linear-gradient(90deg, rgba(6,6,8,0) 0%, rgba(6,6,8,.9) 10%, rgba(6,6,8,.9) 90%, rgba(6,6,8,0) 100%); }
+#capband::before, #capband::after { content: ""; position: absolute; left: 140px; width: 800px; height: 4px; border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255,230,0,0), var(--y) 14%, var(--v) 86%, rgba(168,85,247,0)); }
+#capband::before { top: 0; } #capband::after { bottom: 0; }
+#cap { position: absolute; left: 0; top: 0; z-index: 9; height: 120px; }
+.cap { position: absolute; left: 0; top: 0; height: 120px; display: flex; align-items: center; justify-content: center; gap: 0 20px; white-space: nowrap;
+  font-size: 56px; text-transform: uppercase; letter-spacing: -0.5px; opacity: 0; }
+.cw { display: inline-block; color: #f5f5f7; }
+.fb-sticker { z-index: 12; }
+#flash { position: absolute; inset: 0; z-index: 30; opacity: 0; background: #fff8b0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="root" class="%%CUTOUT%%" data-composition-id="autoboost-studio" data-start="0" data-width="1080" data-height="1920" data-duration="%%TOTAL%%" data-fps="30">
+  <div class="bgcam"></div>
+  %%CAM%%
+  <div id="frame"></div>
+%%SCENES%%
+%%BADGES%%
+  <div id="capband"></div>
+  <div id="cap">%%CAPTIONS%%</div>
+%%OVERLAYS%%
+  <div id="flash"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="kit/kit.js"></script>
+  <script>
+  (function () {
+    var tl = gsap.timeline({ paused: true });
+%%JS%%
+    window.__timelines = window.__timelines || {};
+    window.__timelines["autoboost-studio"] = tl;
+  })();
+  </script>
+</div>
+</body>
+</html>

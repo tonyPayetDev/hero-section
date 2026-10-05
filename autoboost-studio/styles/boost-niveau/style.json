@@ -1,0 +1,7 @@
+{
+  "name": "Boost niveau",
+  "description": "Cartes claires à bord néon, puce NIVEAU 1 → MAX, sous-titres en pastille, ta caméra encadrée sous les cartes.",
+  "formats": ["9:16", "16:9"],
+  "cutout": true,
+  "music": "deep-urban"
+}

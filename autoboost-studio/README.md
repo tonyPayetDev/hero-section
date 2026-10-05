@@ -6,7 +6,7 @@ Tu déposes ta vidéo face caméra, l'outil fait le reste. Tout tourne **sur ton
 2. **Coupe des silences** et légère accélération.
 3. **Voix** : ta voix améliorée (débruitage, de-essing, compression, présence, −16 LUFS). En option, ta voix clonée (WaveSpeed ou ton webhook n8n).
 4. **Suppression du fond** (option).
-5. **Motion design** au style « boost niveau ». Les écrans sont choisis par règles selon ce que tu dis : carte claire surlignée en jaune, chaîne d'outils, gros chiffres, étapes, avant/maintenant, liste, question, CTA tapé. S'y ajoutent les stickers, la puce NIVEAU 1 → MAX, les sous-titres mot à mot dans une pastille, les néons qui battent au tempo et les punch-ins sur les coupes.
+5. **Motion design** dans le style que tu choisis (voir « Les styles » plus bas). Les écrans sont choisis par règles selon ce que tu dis : titre surligné, chaîne d'outils, gros chiffres, étapes, avant/maintenant, liste, question, CTA tapé. S'y ajoutent les stickers, les sous-titres mot à mot et les bruitages.
 6. **Rendu HyperFrames**, puis **mixage** : voix, musique à niveau fixe baissée sous la voix, bruitages.
 
 ## Installation (une fois)
@@ -36,9 +36,10 @@ apparaît dans la colonne de droite avec un bouton de téléchargement. Elle est
 | Champ | Obligatoire | Par défaut | À quoi ça sert |
 |---|---|---|---|
 | **Ta vidéo** | **oui** | — | Face caméra, tu parles. mp4 ou mov, n'importe quel format. |
+| Style | non | Boost niveau | le look de la vidéo, voir « Les styles » |
 | Format | non | 9:16 | 9:16 pour Reels/TikTok/Shorts, 16:9 pour YouTube ou une VSL |
 | Voix | non | ta voix améliorée | voix clonée = réécrite phrase par phrase (bouche non synchronisée au mot près) |
-| Musique | non | Deep Urban (house) | ou Valse des fleurs (maison), Epical drums, aucune, ou ton propre mp3 |
+| Musique | non | celle du style | ou Deep Urban, Valse des fleurs (maison), Epical drums, aucune, ou ton propre mp3 |
 | Mot-clé CTA | non | détecté | si tu dis « commente BOOST », il est trouvé tout seul. Sinon, tape-le ici. |
 | Vitesse | non | 1,10× | accélération de ta parole |
 | Couper les silences | non | oui | rythme « yapping » |
@@ -72,11 +73,26 @@ système/automatiser → BON SYSTÈME, plus/résultat → ÇA MONTE.
 **Astuce** : des phrases courtes, un chiffre précis, les noms des outils, et le CTA à la fin
 (« commente MOT »). C'est ce qui donne le plus d'écrans différents.
 
-## Personnaliser les modèles
+## Les styles
 
-- `templates/composition.html` : tout le style (couleurs, polices, cartes, pastille, néons).
-- `lib/compose.mjs` : l'animation de chaque type d'écran.
-- `lib/plan.mjs` : les règles (mots-outils, stickers, déclencheurs). Ajoute tes outils dans `TOOLS`.
+Le moteur de règles décide **quel écran et quand** ; le style décide **à quoi il ressemble**. Même vidéo, trois rendus :
+
+| Style | Le look | Formats | Fond supprimé | Musique |
+|---|---|---|---|---|
+| **Boost niveau** | cartes claires à bord néon, puce NIVEAU 1 → MAX, sous-titres en pastille, ta caméra encadrée sous les cartes | 9:16, 16:9 | oui | Deep Urban |
+| **FaceCam Boost** | ta caméra change de forme à chaque écran : plein écran, cercle néon, rectangle, écran partagé pour les avant/maintenant ; écrans qui glissent en haut, titres métal or | 9:16 | non (vidéo entière) | Valse des fleurs |
+| **Seedance néon** | panneau sombre en haut (titre néon jaune, pastille #1 #2…), ta caméra en bas dans un cadre lumineux, bandeau de sous-titres | 9:16 | oui | Epical drums |
+
+Un style = un dossier `styles/<nom>/` avec trois fichiers : `style.json` (nom, formats, musique), `composition.html` (le CSS)
+et `compose.mjs` (la mise en page et les animations). Pour en ajouter un, copie le dossier le plus proche et modifie-le :
+l'interface le liste toute seule. Avec OpenCode ou une autre IA de code, ouvre ce dossier : **`AGENTS.md`** lui donne
+les règles HyperFrames et la marche à suivre, y compris les tests.
+
+## Personnaliser
+
+- `styles/<nom>/composition.html` : couleurs, polices, cartes, tailles du style.
+- `styles/<nom>/compose.mjs` : la mise en page et l'animation de chaque type d'écran.
+- `lib/plan.mjs` : les règles (mots-outils, stickers, déclencheurs), communes à tous les styles. Ajoute tes outils dans `TOOLS`.
 - `templates/music.json` + `assets/music/` : la bibliothèque musicale (point de départ, boucle, gain, BPM).
 - `assets/sfx/` : les bruitages.
 

@@ -1,8 +1,9 @@
 {
   "brand": "AUTOMATISATIONBOOST",
+  "style": "boost-niveau",
   "format": "9:16",
   "voice": "enhance",
-  "music": "deep-urban",
+  "music": "auto",
   "tempo": 1.1,
   "whisperModel": "small",
   "wavespeedKey": "",

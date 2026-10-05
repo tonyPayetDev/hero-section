@@ -1,0 +1,7 @@
+{
+  "name": "FaceCam Boost",
+  "description": "Ta caméra change de forme à chaque écran : plein écran, cercle néon, rectangle, écran partagé pour les avant/maintenant. Écrans qui glissent en haut, Valse des fleurs.",
+  "formats": ["9:16"],
+  "cutout": false,
+  "music": "valse"
+}

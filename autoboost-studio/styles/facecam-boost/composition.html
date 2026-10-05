@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="kit/kit.css" />
+<style>
+/* AutoBoost Studio - style « FaceCam Boost » (port of autoboost-74 motion v2).
+   The camera changes shape with the screen above it: full -> neon circle -> stacked rectangle -> vertical split -> big circle.
+   Charte: gold #eab308 / violet #8b5cf6 / red #ff6b6b on ink, no green, no emoji. */
+@font-face { font-family: "AB Sans"; src: url("fonts/Inter-700-latin.woff2") format("woff2"); font-weight: 700; font-display: block; }
+@font-face { font-family: "AB Sans"; src: url("fonts/Inter-400-latin.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "AB Mono"; src: url("fonts/JetBrainsMono-Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0f; font-family: "AB Sans", sans-serif; font-weight: 700; color: #EDEDED; }
+#root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0f; }
+
+/* background */
+.bg { position: absolute; inset: 0; z-index: 0; }
+.grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 60px 60px; }
+#glow-a { position: absolute; left: -260px; top: -200px; width: 900px; height: 900px; border-radius: 50%; background: radial-gradient(circle, rgba(234,179,8,.22), transparent 62%); }
+#glow-b { position: absolute; left: 480px; top: 700px; width: 1000px; height: 1000px; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,.26), transparent 62%); }
+#bg-curve { stroke-dasharray: 2600; stroke-dashoffset: 2600; }
+
+/* camera */
+#cam { position: absolute; left: 0; top: 0; width: %%CAMW%%px; height: %%CAMH%%px; object-fit: cover; z-index: 2; transform-origin: 0px 0px; clip-path: inset(0px 0px 0px 0px round 0px); }
+#ring { position: absolute; left: 90px; top: 970px; width: 900px; height: 900px; z-index: 3; opacity: 0; transform-origin: 450px 450px; }
+#ring .halo { position: absolute; left: 90px; top: 90px; width: 720px; height: 720px; border-radius: 50%;
+  background: radial-gradient(circle, transparent 47%, rgba(234,179,8,.28) 50%, rgba(139,92,246,.18) 58%, transparent 70%); }
+#ring svg { position: absolute; left: 0; top: 0; overflow: visible; }
+#ring-main { stroke-dasharray: 2100; stroke-dashoffset: 2100; filter: drop-shadow(0 0 14px rgba(234,179,8,.9)) drop-shadow(0 0 30px rgba(139,92,246,.7)); }
+.rect-fx { position: absolute; z-index: 3; opacity: 0; }
+#rect-line { left: 0; top: 986px; width: 1080px; height: 6px; background: linear-gradient(90deg, transparent, #eab308 18%, #fff3b0 50%, #8b5cf6 82%, transparent);
+  box-shadow: 0 0 24px rgba(234,179,8,.9), 0 0 60px rgba(139,92,246,.6); }
+#rect-frame { left: 24px; top: 1000px; width: 1032px; height: 920px; border-radius: 34px; border: 3px solid rgba(234,179,8,.85);
+  box-shadow: 0 0 30px rgba(234,179,8,.45), inset 0 0 40px rgba(139,92,246,.35); }
+#split-frame { left: 24px; top: 420px; width: 500px; height: 1290px; border-radius: 30px; border: 3px solid rgba(139,92,246,.85);
+  box-shadow: 0 0 30px rgba(139,92,246,.5); }
+
+/* screens: top zone 1080 x 980, slide in from the right */
+.screen { position: absolute; left: 0; top: 0; width: 1080px; height: 980px; z-index: 5; }
+.screen .in { position: absolute; left: 60px; top: 110px; width: 960px; }
+.screen.split .in { top: 70px; }
+.screen .in.solo { top: 250px; } .in.solo .hd .l1 { font-size: 78px; } .in.solo .hd .l2 { font-size: 128px; }
+.char { display: inline-block; opacity: 0; } .char.sp { width: .26em; }
+.hd { text-align: center; line-height: 1.05; letter-spacing: -0.03em; }
+.hd .l1 { font-size: 66px; } .hd .l2 { font-size: 104px; margin-top: 8px; }
+.w { background: linear-gradient(180deg, #ffffff 0%, #e4e4ec 55%, #9b9ba8 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 16px rgba(255,255,255,.18)); }
+.g { background: linear-gradient(180deg, #fff3b0 0%, #facc15 38%, #eab308 70%, #b7791f 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(234,179,8,.55)); }
+.v { background: linear-gradient(180deg, #ede9fe 0%, #a78bfa 45%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(139,92,246,.6)); }
+.pill { display: inline-flex; align-items: center; gap: 14px; padding: 12px 30px; border-radius: 999px; border: 3px solid; font-size: 26px; letter-spacing: .2em;
+  background: rgba(10,10,15,.88); opacity: 0; }
+.pill.gold { color: #eab308; border-color: #eab308; box-shadow: 0 0 26px rgba(234,179,8,.45); }
+.pill.violet { color: #c4b5fd; border-color: #8b5cf6; box-shadow: 0 0 26px rgba(139,92,246,.5); }
+.center { text-align: center; }
+.card { background: linear-gradient(180deg, rgba(26,22,40,.95), rgba(14,12,22,.95)); border: 2px solid rgba(139,92,246,.6); border-radius: 30px;
+  box-shadow: 0 0 40px rgba(139,92,246,.22), inset 0 1px 0 rgba(255,255,255,.06); position: relative; opacity: 0; }
+/* stat */
+.statc { margin: 40px auto 0; width: 820px; padding: 26px 40px 30px; text-align: center; }
+.statc .num { font-size: 210px; line-height: 1; letter-spacing: -0.05em; }
+.statc .unit { font-size: 64px; margin-left: 14px; }
+.statc .lab { font-size: 40px; color: #EDEDED; margin-top: 10px; line-height: 1.15; }
+/* tools */
+.flow { display: flex; justify-content: center; align-items: center; gap: 0; margin-top: 46px; }
+.node { width: 200px; padding: 22px 10px 18px; text-align: center; }
+.node .ic { width: 96px; height: 96px; margin: 0 auto 12px; border-radius: 24px; display: flex; align-items: center; justify-content: center;
+  font-size: 40px; color: #eab308; background: rgba(234,179,8,.14); }
+.node b { font-size: 26px; display: block; }
+.link { width: 46px; height: 4px; background: repeating-linear-gradient(90deg, #8b5cf6 0 8px, transparent 8px 14px); transform-origin: 0 50%; transform: scaleX(0); }
+/* list */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+.tile { display: flex; align-items: center; gap: 18px; padding: 22px; min-height: 120px; }
+.tile .ic { width: 64px; height: 64px; flex: none; border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #a78bfa; background: rgba(139,92,246,.18); }
+.tile span { font-size: 32px; line-height: 1.12; }
+/* steps */
+.stepn { margin: 0 auto 26px; display: table; }
+/* contrast (split: camera on the left, the cards on the right) */
+.colr { position: absolute; left: 556px; top: 420px; width: 500px; display: flex; flex-direction: column; gap: 30px; z-index: 5; }
+.vc { padding: 28px 30px; min-height: 250px; }
+.vc small { display: block; font-family: "AB Mono", monospace; font-size: 22px; letter-spacing: .16em; }
+.vc b { display: block; font-size: 46px; line-height: 1.08; margin-top: 14px; }
+.vc.bad { border-color: #3a3a48; box-shadow: none; } .vc.bad small { color: #ff6b6b; }
+.vc.good { border-color: #eab308; box-shadow: 0 0 40px rgba(234,179,8,.35); } .vc.good small { color: #eab308; }
+.stamp { position: absolute; right: 18px; top: -40px; opacity: 0; transform: rotate(-8deg); padding: 8px 22px; border-radius: 14px; border: 5px solid #ff6b6b;
+  color: #ff6b6b; background: rgba(40,10,14,.85); box-shadow: 0 0 30px rgba(255,107,107,.45); font-size: 32px; letter-spacing: .08em; }
+.knob { position: absolute; left: 510px; top: 1035px; z-index: 6; opacity: 0; }
+/* CTA */
+.cta { text-align: center; }
+.cta .a { font-size: 80px; letter-spacing: -0.03em; }
+.cta .b { font-size: 190px; line-height: 1; letter-spacing: -0.05em; color: #eab308; text-shadow: 0 0 50px rgba(234,179,8,.6); margin-top: 6px; }
+.cfield { display: flex; align-items: center; gap: 22px; margin: 30px auto 0; width: 860px; height: 106px; border-radius: 53px; border: 3px solid #8b5cf6;
+  background: rgba(17,17,23,.95); padding: 0 36px; box-shadow: 0 0 34px rgba(139,92,246,.5); opacity: 0; }
+.cfield .pre { font-size: 30px; color: #8A8A8A; font-weight: 400; } .cfield .kw { font-family: "AB Mono", monospace; font-size: 52px; color: #eab308; letter-spacing: .1em; flex: 1; text-align: left; }
+.cfield .snd { display: flex; color: #eab308; opacity: 0; }
+/* hook over the full camera */
+.hook .shade { position: absolute; left: 0; top: 0; width: 1080px; height: 1100px; background: linear-gradient(180deg, rgba(10,10,15,.92) 0%, rgba(10,10,15,.6) 55%, transparent 100%); }
+/* level chip + stickers sit on the joint between the screens and the camera */
+.lvl { position: absolute; left: 40px; top: 36px; z-index: 9; display: flex; align-items: center; gap: 14px; padding: 9px 18px; border-radius: 12px;
+  background: rgba(10,10,15,.92); border: 2px solid rgba(234,179,8,.85); box-shadow: 0 0 22px rgba(234,179,8,.35); font-size: 22px; letter-spacing: .08em; opacity: 0; }
+.lvl .seg { display: flex; gap: 5px; } .lvl .seg i { display: block; width: 26px; height: 9px; border-radius: 3px; background: #2a2540; }
+.lvl .seg i.on { background: #8b5cf6; box-shadow: 0 0 10px #8b5cf6; } .lvl.max .seg i.on { background: #eab308; box-shadow: 0 0 10px #eab308; }
+.fb-sticker { z-index: 12; }
+/* speed streak on every screen change */
+#streak { position: absolute; left: 0; top: 0; width: 1080px; height: 980px; z-index: 7; opacity: 0; pointer-events: none; }
+#streak i { position: absolute; left: -200px; display: block; border-radius: 3px; }
+/* captions: free words, no pill */
+#cap { position: absolute; left: 0; top: 0; z-index: 10; height: 90px; }
+.cap { position: absolute; left: 0; top: 0; height: 90px; display: flex; align-items: center; justify-content: center; gap: 0 22px; white-space: nowrap;
+  font-size: 54px; letter-spacing: -0.01em; opacity: 0; text-shadow: 0 4px 0 #0a0a0f, 0 0 18px rgba(10,10,15,.9); }
+.cw { display: inline-block; color: #EDEDED; -webkit-text-stroke: 2px #0a0a0f; paint-order: stroke fill; }
+#flash { position: absolute; inset: 0; z-index: 30; opacity: 0; background: #fff3b0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost-studio" data-start="0" data-width="1080" data-height="1920" data-duration="%%TOTAL%%" data-fps="30">
+  <div class="bg">
+    <div class="grid"></div><div id="glow-a"></div><div id="glow-b"></div>
+    <svg width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;left:0;top:0">
+      <path id="bg-curve" d="M -40 620 C 160 600, 120 980, 300 1010 S 760 980, 1120 760" fill="none" stroke="#eab308" stroke-width="3" opacity=".35"/>
+    </svg>
+  </div>
+  %%CAM%%
+  <div id="ring">
+    <div class="halo"></div>
+    <svg width="900" height="900" viewBox="0 0 900 900">
+      <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fff3b0"/><stop offset=".35" stop-color="#eab308"/><stop offset=".7" stop-color="#8b5cf6"/><stop offset="1" stop-color="#7c3aed"/>
+      </linearGradient></defs>
+      <circle cx="450" cy="450" r="330" fill="none" stroke="rgba(234,179,8,.35)" stroke-width="2"/>
+      <circle id="ring-main" cx="450" cy="450" r="326" fill="none" stroke="url(#rg)" stroke-width="12" transform="rotate(-90 450 450)"/>
+      <circle cx="450" cy="450" r="372" fill="none" stroke="#8b5cf6" stroke-width="6" stroke-linecap="round" stroke-dasharray="180 120 60 400 240 200" style="filter:drop-shadow(0 0 10px #8b5cf6)"/>
+      <circle cx="450" cy="450" r="396" fill="none" stroke="#eab308" stroke-width="4" stroke-linecap="round" stroke-dasharray="90 300 40 520 160 400" style="filter:drop-shadow(0 0 10px #eab308)"/>
+    </svg>
+  </div>
+  <div id="rect-line" class="rect-fx"></div>
+  <div id="rect-frame" class="rect-fx"></div>
+  <div id="split-frame" class="rect-fx"></div>
+  <div class="knob fb-knob" id="knob">VS</div>
+%%LEVELS%%
+%%SCENES%%
+  <div id="streak">
+    <i style="top:120px;width:900px;height:4px;background:linear-gradient(90deg,transparent,#eab308,transparent)"></i>
+    <i style="top:300px;width:1200px;height:2px;background:linear-gradient(90deg,transparent,#fff3b0,transparent)"></i>
+    <i style="top:480px;width:700px;height:6px;background:linear-gradient(90deg,transparent,#8b5cf6,transparent)"></i>
+    <i style="top:660px;width:1100px;height:3px;background:linear-gradient(90deg,transparent,#eab308,transparent)"></i>
+    <i style="top:840px;width:1000px;height:5px;background:linear-gradient(90deg,transparent,#a78bfa,transparent)"></i>
+  </div>
+  <div id="cap">%%CAPTIONS%%</div>
+%%OVERLAYS%%
+  <div id="flash"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="kit/kit.js"></script>
+  <script>
+  (function () {
+    var tl = gsap.timeline({ paused: true });
+%%JS%%
+    window.__timelines = window.__timelines || {};
+    window.__timelines["autoboost-studio"] = tl;
+  })();
+  </script>
+</div>
+</body>
+</html>

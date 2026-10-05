@@ -1,0 +1,7 @@
+{
+  "name": "Seedance néon",
+  "description": "Panneau sombre en haut (titre néon jaune, pastille #1 #2…, une carte par écran), ta caméra en bas dans un cadre lumineux, bandeau de sous-titres. Avec ou sans suppression du fond.",
+  "formats": ["9:16"],
+  "cutout": true,
+  "music": "drums"
+}

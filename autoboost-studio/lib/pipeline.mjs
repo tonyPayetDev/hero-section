@@ -7,20 +7,24 @@ import { cutTake } from "./cut.mjs";
 import { enhance, revoice } from "./voice.mjs";
 import { rhythm } from "./competitor.mjs";
 import { plan } from "./plan.mjs";
-import { compose } from "./compose.mjs";
+import { compose, getStyle } from "./compose.mjs";
 import { mix } from "./mix.mjs";
 
 /**
- * job: { id, dir, video, competitor?, music?, opts: { format, voice, wavespeedKey, voiceRefUrl, webhook, cutout,
- *        musicChoice, cta, tempo, cutSilences, brand, model } }
+ * job: { id, dir, video, competitor?, music?, opts: { style, format, voice, wavespeedKey, voiceRefUrl, webhook, cutout,
+ *        musicChoice ("auto" = the style's own music), cta, tempo, cutSilences, brand, model } }
  */
 export async function runJob(job) {
   const st = { id: job.id, status: "running", step: "", progress: 0, log: [], result: null, error: null, started: Date.now() };
   const save = () => writeJSON(path.join(job.dir, "job.json"), st);
   const log = (m) => { st.log.push(`${new Date().toISOString().slice(11, 19)}  ${m}`); save(); };
   const step = (name, p) => { st.step = name; st.progress = p; log("▶ " + name); };
-  const o = job.opts;
+  const o = { ...job.opts };
+  const style = getStyle(o.style);
+  o.style = style.id;
+  if (!o.musicChoice || o.musicChoice === "auto") o.musicChoice = style.music || "none";
   try {
+    log(`style : ${style.name} · musique : ${o.musicChoice}`);
     const work = path.join(job.dir, "work");
     fs.mkdirSync(work, { recursive: true });
     const info = await probe(job.video);
@@ -67,7 +71,8 @@ export async function runJob(job) {
     fs.mkdirSync(comp, { recursive: true });
     const cinfo = await probe(take.cam);
     let cutout = false;
-    if (o.cutout) {
+    if (o.cutout && !style.cutout) log(`le style « ${style.name} » garde ta vidéo entière : suppression du fond ignorée`);
+    if (o.cutout && style.cutout) {
       step("Suppression du fond (long sur CPU)", 40);
       await run(HF, ["remove-background", take.cam, "-o", path.join(comp, "cam.webm"), "--quality", "balanced"], {
         onData: (d) => { const m = String(d).match(/Frame (\d+)\/(\d+)/g); if (m) { const [a, b] = m.pop().match(/\d+/g); st.progress = 40 + Math.round(20 * a / b); save(); } },
@@ -82,8 +87,8 @@ export async function runJob(job) {
     const scenes = plan(take.words, { cta: (o.cta || "").trim(), pace, total: take.total });
     writeJSON(path.join(job.dir, "plan.json"), scenes.map((s) => ({ type: s.type, a: +s.a.toFixed(2), b: +s.b.toFixed(2), text: s.text, sticker: s.sticker && `${s.sticker.a} ${s.sticker.b}`, level: s.level })));
     log(scenes.map((s) => `${s.a.toFixed(1)}s ${s.type}`).join(" · "));
-    const { events } = compose(scenes, take.words, {
-      format: o.format, brand: o.brand, cutout, camW: cinfo.width, camH: cinfo.height, total: take.total, cuts: take.cuts,
+    const { events } = await compose(scenes, take.words, {
+      style: o.style, format: o.format, brand: o.brand, cutout, camW: cinfo.width, camH: cinfo.height, total: take.total, cuts: take.cuts,
       music: o.musicChoice, out: comp,
     });
 

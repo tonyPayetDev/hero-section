@@ -48,6 +48,13 @@ details summary { cursor: pointer; color: var(--violet); font-size: 14px; } deta
 video { width: 100%; max-height: 70vh; border-radius: 12px; background: #000; margin-top: 10px; }
 .dl { display: inline-block; margin-top: 10px; color: var(--gold); font-weight: 700; text-decoration: none; }
 .done .st { color: var(--gold); } .error .st { color: var(--err); }
+.styles { display: grid; gap: 10px; }
+.sty { display: block; cursor: pointer; }
+.sty input { display: none; }
+.sty span { display: block; border: 2px solid #2a2540; border-radius: 14px; padding: 12px 14px; }
+.sty b { display: block; font-size: 16px; } .sty small { display: block; color: #9a9aa8; margin-top: 4px; font-size: 13px; line-height: 1.4; }
+.sty em { display: block; margin-top: 6px; font-style: normal; font-size: 11px; letter-spacing: .08em; color: #8b5cf6; }
+.sty input:checked + span { border-color: #eab308; box-shadow: 0 0 18px rgba(234,179,8,.25); }
 </style>
 </head>
 <body>
@@ -61,7 +68,12 @@ video { width: 100%; max-height: 70vh; border-radius: 12px; background: #000; ma
   </div>
 
   <div class="card">
-    <h2>2 · RÉGLAGES (tout a une valeur par défaut)</h2>
+    <h2>2 · STYLE</h2>
+    <div class="styles" id="styles"></div>
+  </div>
+
+  <div class="card">
+    <h2>3 · RÉGLAGES (tout a une valeur par défaut)</h2>
     <label>Format</label>
     <div class="seg"><label><input type="radio" name="format" value="9:16" checked><span>9:16 · Reels / TikTok</span></label>
       <label><input type="radio" name="format" value="16:9"><span>16:9 · YouTube / VSL</span></label></div>
@@ -87,7 +99,7 @@ video { width: 100%; max-height: 70vh; border-radius: 12px; background: #000; ma
   </div>
 
   <div class="card">
-    <h2>3 · OPTIONNEL · VIDÉO D'UN CONCURRENT</h2>
+    <h2>4 · OPTIONNEL · VIDÉO D'UN CONCURRENT</h2>
     <div class="drop small" data-for="competitor"><small>L'outil mesure son rythme de montage et le copie</small><span class="name"></span></div>
     <input type="file" name="competitor" accept="video/*" hidden>
   </div>
@@ -122,6 +134,8 @@ async function opts() {
   const o = await (await fetch("/api/options")).json();
   $("#music").innerHTML = o.music.map((m) => `<option value="${m.id}">${m.label}</option>`).join("");
   const d = o.defaults;
+  $("#styles").innerHTML = o.styles.map((s, k) => `<label class="sty"><input type="radio" name="style" value="${s.id}" ${(d.style ? s.id === d.style : !k) ? "checked" : ""}>`
+    + `<span><b>${s.name}</b><small>${s.description}</small><em>${s.formats.join(" · ")}${s.cutout ? "" : " · vidéo entière"}</em></span></label>`).join("");
   if (d.music) $("#music").value = d.music;
   if (d.voice) document.querySelector("[name=voice]").value = d.voice;
   if (d.format) document.querySelectorAll("[name=format]").forEach((r) => (r.checked = r.value === d.format));

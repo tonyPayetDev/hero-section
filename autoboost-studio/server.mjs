@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { ROOT, readJSON } from "./lib/tools.mjs";
 import { runJob } from "./lib/pipeline.mjs";
+import { listStyles } from "./lib/compose.mjs";
 
 const PORT = +process.env.PORT || 4747;
 const JOBS = path.join(ROOT, "jobs");
@@ -45,7 +46,11 @@ async function pump() {
 app.get("/api/options", (_req, res) => {
   const music = readJSON(path.join(ROOT, "templates", "music.json"));
   const c = config();
-  res.json({ music: Object.entries(music).map(([k, v]) => ({ id: k, label: v.label })), defaults: { ...c, wavespeedKey: c.wavespeedKey ? "••••" : "" } });
+  res.json({
+    styles: listStyles().map(({ id, name, description, formats, cutout, music: m }) => ({ id, name, description, formats, cutout, music: m })),
+    music: [{ id: "auto", label: "Musique du style (recommandé)" }, ...Object.entries(music).map(([k, v]) => ({ id: k, label: v.label }))],
+    defaults: { ...c, wavespeedKey: c.wavespeedKey ? "••••" : "" },
+  });
 });
 
 app.post("/api/config", (req, res) => {
@@ -61,7 +66,7 @@ app.post("/api/jobs", upload.fields([{ name: "video", maxCount: 1 }, { name: "co
   const c = config();
   const b = req.body;
   const opts = {
-    format: b.format || c.format, voice: b.voice || c.voice, cutout: b.cutout === "on" || b.cutout === "true",
+    style: b.style || c.style, format: b.format || c.format, voice: b.voice || c.voice, cutout: b.cutout === "on" || b.cutout === "true",
     musicChoice: f.music ? "custom" : (b.music || c.music), cta: b.cta || "", tempo: b.tempo || c.tempo,
     cutSilences: b.cutSilences !== "off", brand: b.brand || c.brand, model: c.whisperModel,
     wavespeedKey: c.wavespeedKey, voiceRefUrl: b.voiceRefUrl || c.voiceRefUrl, webhook: c.webhook,
