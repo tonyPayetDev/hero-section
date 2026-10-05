@@ -320,6 +320,30 @@ export FONTCONFIG_PATH="/home/claude/tools/chromelibs/etc/fonts"
 - Publier d'abord sur **previsualisation** (route dédiée par variante, ne pas écraser), Tony valide au tel.
 - Planifier ensuite sur **5 réseaux** (pas 3) via Blotato. [[feedback_always_5_social_networks]]
 
+### ⚠️ `previsualisation` est un DÉPÔT GITHUB SÉPARÉ — piège payé 2 fois (2026-09-15, -16)
+
+**`previsualisation.automatisationboost.com` n'est PAS servi depuis ce dépôt.** Coolify
+déploie cette app depuis `tonyPayetDev/previsualisation` (confirmé via
+`GET /api/v1/applications/<uuid>` → `"git_repository":"tonyPayetDev/previsualisation"`),
+un dépôt GitHub à part entière — pas le dossier `previsualisation/` d'ici.
+
+Dans une session cloud dont l'accès GitHub est limité à `tonyPayetDev/hero-section` (pas
+d'accès à `tonyPayetDev/previsualisation`, pas de clone local type `/work/previsualisation`),
+commiter le rendu dans `hero-section/previsualisation/<route>/` est un **cul-de-sac silencieux** :
+ça compile, ça commit, ça push, mais Coolify ne le voit jamais → 404 permanent sur l'URL
+publique, sans qu'aucune étape ne le signale. Payé sur `autoboost-99-soustitre` (07/09),
+`autoboost-101-triage` (08/09), `autoboost-135-vps-coolify` (15/09) et
+`autoboost-136-outils-ia-gratuits` (16/09, alors qu'il était déjà marqué « 🟡 En attente
+validation » dans le Sheet avec un lien mort).
+
+**Contrôle obligatoire avant toute étape 4bis** : si cette session n'a PAS un accès GitHub
+qui couvre `tonyPayetDev/previsualisation` (ni de clone local équivalent), elle **ne peut
+pas** publier réellement — le dossier `previsualisation/` d'ici n'est qu'un brouillon local.
+Dans ce cas : ne pas rapporter le Sheet en « En attente validation », dire explicitement
+dans le rapport que la publication réelle est hors de portée de cette session, et laisser
+les fichiers prêts (video.mp4 + index.html + PROMPT.md) pour qu'une session avec le bon
+accès les copie dans le vrai dépôt et déclenche Coolify.
+
 ## Statut (2026-08-14)
 
 - Banque : manifest + prompts figés, C2 = mot-clé AUTOMATION (corrigé).

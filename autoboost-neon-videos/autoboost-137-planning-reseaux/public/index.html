@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-6{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:78px;line-height:1.03;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- BADGE ÉTAPE ---------- */
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.6;}
+.mono .dim{color:#8a8f9a;} .mono .lit{color:#fff;}
+.mono .price{color:var(--bad);font-weight:800;position:relative;}
+.mono .strike-price{position:absolute;left:-4px;right:-4px;top:52%;height:4px;background:var(--bad);transform:scaleX(0);transform-origin:left;border-radius:2px;}
+.verdict{position:absolute;left:90px;right:90px;top:840px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- FLOW HORIZONTAL (scene 2) ---------- */
+.flow{position:absolute;left:60px;right:60px;top:520px;display:flex;align-items:center;justify-content:center;gap:0;}
+.node{width:250px;min-height:150px;background:#0d0d12;border:1px solid #2a2140;border-radius:22px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px 10px;opacity:0;}
+.node .ic{font-size:52px;}
+.node .lab{font-size:28px;font-weight:800;color:#e7e9ee;text-align:center;line-height:1.15;}
+.node .sub{font-size:22px;font-weight:600;color:var(--muted);}
+.node.claude{border-color:var(--accent-yellow);box-shadow:0 0 34px rgba(255,230,0,.20);}
+.link{width:70px;height:52px;position:relative;flex:0 0 70px;opacity:0;}
+.link::before{content:"";position:absolute;left:6px;right:16px;top:50%;height:4px;background:var(--violet);border-radius:2px;transform:translateY(-50%);}
+.link::after{content:"";position:absolute;right:8px;top:50%;width:16px;height:16px;border-top:4px solid var(--violet);border-right:4px solid var(--violet);transform:translateY(-50%) rotate(45deg);}
+.link .pulse{position:absolute;left:6px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--accent-yellow);box-shadow:0 0 14px var(--accent-yellow);}
+
+/* ---------- CHART HORAIRES (scene 3) ---------- */
+.chart{position:absolute;left:100px;right:100px;top:500px;height:340px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:24px;padding:34px 40px 30px;opacity:0;}
+.chart .ttl{font-size:26px;font-weight:700;color:var(--muted);margin-bottom:26px;display:flex;justify-content:space-between;}
+.chart .ttl b{color:var(--accent-yellow);}
+.bars{display:flex;align-items:flex-end;gap:18px;height:200px;}
+.bars .b{flex:1;background:#241c3a;border-radius:8px 8px 0 0;transform:scaleY(0);transform-origin:bottom;}
+.bars .b.best{background:linear-gradient(180deg,var(--accent-yellow),var(--orange));box-shadow:0 0 26px rgba(255,230,0,.5);}
+.hrs{display:flex;gap:18px;margin-top:14px;}
+.hrs span{flex:1;text-align:center;font-size:22px;font-weight:700;color:var(--muted);}
+.hrs span.best{color:var(--accent-yellow);}
+
+/* ---------- PLATEFORMES (scene 4) ---------- */
+.plats{position:absolute;left:90px;right:90px;top:500px;display:flex;flex-direction:column;gap:22px;}
+.plat{display:flex;align-items:center;gap:26px;padding:28px 34px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.plat .pic{width:56px;height:56px;flex:0 0 56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#fff;}
+.plat .pn{font-size:40px;font-weight:800;color:#fff;}
+.plat .ok{margin-left:auto;font-size:30px;font-weight:800;color:var(--good);display:flex;align-items:center;gap:10px;}
+.ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+.tk{background:#111;border:1px solid #333;} .li{background:#0a66c2;}
+
+/* ---------- RÉSULTAT (scene 5) ---------- */
+.stats{position:absolute;left:80px;right:80px;top:470px;display:flex;flex-direction:column;gap:28px;}
+.stat{background:#0d0d12;border:1px solid #2a2140;border-radius:24px;padding:34px 40px;opacity:0;
+  display:flex;align-items:center;gap:30px;}
+.stat .big{font-size:88px;font-weight:900;line-height:1;letter-spacing:-2px;}
+.stat .big.y{color:var(--accent-yellow);} .stat .big.g{color:var(--good);}
+.stat .txt{font-size:36px;font-weight:700;color:#e7e9ee;line-height:1.15;}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+.broll-line{position:absolute;left:90px;right:90px;top:1250px;text-align:center;font-size:50px;font-weight:900;color:#fff;opacity:0;z-index:3;
+  text-shadow:0 6px 24px rgba(0,0,0,.7);}
+.broll-line .y{color:var(--accent-yellow);}
+
+/* ---------- CTA (scene 6) ---------- */
+.cta-badge{position:absolute;left:0;right:0;top:330px;text-align:center;opacity:0;}
+.cta-badge span{display:inline-block;padding:12px 30px;border-radius:99px;background:rgba(40,200,64,.14);border:1px solid var(--good);
+  font-size:30px;font-weight:800;color:var(--good);letter-spacing:1px;}
+.cta-word{position:absolute;left:0;right:0;top:430px;text-align:center;font-size:110px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:610px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:770px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS (27px, réf mesurée #18/#22/#24) ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:96px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:760px;height:5px;margin-left:-380px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:101px;}
+.caption{position:absolute;left:50%;top:38px;transform:translateX(-50%);white-space:nowrap;
+  font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Coupes calées sur les silences RÉELS de public/assets/voice.mp3 (silencedetect=-40dB:d=0.18)
+     Cuts scène : 8.2 / 13.5 / 17.15 / 21.7 / 27.4(broll) / 30.0(cta). Durée = 33.02s -->
+<div id="root" data-composition-id="autoboost137planning" data-start="0" data-width="1080" data-height="1920" data-duration="33.02">
+
+  <!-- SCENE 1 — HOOK : 150€/mois d'assistante, remplacée par 1 workflow (0 -> 8.2) -->
+  <div class="scene scene-1" data-s="0" data-d="8.2">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Réseaux sociaux</div>
+      <div class="title" data-role="t1">150&nbsp;€/mois pour<br>poster <span class="o">à ma place.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">abonnement-cm.pdf</span></div>
+      <div class="mono">
+        <div class="lit" data-role="pl1">Community manager</div>
+        <div class="dim" data-role="pl2">Programmation des posts</div>
+        <div data-role="pl3"><span class="price">150&nbsp;€ / mois<span class="strike-price" data-role="strk"></span></span></div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Remplacée par un seul workflow.</div>
+  </div>
+
+  <!-- SCENE 2 — ÉTAPE 1 : récupère la vidéo + Claude écrit la légende (8.2 -> 13.5) -->
+  <div class="scene scene-2" data-s="8.2" data-d="5.3">
+    <div class="tipnum" data-role="n2">1</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Étape 1</div>
+      <div class="title" data-role="t2" style="font-size:70px;">Vidéo rendue<br><span class="y">Claude</span> écrit la légende</div>
+    </div>
+    <div class="flow">
+      <div class="node" data-role="fn1"><div class="ic">🎬</div><div class="lab">Vidéo<br>rendue</div><div class="sub">✓ prête</div></div>
+      <div class="link" data-role="fl1"><span class="pulse" data-role="fp1"></span></div>
+      <div class="node claude" data-role="fn2"><div class="ic">🤖</div><div class="lab">Claude</div><div class="sub">ton habituel</div></div>
+      <div class="link" data-role="fl2"><span class="pulse" data-role="fp2"></span></div>
+      <div class="node" data-role="fn3"><div class="ic">📝</div><div class="lab">Légende<br>prête</div><div class="sub">✓ écrite</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — ÉTAPE 2 : meilleur horaire selon les stats (13.5 -> 17.15) -->
+  <div class="scene scene-3" data-s="13.5" data-d="3.65">
+    <div class="tipnum" data-role="n3">2</div>
+    <div class="pad">
+      <div class="kicker" data-role="k3">Étape 2</div>
+      <div class="title" data-role="t3" style="font-size:70px;">Le <span class="y">meilleur horaire</span><br>selon tes stats</div>
+    </div>
+    <div class="chart" data-role="ch">
+      <div class="ttl"><span>Engagement par heure</span><span>pic&nbsp;: <b>19&nbsp;h</b></span></div>
+      <div class="bars">
+        <div class="b" data-role="b1" style="height:38%;"></div>
+        <div class="b" data-role="b2" style="height:55%;"></div>
+        <div class="b" data-role="b3" style="height:47%;"></div>
+        <div class="b" data-role="b4" style="height:72%;"></div>
+        <div class="b best" data-role="b5" style="height:100%;"></div>
+        <div class="b" data-role="b6" style="height:64%;"></div>
+        <div class="b" data-role="b7" style="height:41%;"></div>
+      </div>
+      <div class="hrs"><span>8h</span><span>11h</span><span>13h</span><span>17h</span><span class="best">19h</span><span>21h</span><span>23h</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 4 — ÉTAPE 3 : publié sur IG/TikTok/LinkedIn en une fois (17.15 -> 21.7) -->
+  <div class="scene scene-4" data-s="17.15" data-d="4.55">
+    <div class="tipnum" data-role="n4">3</div>
+    <div class="pad">
+      <div class="kicker" data-role="k4">Étape 3</div>
+      <div class="title" data-role="t4" style="font-size:70px;">Publié partout<br><span class="y">en une seule fois</span></div>
+    </div>
+    <div class="plats">
+      <div class="plat" data-role="p1"><span class="pic ig">IG</span><span class="pn">Instagram</span><span class="ok">✓ programmé</span></div>
+      <div class="plat" data-role="p2"><span class="pic tk">TT</span><span class="pn">TikTok</span><span class="ok">✓ programmé</span></div>
+      <div class="plat" data-role="p3"><span class="pic li">in</span><span class="pn">LinkedIn</span><span class="ok">✓ programmé</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — RÉSULTAT : 0 post oublié + ~1800€/an (21.7 -> 27.4) -->
+  <div class="scene scene-5" data-s="21.7" data-d="5.7">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Ce que ça change</div>
+    </div>
+    <div class="stats">
+      <div class="stat" data-role="s1"><span class="big g">0</span><span class="txt">post oublié,<br>zéro dimanche soir perdu</span></div>
+      <div class="stat" data-role="s2"><span class="big y">~1800€</span><span class="txt">économisés<br>sur l'année</span></div>
+    </div>
+  </div>
+
+  <!-- BROLL — « le workflow tourne pendant que je dors » (27.4 -> 30.0) -->
+  <video id="broll" class="broll-vid" src="assets/broll-creator.mp4" data-start="27.4" data-duration="2.60" muted playsinline></video>
+  <div class="scene scene-broll" data-s="27.4" data-d="2.60"><div class="broll-grad"></div></div>
+  <div class="broll-line" data-role="brl">Il tourne <span class="y">pendant que je dors.</span></div>
+
+  <!-- SCENE 6 — CTA : Commente le mot PLANNING (30.0 -> 33.02) -->
+  <div class="scene scene-6" data-s="30.0" data-d="3.02">
+    <div class="cta-badge" data-role="ctabadge"><span>Workflow gratuit</span></div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">PLANNING</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">PLANNING</span><br>je t'envoie le workflow</div>
+    <div class="cta-follow" data-role="ctafollow">— mais seulement si tu me suis</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="33.02" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="33.02"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="33.02"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="33.02"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32.96" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="33.02" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1). Zoom démarre ~1.2s AVANT la coupe
+       pour que le pic du whoosh tombe pile dessus. Coupes : 8.2 / 13.5 / 17.15 / 21.7 / 27.4 / 30.0 -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-strike"    src="assets/sfx-whoosh-lat.mp3"  data-start="3.30"  data-volume="0.15"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-confirm.mp3"     data-start="4.80"  data-volume="0.18"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="7.00"  data-volume="0.17"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="8.62"  data-volume="0.18"></audio>
+  <audio id="sfx-flow-1"    src="assets/sfx-click-soft.mp3"  data-start="9.55"  data-volume="0.13"></audio>
+  <audio id="sfx-flow-2"    src="assets/sfx-click-soft.mp3"  data-start="10.30" data-volume="0.13"></audio>
+  <audio id="sfx-flow-3"    src="assets/sfx-notify.mp3"      data-start="11.90" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="12.30" data-volume="0.17"></audio>
+  <audio id="sfx-click-2"   src="assets/sfx-click.mp3"       data-start="13.87" data-volume="0.18"></audio>
+  <audio id="sfx-bars"      src="assets/sfx-notify.mp3"      data-start="15.60" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="15.95" data-volume="0.17"></audio>
+  <audio id="sfx-click-3"   src="assets/sfx-click.mp3"       data-start="17.36" data-volume="0.18"></audio>
+  <audio id="sfx-p1"        src="assets/sfx-click-soft.mp3"  data-start="18.70" data-volume="0.13"></audio>
+  <audio id="sfx-p2"        src="assets/sfx-click-soft.mp3"  data-start="19.10" data-volume="0.13"></audio>
+  <audio id="sfx-p3"        src="assets/sfx-click-soft.mp3"  data-start="19.50" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="20.50" data-volume="0.19"></audio>
+  <audio id="sfx-res-1"     src="assets/sfx-confirm.mp3"     data-start="22.50" data-volume="0.18"></audio>
+  <audio id="sfx-res-2"     src="assets/sfx-notify.mp3"      data-start="25.20" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-whoosh-v2.mp3"   data-start="26.20" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-6"    src="assets/sfx-zoom.mp3"        data-start="28.80" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="30.40" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="30.40" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="31.30" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost137planning";
+const DUR=33.02;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : la facture s'affiche, le prix est barré, verdict ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.05);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.35);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.70);
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},2.10);
+tl.fromTo(R("strk"),{scaleX:0},{scaleX:1,duration:0.35,ease:"power2.out"},3.30);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},4.80);
+
+/* ---- scene 2 : le flux s'illumine node par node ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},8.30);
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},8.35);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},8.55);
+tl.fromTo(R("fn1"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},9.50);
+tl.fromTo(R("fl1"),{opacity:0},{opacity:1,duration:0.25},10.05);
+tl.fromTo(R("fn2"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},10.35);
+tl.fromTo(R("fl2"),{opacity:0},{opacity:1,duration:0.25},11.60);
+tl.fromTo(R("fn3"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},11.90);
+/* pulses le long des liens */
+tl.fromTo(R("fp1"),{x:0,opacity:1},{x:56,opacity:0,duration:0.6,ease:"power1.in",repeat:2},10.10);
+tl.fromTo(R("fp2"),{x:0,opacity:1},{x:56,opacity:0,duration:0.6,ease:"power1.in",repeat:1},11.65);
+
+/* ---- scene 3 : le graphe pousse, le pic 19h ressort ---- */
+tl.fromTo(R("n3"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},13.60);
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},13.65);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},13.85);
+tl.fromTo(R("ch"),{opacity:0,y:30},{opacity:1,y:0,duration:0.4,ease:"power3.out"},14.30);
+["b1","b2","b3","b4","b5","b6","b7"].forEach((b,i)=>{
+  tl.fromTo(R(b),{scaleY:0},{scaleY:1,duration:0.4,ease:"power2.out"},14.55+i*0.08);
+});
+tl.fromTo(R("b5"),{scale:1},{scale:1.04,duration:0.35,ease:"sine.inOut",repeat:3,yoyo:true,transformOrigin:"bottom center"},15.60);
+
+/* ---- scene 4 : les 3 plateformes se cochent ---- */
+tl.fromTo(R("n4"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},17.25);
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},17.30);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},17.50);
+tl.fromTo(R("p1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},18.65);
+tl.fromTo(R("p2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},19.05);
+tl.fromTo(R("p3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},19.45);
+
+/* ---- scene 5 : les 2 stats tombent ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},21.85);
+tl.fromTo(R("s1"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"back.out(1.4)"},22.45);
+tl.fromTo(R("s2"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"back.out(1.4)"},24.90);
+
+/* ---- broll line ---- */
+tl.fromTo(R("brl"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},27.75);
+tl.to(R("brl"),{opacity:0,duration:0.3},29.75);
+
+/* ---- scene 6 : CTA ---- */
+tl.fromTo(R("ctabadge"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4},30.10);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},30.40);
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},30.95);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},31.30);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},32.20);
+
+/* ---- CAPTIONS — ancrées sur les groupes de parole mesurés (silencedetect) ---- */
+const caps=[
+ [0.46,"CENT CINQUANTE EUROS","ohot:EUROS"],
+ [1.23,"PAR MOIS POUR",""],
+ [1.71,"UNE ASSISTANTE QUI",""],
+ [2.40,"PROGRAMMAIT MES",""],
+ [3.00,"RÉSEAUX",""],
+ [3.59,"C'EST FINI","ohot:FINI"],
+ [4.80,"J'AI TOUT REMPLACÉ","hot:REMPLACÉ"],
+ [5.78,"PAR UN SEUL",""],
+ [6.33,"WORKFLOW N8N PLUS","hot:WORKFLOW"],
+ [7.26,"CLAUDE","vhot:CLAUDE"],
+ [8.62,"ÉTAPE UN","hot:ÉTAPE UN"],
+ [9.51,"DÈS QU'UNE VIDÉO",""],
+ [10.14,"EST RENDUE","hot:RENDUE"],
+ [10.93,"IL LA RÉCUPÈRE",""],
+ [11.48,"ET CLAUDE ÉCRIT","vhot:CLAUDE"],
+ [12.08,"LA LÉGENDE DANS",""],
+ [12.68,"MON TON","hot:MON TON"],
+ [13.87,"ÉTAPE DEUX","hot:ÉTAPE DEUX"],
+ [14.37,"IL CHOISIT LE",""],
+ [14.83,"MEILLEUR HORAIRE","hot:MEILLEUR HORAIRE"],
+ [15.46,"SELON LES",""],
+ [15.80,"STATISTIQUES DU","vhot:STATISTIQUES"],
+ [16.38,"COMPTE",""],
+ [17.36,"ÉTAPE TROIS","hot:ÉTAPE TROIS"],
+ [18.23,"IL PROGRAMME LE",""],
+ [18.86,"POST SUR INSTAGRAM","ohot:INSTAGRAM"],
+ [19.73,"TIKTOK ET LINKEDIN","vhot:LINKEDIN"],
+ [20.60,"EN UNE SEULE",""],
+ [21.08,"FOIS","hot:FOIS"],
+ [21.95,"RÉSULTAT","hot:RÉSULTAT"],
+ [22.55,"ZÉRO POST OUBLIÉ","hot:ZÉRO"],
+ [23.42,"ZÉRO DIMANCHE SOIR","ohot:DIMANCHE"],
+ [24.28,"PERDU",""],
+ [24.98,"ET PRÈS DE",""],
+ [25.28,"MILLE HUIT CENTS",""],
+ [25.80,"EUROS ÉCONOMISÉS","hot:ÉCONOMISÉS"],
+ [26.48,"SUR L'ANNÉE","hot:L'ANNÉE"],
+ [27.62,"LE WORKFLOW TOURNE","hot:WORKFLOW"],
+ [28.26,"PENDANT QUE JE",""],
+ [28.75,"DORS","ohot:DORS"],
+ [28.99,"WEEK-END COMPRIS","hot:WEEK-END"],
+ [30.38,"COMMENTE LE MOT",""],
+ [30.91,"PLANNING","hot:PLANNING"],
+ [31.32,"JE T'ENVOIE LE",""],
+ [31.81,"WORKFLOW","hot:WORKFLOW"],
+ [32.14,"GRATUITEMENT","ohot:GRATUITEMENT"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:32.90;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.16,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.13},end-0.15);
+});
+
+/* Barres du rail : 33.02/1.05 = 31.4 -> repeat 31 ; décalée : (33.02-0.52)/1.05 = 30.9 -> repeat 30 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:31,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:30,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit : masqué pendant le broll (27.4 -> 30.0) ---- */
+const BROLL_START=27.4, BROLL_END=30.0;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 27.4/0.5 = 54.8 -> repeat 54 (PAIR -> retombe à 0 avant le broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:54,yoyo:true},0);
+/* ring après broll : (33.02-30.0)/0.5 = 6.0 -> repeat 5 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:5,yoyo:true},BROLL_END);
+/* orbit : 27.4/2.2 = 12.4 -> repeat 11 ; puis (33.02-30.0)/2.2 = 1.4 -> repeat 1 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:11,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:1,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},30.40);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 puis +8.02 -> 2.34 / 10.36 / 18.38 / 26.40.
+   Aucun ne tombe dans la fenêtre broll (27.4-30.0) : les 4 sont gardés. */
+var LEAD = 0.12;
+[2.34, 10.36, 18.38, 26.40].forEach(function(t){
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>

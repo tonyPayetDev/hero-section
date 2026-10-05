@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#0a0a0f; --surface:#111117; --border:#232330;
+  --gold:#eab308; --gold-light:#BEF264; --violet:#8b5cf6; --violet-deep:#7c3aed;
+  --ink:#EDEDED; --muted:#8A8A8A; --err:#ff6b6b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'DejaVu Sans',Arial,sans-serif;color:var(--ink);}
+.bgglow{position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 14%,rgba(139,92,246,.20),transparent 58%),
+             radial-gradient(circle at 50% 92%,rgba(234,179,8,.10),transparent 55%);}
+.griddots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.055) 1.6px,transparent 1.6px);
+  background-size:38px 38px;opacity:.6;}
+.brand{position:absolute;left:70px;top:66px;font-size:30px;font-weight:900;letter-spacing:.04em;opacity:0;z-index:6;}
+.brand b{color:var(--gold);}
+.kicker{position:absolute;right:70px;top:74px;background:rgba(139,92,246,.16);border:1px solid var(--violet);
+  color:var(--violet);font-size:21px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:10px 22px;border-radius:999px;opacity:0;z-index:6;}
+#avatarFull{position:absolute;left:0;top:0;width:1080px;height:1920px;background:#000;opacity:0;z-index:1;}
+.hookGrad{position:absolute;left:0;right:0;bottom:0;height:760px;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.86) 72%);opacity:0;z-index:2;}
+.hookTitle{position:absolute;left:70px;right:70px;bottom:210px;opacity:0;z-index:3;}
+.hookTitle .l1{font-size:58px;font-weight:900;color:#fff;line-height:1.16;text-shadow:0 6px 26px rgba(0,0,0,.85);}
+.hookTitle .l1 b{color:var(--gold);}
+.hookTitle .l2{margin-top:16px;font-size:36px;font-weight:700;color:var(--ink);text-shadow:0 4px 20px rgba(0,0,0,.85);}
+
+#mainWin{position:absolute;left:216px;top:150px;width:648px;height:1152px;border-radius:28px;
+  overflow:hidden;background:#000;border:3px solid rgba(234,179,8,.62);
+  box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 60px rgba(139,92,246,.18);opacity:0;z-index:4;}
+.panel{position:absolute;inset:0;background:var(--surface);opacity:0;}
+.tb{position:relative;height:70px;display:flex;align-items:center;gap:12px;padding:0 26px;
+  background:#0d0d12;border-bottom:1px solid var(--border);}
+.tb .d{width:14px;height:14px;border-radius:50%;background:var(--border);}
+.tb .ttl{position:absolute;left:0;right:0;text-align:center;font-size:23px;font-weight:800;color:var(--muted);letter-spacing:.06em;}
+.tb .ttl b{color:var(--gold);}
+
+/* 3 éléments */
+.three{position:absolute;left:0;right:0;top:300px;text-align:center;opacity:0;}
+.three .big{font-size:300px;font-weight:900;color:var(--gold);line-height:1;text-shadow:0 0 60px rgba(234,179,8,.45);}
+.three .lb{margin-top:10px;font-size:34px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.three .sub{margin-top:18px;font-size:24px;color:var(--muted);font-weight:700;}
+
+/* problème : prompt une phrase -> 4 visages différents */
+.plab{position:absolute;left:40px;right:40px;top:110px;font-size:22px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--err);opacity:0;}
+.pbox{position:absolute;left:40px;right:40px;top:160px;background:#0d0d12;border:1px solid var(--border);border-radius:16px;
+  padding:24px;font-family:'DejaVu Sans Mono',monospace;font-size:25px;color:var(--ink);opacity:0;min-height:120px;}
+.pbox .cur{display:inline-block;width:12px;height:28px;background:var(--gold);vertical-align:middle;margin-left:4px;}
+.tiles{position:absolute;left:40px;right:40px;top:350px;display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.tile{position:relative;height:300px;background:#15151c;border:1px solid var(--border);border-radius:18px;overflow:hidden;opacity:0;}
+.tile .tl{position:absolute;left:16px;top:14px;font-size:18px;font-weight:800;letter-spacing:.12em;color:var(--muted);}
+.face{position:absolute;left:50%;top:62px;transform:translateX(-50%);}
+.face .hair{position:absolute;left:50%;transform:translateX(-50%);}
+.face .head{position:absolute;left:50%;transform:translateX(-50%);}
+.face .body{position:absolute;left:50%;top:170px;width:210px;height:120px;transform:translateX(-50%);border-radius:90px 90px 0 0;background:#2a2a36;}
+.neq{position:absolute;left:0;right:0;top:980px;text-align:center;font-size:34px;font-weight:900;color:var(--err);opacity:0;}
+.tile img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;}
+.tile .tag{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.7);border-radius:8px;padding:4px 10px;font-size:18px;font-weight:800;letter-spacing:.1em;color:var(--gold);}
+
+/* prompt structuré 3 blocs */
+.ncard{position:absolute;left:40px;width:568px;background:#15151c;border:1px solid var(--border);
+  border-radius:18px;padding:22px 24px;opacity:0;box-shadow:0 10px 26px rgba(0,0,0,.4);}
+.ncard .ic{width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,var(--gold),#a16207);
+  display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#0a0a0f;margin-bottom:12px;}
+.ncard .lb{font-family:'DejaVu Sans Mono',monospace;font-size:26px;font-weight:800;color:var(--ink);letter-spacing:.02em;}
+.ncard .sub{font-size:21px;color:var(--muted);margin-top:8px;font-weight:600;line-height:1.3;}
+.n1{top:190px;} .n2{top:470px;} .n3{top:750px;}
+.nwire{position:absolute;left:324px;width:4px;background:linear-gradient(180deg,var(--gold),var(--violet));
+  opacity:0;border-radius:2px;transform-origin:top center;transform:scaleY(0);}
+.w12{top:390px;height:80px;} .w23{top:670px;height:80px;}
+.phead{position:absolute;left:40px;right:40px;top:108px;font-size:22px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:0;}
+
+/* image de référence */
+.refbig{position:absolute;left:84px;top:150px;width:480px;height:480px;border-radius:22px;overflow:hidden;
+  border:3px solid var(--violet);box-shadow:0 0 50px rgba(139,92,246,.35);opacity:0;}
+.refbig img{width:100%;height:100%;object-fit:cover;}
+.refbig .tag{position:absolute;left:14px;bottom:14px;background:rgba(10,10,15,.82);border-radius:10px;padding:6px 14px;
+  font-size:20px;font-weight:800;letter-spacing:.1em;color:var(--violet);}
+.rtiles{position:absolute;left:40px;right:40px;top:680px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.rtiles .tile{height:170px;}
+.req{position:absolute;left:0;right:0;top:880px;text-align:center;font-size:32px;font-weight:900;color:var(--gold);opacity:0;}
+
+.xcard{position:absolute;left:40px;right:40px;top:380px;opacity:0;text-align:center;}
+.xcard .lab{font-size:22px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.xcard .row{margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+.xcard .p1{font-size:42px;font-weight:900;color:var(--err);white-space:nowrap;}
+.xcard .arrow{font-size:36px;color:var(--gold);}
+.xcard .p2{font-size:52px;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(234,179,8,.5);white-space:nowrap;}
+.xcard .note{margin-top:30px;font-size:26px;font-weight:700;color:var(--ink);}
+
+.ctaPanel{position:absolute;left:70px;right:70px;top:1370px;text-align:center;opacity:0;z-index:8;}
+.ctaPill{display:inline-block;background:linear-gradient(90deg,rgba(234,179,8,.2),rgba(139,92,246,.16));
+  border:2px solid var(--gold);border-radius:20px;padding:22px 34px;font-size:38px;font-weight:900;color:var(--ink);}
+.ctaPill b{color:var(--gold);}
+.ctaSub{margin-top:16px;font-size:24px;font-weight:700;color:var(--muted);}
+
+#caption-band{position:absolute;top:1392px;left:0;width:1080px;height:150px;z-index:8;}
+.caption{position:absolute;left:50%;top:20px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,
+    -3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 8px 20px rgba(0,0,0,.6);opacity:0;}
+.caption .hot{color:var(--gold);}
+.caption .vhot{color:var(--violet);}
+</style>
+</head>
+<body>
+<!--
+  v3 — clips banque BUREAU incrustés en passe 2 ffmpeg dans #avatarFull (plein cadre) et #mainWin (648x1152 @ 216,150).
+  Plans avatar : voir work/order.json (source unique, lue par build_pass2.sh et check_lips_rule).
+-->
+<div id="root" data-composition-id="autoboost138visageavatar" data-start="0" data-width="1080" data-height="1920" data-duration="31.6">
+  <div class="bgglow"></div>
+  <div class="griddots"></div>
+  <div class="brand" data-role="brand">AUTO<b>BOOST</b></div>
+  <div class="kicker" data-role="kicker">Seedance + Claude</div>
+
+  <div id="avatarFull"></div>
+  <div class="hookGrad" data-role="hookgrad"></div>
+  <div class="hookTitle" data-role="hooktitle">
+    <div class="l1">Ton avatar IA <b>change de visage</b> à chaque plan ?</div>
+    <div class="l2">La technique en 3 éléments pour le verrouiller.</div>
+  </div>
+
+  <div id="mainWin" data-role="mainwin">
+    <div class="panel" data-role="p3">
+      <div class="tb"><span class="d"></span><span class="d"></span><span class="d"></span><span class="ttl">MÊME <b>VISAGE</b> · DU DÉBUT À LA FIN</span></div>
+      <div class="three" data-role="three"><div class="big">3</div><div class="lb">éléments</div><div class="sub">pour un visage verrouillé</div></div>
+    </div>
+
+    <div class="panel" data-role="pbad">
+      <div class="tb"><span class="d"></span><span class="d"></span><span class="d"></span><span class="ttl">CE QUE FONT <b>LA PLUPART</b></span></div>
+      <div class="plab" data-role="plab">Prompt en une phrase</div>
+      <div class="pbox" data-role="pbox"><span data-role="ptype"></span><span class="cur"></span></div>
+      <div class="tiles">
+        <div class="tile" data-role="t1"><span class="tl">PLAN 1</span><div class="face"><div class="hair" style="top:-6px;width:150px;height:70px;border-radius:70px 70px 10px 10px;background:#3b2a1e"></div><div class="head" style="top:14px;width:124px;height:150px;border-radius:60px;background:#b98a6a"></div></div><div class="face"><div class="body"></div></div></div>
+        <div class="tile" data-role="t2"><span class="tl">PLAN 2</span><div class="face"><div class="hair" style="top:4px;width:136px;height:40px;border-radius:30px 30px 0 0;background:#8a8a8a"></div><div class="head" style="top:20px;width:140px;height:136px;border-radius:50%;background:#e0b393"></div></div><div class="face"><div class="body"></div></div></div>
+        <div class="tile" data-role="t3"><span class="tl">PLAN 3</span><div class="face"><div class="hair" style="top:-14px;width:170px;height:120px;border-radius:80px 80px 30px 30px;background:#161616"></div><div class="head" style="top:18px;width:112px;height:158px;border-radius:56px 56px 50px 50px;background:#8d5e43"></div></div><div class="face"><div class="body"></div></div></div>
+        <div class="tile" data-role="t4"><span class="tl">PLAN 4</span><div class="face"><div class="hair" style="top:0;width:120px;height:56px;border-radius:60px 60px 0 0;background:#c9a15a"></div><div class="head" style="top:16px;width:132px;height:146px;border-radius:40px 40px 64px 64px;background:#f0c8a8"></div></div><div class="face"><div class="body"></div></div></div>
+      </div>
+      <div class="neq" data-role="neq">4 plans = 4 visages différents</div>
+    </div>
+
+    <div class="panel" data-role="pgood">
+      <div class="tb"><span class="d"></span><span class="d"></span><span class="d"></span><span class="ttl">PROMPT <b>SEEDANCE</b> · 3 BLOCS</span></div>
+      <div class="phead" data-role="phead">À placer dans chaque prompt</div>
+      <div class="nwire w12" data-role="w12"></div>
+      <div class="nwire w23" data-role="w23"></div>
+      <div class="ncard n1" data-role="n1"><div class="ic">1</div><div class="lb">IDENTITY LOCK</div><div class="sub">même visage, mêmes proportions, aucun morphing</div></div>
+      <div class="ncard n2" data-role="n2"><div class="ic">2</div><div class="lb">VISUAL CONSISTENCY</div><div class="sub">même tenue, même décor, même lumière, même focale</div></div>
+      <div class="ncard n3" data-role="n3"><div class="ic">3</div><div class="lb">PERFORMANCE</div><div class="sub">1 s neutre, le geste, les lèvres calées sur la phrase</div></div>
+    </div>
+
+    <div class="panel" data-role="pref">
+      <div class="tb"><span class="d"></span><span class="d"></span><span class="d"></span><span class="ttl">+ 1 IMAGE DE <b>RÉFÉRENCE</b></span></div>
+      <div class="refbig" data-role="refbig"><img src="assets/ref.jpg"><span class="tag">RÉFÉRENCE</span></div>
+      <div class="rtiles">
+        <div class="tile" data-role="r1"><img src="assets/ref.jpg"><span class="tag">1</span></div>
+        <div class="tile" data-role="r2"><img src="assets/ref.jpg"><span class="tag">2</span></div>
+        <div class="tile" data-role="r3"><img src="assets/ref.jpg"><span class="tag">3</span></div>
+        <div class="tile" data-role="r4"><img src="assets/ref.jpg"><span class="tag">4</span></div>
+      </div>
+      <div class="req" data-role="req">la même, à chaque génération</div>
+    </div>
+
+    <div class="xcard" data-role="xcard">
+      <div class="lab">Résultat</div>
+      <div class="row"><span class="p1">4 VISAGES DIFFÉRENTS</span><span class="arrow">▼</span><span class="p2">1 SEUL PERSONNAGE</span></div>
+      <div class="note">cohérent du début à la fin</div>
+    </div>
+  </div>
+
+  <div class="ctaPanel" data-role="ctapanel">
+    <div class="ctaPill">Commente le mot <b>PROMPT</b></div>
+    <div class="ctaSub">je t'envoie la technique complète</div>
+  </div>
+  <div id="caption-band"></div>
+</div>
+<script>
+const compId="autoboost138visageavatar";
+const DUR=31.6;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+function show(r,a,b){tl.fromTo(R(r),{opacity:0},{opacity:1,duration:0.25},a); if(b!=null) tl.to(R(r),{opacity:0,duration:0.2},b);}
+function pop(r,t){tl.fromTo(R(r),{opacity:0,y:20,scale:0.94},{opacity:1,y:0,scale:1,duration:0.4,ease:"back.out(1.7)"},t);}
+function wire(r,t){tl.fromTo(R(r),{scaleY:0,opacity:0.2},{scaleY:1,opacity:1,duration:0.4,ease:"power2.out"},t);}
+
+tl.fromTo(R("brand"),{opacity:0,y:-14},{opacity:1,y:0,duration:0.4},2.35);
+tl.fromTo(R("kicker"),{opacity:0,y:-14},{opacity:1,y:0,duration:0.4},2.45);
+
+/* hook plein cadre 0 -> 2.32 */
+tl.to("#avatarFull",{opacity:1,duration:0.01},0);
+tl.to("#avatarFull",{opacity:0,duration:0.2},2.30);
+tl.fromTo(R("hookgrad"),{opacity:0},{opacity:1,duration:0.4},0.05);
+tl.to(R("hookgrad"),{opacity:0,duration:0.2},2.30);
+tl.fromTo(R("hooktitle"),{opacity:0,y:24},{opacity:1,y:0,duration:0.45,ease:"power3.out"},0.15);
+tl.to(R("hooktitle"),{opacity:0,duration:0.2},2.30);
+
+tl.fromTo("#mainWin",{opacity:0,y:20,scale:0.97},{opacity:1,y:0,scale:1,duration:0.3,ease:"power3.out"},2.30);
+
+/* 5.00 -> 7.40 : "3 éléments" */
+show("p3",5.00,7.40); pop("three",5.05);
+
+/* 7.49 -> 11.02 : prompt une phrase -> 4 visages */
+show("pbad",7.45,11.00);
+tl.fromTo(R("plab"),{opacity:0},{opacity:1,duration:0.3},7.55);
+tl.fromTo(R("pbox"),{opacity:0},{opacity:1,duration:0.25},7.60);
+const typed="un homme brun, lunettes, barbe";
+const ty={n:0};
+tl.to(ty,{n:typed.length,duration:1.4,ease:"none",onUpdate:()=>{R("ptype").textContent=typed.slice(0,Math.round(ty.n));}},8.20);
+pop("t1",9.55); pop("t2",9.80); pop("t3",10.05); pop("t4",10.30);
+tl.fromTo(R("neq"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.3,ease:"back.out(1.6)"},10.45);
+
+/* 13.72 -> 19.80 : prompt 3 blocs */
+show("pgood",13.72,19.80);
+tl.fromTo(R("phead"),{opacity:0},{opacity:1,duration:0.3},14.00);
+pop("n1",16.12); wire("w12",17.00); pop("n2",17.25); wire("w23",18.40); pop("n3",18.64);
+
+/* 19.84 -> 23.05 : image de référence */
+show("pref",19.84,23.05);
+pop("refbig",19.95);
+pop("r1",21.20); pop("r2",21.45); pop("r3",21.70); pop("r4",21.95);
+tl.fromTo(R("req"),{opacity:0},{opacity:1,duration:0.3},22.10);
+
+/* 23.11 -> 25.70 : carton transformation */
+tl.fromTo(R("xcard"),{opacity:0,scale:0.92},{opacity:1,scale:1,duration:0.35,ease:"back.out(1.6)"},23.11);
+tl.to(R("xcard"),{opacity:0,duration:0.2},25.55);
+
+tl.fromTo(R("ctapanel"),{opacity:0,y:16},{opacity:1,y:0,duration:0.4,ease:"power3.out"},28.20);
+tl.to("#mainWin",{opacity:0,duration:0.3},DUR-0.30);
+const caps=[
+ [2.660,"AVEC",null],
+ [2.850,"SEEDANCE","vhot:SEEDANCE"],
+ [3.166,"ET",null],
+ [3.293,"CLAUDE,","vhot:CLAUDE,"],
+ [3.641,"VOICI",null],
+ [3.862,"LA",null],
+ [3.989,"TECHNIQUE",null],
+ [4.337,"EN",null],
+ [4.464,"TROIS","hot:TROIS"],
+ [4.685,"ÉLÉMENTS",null],
+ [5.002,"POUR",null],
+ [5.192,"GARDER",null],
+ [5.445,"EXACTEMENT",null],
+ [5.824,"LE",null],
+ [5.951,"MÊME",null],
+ [6.141,"VISAGE","hot:VISAGE"],
+ [6.394,"SUR",null],
+ [6.552,"TOUTE",null],
+ [6.774,"UNE",null],
+ [6.932,"VIDÉO.",null],
+ [7.490,"LA",null],
+ [7.605,"PLUPART",null],
+ [7.864,"DES",null],
+ [8.008,"GENS",null],
+ [8.181,"DÉCRIVENT",null],
+ [8.497,"UN",null],
+ [8.613,"VISAGE","hot:VISAGE"],
+ [8.843,"EN",null],
+ [8.958,"UNE",null],
+ [9.102,"PHRASE,",null],
+ [9.418,"ET",null],
+ [9.534,"LAISSENT",null],
+ [9.821,"LE",null],
+ [9.937,"HASARD",null],
+ [10.167,"FAIRE",null],
+ [10.368,"LE",null],
+ [10.483,"RESTE.",null],
+ [11.020,"RÉSULTAT:",null],
+ [11.620,"UN",null],
+ [11.736,"PATCHWORK","hot:PATCHWORK"],
+ [12.055,"DE",null],
+ [12.171,"VISAGES",null],
+ [12.432,"QUE",null],
+ [12.577,"PERSONNE",null],
+ [12.868,"NE",null],
+ [12.984,"PREND",null],
+ [13.187,"AU",null],
+ [13.303,"SÉRIEUX.",null],
+ [13.970,"LA",null],
+ [14.072,"TECHNIQUE",null],
+ [14.351,"TIENT",null],
+ [14.529,"EN",null],
+ [14.631,"TROIS","hot:TROIS"],
+ [14.809,"BLOCS","hot:BLOCS"],
+ [14.987,"PRÉCIS",null],
+ [15.191,"DANS",null],
+ [15.343,"LE",null],
+ [15.445,"PROMPT:","hot:PROMPT:"],
+ [16.120,"VERROUILLER",null],
+ [16.545,"L'IDENTITÉ,","hot:L'IDENTITÉ,"],
+ [17.036,"FIGER",null],
+ [17.265,"LE",null],
+ [17.396,"DÉCOR","hot:DÉCOR"],
+ [17.625,"ET",null],
+ [17.756,"LA",null],
+ [17.887,"LUMIÈRE,","hot:LUMIÈRE,"],
+ [18.640,"CADRER",null],
+ [18.865,"LE",null],
+ [18.977,"JEU","hot:JEU"],
+ [19.117,"D'ACTEUR.","hot:D'ACTEUR."],
+ [19.840,"PLUS",null],
+ [20.033,"UNE",null],
+ [20.194,"IMAGE",null],
+ [20.420,"DE",null],
+ [20.548,"RÉFÉRENCE,","vhot:RÉFÉRENCE,"],
+ [20.999,"RÉUTILISÉE",null],
+ [21.385,"À",null],
+ [21.482,"L'IDENTIQUE","hot:L'IDENTIQUE"],
+ [21.901,"À",null],
+ [21.997,"CHAQUE",null],
+ [22.255,"GÉNÉRATION.",null],
+ [23.110,"RÉSULTAT:",null],
+ [23.760,"UN",null],
+ [23.877,"VRAI",null],
+ [24.052,"PERSONNAGE,","hot:PERSONNAGE,"],
+ [24.640,"COHÉRENT","hot:COHÉRENT"],
+ [24.918,"DU",null],
+ [25.030,"DÉBUT",null],
+ [25.225,"À",null],
+ [25.308,"LA",null],
+ [25.419,"FIN.",null],
+ [25.760,"C'EST",null],
+ [25.965,"EXACTEMENT",null],
+ [26.317,"CE",null],
+ [26.434,"QUE",null],
+ [26.581,"J'UTILISE",null],
+ [26.903,"SUR",null],
+ [27.050,"TOUTES",null],
+ [27.284,"MES",null],
+ [27.431,"VIDÉOS","hot:VIDÉOS"],
+ [27.665,"IA.","hot:IA."]
+];
+const band=document.querySelector("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:28.20;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){const cl=tag.split(":")[0];el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+  else{el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:10},{opacity:1,y:0,duration:0.08,ease:"power2.out"},start);
+  tl.set(el,{opacity:0},end);
+});
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>

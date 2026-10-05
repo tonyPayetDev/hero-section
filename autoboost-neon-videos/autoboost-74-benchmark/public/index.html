@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- BADGE ---------- */
+.tipnum{position:absolute;right:70px;top:36px;width:88px;height:88px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+.tipnum.bad{background:#d1362f;color:#fff;box-shadow:0 0 40px rgba(255,95,87,.45);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:500px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:31px;line-height:1.7;}
+.mono .row{display:flex;justify-content:space-between;color:#cfd2da;}
+.mono .row .amt{color:#fff;font-weight:700;}
+.mono .tot{display:flex;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid #2a2140;
+  color:var(--muted);font-weight:700;}
+.mono .tot .amt{color:var(--orange);font-weight:900;}
+.verdict{position:absolute;left:90px;right:90px;top:880px;text-align:center;font-size:46px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- RISQUES (scene 2) ---------- */
+.risks{position:absolute;left:80px;right:80px;top:500px;display:flex;flex-direction:column;gap:22px;}
+.rrow{position:relative;display:flex;align-items:center;gap:24px;padding:28px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid rgba(255,95,87,.35);font-size:38px;font-weight:800;color:#eef1f5;opacity:0;}
+.rrow .tag{width:48px;height:48px;flex:0 0 48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.rrow .res{margin-left:auto;font-size:30px;font-weight:900;color:var(--bad);}
+.saas-note{position:absolute;left:90px;right:90px;top:880px;text-align:center;font-size:40px;font-weight:800;
+  color:var(--muted);opacity:0;}
+.saas-note b{color:var(--bad);}
+
+/* ---------- FLOW agent (scene 3) ---------- */
+.flow{position:absolute;left:80px;right:80px;top:500px;display:flex;flex-direction:column;gap:20px;}
+.fnode{position:relative;display:flex;align-items:center;gap:22px;padding:24px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid var(--good);box-shadow:0 0 34px rgba(40,200,64,.15);
+  font-size:37px;font-weight:700;color:#eef1f5;opacity:0;}
+.fnode .tag{width:46px;height:46px;flex:0 0 46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.fnode .wf{margin-left:auto;font-size:26px;font-weight:900;color:var(--accent-yellow);
+  font-family:'DejaVu Sans Mono','Courier New',monospace;}
+.server{position:absolute;left:110px;right:110px;top:900px;display:flex;align-items:center;justify-content:center;gap:18px;
+  padding:20px 30px;border-radius:18px;background:rgba(255,230,0,.08);border:1px solid rgba(255,230,0,.4);
+  font-size:36px;font-weight:800;color:#fff;opacity:0;}
+.server b{color:var(--accent-yellow);}
+
+/* ---------- SYSTÈME (scene 4) ---------- */
+.sys{position:absolute;left:80px;right:80px;top:500px;display:flex;flex-direction:column;gap:22px;}
+.srow{display:flex;align-items:center;gap:24px;padding:26px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;font-size:38px;font-weight:800;color:#fff;}
+.srow .ic{width:52px;height:52px;flex:0 0 52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;background:rgba(40,200,64,.14);color:var(--good);border:1px solid rgba(40,200,64,.4);}
+.srow .val{margin-left:auto;font-size:32px;font-weight:900;color:var(--good);}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- CTA (scene 5) ---------- */
+.limit{position:absolute;left:150px;right:150px;top:400px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+.cta-word{position:absolute;left:0;right:0;top:540px;text-align:center;font-size:110px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:720px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:860px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS (27px, band ~930px) ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:150px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:14px;width:1080px;height:70px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:760px;height:4px;margin-left:-380px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:2px;}
+#cap-bar-bot{top:94px;}
+.caption{position:absolute;left:50%;top:30px;transform:translateX(-50%);white-space:nowrap;
+  font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de public/assets/voice.mp3 (silencedetect -40dB:d=0.16).
+     voice = 30.72s (généré 28.896s à débit rapide, atempo=0.94 -> 30.72s pour rester dans 30-35s).
+     Groupes de parole : 0.34-5.76 | 6.12-8.04 | 8.36-10.84 | 11.28-12.82 | 13.10-15.54 |
+     15.84-17.30 | 17.62-19.81 | 20.22-20.82 | 21.15-22.41 | 22.67-23.38 | 23.68-25.37 |
+     25.88-27.59 | 27.98-30.31.
+     Coupes de scène posées DANS les silences : 5.94 / 11.05 / 19.95 / broll->21.10 / 25.60 -->
+<div id="root" data-composition-id="autoboost74benchmark" data-start="0" data-width="1080" data-height="1920" data-duration="30.72">
+
+  <!-- SCENE 1 — HOOK : +1200€/mois, le devis au feeling (G1, 0.34 -> 5.76) -->
+  <div class="scene scene-1" data-s="0" data-d="5.94">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Mes devis freelance</div>
+      <div class="title" data-role="t1"><span class="y">+1200€</span><br>par mois.</div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">devis-freelance.txt</span></div>
+      <div class="mono">
+        <div class="row" data-role="pl1"><span>Compétence</span><span class="amt">confirmée</span></div>
+        <div class="row" data-role="pl2"><span>Prix du marché</span><span class="amt">?</span></div>
+        <div class="row" data-role="pl3"><span>Mon tarif</span><span class="amt">au feeling</span></div>
+        <div class="tot" data-role="pl4"><span>Chaque devis</span><span class="amt">= un pari</span></div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Je bradais sans le savoir.</div>
+  </div>
+
+  <!-- SCENE 2 — AVANT : le prix au feeling, la double peur (G2-G3, 6.12 -> 10.84) -->
+  <div class="scene scene-2" data-s="5.94" data-d="5.11">
+    <div class="tipnum bad" data-role="n2">✕</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Avant</div>
+      <div class="title" data-role="t2" style="font-size:72px;">Au <span class="o">feeling</span></div>
+    </div>
+    <div class="risks">
+      <div class="rrow" data-role="rr1"><span class="tag">✕</span>Je demande trop<span class="res">je perds</span></div>
+      <div class="rrow" data-role="rr2"><span class="tag">✕</span>Pas assez<span class="res">je brade</span></div>
+    </div>
+    <div class="saas-note" data-role="rn">Et je doute — <b>à chaque devis</b></div>
+  </div>
+
+  <!-- SCENE 3 — APRÈS : un agent Claude scanne / croise / sort la fourchette (G4-G7, 11.28 -> 19.81) -->
+  <div class="scene scene-3" data-s="11.05" data-d="8.90">
+    <div class="tipnum" data-role="n3">IA</div>
+    <div class="pad">
+      <div class="kicker" data-role="k3">Après</div>
+      <div class="title" data-role="t3" style="font-size:66px;"><span class="y">Un agent Claude</span><br>avant le devis</div>
+    </div>
+    <div class="flow">
+      <div class="fnode" data-role="f1"><span class="tag">1</span>Scanne les tarifs du marché<span class="wf">scan</span></div>
+      <div class="fnode" data-role="f2"><span class="tag">2</span>Croise mon expérience<span class="wf">match</span></div>
+      <div class="fnode" data-role="f3"><span class="tag">3</span>Sort une fourchette réaliste<span class="wf">devis</span></div>
+    </div>
+    <div class="server" data-role="srv">En <b>moins d'une minute</b></div>
+  </div>
+
+  <!-- BROLL — respiration sur « Résultat : » (transition, 19.95 -> 21.10) -->
+  <video id="broll" class="broll-vid" src="assets/broll-workflow.mp4" data-start="19.95" data-duration="1.15" muted playsinline></video>
+  <div class="scene scene-broll" data-s="19.95" data-d="1.15"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — RÉSULTAT : je négocie avec des chiffres (G9-G11, 21.15 -> 25.37) -->
+  <div class="scene scene-4" data-s="21.10" data-d="4.50">
+    <div class="pad">
+      <div class="kicker" data-role="k4" style="color:var(--accent-yellow);">Résultat</div>
+      <div class="title" data-role="t4" style="font-size:66px;">Je négocie avec des <span class="y">chiffres</span></div>
+    </div>
+    <div class="sys">
+      <div class="srow" data-role="sr1"><span class="ic">✓</span>Des chiffres<span class="val">pas un doute</span></div>
+      <div class="srow" data-role="sr2"><span class="ic">✓</span>Missions techniques<span class="val">plus bradées</span></div>
+      <div class="srow" data-role="sr3"><span class="ic">€</span>Au bout du mois<span class="val">+1200€</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — CTA : toi aussi au feeling ? -> BENCHMARK (G12-G13, 25.88 -> 30.31) -->
+  <div class="scene scene-5" data-s="25.60" data-d="5.12">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Toi aussi ?</div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>tu factures encore</span><span><b>au feeling ?</b></span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">BENCHMARK</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">BENCHMARK</span><br>je te montre l'agent</div>
+    <div class="cta-follow" data-role="ctafollow">— follow + lien en bio</div>
+  </div>
+
+  <!-- AVATAR OVERLAY -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="30.72" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="30.72"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="30.72"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="30.72"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="30.66" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="30.72" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1. Les zoom démarrent ~1.15s AVANT la coupe (pic sur la coupe).
+       Coupes : 5.94 / 11.05 / 19.95(broll) / 21.10 / 25.60 -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.20"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.20"  data-volume="0.20"></audio>
+  <audio id="sfx-pl4"       src="assets/sfx-notify.mp3"      data-start="2.85"  data-volume="0.15"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-confirm.mp3"     data-start="4.55"  data-volume="0.17"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="4.79"  data-volume="0.17"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="6.05"  data-volume="0.18"></audio>
+  <audio id="sfx-rr1"       src="assets/sfx-click-soft.mp3"  data-start="6.75"  data-volume="0.14"></audio>
+  <audio id="sfx-rr2"       src="assets/sfx-click-soft.mp3"  data-start="8.40"  data-volume="0.14"></audio>
+  <audio id="sfx-rn"        src="assets/sfx-notify.mp3"      data-start="9.95"  data-volume="0.14"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="9.90"  data-volume="0.17"></audio>
+  <audio id="sfx-click-2"   src="assets/sfx-click.mp3"       data-start="11.20" data-volume="0.18"></audio>
+  <audio id="sfx-f1"        src="assets/sfx-confirm.mp3"     data-start="13.10" data-volume="0.16"></audio>
+  <audio id="sfx-f2"        src="assets/sfx-confirm.mp3"     data-start="15.84" data-volume="0.15"></audio>
+  <audio id="sfx-f3"        src="assets/sfx-confirm.mp3"     data-start="17.62" data-volume="0.15"></audio>
+  <audio id="sfx-srv"       src="assets/sfx-pop.mp3"         data-start="19.10" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="18.80" data-volume="0.17"></audio>
+  <audio id="sfx-broll"     src="assets/sfx-whoosh-lat.mp3"  data-start="19.95" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="20.30" data-volume="0.18"></audio>
+  <audio id="sfx-sr1"       src="assets/sfx-click-soft.mp3"  data-start="21.30" data-volume="0.14"></audio>
+  <audio id="sfx-sr2"       src="assets/sfx-click-soft.mp3"  data-start="23.70" data-volume="0.14"></audio>
+  <audio id="sfx-sr3"       src="assets/sfx-click-soft.mp3"  data-start="24.95" data-volume="0.14"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-zoom.mp3"        data-start="24.45" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="26.55" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="26.55" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="28.05" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost74benchmark";
+const DUR=30.72;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : le devis se remplit, puis le verdict ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.15);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.40);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.25);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.26},1.65);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.26},2.05);
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.26},2.45);
+tl.fromTo(R("pl4"),{opacity:0,scale:0.92},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.4)"},2.85);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},4.55);
+
+/* ---- scene 2 : les 2 risques, puis le doute ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},6.05);
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},6.10);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},6.30);
+tl.fromTo(R("rr1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},6.75);
+tl.fromTo(R("rr2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},8.40);
+tl.fromTo(R("rn"),{opacity:0},{opacity:1,duration:0.4},9.95);
+
+/* ---- scene 3 : l'agent scanne / croise / sort la fourchette, puis <1min ---- */
+tl.fromTo(R("n3"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},11.20);
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},11.25);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},11.45);
+tl.fromTo(R("f1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.35,ease:"power3.out"},13.10);
+tl.fromTo(R("f2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.35,ease:"power3.out"},15.84);
+tl.fromTo(R("f3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.35,ease:"power3.out"},17.62);
+tl.fromTo(R("srv"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.5)"},19.10);
+
+/* ---- scene 4 : je négocie avec des chiffres ---- */
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},21.25);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},21.45);
+tl.fromTo(R("sr1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},21.55);
+tl.fromTo(R("sr2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},23.70);
+tl.fromTo(R("sr3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},24.95);
+
+/* ---- scene 5 : jauge puis CTA ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.75);
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.85);
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:1,duration:1.0,ease:"power2.out"},26.00);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},26.55);
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:6,yoyo:true},27.15);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},28.05);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},29.30);
+
+/* ---- CAPTIONS — attaques calées sur les groupes de parole mesurés ---- */
+const caps=[
+ [0.34,"1200€ DE PLUS","hot:1200€"],
+ [1.35,"PAR MOIS",""],
+ [2.10,"UN AGENT IA","vhot:AGENT IA"],
+ [3.10,"VÉRIFIE MES TARIFS","hot:MES TARIFS"],
+ [4.35,"AVANT CHAQUE DEVIS","ohot:CHAQUE DEVIS"],
+ [6.12,"AVANT",""],
+ [6.80,"JE FIXAIS AU FEELING","hot:AU FEELING"],
+ [8.36,"LA PEUR D'EN",""],
+ [9.10,"DEMANDER TROP","ohot:TROP"],
+ [9.90,"OU PERDRE LE CLIENT","ohot:PERDRE"],
+ [11.28,"MAINTENANT",""],
+ [11.95,"DÈS LA DEMANDE","hot:DEMANDE"],
+ [13.10,"UN AGENT CLAUDE","vhot:CLAUDE"],
+ [14.05,"SCANNE LES TARIFS","hot:SCANNE"],
+ [14.90,"DES MISSIONS SIMILAIRES","hot:SIMILAIRES"],
+ [15.84,"IL CROISE AVEC",""],
+ [16.55,"MON EXPÉRIENCE","vhot:EXPÉRIENCE"],
+ [17.62,"UNE FOURCHETTE","hot:FOURCHETTE"],
+ [18.55,"RÉALISTE",""],
+ [19.15,"EN MOINS D'UNE MINUTE","hot:UNE MINUTE"],
+ [20.22,"RÉSULTAT","vhot:RÉSULTAT"],
+ [21.15,"JE NÉGOCIE AVEC",""],
+ [21.85,"DES CHIFFRES","hot:DES CHIFFRES"],
+ [22.67,"PAS UN DOUTE","ohot:DOUTE"],
+ [23.68,"J'AI ARRÊTÉ",""],
+ [24.35,"DE BRADER","ohot:BRADER"],
+ [24.95,"MES MISSIONS TECHNIQUES","hot:TECHNIQUES"],
+ [25.88,"TOI AUSSI",""],
+ [26.55,"TU FACTURES ENCORE",""],
+ [27.10,"AU FEELING ?","hot:AU FEELING"],
+ [27.98,"COMMENTE LE MOT",""],
+ [28.90,"BENCHMARK","hot:BENCHMARK"],
+ [29.85,"JE TE MONTRE L'AGENT","vhot:L'AGENT"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:30.66;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail : 30.72/1.05 = 29.3 -> repeat 28 ; décalée (30.72-0.52)/1.05 = 28.8 -> repeat 27 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:28,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:27,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=19.95, BROLL_END=21.10;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 19.95/0.5 = 39.9 -> repeat 39 (IMPAIR = retombe à 0 avant le broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:39,yoyo:true},0);
+/* ring après broll : (30.72-21.10)/0.5 = 19.2 -> repeat 19 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:19,yoyo:true},BROLL_END);
+/* orbit : 19.95/2.2 = 9.1 -> repeat 8 ; puis (30.72-21.10)/2.2 = 4.4 -> repeat 4 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:8,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:4,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},26.55);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 puis +8.02 -> 2.34 / 10.36 / 18.38 / 26.40.
+   Aucun ne tombe dans la fenêtre broll (19.95-21.10) : les 4 sont gardés. */
+var LEAD = 0.12;
+[2.34, 10.36, 18.38, 26.40].forEach(function(t){
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- BADGE (numéro / stat) ---------- */
+.tipnum{position:absolute;right:70px;top:36px;min-width:88px;height:88px;padding:0 20px;border-radius:44px;
+  display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.65;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;} .mono .red{color:var(--bad);font-weight:700;} .mono .grn{color:var(--good);font-weight:700;}
+.verdict{position:absolute;left:90px;right:90px;top:830px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- BADGE 24/7 (scene 2) ---------- */
+.badge247{position:absolute;left:50%;top:820px;transform:translateX(-50%);display:flex;gap:16px;align-items:center;opacity:0;}
+.badge247 .pill{padding:16px 30px;border-radius:16px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:30px;font-weight:800;color:#cfd2da;white-space:nowrap;}
+.badge247 .pill b{color:var(--accent-yellow);}
+
+/* ---------- MOUVEMENTS / LISTES (scene 3 & 4) ---------- */
+.moves{position:absolute;left:80px;right:80px;top:470px;display:flex;flex-direction:column;gap:20px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:24px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:34px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ko .tag{background:rgba(255,95,87,.15);color:var(--bad);border:2px solid var(--bad);}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mv .strike{position:absolute;left:30px;right:30px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- CTA (scene 5) ---------- */
+.limit{position:absolute;left:150px;right:150px;top:400px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--good),var(--accent-yellow));
+  transform-origin:left center;transform:scaleX(1);box-shadow:0 0 20px rgba(40,200,64,.5);}
+.cta-word{position:absolute;left:0;right:0;top:540px;text-align:center;font-size:120px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:720px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:860px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS (27px, bande top 960) ---------- */
+#caption-band{position:absolute;top:960px;left:0;width:1080px;height:140px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:84px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:760px;height:4px;margin-left:-380px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:89px;}
+.caption{position:absolute;left:50%;top:26px;transform:translateX(-50%);white-space:nowrap;
+  font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost102vapivocal" data-start="0" data-width="1080" data-height="1920" data-duration="30.74">
+<div class="scene scene-1" data-s="0.0" data-d="10.36">
+    <div class="pad">
+      <div class="kicker" data-role="k1">22 h 47 &mdash; un client appelle</div>
+      <div class="title" data-role="t1">Personne ne<br><span class="o">décroche.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">appels.log</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">22:47&nbsp;&nbsp;appel entrant…</div>
+        <div class="red" data-role="pl2">✕ appel manqué &mdash; aucune réponse</div>
+        <div class="dim" data-role="pl3">le lendemain — il a réservé ailleurs</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Un rendez-vous perdu, en silence.</div>
+  </div>
+<div class="scene scene-2" data-s="10.36" data-d="4.9">
+    <div class="tipnum" data-role="n2">8 s</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2" style="color:var(--accent-yellow);">La solution</div>
+      <div class="title" data-role="t2" style="font-size:72px;">Vapi décroche en<br><span class="y">8 secondes.</span></div>
+    </div>
+    <div class="card" data-role="c2" style="top:490px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">vapi-agent.live</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pw1">▶ appel entrant…</div>
+        <div class="grn" data-role="pw2">✓ décroché en 8 s</div>
+        <div class="lit" data-role="pw3">🎙 agent IA en ligne</div>
+      </div>
+    </div>
+    <div class="badge247" data-role="b247">
+      <div class="pill"><b>24 h / 24</b> · 7 j / 7</div>
+      <div class="pill">même à <b>3 h</b> du matin</div>
+    </div>
+  </div>
+<div class="scene scene-3" data-s="15.26" data-d="4.18">
+    <div class="pad">
+      <div class="kicker" data-role="k3">Ce qu'il fait seul</div>
+      <div class="title" data-role="t3" style="font-size:74px;">Il gère l'appel<br><span class="y">de A à Z.</span></div>
+    </div>
+    <div class="moves">
+      <div class="mv ok" data-role="mv1"><span class="tag">✓</span>Comprend la demande</div>
+      <div class="mv ok" data-role="mv2"><span class="tag">✓</span>Prend le rendez-vous</div>
+      <div class="mv ok" data-role="mv3"><span class="tag">✓</span>Transmet l'urgence</div>
+    </div>
+  </div>
+<div class="scene scene-4" data-s="19.44" data-d="3.06">
+    <div class="pad">
+      <div class="kicker" data-role="k4">Ce que tu supprimes</div>
+      <div class="title" data-role="t4" style="font-size:70px;">Zéro coût,<br><span class="o">zéro appel perdu.</span></div>
+    </div>
+    <div class="moves">
+      <div class="mv ko" data-role="mvk1"><span class="tag">✕</span>Un standardiste à payer<span class="strike" data-role="sk1"></span></div>
+      <div class="mv ko" data-role="mvk2"><span class="tag">✕</span>Un appel qui tombe dans le vide<span class="strike" data-role="sk2"></span></div>
+    </div>
+  </div>
+  <video id="broll" class="broll-vid" src="assets/broll-creator.mp4" data-start="22.5" data-duration="2.55" muted playsinline></video>
+  <div class="scene scene-broll" data-s="22.5" data-d="2.55"><div class="broll-grad"></div></div>
+<div class="scene scene-5" data-s="25.05" data-d="5.69">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Résultat cette semaine</div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>rendez-vous manqués</span><span><b>→ zéro</b></span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">VOCAL</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">VOCAL</span><br>je t'envoie le montage</div>
+    <div class="cta-follow" data-role="ctafollow">&mdash; mais seulement si tu me suis</div>
+  </div>
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="30.74" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="30.74"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="30.74"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="30.74"></div>
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="30.7" data-volume="1"></audio>
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="30.74" data-volume="0.05"></audio>
+  <audio id="sfx-hook" src="assets/sfx-glitch-hard.mp3" data-start="0.1" data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp" src="assets/sfx-impact.mp3" data-start="0.1" data-volume="0.2"></audio>
+  <audio id="sfx-verdict" src="assets/sfx-notify.mp3" data-start="8.4" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-1" src="assets/sfx-zoom.mp3" data-start="9.16" data-volume="0.17"></audio>
+  <audio id="sfx-hook-2" src="assets/sfx-glitch-soft.mp3" data-start="10.46" data-volume="0.15"></audio>
+  <audio id="sfx-8s" src="assets/sfx-notify.mp3" data-start="13.1" data-volume="0.16"></audio>
+  <audio id="sfx-confirm" src="assets/sfx-confirm.mp3" data-start="13.3" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-2" src="assets/sfx-zoom.mp3" data-start="14.06" data-volume="0.17"></audio>
+  <audio id="sfx-click-s3" src="assets/sfx-click.mp3" data-start="15.4" data-volume="0.18"></audio>
+  <audio id="sfx-m1" src="assets/sfx-click-soft.mp3" data-start="15.7" data-volume="0.13"></audio>
+  <audio id="sfx-m2" src="assets/sfx-click-soft.mp3" data-start="16.8" data-volume="0.13"></audio>
+  <audio id="sfx-m3" src="assets/sfx-click-soft.mp3" data-start="17.75" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-3" src="assets/sfx-zoom.mp3" data-start="18.24" data-volume="0.19"></audio>
+  <audio id="sfx-click-s4" src="assets/sfx-click.mp3" data-start="19.6" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-4" src="assets/sfx-zoom.mp3" data-start="21.3" data-volume="0.19"></audio>
+  <audio id="sfx-strike-1" src="assets/sfx-whoosh-lat.mp3" data-start="20.9" data-volume="0.14"></audio>
+  <audio id="sfx-strike-2" src="assets/sfx-whoosh-lat.mp3" data-start="21.6" data-volume="0.14"></audio>
+  <audio id="sfx-arrow" src="assets/sfx-whoosh-lat.mp3" data-start="22.6" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-5" src="assets/sfx-zoom.mp3" data-start="23.85" data-volume="0.19"></audio>
+  <audio id="sfx-limit" src="assets/sfx-notify.mp3" data-start="25.35" data-volume="0.16"></audio>
+  <audio id="sfx-cta-pop" src="assets/sfx-pop.mp3" data-start="28.4" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp" src="assets/sfx-impact.mp3" data-start="28.4" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub" src="assets/sfx-click-soft.mp3" data-start="29.65" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost102vapivocal";
+const DUR=30.74;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* scenes auto fade */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* scene 1 — hook */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.05);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.40);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},2.55);
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},4.20);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},8.40);
+
+/* scene 2 — solution */
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},10.36+0.20);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},10.36+0.40);
+tl.fromTo(R("c2"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},10.36+0.85);
+tl.fromTo(R("pw1"),{opacity:0},{opacity:1,duration:0.3},10.36+1.10);
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},13.10);
+tl.fromTo(R("pw2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},13.30);
+tl.fromTo(R("pw3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},14.00);
+tl.fromTo(R("b247"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4,ease:"power3.out"},14.50);
+
+/* scene 3 — capacités */
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},15.26+0.15);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},15.26+0.35);
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},15.70);
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},16.80);
+tl.fromTo(R("mv3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},17.75);
+
+/* scene 4 — bénéfices (barrés) */
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},19.44+0.15);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},19.44+0.35);
+tl.fromTo(R("mvk1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},19.90);
+tl.fromTo(R("mvk2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},20.55);
+tl.fromTo(R("sk1"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},20.95);
+tl.fromTo(R("sk2"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},21.55);
+
+/* scene 5 — preuve + CTA */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.05+0.15);
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},25.05+0.30);
+tl.fromTo(R("fill"),{scaleX:1},{scaleX:0.04,duration:1.0,ease:"power2.inOut"},25.55);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},28.40);
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:3,yoyo:true},28.95);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},29.60);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},30.10);
+
+/* captions */
+const caps=[[0.556, "UN CLIENT T'APPELLE À", ""], [1.502, "22 HEURES", "hot:22 HEURES"], [2.485, "PERSONNE NE DÉCROCHE", "ohot:DÉCROCHE"], [4.088, "LE LENDEMAIN IL A", ""], [5.151, "RÉSERVÉ AILLEURS", "hot:AILLEURS"], [6.601, "ET TU NE L'AS JAMAIS", ""], [7.416, "SU", ""], [8.273, "UN RENDEZ-VOUS PERDU", "ohot:PERDU"], [9.465, "EN SILENCE", ""], [10.658, "MAINTENANT VAPI", "hot:VAPI"], [12.137, "DÉCROCHE", ""], [13.233, "EN 8 SECONDES", "hot:8 SECONDES"], [14.454, "JOUR ET NUIT", "vhot:JOUR ET NUIT"], [15.593, "IL COMPREND LA DEMANDE", "hot:COMPREND"], [16.761, "PREND LE RENDEZ-VOUS", "hot:RENDEZ-VOUS"], [17.723, "OU TRANSMET L'URGENCE", "ohot:L'URGENCE"], [19.709, "PAS DE STANDARDISTE À", "ohot:STANDARDISTE"], [21.677, "PAYER", ""], [22.864, "JE L'AI INSTALLÉ CETTE", ""], [24.413, "SEMAINE", ""], [25.249, "RENDEZ-VOUS MANQUÉS :", ""], [26.587, "ZÉRO", "hot:ZÉRO"], [27.402, "SUIS-MOI POUR LA SUITE", ""], [28.423, "COMMENTE LE MOT VOCAL", "hot:VOCAL"], [29.716, "JE T'ENVOIE LE MONTAGE", "hot:MONTAGE"]];
+const band=$("#caption-band");
+const VEND=30.7;
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:VEND;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},Math.max(start+0.2,end-0.16));
+});
+
+/* rail bars */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:29,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:29,yoyo:true},0.52);
+
+/* avatar ring/orbit */
+const BROLL_START=22.5, BROLL_END=25.05;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:45,yoyo:true},0);
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:11,yoyo:true},BROLL_END);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:10,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:3,ease:"none"},BROLL_END);
+
+/* pulse violet on drops (not during broll) */
+var LEAD=0.12;
+[2.34, 10.36, 18.38, 26.4].forEach(function(t){
+  if(t>BROLL_START-0.3 && t<BROLL_END+0.3) return;
+  var s=t-LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
