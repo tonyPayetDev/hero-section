@@ -12,13 +12,16 @@ export default function compose(scenes, words, opts) {
   // ---------------------------------------------------------------- camera layouts
   const src = [opts.camW, opts.camH];
   const face = [opts.camW / 2, opts.camH * 0.36];
-  const k = opts.camH / 1920;              // the 74 crops were measured on a 1080x1920 take
+  // how tight each shape frames the face: 1 = the whole width of the take, smaller = closer (0.88 keeps the shoulders)
+  const ZOOM = { circle: 0.88, big: 0.92, rect: 1, split: 1 };
+  const crop = (box, z) => Math.min(opts.camH, opts.camW / (box[2] / box[3])) * z;
+  const B = { circle: [220, 1100, 640, 640], big: [160, 980, 760, 760], rect: [24, 1000, 1032, 920], split: [24, 420, 500, 1290] };
   const L = {
     full: camMode([0, 0, W, H], face, src),
-    circle: camMode([220, 1100, 640, 640], face, src, 940 * k, 320),
-    big: camMode([160, 980, 760, 760], face, src, 940 * k, 380),
-    rect: camMode([24, 1000, 1032, 920], face, src, 920 * k, 34),
-    split: camMode([24, 420, 500, 1290], face, src, 1240 * k, 30),
+    circle: camMode(B.circle, face, src, crop(B.circle, ZOOM.circle), 320),
+    big: camMode(B.big, face, src, crop(B.big, ZOOM.big), 380),
+    rect: camMode(B.rect, face, src, crop(B.rect, ZOOM.rect), 34),
+    split: camMode(B.split, face, src, crop(B.split, ZOOM.split), 30),
   };
   let alt = 0;
   const layoutOf = (sc) => {
