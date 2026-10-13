@@ -344,6 +344,41 @@ dans le rapport que la publication réelle est hors de portée de cette session,
 les fichiers prêts (video.mp4 + index.html + PROMPT.md) pour qu'une session avec le bon
 accès les copie dans le vrai dépôt et déclenche Coolify.
 
+### ⚠️ `video.mp4` committé ≠ `video.mp4` servi — les vidéos vivent sur R2 depuis le 2026-09-05 (piège payé le 2026-10-13)
+
+Même avec le bon accès GitHub, un commit + push + déploiement Coolify réussi **ne suffit
+pas**. Dans `tonyPayetDev/previsualisation`, `nginx.conf` contient :
+
+```nginx
+location ~ ^/([^/]+)/video\.mp4$ {
+    return 302 https://assets.automatisationboost.com/previsualisation/$1/video.mp4;
+}
+```
+
+Cette règle redirige **systématiquement** toute requête `/<route>/video.mp4` vers Cloudflare
+R2, qu'un fichier `video.mp4` existe ou non dans le dossier de la route sur le dépôt. Le
+fichier committé dans le dépôt n'est donc **jamais servi par cette URL** — il reste présent
+pour d'autres routes par habitude, mais est mort du point de vue de la route vidéo. Tant que
+l'objet R2 `previsualisation/<route>/video.mp4` n'existe pas, l'étape 4bis renvoie un 404
+bien réel (confirmé aussi sur une route ancienne déjà publiée, utilisée comme témoin), même
+après un déploiement Coolify `status: finished`.
+
+**Avant de déclarer la vidéo disponible, téléverser le fichier sur R2** :
+workflow n8n actif `Upload asset previsualisation vers R2` — `POST
+https://n7n.automatisationboost.com/webhook/upload-r2-asset` en multipart (champ `data`) +
+`?cle=previsualisation/<route>/video.mp4`, répond `{url}`. Depuis une session sans upload
+multipart facile (ex. via le MCP n8n), créer plutôt un petit workflow ponctuel qui va chercher
+le fichier via `raw.githubusercontent.com/tonyPayetDev/previsualisation/main/<route>/video.mp4`
+(puisqu'il est de toute façon déjà committé) et le pousse vers le bucket S3 `email` (credential
+n8n « S3 account ») avec `fileName: previsualisation/<route>/video.mp4` et `acl: publicRead` —
+c'est la même recette que le node `Televerser vers R2` du workflow ci-dessus, dupliquée.
+
+Vérifier d'abord l'URL R2 directe (`https://assets.automatisationboost.com/previsualisation/<route>/video.mp4`)
+pour isoler le problème : si elle répond 200 mais que `previsualisation.automatisationboost.com/<route>/video.mp4`
+répond encore 404 juste après l'upload, c'est un résidu de cache Cloudflare édge — réessayer
+avec `followRedirects: true` explicite et un header `Cache-Control: no-cache` suffit en
+général, sinon patienter quelques instants.
+
 ## Statut (2026-08-14)
 
 - Banque : manifest + prompts figés, C2 = mot-clé AUTOMATION (corrigé).
