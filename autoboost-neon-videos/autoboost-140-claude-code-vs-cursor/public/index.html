@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Autoboost 140 — Claude Code vs Cursor</title>
+<script src="gsap.min.js"></script>
+<style>
+  @font-face {
+    font-family: 'Inter';
+    src: local('Inter');
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0a0a0f; font-family: 'Inter', 'DejaVu Sans', sans-serif; }
+  #root {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: #0a0a0f;
+    color: #EDEDED;
+  }
+
+  /* ---------- background chrome (static, not a timed clip) ---------- */
+  .bg-base { position:absolute; inset:0; background: radial-gradient(circle at 20% 10%, rgba(139,92,246,0.14), transparent 55%), radial-gradient(circle at 85% 85%, rgba(234,179,8,0.10), transparent 50%), #0a0a0f; }
+  .bg-grid {
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(35,35,48,0.55) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(35,35,48,0.55) 1px, transparent 1px);
+    background-size: 54px 54px;
+    opacity: 0.5;
+  }
+  .wordmark { position:absolute; left:48px; bottom:40px; font-size:22px; font-weight:800; letter-spacing:.08em; color:#8A8A8A; z-index:5; }
+  .wordmark b { color:#eab308; }
+
+  /* ---------- header kicker (S2-S5) ---------- */
+  #headerBar { position:absolute; top:70px; left:0; width:1080px; text-align:center; z-index:6; }
+  #headerBar .brand { font-size:30px; font-weight:800; letter-spacing:.12em; color:#EDEDED; }
+  #headerBar .brand b { color:#eab308; }
+  #headerBar .kicker {
+    display:inline-block; margin-top:14px; padding:10px 28px; border-radius:40px;
+    background:#111117; border:1px solid #232330; color:#BEF264;
+    font-size:21px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  }
+
+  /* ---------- CTA top pill (S6) ---------- */
+  #ctaTop { position:absolute; top:66px; left:0; width:1080px; text-align:center; z-index:6; }
+  #ctaTop .pill {
+    display:inline-block; padding:16px 44px; border-radius:50px;
+    background:#eab308; color:#0a0a0f; font-size:34px; font-weight:800; letter-spacing:.04em;
+    box-shadow: 0 0 40px rgba(234,179,8,.55);
+  }
+  #ctaTop .pill b { font-size:40px; }
+
+  /* ---------- avatar windows ---------- */
+  .avatar-win {
+    position:absolute; left:216px; top:150px; width:648px; height:1152px;
+    border-radius:30px; border:3px solid rgba(255,230,0,0.60);
+    background:#050507; overflow:hidden; z-index:4;
+    box-shadow: 0 0 0 rgba(234,179,8,0);
+  }
+  .avatar-win .live {
+    position:absolute; top:22px; left:22px; padding:6px 16px; border-radius:20px;
+    background:#b91c1c; color:#fff; font-size:16px; font-weight:800; letter-spacing:.1em; z-index:5;
+  }
+  .avatar-full { position:absolute; inset:0; background:#050507; z-index:3; }
+
+  /* ---------- hook title ---------- */
+  #hookTitle {
+    position:absolute; left:0; width:1080px; bottom:170px; text-align:center; z-index:7;
+    padding: 0 70px;
+  }
+  #hookTitle .tag { font-size:26px; font-weight:800; letter-spacing:.1em; color:#BEF264; text-transform:uppercase; }
+  #hookTitle .price { font-size:108px; font-weight:800; color:#eab308; line-height:1; margin-top:10px; text-shadow:0 0 50px rgba(234,179,8,.5); }
+  #hookTitle .sub { font-size:30px; font-weight:700; color:#EDEDED; margin-top:10px; }
+
+  /* ---------- S2 strip label (below avatar window, above captions) ---------- */
+  #introLabel { position:absolute; left:0; width:1080px; top:1330px; text-align:center; z-index:6;
+    font-size:28px; font-weight:800; color:#8b5cf6; letter-spacing:.04em; }
+
+  /* ---------- demo terminal panel (S3) ---------- */
+  #demoPanel { position:absolute; left:90px; top:560px; width:900px; height:760px; border-radius:22px;
+    background:#111117; border:1px solid #232330; z-index:6; overflow:hidden; }
+  #demoPanel .titlebar { height:56px; background:#15151d; display:flex; align-items:center; padding:0 22px; gap:10px; border-bottom:1px solid #232330; }
+  #demoPanel .dot { width:14px; height:14px; border-radius:50%; background:#44404a; }
+  #demoPanel .fname { margin-left:16px; color:#8A8A8A; font-size:18px; font-weight:700; letter-spacing:.06em; }
+  #demoPanel .body { padding: 34px 40px; font-family: 'DejaVu Sans Mono', monospace; }
+  #demoPanel .cmd { color:#BEF264; font-size:28px; font-weight:700; }
+  #demoPanel .cmd .caret { color:#EDEDED; }
+  .chk-item { display:flex; align-items:center; gap:18px; margin-top:30px; opacity:0; }
+  .chk-item .mark { width:46px; height:46px; min-width:46px; border-radius:50%; background:#1a2e0f; color:#BEF264; border:2px solid #BEF264;
+    display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; }
+  .chk-item.cross .mark { background:#2a1414; color:#ff6b6b; border-color:#ff6b6b; }
+  .chk-item .label { font-size:27px; font-weight:700; color:#EDEDED; }
+
+  /* ---------- carton transformation (S4) ---------- */
+  #carton { position:absolute; left:110px; top:720px; width:860px; z-index:6; text-align:center; opacity:0; }
+  #carton .before { font-size:40px; font-weight:800; color:#8A8A8A; text-decoration: line-through; letter-spacing:.03em; }
+  #carton .arrow { font-size:54px; color:#8b5cf6; margin: 18px 0; font-weight:800; }
+  #carton .after { font-size:72px; font-weight:800; color:#eab308; text-shadow:0 0 40px rgba(234,179,8,.45); }
+  #carton .note { margin-top:18px; font-size:26px; font-weight:700; color:#BEF264; }
+
+  /* ---------- reality punch (S5) ---------- */
+  #punch { position:absolute; left:90px; top:800px; width:900px; z-index:6; text-align:center; opacity:0; }
+  #punch .l1 { font-size:46px; font-weight:800; color:#EDEDED; }
+  #punch .l2 { font-size:82px; font-weight:800; color:#eab308; margin-top:22px; text-shadow:0 0 50px rgba(234,179,8,.5); }
+
+  /* ---------- CTA lower note (S6) ---------- */
+  #ctaNote { position:absolute; left:0; width:1080px; top:1330px; text-align:center; z-index:6;
+    font-size:27px; font-weight:700; color:#EDEDED; }
+  #ctaNote b { color:#eab308; }
+
+  /* ---------- captions ---------- */
+  #captionBand { position:absolute; left:60px; width:960px; top:1420px; text-align:center; z-index:8; }
+  .cap-line { position:absolute; left:0; width:960px; text-align:center;
+    font-size:40px; font-weight:800; color:#fff; text-shadow: 0 2px 0 #000, 0 0 10px rgba(0,0,0,.8); opacity:0; }
+  .cap-line .hot { color:#eab308; text-shadow: 0 2px 0 #000, 0 0 20px rgba(234,179,8,.8); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="autoboost140" data-width="1080" data-height="1920" data-duration="30.6">
+
+  <div class="bg-base"></div>
+  <div class="bg-grid"></div>
+  <div class="wordmark">AUTO<b>BOOST</b></div>
+
+  <!-- S1 HOOK 0 -> 3.597, avatar plein cadre (A1) -->
+  <div id="avatarFull" class="avatar-full clip" data-start="0" data-duration="3.597" data-track-index="3"></div>
+  <div id="hookTitle" class="clip" data-start="0" data-duration="3.597" data-track-index="7">
+    <div class="tag">Cursor te facture</div>
+    <div class="price">20$<span style="font-size:48px">/mois</span></div>
+    <div class="sub">pour coder avec une IA</div>
+  </div>
+
+  <!-- header kicker, S2 -> S5 (3.597 -> 23.483) -->
+  <div id="headerBar" class="clip" data-start="3.597" data-duration="19.886" data-track-index="2">
+    <div class="brand">AUTO<b>BOOST</b></div>
+    <div class="kicker">Claude Code vs Cursor</div>
+  </div>
+
+  <!-- CTA top pill, S6 (23.483 -> 30.6) -->
+  <div id="ctaTop" class="clip" data-start="23.483" data-duration="7.117" data-track-index="2">
+    <div class="pill">COMMENTE <b>IDE</b></div>
+  </div>
+
+  <!-- S2 avatar window (B1) 3.597 -> 7.236 -->
+  <div id="winAvatar1" class="avatar-win clip" data-start="3.597" data-duration="3.639" data-track-index="4">
+    <div class="live">LIVE</div>
+  </div>
+  <div id="introLabel" class="clip" data-start="3.597" data-duration="3.639" data-track-index="6">
+    sans abonnement obligatoire
+  </div>
+
+  <!-- S3 demo terminal 7.236 -> 15.572 -->
+  <div id="demoPanel" class="clip" data-start="7.236" data-duration="8.336" data-track-index="6">
+    <div class="titlebar"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="fname">~/projet — claude code</div></div>
+    <div class="body">
+      <div class="cmd">$ claude "corrige mon projet"<span class="caret">▌</span></div>
+      <div id="chkList"></div>
+    </div>
+  </div>
+
+  <!-- S4 carton transformation 15.572 -> 19.828 -->
+  <div id="carton" class="clip" data-start="15.572" data-duration="4.256" data-track-index="6">
+    <div class="before">CURSOR — 20$/MOIS</div>
+    <div class="arrow">▼</div>
+    <div class="after">TERMINAL, 0€</div>
+    <div class="note">aucun abonnement obligatoire</div>
+  </div>
+
+  <!-- S5 reality punch 19.828 -> 23.483 -->
+  <div id="punch" class="clip" data-start="19.828" data-duration="3.655" data-track-index="6">
+    <div class="l1">raide au début…</div>
+    <div class="l2">2X PLUS RAPIDE</div>
+  </div>
+
+  <!-- S6 avatar window (C2) 23.483 -> 28.233 -->
+  <div id="winAvatar2" class="avatar-win clip" data-start="23.483" data-duration="4.75" data-track-index="4">
+    <div class="live">LIVE</div>
+  </div>
+  <div id="ctaNote" class="clip" data-start="23.483" data-duration="7.117" data-track-index="7">
+    commente le mot <b>IDE</b> — guide gratuit
+  </div>
+
+  <!-- captions container (individual caption clips injected by script) -->
+  <div id="captionBand"></div>
+
+</div>
+
+<script>
+window.__timelines = window.__timelines || {};
+var tl = gsap.timeline({ paused: true });
+
+// ---------------- data ----------------
+var CAPTIONS = [{"start":0.0,"end":0.956,"words":["Cursor","facture","vingt"],"hot":0},{"start":0.956,"end":1.7,"words":["dollars","par","mois"],"hot":0},{"start":1.7,"end":2.391,"words":["pour","coder","avec"],"hot":2},{"start":2.391,"end":2.88,"words":["une","IA","dans"],"hot":2},{"start":2.88,"end":3.597,"words":["ton","éditeur."],"hot":1},{"start":3.597,"end":4.341,"words":["Claude","Code","fait"],"hot":0},{"start":4.341,"end":5.217,"words":["pareil,","depuis","ton"],"hot":0},{"start":5.217,"end":6.466,"words":["terminal,","sans","abonnement"],"hot":0},{"start":6.466,"end":7.236,"words":["obligatoire."],"hot":0},{"start":7.236,"end":8.097,"words":["Pas","d'interface","à"],"hot":2},{"start":8.097,"end":8.612,"words":["ouvrir",":"],"hot":1},{"start":8.612,"end":9.048,"words":["il","lit","ton"],"hot":2},{"start":9.048,"end":10.031,"words":["projet","entier,","écrit"],"hot":0},{"start":10.031,"end":10.706,"words":["le","code,","lance"],"hot":1},{"start":10.706,"end":11.582,"words":["les","tests,","corrige"],"hot":1},{"start":11.582,"end":12.31,"words":["les","erreurs,","et"],"hot":1},{"start":12.31,"end":13.373,"words":["pilote","d'autres","outils"],"hot":2},{"start":13.373,"end":13.888,"words":["via","MCP,","ce"],"hot":1},{"start":13.888,"end":14.483,"words":["que","Cursor","ne"],"hot":1},{"start":14.483,"end":15.572,"words":["fait","pas","nativement."],"hot":2},{"start":15.572,"end":16.327,"words":["Je","l'utilise","sur"],"hot":2},{"start":16.327,"end":17.07,"words":["tous","mes","projets"],"hot":2},{"start":17.07,"end":17.676,"words":["clients","et","je"],"hot":0},{"start":17.676,"end":18.42,"words":["n'ai","plus","ouvert"],"hot":2},{"start":18.42,"end":19.217,"words":["Cursor","depuis","des"],"hot":0},{"start":19.217,"end":19.828,"words":["semaines."],"hot":0},{"start":19.828,"end":20.327,"words":["La","prise","en"],"hot":2},{"start":20.327,"end":20.816,"words":["main","est","un"],"hot":2},{"start":20.816,"end":21.358,"words":["peu","raide","au"],"hot":1},{"start":21.358,"end":22.341,"words":["début,","ensuite","c'est"],"hot":2},{"start":22.341,"end":22.978,"words":["deux","fois","plus"],"hot":2},{"start":22.978,"end":23.483,"words":["rapide."],"hot":0},{"start":23.483,"end":23.983,"words":["Si","tu","payes"],"hot":2},{"start":23.983,"end":24.949,"words":["encore","un","abonnement"],"hot":2},{"start":24.949,"end":25.651,"words":["éditeur","IA","sans"],"hot":2},{"start":25.651,"end":26.235,"words":["être","sûr","d'en"],"hot":2},{"start":26.235,"end":27.324,"words":["avoir","besoin,","commente"],"hot":2},{"start":27.324,"end":27.84,"words":["le","mot","IDE,"],"hot":2},{"start":27.84,"end":28.498,"words":["je","t'envoie","le"],"hot":2},{"start":28.498,"end":30.066,"words":["guide","d'installation","complet."],"hot":0}];
+
+var CHECKLIST = [
+  { t: 8.612, label: "Lecture du projet" },
+  { t: 9.77,  label: "Écrit le code" },
+  { t: 10.706, label: "Lance les tests" },
+  { t: 11.582, label: "Corrige les erreurs" },
+  { t: 12.63, label: "Connecté via MCP" },
+  { t: 13.888, label: "Cursor : pas nativement", cross: true }
+];
+
+// ---------------- captions: build DOM + timeline synchronously ----------------
+var band = document.getElementById('captionBand');
+CAPTIONS.forEach(function (c, i) {
+  var el = document.createElement('div');
+  el.className = 'cap-line';
+  el.innerHTML = c.words.map(function (w, wi) {
+    return wi === c.hot ? '<span class="hot">' + w + '</span>' : w;
+  }).join(' ');
+  band.appendChild(el);
+  var dur = Math.max(0.08, c.end - c.start);
+  tl.set(el, { opacity: 0, y: 10 }, c.start);
+  tl.to(el, { opacity: 1, y: 0, duration: 0.12, ease: 'power2.out' }, c.start);
+  tl.to(el, { opacity: 0, duration: 0.10, ease: 'power1.in' }, Math.max(c.start + 0.02, c.end - 0.08));
+});
+
+// ---------------- demo checklist: build DOM + timeline synchronously ----------------
+var chkList = document.getElementById('chkList');
+CHECKLIST.forEach(function (item) {
+  var el = document.createElement('div');
+  el.className = 'chk-item' + (item.cross ? ' cross' : '');
+  el.innerHTML = '<div class="mark">' + (item.cross ? '✗' : '✓') + '</div><div class="label">' + item.label + '</div>';
+  chkList.appendChild(el);
+  tl.set(el, { opacity: 0, y: 24, scale: 0.85 }, item.t);
+  tl.to(el, { opacity: 1, y: 0, scale: 1, duration: 0.42, ease: 'back.out(2.2)' }, item.t);
+});
+
+// ---------------- scene reveals ----------------
+tl.from('#hookTitle .tag', { opacity: 0, y: 24, duration: 0.4, ease: 'power3.out' }, 0.05);
+tl.from('#hookTitle .price', { opacity: 0, scale: 0.7, duration: 0.5, ease: 'back.out(2.4)' }, 0.18);
+tl.from('#hookTitle .sub', { opacity: 0, y: 16, duration: 0.4, ease: 'power3.out' }, 0.42);
+
+tl.from('#headerBar', { opacity: 0, y: -14, duration: 0.4, ease: 'power3.out' }, 3.597);
+tl.to('#headerBar', { opacity: 0, duration: 0.25, ease: 'power1.in' }, 23.2);
+
+tl.from('#winAvatar1', { opacity: 0, scale: 0.94, duration: 0.35, ease: 'power3.out' }, 3.597);
+tl.to('#winAvatar1', { boxShadow: '0 0 60px rgba(234,179,8,.65)', duration: 0.9, ease: 'sine.inOut', repeat: 3, yoyo: true }, 3.597);
+tl.from('#introLabel', { opacity: 0, y: 12, duration: 0.35, ease: 'power3.out' }, 3.75);
+
+tl.from('#demoPanel', { opacity: 0, y: 30, duration: 0.4, ease: 'power3.out' }, 7.236);
+tl.to('#demoPanel', { opacity: 0, duration: 0.25, ease: 'power1.in' }, 15.3);
+
+tl.set('#carton', { opacity: 1 }, 15.65);
+tl.from('#carton .before', { opacity: 0, y: 20, duration: 0.35, ease: 'power3.out' }, 15.75);
+tl.from('#carton .arrow', { opacity: 0, scale: 0.6, duration: 0.3, ease: 'back.out(2.6)' }, 16.2);
+tl.from('#carton .after', { opacity: 0, scale: 0.7, duration: 0.45, ease: 'back.out(2.2)' }, 16.55);
+tl.from('#carton .note', { opacity: 0, duration: 0.3, ease: 'power2.out' }, 17.1);
+tl.to('#carton', { opacity: 0, duration: 0.25, ease: 'power1.in' }, 19.55);
+
+tl.set('#punch', { opacity: 1 }, 19.9);
+tl.from('#punch .l1', { opacity: 0, y: 20, duration: 0.35, ease: 'power3.out' }, 19.95);
+tl.from('#punch .l2', { opacity: 0, scale: 0.75, duration: 0.5, ease: 'back.out(2.4)' }, 20.9);
+tl.to('#punch', { opacity: 0, duration: 0.25, ease: 'power1.in' }, 23.2);
+
+tl.from('#ctaTop', { opacity: 0, y: -14, duration: 0.4, ease: 'power3.out' }, 23.483);
+tl.to('#ctaTop .pill', { boxShadow: '0 0 70px rgba(234,179,8,.8)', duration: 0.7, ease: 'sine.inOut', repeat: 5, yoyo: true }, 23.6);
+
+tl.from('#winAvatar2', { opacity: 0, scale: 0.94, duration: 0.35, ease: 'power3.out' }, 23.483);
+tl.to('#winAvatar2', { boxShadow: '0 0 60px rgba(234,179,8,.65)', duration: 0.9, ease: 'sine.inOut', repeat: 4, yoyo: true }, 23.483);
+
+tl.from('#ctaNote', { opacity: 0, y: 14, duration: 0.35, ease: 'power3.out' }, 23.7);
+
+window.__timelines['autoboost140'] = tl;
+</script>
+</body>
+</html>
