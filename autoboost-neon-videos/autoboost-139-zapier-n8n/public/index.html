@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-6{background:radial-gradient(circle at 50% 42%,#1a1200 0%,#050505 72%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.6;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;}
+.mono .lock{color:#060606;background:var(--accent-yellow);border-radius:5px;padding:1px 6px;font-weight:700;}
+.mono .bad{color:#060606;background:var(--bad);border-radius:5px;padding:1px 6px;font-weight:700;}
+.verdict{position:absolute;left:90px;right:90px;top:830px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- COMPARAISON chips (scene 2) ---------- */
+.vs{position:absolute;left:90px;right:90px;top:500px;display:flex;flex-direction:column;gap:22px;}
+.vsrow{display:flex;align-items:center;gap:22px;padding:26px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:38px;font-weight:800;color:#cfd2da;opacity:0;position:relative;}
+.vsrow .who{width:160px;flex:0 0 160px;}
+.vsrow .amt{margin-left:auto;font-size:40px;font-weight:900;}
+.vsrow.ko{border-color:rgba(255,95,87,.5);} .vsrow.ko .amt{color:var(--bad);}
+.vsrow.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);} .vsrow.ok .amt{color:var(--good);}
+.vsrow .strike{position:absolute;left:30px;right:30px;top:50%;height:3px;background:var(--bad);transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+
+/* ---------- FLOW serveur (scene 3) ---------- */
+.flow{position:absolute;left:70px;right:70px;top:500px;display:flex;align-items:center;justify-content:center;gap:24px;}
+.fnode{padding:26px 22px;border-radius:20px;background:#0d0d12;border:1px solid #2a2140;text-align:center;opacity:0;min-width:210px;}
+.fnode .ico{font-size:52px;} .fnode .lbl{font-size:28px;font-weight:800;color:#fff;margin-top:10px;}
+.fnode .sub{font-size:22px;color:var(--muted);margin-top:4px;}
+.farr{color:var(--violet);font-size:46px;font-weight:900;opacity:0;}
+.fnode.hot{border-color:var(--accent-yellow);box-shadow:0 0 40px rgba(255,230,0,.25);}
+.fnode.hot .inf{color:var(--accent-yellow);font-size:64px;font-weight:900;}
+
+/* ---------- MIGRATION list (scene 4) ---------- */
+.migs{position:absolute;left:80px;right:80px;top:490px;display:flex;flex-direction:column;gap:22px;}
+.mig{display:flex;align-items:center;gap:22px;padding:26px 32px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:38px;font-weight:800;color:#fff;opacity:0;}
+.mig .tag{width:48px;height:48px;flex:0 0 48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:900;background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+.mig .done{margin-left:auto;font-size:28px;font-weight:900;color:var(--good);}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- SAVINGS (scene 5) ---------- */
+.save{position:absolute;left:120px;right:120px;top:470px;opacity:0;}
+.save .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.save .lab b{color:var(--accent-yellow);}
+.save .track{height:18px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.save .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+.save .amt{text-align:center;margin-top:26px;font-size:60px;font-weight:900;color:var(--accent-yellow);text-shadow:0 0 40px rgba(255,230,0,.4);opacity:0;}
+.save .amt span{color:var(--orange);}
+.bigverdict{position:absolute;left:90px;right:90px;top:790px;text-align:center;font-size:56px;font-weight:900;color:#fff;opacity:0;line-height:1.05;}
+.bigverdict .y{color:var(--accent-yellow);}
+
+/* ---------- CTA (scene 6) ---------- */
+.cta-word{position:absolute;left:0;right:0;top:470px;text-align:center;font-size:150px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:4px;text-shadow:0 0 60px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:680px;text-align:center;font-size:42px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-sub span{color:var(--accent-yellow);font-weight:900;}
+.cta-follow{position:absolute;left:80px;right:80px;top:830px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS (gabarit seedance : 40px + cap-plate) ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:42px;transform:translateX(-50%);white-space:nowrap;
+  font-size:27px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:996px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de public/assets/voice.mp3
+     (ffmpeg silencedetect=noise=-40dB:d=0.18).
+     Coupes de scène posées DANS les silences : 5.50 / 9.10 / 15.55 / 21.65(broll) / 24.00 / 30.40 -->
+<div id="root" data-composition-id="autoboost139zap" data-start="0" data-width="1080" data-height="1920" data-duration="34.90">
+
+  <!-- SCENE 1 — HOOK : l'addition Zapier (1.09 -> 5.25) -->
+  <div class="scene scene-1" data-s="0" data-d="5.50">
+    <div class="pad">
+      <div class="kicker" data-role="k1">L'addition Zapier</div>
+      <div class="title" data-role="t1">Cent euros<br><span class="o">par mois.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">zapier-facture.txt</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">Plan Pro — 20 tâches / mois</div>
+        <div class="lit" data-role="pl2"><span class="lock">100 € / mois</span></div>
+        <div class="dim" data-role="pl3">et ça compte chaque exécution…</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Et ça plafonne vite.</div>
+  </div>
+
+  <!-- SCENE 2 — n8n : dix fois plus, zéro euro (5.85 -> 8.79) -->
+  <div class="scene scene-2" data-s="5.50" data-d="3.60">
+    <div class="pad">
+      <div class="kicker" data-role="k2" style="color:var(--accent-yellow);">La bascule</div>
+      <div class="title" data-role="t2">n8n en fait<br><span class="y">dix fois plus.</span></div>
+    </div>
+    <div class="vs">
+      <div class="vsrow ko" data-role="vs1"><span class="who">Zapier</span>abonnement mensuel<span class="amt">100 €</span><span class="strike" data-role="vstrike"></span></div>
+      <div class="vsrow ok" data-role="vs2"><span class="who">n8n</span>auto-hébergé<span class="amt">0 €</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — auto-hébergé, prix d'un café, zéro plafond (9.47 -> 15.31) -->
+  <div class="scene scene-3" data-s="9.10" data-d="6.45">
+    <div class="pad">
+      <div class="kicker" data-role="k3">Auto-hébergé</div>
+      <div class="title" data-role="t3" style="font-size:72px;">Le prix d'un <span class="y">café</span><br>par mois</div>
+    </div>
+    <div class="flow">
+      <div class="fnode" data-role="f1"><div class="ico">🖥️</div><div class="lbl">Petit serveur</div><div class="sub">~5 € / mois</div></div>
+      <div class="farr" data-role="farr1">→</div>
+      <div class="fnode hot" data-role="f2"><div class="ico inf">∞</div><div class="lbl">Workflows</div><div class="sub">zéro plafond caché</div></div>
+    </div>
+  </div>
+
+  <!-- SCENE 4 — migration une par une (15.83 -> 21.41) -->
+  <div class="scene scene-4" data-s="15.55" data-d="6.10">
+    <div class="pad">
+      <div class="kicker" data-role="k4">Migration</div>
+      <div class="title" data-role="t4" style="font-size:72px;">Une <span class="y">par une</span>,<br>en une soirée</div>
+    </div>
+    <div class="migs">
+      <div class="mig" data-role="m1"><span class="tag">✓</span>Formulaires<span class="done">migrés</span></div>
+      <div class="mig" data-role="m2"><span class="tag">✓</span>Relances email<span class="done">migrées</span></div>
+      <div class="mig" data-role="m3"><span class="tag">✓</span>Synchro calendrier<span class="done">migrée</span></div>
+    </div>
+  </div>
+
+  <!-- BROLL — respiration, workflow n8n qui tourne (21.65 -> 24.00) -->
+  <video id="broll" class="broll-vid" src="assets/broll.mp4" data-start="21.65" data-duration="2.35" muted playsinline></video>
+  <div class="scene scene-broll" data-s="21.65" data-d="2.35"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 5 — jamais repayer, marge à récupérer (24.41 -> 30.22) -->
+  <div class="scene scene-5" data-s="24.00" data-d="6.40">
+    <div class="pad" style="top:130px;">
+      <div class="kicker" data-role="k5" style="color:var(--accent-yellow);">Le calcul</div>
+    </div>
+    <div class="save" data-role="save">
+      <div class="lab"><span>Abonnements no-code</span><span><b>récupérés</b></span></div>
+      <div class="track"><div class="fill" data-role="savefill"></div></div>
+      <div class="amt" data-role="saveamt">jusqu'à <span>200 €</span> / mois</div>
+    </div>
+    <div class="bigverdict" data-role="bigv">Tu ne repaies<br><span class="y">plus jamais.</span></div>
+  </div>
+
+  <!-- SCENE 6 — CTA ZAP (30.63 -> 34.64) -->
+  <div class="scene scene-6" data-s="30.40" data-d="4.50">
+    <div class="pad" style="top:360px;text-align:center;">
+      <div class="kicker" data-role="k6" style="color:var(--accent-yellow);">C'est gratuit</div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">ZAP</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span>ZAP</span><br>je t'envoie le guide de migration</div>
+    <div class="cta-follow" data-role="ctafollow">— mais seulement si tu me suis</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar.mp4" data-start="0" data-duration="34.90" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.90"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.90"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.90"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="34.88" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="34.90" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 (_shared/sfx-palette/v1). zoom ~1.2s AVANT la coupe.
+       coupes : 5.50 / 9.10 / 15.55 / 21.65 / 24.00 / 30.40 -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="1.05"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="1.05"  data-volume="0.20"></audio>
+  <audio id="sfx-lock"      src="assets/sfx-notify.mp3"      data-start="2.10"  data-volume="0.16"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-confirm.mp3"     data-start="4.30"  data-volume="0.18"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="4.30"  data-volume="0.17"></audio>
+  <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="5.88"  data-volume="0.15"></audio>
+  <audio id="sfx-vs1"       src="assets/sfx-click.mp3"       data-start="6.10"  data-volume="0.18"></audio>
+  <audio id="sfx-vs2"       src="assets/sfx-confirm.mp3"     data-start="7.20"  data-volume="0.18"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="7.90"  data-volume="0.17"></audio>
+  <audio id="sfx-click-3"   src="assets/sfx-click.mp3"       data-start="9.50"  data-volume="0.18"></audio>
+  <audio id="sfx-f1"        src="assets/sfx-click-soft.mp3"  data-start="11.20" data-volume="0.13"></audio>
+  <audio id="sfx-f2"        src="assets/sfx-notify.mp3"      data-start="12.60" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="14.35" data-volume="0.19"></audio>
+  <audio id="sfx-click-4"   src="assets/sfx-click.mp3"       data-start="15.85" data-volume="0.18"></audio>
+  <audio id="sfx-m1"        src="assets/sfx-click-soft.mp3"  data-start="18.47" data-volume="0.14"></audio>
+  <audio id="sfx-m2"        src="assets/sfx-click-soft.mp3"  data-start="19.39" data-volume="0.14"></audio>
+  <audio id="sfx-m3"        src="assets/sfx-click-soft.mp3"  data-start="20.41" data-volume="0.14"></audio>
+  <audio id="sfx-arrow"     src="assets/sfx-whoosh-lat.mp3"  data-start="20.85" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="22.80" data-volume="0.17"></audio>
+  <audio id="sfx-save"      src="assets/sfx-notify.mp3"      data-start="24.40" data-volume="0.16"></audio>
+  <audio id="sfx-saveamt"   src="assets/sfx-confirm.mp3"     data-start="25.60" data-volume="0.18"></audio>
+  <audio id="sfx-bigv"      src="assets/sfx-click.mp3"       data-start="26.00" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-zoom.mp3"        data-start="29.20" data-volume="0.19"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="30.70" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="30.70" data-volume="0.18"></audio>
+  <audio id="sfx-cta-zap"   src="assets/sfx-notify.mp3"      data-start="32.20" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="32.87" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost139zap";
+const DUR=34.90;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade (data-s/data-d) ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade (root-level clip) ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : la facture Zapier ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.15);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},1.45);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},2.05);
+tl.fromTo(R("pl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},3.60);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},4.30);
+
+/* ---- scene 2 : comparaison ---- */
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},5.90);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},6.10);
+tl.fromTo(R("vs1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},6.55);
+tl.fromTo(R("vs2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},7.30);
+tl.fromTo(R("vstrike"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},8.10);
+
+/* ---- scene 3 : serveur -> workflows illimités ---- */
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},9.55);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},9.80);
+tl.fromTo(R("f1"),{opacity:0,y:30},{opacity:1,y:0,duration:0.4,ease:"power3.out"},11.20);
+tl.fromTo(R("farr1"),{opacity:0},{opacity:1,duration:0.3},12.20);
+tl.fromTo(R("f2"),{opacity:0,y:30},{opacity:1,y:0,duration:0.45,ease:"back.out(1.5)"},12.60);
+
+/* ---- scene 4 : migration cochée une par une ---- */
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},15.85);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},16.05);
+tl.fromTo(R("m1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},18.47);
+tl.fromTo(R("m2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},19.39);
+tl.fromTo(R("m3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},20.41);
+
+/* ---- scene 5 : jauge d'économies + verdict ---- */
+tl.fromTo(R("save"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},24.40);
+tl.fromTo(R("savefill"),{scaleX:0},{scaleX:1,duration:1.1,ease:"power2.out"},24.60);
+tl.fromTo(R("saveamt"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.5)"},25.60);
+tl.fromTo(R("bigv"),{opacity:0,y:24},{opacity:1,y:0,duration:0.5,ease:"power3.out"},26.00);
+
+/* ---- scene 6 : CTA ZAP ---- */
+tl.fromTo(R("k6"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},30.70);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},30.95);
+tl.to(R("ctaword"),{scale:1.06,duration:0.5,ease:"sine.inOut",repeat:5,yoyo:true},31.60);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},31.70);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},33.40);
+
+/* ---- CAPTIONS — mot-à-mot, timings estimés sur les segments de parole
+   (transcripts Whisper vides : quota OpenAI épuisé, estimation manuelle documentée). ---- */
+const caps=[
+ [1.09,"ZAPIER TE FACTURE",""],
+ [2.05,"CENT EUROS PAR MOIS","ohot:CENT EUROS"],
+ [3.60,"ET IL COMPTE",""],
+ [4.45,"CHAQUE TÂCHE","ohot:CHAQUE TÂCHE"],
+ [5.88,"N8N FAIT",""],
+ [6.55,"DIX FOIS PLUS","hot:DIX FOIS PLUS"],
+ [7.75,"POUR ZÉRO EURO","hot:ZÉRO EURO"],
+ [9.47,"TU L'HÉBERGES",""],
+ [10.20,"SUR UN SERVEUR","vhot:SERVEUR"],
+ [11.20,"LE PRIX D'UN CAFÉ","hot:D'UN CAFÉ"],
+ [12.62,"AUTANT DE WORKFLOWS","hot:WORKFLOWS"],
+ [13.70,"QUE TU VEUX",""],
+ [14.45,"ZÉRO PLAFOND","ohot:ZÉRO PLAFOND"],
+ [15.85,"J'AI MIGRÉ",""],
+ [16.60,"MES AUTOMATISATIONS","vhot:AUTOMATISATIONS"],
+ [17.50,"UNE PAR UNE","hot:UNE PAR UNE"],
+ [18.47,"FORMULAIRES","hot:FORMULAIRES"],
+ [19.39,"RELANCES EMAIL","hot:RELANCES EMAIL"],
+ [20.41,"SYNCHRO CALENDRIER","hot:SYNCHRO CALENDRIER"],
+ [21.93,"CHAQUE BASCULE",""],
+ [22.55,"UNE SOIRÉE","vhot:UNE SOIRÉE"],
+ [23.47,"PAS PLUS","ohot:PAS PLUS"],
+ [24.43,"UNE FOIS BRANCHÉ",""],
+ [25.40,"TU NE REPAIES",""],
+ [26.00,"PLUS JAMAIS","hot:PLUS JAMAIS"],
+ [26.93,"SI TU PAIES ENCORE",""],
+ [27.85,"DES OUTILS NO-CODE","vhot:NO-CODE"],
+ [29.07,"DE LA MARGE",""],
+ [29.70,"À RÉCUPÉRER","hot:À RÉCUPÉRER"],
+ [30.65,"FOLLOW POUR LA SUITE","vhot:FOLLOW"],
+ [31.69,"COMMENTE LE MOT",""],
+ [32.20,"ZAP","hot:ZAP"],
+ [32.87,"JE T'ENVOIE",""],
+ [33.55,"LE GUIDE GRATUIT","hot:GRATUIT"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:34.64;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail : 34.90/1.05 = 33.2 -> repeat 32 ; décalée : (34.90-0.52)/1.05 = 32.7 -> repeat 31 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:32,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:31,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=21.65, BROLL_END=24.00;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 21.65/0.5 = 43.3 -> repeat 43 (IMPAIR = retombe à opacity 0 avant le broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:43,yoyo:true},0);
+/* ring après broll : (34.90-24.00)/0.5 = 21.8 -> repeat 21 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:21,yoyo:true},BROLL_END);
+/* orbit : 21.65/2.2 = 9.8 -> repeat 8 ; puis (34.90-24.00)/2.2 = 4.95 -> repeat 4 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:8,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:4,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out"},30.95);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 puis +8.02 -> 2.34 / 10.36 / 18.38 / 26.40 / 34.42.
+   Le drop 18.38 ne tombe pas dans la fenêtre broll (21.65-24.00) : tous gardés sauf vérif fenêtre.
+   LEAD 0.12 : le fondu doit CULMINER sur le drop. */
+var LEAD = 0.12;
+[2.34, 10.36, 18.38, 26.40, 34.42].forEach(function(t){
+  if(t>=BROLL_START && t<=BROLL_END) return;
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
