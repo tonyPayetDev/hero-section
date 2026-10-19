@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#0a0a0f; --surface:#111117; --border:#232330;
+  --yellow:#eab308; --yellow-light:#BEF264; --violet:#8b5cf6; --violet-deep:#7c3aed;
+  --ink:#EDEDED; --muted:#8A8A8A; --bad:#ff6b6b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','DejaVu Sans','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+.scene{position:absolute;top:0;left:0;width:1080px;height:1920px;opacity:0;overflow:hidden;}
+.scene-1{background:radial-gradient(circle at 50% 36%,#161124 0%,#0a0a0f 72%);}
+.scene-2{background:linear-gradient(135deg,#0a0a0f 0%,#130d1f 100%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0f 0%,#161124 100%);}
+.scene-4{background:linear-gradient(135deg,#0a0a0f 0%,#130d1f 100%);}
+.scene-5{background:radial-gradient(circle at 50% 40%,#161124 0%,#0a0a0f 72%);}
+.scene-6{background:radial-gradient(circle at 50% 38%,#1a1308 0%,#0a0a0f 70%);}
+.scene-7{background:radial-gradient(circle at 50% 42%,#1a1308 0%,#0a0a0f 72%);}
+
+.broll{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;opacity:0;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:76px;line-height:1.06;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--yellow);} .title .v{color:var(--violet);}
+
+.card{position:absolute;left:90px;right:90px;top:460px;background:var(--surface);border:1px solid var(--border);
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;background:var(--border);}
+.dot.hi{background:var(--yellow);}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:29px;line-height:1.75;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;}
+.mono .lock{color:#060606;background:var(--yellow);border-radius:5px;padding:1px 6px;font-weight:700;}
+.mono .vlock{color:#fff;background:var(--violet-deep);border-radius:5px;padding:1px 6px;font-weight:700;}
+.mono .cursor{display:inline-block;width:14px;height:30px;background:var(--yellow);vertical-align:-6px;}
+.verdict{position:absolute;left:90px;right:90px;top:870px;text-align:center;font-size:40px;font-weight:900;
+  color:var(--violet);opacity:0;letter-spacing:.5px;}
+
+/* ---------- DEMO terminal (scene 4) ---------- */
+.termwrap{position:absolute;left:80px;right:80px;top:470px;}
+.term{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:28px 34px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.term .bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.term .file{margin-left:14px;color:var(--muted);font-size:24px;font-weight:600;}
+.term .mono{font-size:27px;line-height:1.7;}
+.resultcard{position:absolute;left:80px;right:80px;background:var(--surface);border:1px solid var(--border);
+  border-radius:22px;padding:26px 32px;box-shadow:0 30px 80px rgba(0,0,0,.55);opacity:0;}
+.resultcard .lbl{font-size:24px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:14px;}
+.resultcard .lbl.v{color:var(--violet);}
+.rline{display:flex;align-items:center;gap:16px;font-size:28px;font-weight:700;color:#fff;opacity:0;margin-bottom:10px;}
+.rline .ic{width:36px;height:36px;border-radius:10px;background:var(--violet-deep);flex:0 0 36px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;}
+.rline.bug .ic{background:var(--bad);}
+
+/* ---------- SAVINGS / TRANSFORMATION (scene 5) ---------- */
+.save{position:absolute;left:120px;right:120px;top:500px;opacity:0;}
+.save .lab{display:flex;justify-content:space-between;font-size:30px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.save .lab b{color:var(--yellow);}
+.save .track{height:20px;border-radius:99px;background:#16161e;border:1px solid var(--border);overflow:hidden;}
+.save .fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--violet-deep),var(--yellow));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(234,179,8,.4);}
+.bigverdict{position:absolute;left:90px;right:90px;top:720px;text-align:center;font-size:52px;font-weight:900;color:#fff;opacity:0;line-height:1.14;}
+.bigverdict .y{color:var(--yellow);} .bigverdict .v{color:var(--violet);}
+
+/* ---------- CTA (scene 7) ---------- */
+.cta-word{position:absolute;left:0;right:0;top:500px;text-align:center;font-size:104px;font-weight:900;
+  color:var(--yellow);letter-spacing:2px;text-shadow:0 0 60px rgba(234,179,8,.55);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:660px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-sub span{color:var(--yellow);font-weight:900;}
+.cta-follow{position:absolute;left:80px;right:80px;top:820px;text-align:center;font-size:30px;font-weight:700;color:var(--violet);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS ---------- */
+#caption-band{position:absolute;top:1392px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(10,10,15,0) 0%,rgba(10,10,15,.88) 10%,rgba(10,10,15,.88) 90%,rgba(10,10,15,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(234,179,8,0) 0%,var(--yellow) 14%,var(--yellow) 86%,rgba(234,179,8,0) 100%);
+  box-shadow:0 0 16px rgba(234,179,8,.5);opacity:.8;}
+#cap-bar-top{top:0;} #cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:42px;transform:translateX(-50%);white-space:nowrap;
+  font-size:30px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(234,179,8,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(139,92,246,.9);}
+
+/* ---------- AVATAR (cercle néon, fenêtres distinctes, jamais continu) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--yellow);opacity:0;
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(234,179,8,.5),0 0 90px 20px rgba(234,179,8,.2);z-index:5;}
+#avatar-frame video{position:absolute;top:0;left:0;width:560px;height:560px;object-fit:cover;opacity:0;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(234,179,8,.3);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(234,179,8,.12) 320deg,var(--yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(234,179,8,.9));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les timestamps Whisper réels (voice.mp3, WaveSpeed openai-whisper).
+     Fenêtres avatar : A1 0.67-4.58 / B1 0.08-4.88 / C2 0.08-4.83 (lips-map.json).
+     Segments extraits ss/dur : av1 ss0.67 d3.80 · av2a ss0.10 d1.60 · av2b ss1.70 d2.70 ·
+     av3a ss0.10 d0.90 · av3b ss1.00 d3.00 — tous dans la plage active, aucun ne la traverse. -->
+<div id="root" data-composition-id="autoboost150scan" data-start="0" data-width="1080" data-height="1920" data-duration="34.18">
+
+  <!-- SCENE 1 — HOOK (0.00 -> 4.60) -->
+  <div class="scene scene-1" data-s="0" data-d="4.60">
+    <div class="pad">
+      <div class="kicker" data-role="k1">Claude Code</div>
+      <div class="title" data-role="t1">50 fichiers lus<br>en <span class="y">30 secondes.</span></div>
+    </div>
+    <div class="card" data-role="c1">
+      <div class="bar"><span class="dot hi"></span><span class="dot"></span><span class="dot"></span><span class="file">reprise-projet.log</span></div>
+      <div class="mono">
+        <div class="dim" data-role="pl1">&gt; comprendre un vieux projet client <span class="lock">2h</span></div>
+        <div class="lit" data-role="pl2">&gt; remplacé par 1 scan Claude Code</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 2 — suite du hook (4.60 -> 7.32) -->
+  <div class="scene scene-2" data-s="4.60" data-d="2.72">
+    <div class="pad" style="top:660px;text-align:center;">
+      <div class="title" data-role="t2" style="font-size:62px;">Avant il me fallait<br><span class="v">2 heures</span> pour ça.</div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — AVANT : le client envoie un vieux projet (7.32 -> 14.04) -->
+  <div class="scene scene-3" data-s="7.32" data-d="6.72">
+    <div class="pad">
+      <div class="kicker" data-role="k3" style="color:var(--yellow);">Le déclencheur</div>
+      <div class="title" data-role="t3" style="font-size:62px;">Un client m'envoie<br>un projet <span class="y">à corriger.</span></div>
+    </div>
+    <div class="card" data-role="c3" style="top:520px;">
+      <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="file">client-site-v2/</span></div>
+      <div class="mono">
+        <div class="dim" data-role="cl1">&#9633; Site déjà existant</div>
+        <div class="dim" data-role="cl2">&#9633; Automatisation déjà existante</div>
+        <div class="lit" data-role="cl3">&gt; je ne pars plus de zéro</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v3" style="color:var(--yellow);">je lance Claude Code dans le dossier.</div>
+  </div>
+
+  <!-- SCENE 4 — DEMO terminal (14.04 -> 21.38) -->
+  <div class="scene scene-4" data-s="14.04" data-d="7.34">
+    <video class="broll" data-role="broll4" src="assets/broll-grille.mp4" muted loop data-layout-allow-overflow="true"></video>
+    <div class="pad" style="top:110px;">
+      <div class="kicker" data-role="k4" style="color:var(--violet);">En une poignée de secondes</div>
+    </div>
+    <div class="termwrap">
+      <div class="term" data-role="term">
+        <div class="bar"><span class="dot hi"></span><span class="dot"></span><span class="dot"></span><span class="file">~/client-site-v2</span></div>
+        <div class="mono">
+          <div class="lit" data-role="cmd">&gt; claude-code scan .<span class="cursor" data-role="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="resultcard" data-role="rc1" style="top:700px;">
+      <div class="lbl">Architecture</div>
+      <div class="rline" data-role="r1"><span class="ic">1</span>repère les fichiers qui comptent</div>
+      <div class="rline" data-role="r2"><span class="ic">2</span>comprend la structure du projet</div>
+    </div>
+    <div class="resultcard" data-role="rc2" style="top:980px;">
+      <div class="lbl v">Bugs probables</div>
+      <div class="rline bug" data-role="r3"><span class="ic">!</span>3 fichiers à risque détectés</div>
+      <div class="rline bug" data-role="r4"><span class="ic">!</span>avant d'en ouvrir un seul</div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — transformation (21.38 -> 27.94) -->
+  <div class="scene scene-5" data-s="21.38" data-d="6.56">
+    <div class="pad" style="top:160px;text-align:center;">
+      <div class="kicker" data-role="k5" style="color:var(--yellow);">Résultat</div>
+    </div>
+    <div class="save" data-role="save">
+      <div class="lab"><span>Temps facturé par reprise</span><span><b>2h &rarr; 30s</b></span></div>
+      <div class="track"><div class="fill" data-role="savefill"></div></div>
+    </div>
+    <div class="bigverdict" data-role="bigv">Zéro détail caché<br>dans un <span class="y">vieux code</span><br><span class="v">mal documenté.</span></div>
+  </div>
+
+  <!-- SCENE 6 — CTA (27.94 -> 34.18) -->
+  <div class="scene scene-6" data-s="27.94" data-d="6.24">
+    <div class="pad" style="top:330px;text-align:center;">
+      <div class="kicker" data-role="k6" style="color:var(--yellow);">C'est gratuit</div>
+    </div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">SCAN</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span>SCAN</span><br>je t'envoie la méthode complète</div>
+    <div class="cta-follow" data-role="ctafollow">— follow-moi pour la recevoir</div>
+  </div>
+
+  <!-- AVATAR OVERLAY — 5 fenêtres distinctes (budget bureau 12.0s / 13.5s) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="av1"  src="assets/av1_hook.mp4"     data-start="0.55"  data-duration="3.80" data-layout-allow-overflow="true" muted playsinline></video>
+    <video id="av2a" src="assets/av2a_explain.mp4" data-start="14.45" data-duration="1.60" data-layout-allow-overflow="true" muted playsinline></video>
+    <video id="av2b" src="assets/av2b_explain.mp4" data-start="18.28" data-duration="2.70" data-layout-allow-overflow="true" muted playsinline></video>
+    <video id="av3a" src="assets/av3a_cta.mp4"     data-start="28.27" data-duration="0.90" data-layout-allow-overflow="true" muted playsinline></video>
+    <video id="av3b" src="assets/av3b_cta.mp4"     data-start="30.32" data-duration="3.00" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.18"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="34.18"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="34.176" data-volume="1"></audio>
+  <audio id="bgm" src="assets/journal-digital-clouds-128.mp3" data-start="0" data-duration="34.18" data-volume="0.30"></audio>
+
+  <!-- SFX sur les coupes de scène : 4.60 / 7.32 / 14.04 / 21.38 / 27.94 -->
+  <audio id="sfx-hook"    src="assets/sfx-whoosh-v2.mp3"   data-start="0.05"  data-volume="0.22"></audio>
+  <audio id="sfx-cut1"    src="assets/sfx-click.mp3"       data-start="4.60"  data-volume="0.16"></audio>
+  <audio id="sfx-cut2"    src="assets/sfx-glitch-soft.mp3" data-start="7.32"  data-volume="0.16"></audio>
+  <audio id="sfx-cut3"    src="assets/sfx-zoom.mp3"        data-start="14.04" data-volume="0.18"></audio>
+  <audio id="sfx-type"    src="assets/sfx-click-soft.mp3"  data-start="14.60" data-volume="0.14"></audio>
+  <audio id="sfx-r1"      src="assets/sfx-notify.mp3"      data-start="15.70" data-volume="0.16"></audio>
+  <audio id="sfx-r2"      src="assets/sfx-notify.mp3"      data-start="17.00" data-volume="0.16"></audio>
+  <audio id="sfx-r3"      src="assets/sfx-glitch-hard.mp3" data-start="18.60" data-volume="0.18"></audio>
+  <audio id="sfx-r4"      src="assets/sfx-confirm.mp3"     data-start="19.80" data-volume="0.18"></audio>
+  <audio id="sfx-cut4"    src="assets/sfx-whoosh-lat.mp3"  data-start="21.38" data-volume="0.18"></audio>
+  <audio id="sfx-gauge"   src="assets/sfx-chime-v2.mp3"    data-start="21.60" data-volume="0.16"></audio>
+  <audio id="sfx-cut5"    src="assets/sfx-glitch-hard.mp3" data-start="27.94" data-volume="0.20"></audio>
+  <audio id="sfx-cta-pop" src="assets/sfx-pop.mp3"         data-start="29.90" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp" src="assets/sfx-impact.mp3"      data-start="29.90" data-volume="0.18"></audio>
+</div>
+
+<script>
+const compId="autoboost150scan";
+const DUR=34.18;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 : hook ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.70);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},2.20);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},3.00);
+
+/* ---- scene 2 ---- */
+tl.fromTo(R("t2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.45,ease:"power3.out"},4.75);
+
+/* ---- scene 3 : déclencheur ---- */
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},7.40);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},7.65);
+tl.fromTo(R("c3"),{opacity:0,y:40},{opacity:1,y:0,duration:0.45,ease:"power3.out"},8.80);
+tl.fromTo(R("cl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},9.10);
+tl.fromTo(R("cl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},9.50);
+tl.fromTo(R("cl3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},11.45);
+tl.fromTo(R("v3"),{opacity:0},{opacity:1,duration:0.4},12.90);
+
+/* ---- scene 4 : demo terminal ---- */
+tl.fromTo(R("broll4"),{opacity:0},{opacity:0.32,duration:0.6},14.10);
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},14.15);
+tl.fromTo(R("term"),{opacity:0,y:30},{opacity:1,y:0,duration:0.4,ease:"power3.out"},14.20);
+tl.to(R("cursor"),{opacity:0,duration:0.4,repeat:12,yoyo:true},14.60);
+tl.fromTo(R("rc1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.4,ease:"power3.out"},15.60);
+tl.fromTo(R("r1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},15.75);
+tl.fromTo(R("r2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},16.90);
+tl.fromTo(R("rc2"),{opacity:0,y:40},{opacity:1,y:0,duration:0.4,ease:"power3.out"},18.50);
+tl.fromTo(R("r3"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},18.65);
+tl.fromTo(R("r4"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},19.75);
+
+/* ---- scene 5 : transformation ---- */
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},21.50);
+tl.fromTo(R("save"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},21.55);
+tl.fromTo(R("savefill"),{scaleX:0},{scaleX:0.95,duration:0.8,ease:"power2.out"},21.70);
+tl.fromTo(R("bigv"),{opacity:0,scale:0.92},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.5)"},24.50);
+
+/* ---- scene 6 : CTA ---- */
+tl.fromTo(R("k6"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},28.05);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},29.90);
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:6,yoyo:true},30.40);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},31.20);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},32.60);
+
+/* ---- CAPTIONS (timestamps Whisper réels) ---- */
+const caps=[
+ [0.00,"CLAUDE CODE LIT 50 FICHIERS","hot:50 FICHIERS"],
+ [2.34,"EN 30 SECONDES","hot:30 SECONDES"],
+ [3.26,"LÀ OÙ IL ME FALLAIT",""],
+ [4.16,"FACILEMENT 2 HEURES AVANT","hot:2 HEURES"],
+ [5.26,"POUR COMPRENDRE UN PROJET CLIENT",""],
+ [6.72,"QUE JE REPRENAIS.",""],
+ [7.54,"QUAND UN CLIENT M'ENVOIE UN SITE",""],
+ [9.04,"OU UNE AUTOMATISATION DÉJÀ EXISTANTE","vhot:AUTOMATISATION"],
+ [10.76,"À CORRIGER,",""],
+ [11.32,"JE NE PARS PLUS DE ZÉRO,",""],
+ [12.48,"JE LANCE CLAUDE CODE","hot:CLAUDE CODE"],
+ [13.42,"DANS LE DOSSIER,",""],
+ [14.08,"ET EN UNE POIGNÉE DE SECONDES,",""],
+ [15.48,"IL M'EXPLIQUE L'ARCHITECTURE,","hot:L'ARCHITECTURE"],
+ [16.70,"REPÈRE LES FICHIERS QUI COMPTENT VRAIMENT,","vhot:COMPTENT VRAIMENT"],
+ [18.28,"ET ME LISTE LES BUGS PROBABLES","hot:BUGS PROBABLES"],
+ [19.78,"AVANT MÊME QUE J'AIE OUVERT",""],
+ [20.46,"UN SEUL FICHIER MOI-MÊME.",""],
+ [21.56,"ÇA CHANGE COMPLÈTEMENT LE TEMPS",""],
+ [22.68,"QUE JE FACTURE SUR UNE REPRISE","hot:REPRISE"],
+ [24.02,"DE PROJET,",""],
+ [24.48,"ET SURTOUT, JE NE RATE PLUS","vhot:SURTOUT"],
+ [25.84,"LES DÉTAILS CACHÉS DANS UN VIEUX CODE","hot:DÉTAILS CACHÉS"],
+ [27.06,"MAL DOCUMENTÉ.",""],
+ [27.94,"SI TU REPRENDS ENCORE",""],
+ [29.16,"DES PROJETS CLIENTS À L'AVEUGLE,","hot:À L'AVEUGLE"],
+ [30.32,"FOLLOW-MOI ET COMMENTE","hot:FOLLOW-MOI"],
+ [31.52,"LE MOT SCAN,","hot:SCAN"],
+ [32.10,"JE T'ENVOIE LA MÉTHODE",""],
+ [33.08,"COMPLÈTE GRATUITEMENT.","vhot:GRATUITEMENT"]
+];
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:34.10;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":"vhot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.16,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.14);
+});
+
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:31,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:30,yoyo:true},0.52);
+
+/* ---- AVATAR — 5 fenêtres distinctes (budget bureau 12.0s / 13.5s, toutes dans la plage lèvres actives) ---- */
+const WINDOWS=[
+  {el:"#av1", s:0.55, d:3.80},
+  {el:"#av2a",s:14.45,d:1.60},
+  {el:"#av2b",s:18.28,d:2.70},
+  {el:"#av3a",s:28.27,d:0.90},
+  {el:"#av3b",s:30.32,d:3.00}
+];
+WINDOWS.forEach(w=>{
+  tl.to(w.el,{opacity:1,duration:0.18,ease:"power2.out"},w.s);
+  tl.to(w.el,{opacity:0,duration:0.18,ease:"power2.in"},w.s+w.d-0.18);
+  tl.to(["#avatar-frame","#avatar-orbit","#avatar-ring"],{opacity:1,duration:0.2,ease:"power2.out"},w.s-0.05);
+  tl.to(["#avatar-frame","#avatar-orbit","#avatar-ring"],{opacity:0,duration:0.2,ease:"power2.in"},w.s+w.d);
+});
+tl.to("#avatar-ring",{scale:1.06,duration:0.5,ease:"sine.inOut",repeat:65,yoyo:true},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:14,ease:"none"},0);
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
