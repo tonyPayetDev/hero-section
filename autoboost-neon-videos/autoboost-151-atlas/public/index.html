@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="assets/gsap.min.js"></script>
+<style>
+:root{
+  --bg:#060606; --accent-yellow:#FFE600; --violet:#A855F7; --orange:#FF8A3D;
+  --ink:#f5f5f7; --muted:#9aa0aa; --bad:#ff5f57; --good:#28c840;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+#root{position:absolute;width:1080px;height:1920px;overflow:hidden;background:var(--bg);
+  font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:var(--ink);}
+
+/* ---------- SCENES ---------- */
+.scene{position:absolute;top:0;left:0;width:1080px;height:1120px;opacity:0;overflow:hidden;}
+.scene-1{background:linear-gradient(135deg,#0a0a0a 0%,#2a0a0a 100%);}
+.scene-2{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 74%);}
+.scene-3{background:linear-gradient(135deg,#0a0a0a 0%,#12081f 100%);}
+.scene-4{background:radial-gradient(circle at 50% 40%,#1a0a2a 0%,#050505 70%);}
+.scene-5{background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2a 100%);}
+.scene-6{background:radial-gradient(circle at 50% 40%,#12081f 0%,#050505 72%);}
+.scene-broll{height:1920px;background:#000;}
+
+.pad{position:absolute;left:70px;right:70px;top:140px;}
+.kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--violet);opacity:0;}
+.title{font-size:80px;line-height:1.02;font-weight:800;letter-spacing:-1px;margin-top:22px;}
+.title .y{color:var(--accent-yellow);} .title .v{color:var(--violet);} .title .o{color:var(--orange);}
+
+/* ---------- BADGE (coin haut-droit) ---------- */
+.tipnum{position:absolute;right:70px;top:36px;min-width:88px;height:88px;padding:0 24px;border-radius:44px;
+  display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;
+  color:#060606;background:var(--accent-yellow);opacity:0;white-space:nowrap;
+  box-shadow:0 0 40px rgba(255,230,0,.45);}
+
+/* ---------- CARTES / PANNEAUX ---------- */
+.card{position:absolute;left:90px;right:90px;top:470px;background:#0d0d12;border:1px solid #2a2140;
+  border-radius:26px;padding:32px 40px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;}
+.card .bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.dot{width:15px;height:15px;border-radius:50%;} .dot.r{background:#ff5f57;} .dot.a{background:#febc2e;} .dot.g{background:#28c840;}
+.card .file{margin-left:14px;color:var(--muted);font-size:26px;font-weight:600;}
+.mono{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:30px;line-height:1.6;}
+.mono .dim{color:#6b7280;} .mono .lit{color:#fff;}
+.mono .lock{color:#060606;background:var(--accent-yellow);border-radius:5px;padding:1px 6px;font-weight:700;}
+
+/* barre d'URL (scene 1) */
+.urlbar{display:flex;align-items:center;gap:14px;background:#16161e;border:1px solid #2a2140;border-radius:14px;
+  padding:14px 20px;font-size:28px;font-weight:600;color:#cfd2da;margin-bottom:18px;}
+.urlbar .ico{color:var(--good);}
+
+/* lignes avant/après (scene 2) */
+.price{display:flex;align-items:center;justify-content:space-between;font-size:34px;font-weight:800;
+  padding:18px 6px;border-bottom:1px solid #2a2140;color:#cfd2da;}
+.price:last-child{border-bottom:none;}
+.price .amt{position:relative;color:var(--orange);}
+.price .amt.struck{color:var(--bad);}
+.price .amt .strike{position:absolute;left:-6px;right:-6px;top:50%;height:3px;background:var(--bad);
+  transform:scaleX(0);transform-origin:left center;border-radius:2px;}
+.price .free{color:var(--good);font-weight:900;}
+
+.verdict{position:absolute;left:90px;right:90px;top:830px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--orange);opacity:0;letter-spacing:.5px;}
+
+/* ---------- CHIPS ---------- */
+.order{position:absolute;left:90px;right:90px;top:820px;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;}
+.ochip{padding:16px 26px;border-radius:16px;background:#0d0d12;border:1px solid #2a2140;
+  font-size:28px;font-weight:800;color:#cfd2da;opacity:0;white-space:nowrap;}
+.ochip .n{color:var(--accent-yellow);margin-right:10px;}
+
+/* ---------- CHECKLIST (scene 3) ---------- */
+.moves{position:absolute;left:80px;right:80px;top:460px;display:flex;flex-direction:column;gap:20px;}
+.mv{position:relative;display:flex;align-items:center;gap:22px;padding:24px 30px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;font-size:34px;font-weight:700;color:#cfd2da;opacity:0;}
+.mv .tag{width:44px;height:44px;flex:0 0 44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;}
+.mv.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.18);}
+.mv.ok .tag{background:rgba(40,200,64,.15);color:var(--good);border:2px solid var(--good);}
+
+/* ---------- COMPARAISON (scene 5) ---------- */
+.refs{position:absolute;left:70px;right:70px;top:500px;display:flex;flex-direction:column;gap:26px;}
+.ref{display:flex;align-items:center;gap:24px;padding:30px 34px;border-radius:20px;
+  background:#0d0d12;border:1px solid #2a2140;opacity:0;}
+.ref.ko{border-color:rgba(255,95,87,.4);}
+.ref.ok{border-color:var(--good);box-shadow:0 0 34px rgba(40,200,64,.16);}
+.ref .big{font-family:'DejaVu Sans Mono','Courier New',monospace;font-size:52px;font-weight:900;
+  width:210px;flex:0 0 210px;}
+.ref.ko .big{color:var(--bad);} .ref.ok .big{color:var(--accent-yellow);}
+.ref .arw{color:var(--violet);font-size:34px;font-weight:900;}
+.ref .what{font-size:38px;font-weight:800;color:#fff;}
+
+/* ---------- BROLL ---------- */
+#broll,.broll-vid{position:absolute;top:0;left:0;width:1080px;height:1920px;object-fit:cover;filter:brightness(.5);opacity:0;z-index:1;}
+.broll-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 40%,rgba(0,0,0,.75) 100%);}
+
+/* ---------- CTA (scene 6) ---------- */
+.limit{position:absolute;left:150px;right:150px;top:380px;opacity:0;}
+.limit .lab{display:flex;justify-content:space-between;font-size:28px;font-weight:800;color:var(--muted);margin-bottom:14px;}
+.limit .lab b{color:var(--accent-yellow);}
+.limit .track{height:16px;border-radius:99px;background:#16161e;border:1px solid #2a2140;overflow:hidden;}
+.limit .fill{height:100%;width:200px;border-radius:99px;background:linear-gradient(90deg,var(--accent-yellow),var(--orange));
+  transform-origin:left center;transform:scaleX(0);box-shadow:0 0 20px rgba(255,230,0,.5);}
+.midline{position:absolute;left:90px;right:90px;top:520px;text-align:center;font-size:44px;font-weight:900;
+  color:var(--violet);opacity:0;letter-spacing:.5px;}
+.cta-word{position:absolute;left:0;right:0;top:600px;text-align:center;font-size:130px;font-weight:900;
+  color:var(--accent-yellow);letter-spacing:2px;text-shadow:0 0 50px rgba(255,230,0,.6);opacity:0;}
+.cta-sub{position:absolute;left:80px;right:80px;top:770px;text-align:center;font-size:40px;font-weight:700;color:#fff;opacity:0;line-height:1.3;}
+.cta-follow{position:absolute;left:80px;right:80px;top:900px;text-align:center;font-size:30px;font-weight:700;color:var(--orange);opacity:0;letter-spacing:1px;}
+
+/* ---------- CAPTIONS (style gabarit seedance : 40px néon, un mot coloré) ---------- */
+#caption-band{position:absolute;top:930px;left:0;width:1080px;height:180px;z-index:8;}
+#cap-plate{position:absolute;left:0;top:5px;width:1080px;height:104px;
+  background:linear-gradient(90deg,rgba(6,6,8,0) 0%,rgba(6,6,8,.88) 10%,rgba(6,6,8,.88) 90%,rgba(6,6,8,0) 100%);}
+.cap-bar{position:absolute;left:50%;width:800px;height:5px;margin-left:-400px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,230,0,0) 0%,var(--accent-yellow) 14%,var(--accent-yellow) 86%,rgba(255,230,0,0) 100%);
+  box-shadow:0 0 16px rgba(255,230,0,.55);opacity:.85;}
+#cap-bar-top{top:0;}
+#cap-bar-bot{top:109px;}
+.caption{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+  font-size:40px;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1.2;color:#fff;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000, 0 6px 18px rgba(0,0,0,.6);
+  opacity:0;}
+.caption .hot{color:var(--accent-yellow);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,230,0,.9);}
+.caption .vhot{color:var(--violet);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(168,85,247,.9);}
+.caption .ohot{color:var(--orange);text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,-3px 0 0 #000,3px 0 0 #000,0 -3px 0 #000,0 3px 0 #000,0 0 22px rgba(255,138,61,.9);}
+
+/* ---------- AVATAR OVERLAY (persistent) ---------- */
+#avatar-frame{position:absolute;bottom:70px;left:50%;width:560px;height:560px;margin-left:-280px;
+  border-radius:50%;overflow:hidden;background:var(--bg);border:5px solid var(--accent-yellow);
+  box-shadow:0 0 0 2px rgba(6,6,6,.9),0 0 36px 4px rgba(255,230,0,.55),0 0 90px 20px rgba(255,230,0,.22);z-index:5;}
+#avatar-frame video{position:absolute;top:50%;left:50%;width:560px;height:706px;transform:translate(-50%,-46%);
+  object-fit:cover;object-position:center top;}
+#avatar-ring{position:absolute;bottom:58px;left:50%;width:584px;height:584px;margin-left:-292px;border-radius:50%;
+  border:3px solid var(--accent-yellow);opacity:0;pointer-events:none;box-shadow:0 0 40px rgba(255,230,0,.35);z-index:5;}
+#avatar-orbit{position:absolute;bottom:52px;left:50%;width:596px;height:596px;margin-left:-298px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 280deg,rgba(255,230,0,.12) 320deg,var(--accent-yellow) 353deg,#fff8d6 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 8px));
+  filter:drop-shadow(0 0 12px rgba(255,230,0,.9));z-index:5;}
+#avatar-orbit-v{position:absolute;bottom:46px;left:50%;width:608px;height:608px;margin-left:-304px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 250deg,rgba(168,85,247,.10) 300deg,rgba(168,85,247,.75) 348deg,#e9d5ff 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 6px));
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.85));opacity:0;z-index:5;}
+audio{display:none;}
+</style>
+</head>
+<body>
+<!-- Timeline calée sur les silences RÉELS de public/assets/voice.mp3 (silencedetect=-40dB:d=0.18).
+     Coupes de scène posées DANS les silences : 3.95 / 6.87 / 12.88 / 14.32 / 18.40 / 24.49. Voix 32.568s.
+     Captions : timestamps mot-à-mot Whisper WaveSpeed (openai-whisper, fr). -->
+<div id="root" data-composition-id="autoboost151atlas" data-start="0" data-width="1080" data-height="1920" data-duration="32.57">
+
+  <!-- SCENE 1 — HOOK : OpenAI sort Atlas (0 -> 3.95) -->
+  <div class="scene scene-1" data-s="0" data-d="3.95">
+    <div class="tipnum" data-role="n1">NOUVEAU</div>
+    <div class="pad">
+      <div class="kicker" data-role="k1">OpenAI vient de lâcher</div>
+      <div class="title" data-role="t1">ATLAS<br><span class="y">ton navigateur agent</span></div>
+    </div>
+    <div class="card" data-role="c1" style="top:500px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">atlas · navigateur IA</span></div>
+      <div class="urlbar"><span class="ico">▸</span>l'agent ouvre la page…</div>
+      <div class="mono">
+        <div class="lit" data-role="pl1">il lit, clique et remplit —</div>
+        <div class="lit" data-role="pl2" style="margin-top:6px;">toi, tu valides.</div>
+      </div>
+    </div>
+    <div class="verdict" data-role="v1">Il agit à ta place.</div>
+  </div>
+
+  <!-- SCENE 2 — 5 extensions -> 1 clic (3.95 -> 6.87) -->
+  <div class="scene scene-2" data-s="3.95" data-d="2.92">
+    <div class="tipnum" data-role="n2">−5 EXT</div>
+    <div class="pad">
+      <div class="kicker" data-role="k2">Fini le bazar Chrome</div>
+      <div class="title" data-role="t2" style="font-size:72px;">5 extensions<br><span class="o">remplacées</span></div>
+    </div>
+    <div class="card" data-role="c2" style="top:500px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">chrome://extensions</span></div>
+      <div class="price"><span>5 extensions installées</span><span class="amt struck">×5<span class="strike" data-role="sk2"></span></span></div>
+      <div class="price"><span>Avec Atlas</span><span class="free">1 CLIC</span></div>
+    </div>
+  </div>
+
+  <!-- SCENE 3 — ce qu'il fait tout seul (6.87 -> 12.88) -->
+  <div class="scene scene-3" data-s="6.87" data-d="6.01">
+    <div class="tipnum" data-role="n3">EN AUTO</div>
+    <div class="pad">
+      <div class="kicker" data-role="k3">Ma veille du matin</div>
+      <div class="title" data-role="t3" style="font-size:72px;">Il fait<br><span class="y">le boulot</span></div>
+    </div>
+    <div class="moves">
+      <div class="mv ok" data-role="mv1"><span class="tag">✓</span>Ouvre tes pages de veille</div>
+      <div class="mv ok" data-role="mv2"><span class="tag">✓</span>Résume les offres</div>
+      <div class="mv ok" data-role="mv3"><span class="tag">✓</span>Remplit tes formulaires</div>
+    </div>
+    <div class="verdict" data-role="v3" style="color:var(--accent-yellow);">Toi, tu valides. C'est tout.</div>
+  </div>
+
+  <!-- BROLL — respiration « le vrai changement » (12.88 -> 14.32) -->
+  <video id="broll" class="broll-vid" src="assets/broll-creator.mp4" data-start="12.88" data-duration="1.44" muted playsinline></video>
+  <div class="scene scene-broll" data-s="12.88" data-d="1.44"><div class="broll-grad"></div></div>
+
+  <!-- SCENE 4 — le vrai changement : le contexte (14.32 -> 18.40) -->
+  <div class="scene scene-4" data-s="14.32" data-d="4.08">
+    <div class="tipnum" data-role="n4">LE VRAI +</div>
+    <div class="pad">
+      <div class="kicker" data-role="k4">La vraie différence</div>
+      <div class="title" data-role="t4" style="font-size:72px;">Il garde<br><span class="y">le contexte</span></div>
+    </div>
+    <div class="card" data-role="c4" style="top:520px;">
+      <div class="bar"><span class="dot r"></span><span class="dot a"></span><span class="dot g"></span><span class="file">agent · mémoire</span></div>
+      <div class="mono">
+        <div class="lit" data-role="pc1">Il sait <span class="lock">pourquoi</span> il clique,</div>
+        <div class="dim" data-role="pc2" style="margin-top:10px;">pas juste <span style="color:var(--orange);">où</span>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 5 — preuve : 40 min -> 5 min (18.40 -> 24.49) -->
+  <div class="scene scene-5" data-s="18.40" data-d="6.09">
+    <div class="tipnum" data-role="n5">TESTÉ</div>
+    <div class="pad">
+      <div class="kicker" data-role="k5">Résultat cette semaine</div>
+      <div class="title" data-role="t5" style="font-size:66px;">Ma veille passe de</div>
+    </div>
+    <div class="refs">
+      <div class="ref ko" data-role="r1"><span class="big">40&nbsp;min</span><span class="arw">→</span><span class="what">à la main</span></div>
+      <div class="ref ok" data-role="r2"><span class="big">5&nbsp;min</span><span class="arw">→</span><span class="what">avec Atlas</span></div>
+    </div>
+    <div class="order" data-role="chips5" style="top:860px;">
+      <div class="ochip" data-role="c5a"><span class="n">0€</span>extension</div>
+      <div class="ochip" data-role="c5b"><span class="n">0</span>plugin à maintenir</div>
+    </div>
+  </div>
+
+  <!-- SCENE 6 — BRIDGE + CTA (24.49 -> 32.57) -->
+  <div class="scene scene-6" data-s="24.49" data-d="8.08">
+    <div class="pad" style="top:150px;text-align:center;">
+      <div class="kicker" data-role="k6" style="color:var(--accent-yellow);">Tu fais ta veille à la main ?</div>
+    </div>
+    <div class="limit" data-role="lim">
+      <div class="lab"><span>ta veille</span><span><b>5 min</b> chrono</span></div>
+      <div class="track"><div class="fill" data-role="fill"></div></div>
+    </div>
+    <div class="midline" data-role="mid">Une heure facturable en plus. Chaque jour.</div>
+    <div class="cta-word" data-role="ctaword" data-layout-allow-overflow="true">ATLAS</div>
+    <div class="cta-sub" data-role="ctasub">Commente le mot <span style="color:var(--accent-yellow);">ATLAS</span><br>je t'envoie la liste complète</div>
+    <div class="cta-follow" data-role="ctafollow">— follow + 100% gratuit</div>
+  </div>
+
+  <!-- AVATAR OVERLAY (sibling of scenes) -->
+  <div id="avatar-frame" data-layout-allow-overflow="true">
+    <video id="avatar" src="assets/avatar-keyed.mp4" data-start="0" data-duration="32.57" data-layout-allow-overflow="true" muted playsinline></video>
+  </div>
+  <div id="avatar-ring" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="32.57"></div>
+  <div id="avatar-orbit" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="32.57"></div>
+  <div id="avatar-orbit-v" class="clip" data-layout-allow-overflow="true" data-start="0" data-duration="32.57"></div>
+
+  <!-- CAPTIONS -->
+  <div id="caption-band">
+    <div id="cap-plate"></div>
+    <div id="cap-bar-top" class="cap-bar"></div>
+    <div id="cap-bar-bot" class="cap-bar"></div>
+  </div>
+
+  <!-- AUDIO -->
+  <audio id="voice" src="assets/voice.mp3" data-start="0" data-duration="32.57" data-volume="1"></audio>
+  <!-- BGM = "YOU CAN ASK THE FLOWERS (HORROR MIX)", -12.4 LUFS -> 0.05 (palette v1). -->
+  <audio id="bgm" src="assets/flowers_horror.mp3" data-start="0" data-duration="32.57" data-volume="0.05"></audio>
+
+  <!-- SFX — palette v1 FIGÉE (_shared/sfx-palette/v1). data-start recalés sur MES coupes
+       (3.95 / 6.87 / 12.88 / 14.32 / 18.40 / 24.49). Zoom ~1.2s avant la coupe -> pic sur la coupe. -->
+  <audio id="sfx-hook"      src="assets/sfx-glitch-hard.mp3" data-start="0.10"  data-volume="0.26"></audio>
+  <audio id="sfx-hook-imp"  src="assets/sfx-impact.mp3"      data-start="0.10"  data-volume="0.20"></audio>
+  <audio id="sfx-verdict"   src="assets/sfx-notify.mp3"      data-start="2.60"  data-volume="0.16"></audio>
+  <audio id="sfx-zoom-1"    src="assets/sfx-zoom.mp3"        data-start="2.75"  data-volume="0.17"></audio>
+  <audio id="sfx-hook-2"    src="assets/sfx-glitch-soft.mp3" data-start="3.98"  data-volume="0.15"></audio>
+  <audio id="sfx-click-1"   src="assets/sfx-click.mp3"       data-start="3.98"  data-volume="0.18"></audio>
+  <audio id="sfx-num"       src="assets/sfx-notify.mp3"      data-start="5.05"  data-volume="0.16"></audio>
+  <audio id="sfx-strike"    src="assets/sfx-whoosh-lat.mp3"  data-start="5.30"  data-volume="0.14"></audio>
+  <audio id="sfx-zoom-2"    src="assets/sfx-zoom.mp3"        data-start="5.67"  data-volume="0.17"></audio>
+  <audio id="sfx-click-2"   src="assets/sfx-click.mp3"       data-start="6.92"  data-volume="0.18"></audio>
+  <audio id="sfx-mv1"       src="assets/sfx-click-soft.mp3"  data-start="7.40"  data-volume="0.14"></audio>
+  <audio id="sfx-mv2"       src="assets/sfx-click-soft.mp3"  data-start="8.45"  data-volume="0.14"></audio>
+  <audio id="sfx-mv3"       src="assets/sfx-click-soft.mp3"  data-start="9.55"  data-volume="0.14"></audio>
+  <audio id="sfx-valid3"    src="assets/sfx-confirm.mp3"     data-start="11.45" data-volume="0.18"></audio>
+  <audio id="sfx-zoom-3"    src="assets/sfx-zoom.mp3"        data-start="11.68" data-volume="0.17"></audio>
+  <audio id="sfx-arrow-1"   src="assets/sfx-whoosh-lat.mp3"  data-start="12.70" data-volume="0.16"></audio>
+  <audio id="sfx-arrow-2"   src="assets/sfx-whoosh-lat.mp3"  data-start="14.12" data-volume="0.16"></audio>
+  <audio id="sfx-lock"      src="assets/sfx-notify.mp3"      data-start="14.85" data-volume="0.16"></audio>
+  <audio id="sfx-zoom-4"    src="assets/sfx-zoom.mp3"        data-start="17.20" data-volume="0.19"></audio>
+  <audio id="sfx-click-4"   src="assets/sfx-click.mp3"       data-start="18.42" data-volume="0.18"></audio>
+  <audio id="sfx-r1"        src="assets/sfx-click-soft.mp3"  data-start="18.70" data-volume="0.14"></audio>
+  <audio id="sfx-r2"        src="assets/sfx-confirm.mp3"     data-start="20.00" data-volume="0.18"></audio>
+  <audio id="sfx-chip1"     src="assets/sfx-click-soft.mp3"  data-start="21.85" data-volume="0.13"></audio>
+  <audio id="sfx-chip2"     src="assets/sfx-click-soft.mp3"  data-start="23.10" data-volume="0.13"></audio>
+  <audio id="sfx-zoom-5"    src="assets/sfx-zoom.mp3"        data-start="23.29" data-volume="0.19"></audio>
+  <audio id="sfx-limit"     src="assets/sfx-notify.mp3"      data-start="24.70" data-volume="0.16"></audio>
+  <audio id="sfx-mid-imp"   src="assets/sfx-impact.mp3"      data-start="26.55" data-volume="0.18"></audio>
+  <audio id="sfx-cta-pop"   src="assets/sfx-pop.mp3"         data-start="29.95" data-volume="0.24"></audio>
+  <audio id="sfx-cta-imp"   src="assets/sfx-impact.mp3"      data-start="29.95" data-volume="0.18"></audio>
+  <audio id="sfx-cta-sub"   src="assets/sfx-click-soft.mp3"  data-start="30.80" data-volume="0.13"></audio>
+</div>
+
+<script>
+const compId="autoboost151atlas";
+const DUR=32.57;
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+const $=s=>document.querySelector(s);
+const R=r=>document.querySelector('[data-role="'+r+'"]');
+
+/* ---- SCENES auto fade (data-s/data-d) ---- */
+document.querySelectorAll(".scene").forEach((el)=>{
+  const s=parseFloat(el.dataset.s), d=parseFloat(el.dataset.d);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+/* ---- BROLL video fade ---- */
+document.querySelectorAll(".broll-vid").forEach((el)=>{
+  const s=parseFloat(el.dataset.start), d=parseFloat(el.dataset.duration);
+  tl.to(el,{opacity:1,duration:0.3,ease:"power2.out"},s);
+  tl.to(el,{opacity:0,duration:0.3,ease:"power2.in"},s+d-0.3);
+});
+
+/* ---- scene 1 (0 -> 3.95) ---- */
+tl.fromTo(R("k1"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},0.10);
+tl.fromTo(R("t1"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},0.35);
+tl.fromTo(R("n1"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},1.26);
+tl.fromTo(R("c1"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},1.90);
+tl.fromTo(R("pl1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},2.30);
+tl.fromTo(R("pl2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},2.70);
+tl.fromTo(R("v1"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.6)"},3.10);
+
+/* ---- scene 2 (3.95 -> 6.87) ---- */
+tl.fromTo(R("n2"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},4.10);
+tl.fromTo(R("k2"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},4.12);
+tl.fromTo(R("t2"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},4.35);
+tl.fromTo(R("c2"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},4.95);
+tl.fromTo(R("sk2"),{scaleX:0},{scaleX:1,duration:0.3,ease:"power2.out"},5.35);
+
+/* ---- scene 3 (6.87 -> 12.88) ---- */
+tl.fromTo(R("n3"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},7.02);
+tl.fromTo(R("k3"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},7.05);
+tl.fromTo(R("t3"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},7.28);
+tl.fromTo(R("mv1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},7.40);
+tl.fromTo(R("mv2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},8.45);
+tl.fromTo(R("mv3"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},9.55);
+tl.fromTo(R("v3"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.4,ease:"back.out(1.6)"},11.40);
+
+/* ---- scene 4 (14.32 -> 18.40) ---- */
+tl.fromTo(R("n4"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},14.40);
+tl.fromTo(R("k4"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},14.42);
+tl.fromTo(R("t4"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},14.60);
+tl.fromTo(R("c4"),{opacity:0,y:40},{opacity:1,y:0,duration:0.5,ease:"power3.out"},15.00);
+tl.fromTo(R("pc1"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},15.35);
+tl.fromTo(R("pc2"),{opacity:0,x:-16},{opacity:1,x:0,duration:0.3},16.30);
+
+/* ---- scene 5 (18.40 -> 24.49) ---- */
+tl.fromTo(R("n5"),{opacity:0,scale:0.5},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.8)"},18.50);
+tl.fromTo(R("k5"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},18.52);
+tl.fromTo(R("t5"),{opacity:0,y:26},{opacity:1,y:0,duration:0.5,ease:"power3.out"},18.72);
+tl.fromTo(R("r1"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},18.90);
+tl.fromTo(R("r2"),{opacity:0,x:-30},{opacity:1,x:0,duration:0.4,ease:"power3.out"},20.00);
+tl.fromTo(R("c5a"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},21.85);
+tl.fromTo(R("c5b"),{opacity:0,y:24},{opacity:1,y:0,duration:0.35,ease:"power3.out"},23.10);
+
+/* ---- scene 6 (24.49 -> 32.57) ---- */
+tl.fromTo(R("k6"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},24.70);
+tl.fromTo(R("lim"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},24.75);
+tl.fromTo(R("fill"),{scaleX:0},{scaleX:1,duration:0.9,ease:"power2.out"},25.00);
+tl.fromTo(R("mid"),{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.45,ease:"back.out(1.6)"},26.55);
+tl.to(R("mid"),{opacity:0,duration:0.35,ease:"power2.in"},29.10);
+tl.fromTo(R("ctaword"),{opacity:0,scale:0.7},{opacity:1,scale:1,duration:0.5,ease:"back.out(1.6)"},29.40);
+tl.to(R("ctaword"),{scale:1.05,duration:0.5,ease:"sine.inOut",repeat:4,yoyo:true},30.00);
+tl.fromTo(R("ctasub"),{opacity:0,y:20},{opacity:1,y:0,duration:0.4},30.70);
+tl.fromTo(R("ctafollow"),{opacity:0},{opacity:1,duration:0.4},31.55);
+
+/* ---- CAPTIONS — timestamps mot-à-mot Whisper WaveSpeed (openai-whisper, fr). ---- */
+const caps=[
+ [0.00,"OPENAI VIENT",""],
+ [0.80,"DE SORTIR ATLAS","hot:ATLAS"],
+ [1.96,"LE NAVIGATEUR",""],
+ [2.90,"QUI CLIQUE",""],
+ [3.26,"À TA PLACE","ohot:À TA PLACE"],
+ [3.98,"J'AI REMPLACÉ",""],
+ [4.92,"5 EXTENSIONS CHROME","ohot:5"],
+ [5.80,"EN UN SEUL CLIC","hot:UN SEUL CLIC"],
+ [6.92,"IL OUVRE",""],
+ [7.62,"TES PAGES DE VEILLE","hot:VEILLE"],
+ [8.40,"RÉSUME LES OFFRES","hot:RÉSUME"],
+ [9.50,"REMPLIT TES",""],
+ [10.22,"FORMULAIRES","vhot:FORMULAIRES"],
+ [10.74,"DE PROSPECTION","vhot:PROSPECTION"],
+ [11.38,"MOI, JE VALIDE","hot:JE VALIDE"],
+ [12.32,"C'EST TOUT.","hot:C'EST TOUT"],
+ [12.98,"LE VRAI",""],
+ [13.56,"CHANGEMENT","ohot:CHANGEMENT"],
+ [14.34,"L'AGENT GARDE",""],
+ [14.88,"LE CONTEXTE","hot:LE CONTEXTE"],
+ [15.42,"D'UNE PAGE À L'AUTRE","vhot:À L'AUTRE"],
+ [16.18,"IL SAIT POURQUOI","hot:POURQUOI"],
+ [16.98,"IL CLIQUE",""],
+ [17.54,"PAS JUSTE OÙ","ohot:PAS JUSTE OÙ"],
+ [18.40,"MA VEILLE DU MATIN","hot:VEILLE"],
+ [19.42,"ME PRENAIT",""],
+ [19.72,"40 MINUTES","ohot:40 MINUTES"],
+ [20.44,"MAINTENANT",""],
+ [20.90,"MOINS DE 5 MIN","hot:MOINS DE 5 MIN"],
+ [21.80,"ZÉRO EXTENSION","hot:ZÉRO"],
+ [22.48,"À PAYER","ohot:À PAYER"],
+ [23.06,"ZÉRO PLUGIN","hot:ZÉRO"],
+ [23.86,"À MAINTENIR","ohot:À MAINTENIR"],
+ [24.54,"POUR UN FREELANCE","hot:FREELANCE"],
+ [25.54,"QUI JONGLE ENTRE",""],
+ [25.98,"10 OUTILS","ohot:10 OUTILS"],
+ [26.64,"ÇA LIBÈRE",""],
+ [27.34,"UNE VRAIE HEURE","hot:VRAIE HEURE"],
+ [27.70,"FACTURABLE","hot:FACTURABLE"],
+ [28.10,"CHAQUE JOUR","hot:CHAQUE JOUR"],
+ [28.58,"FOLLOW-MOI","hot:FOLLOW-MOI"],
+ [29.56,"COMMENTE LE MOT",""],
+ [30.08,"ATLAS","hot:ATLAS"],
+ [30.62,"JE T'ENVOIE",""],
+ [31.16,"LA LISTE COMPLÈTE","hot:LA LISTE"],
+ [31.82,"GRATUITEMENT","hot:GRATUITEMENT"]
+];
+const CAP_END=32.50;
+const band=$("#caption-band");
+caps.forEach((c,i)=>{
+  const [start,txt,tag]=c;
+  const end=(i<caps.length-1)?caps[i+1][0]:CAP_END;
+  const el=document.createElement("div");el.className="caption";
+  if(tag){
+    const [cls,word]=tag.split(":");
+    const cl=cls==="hot"?"hot":cls==="vhot"?"vhot":"ohot";
+    if(txt===word){el.innerHTML='<span class="'+cl+'">'+txt+'</span>';}
+    else{el.innerHTML=txt.split(word).join('<span class="'+cl+'">'+word+'</span>');}
+  } else {el.textContent=txt;}
+  band.appendChild(el);
+  tl.fromTo(el,{opacity:0,y:12},{opacity:1,y:0,duration:0.18,ease:"power2.out"},start);
+  tl.to(el,{opacity:0,duration:0.14},end-0.16);
+});
+
+/* Barres du rail : 32.57/1.05 = 31.0 -> repeat 30 ; décalée : (32.57-0.52)/1.05 = 30.5 -> repeat 29 */
+tl.to("#cap-bar-top",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:30,yoyo:true},0);
+tl.to("#cap-bar-bot",{opacity:0.5,duration:1.05,ease:"sine.inOut",repeat:29,yoyo:true},0.52);
+
+/* ---- AVATAR ring/orbit ---- */
+const BROLL_START=12.88, BROLL_END=14.32;
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:0,duration:0.3,ease:"power2.out"},BROLL_START);
+tl.to(["#avatar-frame","#avatar-orbit"],{opacity:1,duration:0.3,ease:"power2.out"},BROLL_END);
+/* ring avant broll : 12.88/0.5 = 25.8 -> repeat 25 (IMPAIR -> retombe à 0 avant le broll) */
+tl.to("#avatar-ring",{opacity:0.8,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:25,yoyo:true},0);
+/* ring après broll : (32.57-14.32)/0.5 = 36.5 -> repeat 35 */
+tl.to("#avatar-ring",{opacity:0.85,scale:1.06,duration:0.5,ease:"sine.inOut",repeat:35,yoyo:true},BROLL_END);
+/* orbit : 12.88/2.2 = 5.85 -> repeat 4 ; puis (32.57-14.32)/2.2 = 8.3 -> repeat 7 */
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:4,ease:"none"},0);
+tl.to("#avatar-orbit",{rotation:"+=360",duration:2.2,repeat:7,ease:"none"},BROLL_END);
+/* beat CTA */
+tl.to("#avatar-ring",{opacity:1,scale:1.08,duration:0.5,ease:"power2.out",overwrite:"auto"},29.40);
+
+/* ---- PULSE VIOLET SUR LES DROPS ----
+   flowers_horror.mp3 : drops à 2.34 / 10.36 / 18.38 / 26.40.
+   Fenêtre broll 12.88-14.32 : aucun drop dedans -> les 4 sont gardés.
+   LEAD 0.12 : le fondu CULMINE sur le drop. */
+var LEAD = 0.12;
+[2.34, 10.36, 18.38, 26.40].forEach(function(t){
+  var s = t - LEAD;
+  tl.fromTo("#avatar-orbit-v",{rotation:0,scale:0.985},{rotation:360,scale:1.02,duration:1.45,ease:"power2.out"},s);
+  tl.fromTo("#avatar-orbit-v",{opacity:0},{opacity:0.9,duration:LEAD,ease:"power2.out"},s);
+  tl.to("#avatar-orbit-v",{opacity:0,duration:0.55,ease:"power2.in"},s+0.90);
+});
+
+tl.totalDuration(DUR);
+window.__timelines[compId]=tl;
+</script>
+</body>
+</html>
