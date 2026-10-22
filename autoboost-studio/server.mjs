@@ -67,7 +67,7 @@ app.post("/api/jobs", upload.fields([{ name: "video", maxCount: 1 }, { name: "co
   const b = req.body;
   const opts = {
     style: b.style || c.style, format: b.format || c.format, voice: b.voice || c.voice, cutout: b.cutout === "on" || b.cutout === "true",
-    musicChoice: f.music ? "custom" : (b.music || c.music), cta: b.cta || "", tempo: b.tempo || c.tempo,
+    musicChoice: f.music ? "custom" : (b.music || c.music), cta: b.cta || "", script: b.script || "", tempo: b.tempo || c.tempo,
     cutSilences: b.cutSilences !== "off", brand: b.brand || c.brand, model: c.whisperModel,
     wavespeedKey: c.wavespeedKey, voiceRefUrl: b.voiceRefUrl || c.voiceRefUrl, webhook: c.webhook,
   };

@@ -88,6 +88,8 @@ video { width: 100%; max-height: 70vh; border-radius: 12px; background: #000; ma
       <div><label>Musique</label><select name="music" id="music"></select></div>
       <div><label>Mot-clé CTA <small>(sinon détecté)</small></label><input type="text" name="cta" placeholder="ex. BOOST"></div>
     </div>
+    <label>Texte exact de la vidéo <small>(optionnel : si tu l'as, les sous-titres reprennent tes mots au lieu de la transcription)</small></label>
+    <textarea name="script" rows="3" placeholder="Colle ici le texte que tu dis (script, prompteur)…" style="width:100%"></textarea>
     <label>Ou ta propre musique (optionnel)</label>
     <div class="drop small" data-for="music"><small>Dépose un mp3 / wav</small><span class="name"></span></div>
     <input type="file" name="music" accept="audio/*" hidden>

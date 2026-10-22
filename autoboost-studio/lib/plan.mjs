@@ -67,7 +67,8 @@ export function headline(words, maxN = 4) {
 /** an enumeration: 3+ comma-separated chunks of <= 5 words */
 function listLike(text) {
   const items = text.split(",").map((x) => x.trim()).filter(Boolean);
-  return items.length >= 3 && items.filter((x) => x.split(/\s+/).length <= 5).length >= items.length - 1;
+  const nw = text.split(/\s+/).filter(Boolean).length;      // « Franchement, la sieste, je valide. » is not a list
+  return items.length >= 3 && nw >= 6 && items.filter((x) => x.split(/\s+/).length <= 5).length >= items.length - 1;
 }
 
 function stickerFor(text, prev) {
@@ -98,7 +99,12 @@ export function plan(words, { cta = "", pace = 3.6, total } = {}) {
     } else sents.push(s);
   }
   // a forced CTA keyword goes on the sentence that says it (Whisper may mangle the verb: « commande token »)
-  const ctaIdx = cta ? (() => { const k = sents.findLastIndex((x) => x.some((w) => norm(w.w) === norm(cta))); return k >= 0 ? k : sents.length - 1; })() : -1;   // last mention: the CTA comes late
+  // last mention: the CTA comes late; a later sentence opening on « commente… » wins (Whisper mangles the keyword)
+  const ctaIdx = cta ? (() => {
+    const k = sents.findLastIndex((x) => x.some((w) => norm(w.w) === norm(cta)));
+    const c = sents.findLastIndex((x) => /^comment/.test(norm(x[0].w)));
+    return Math.max(k, c) >= 0 ? Math.max(k, c) : sents.length - 1;
+  })() : -1;
   const scenes = [];
   let prevSticker = null, stepN = 0;
   sents.forEach((s, idx) => {

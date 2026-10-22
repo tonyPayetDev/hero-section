@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { HF, ff, probe, run, writeJSON, FPS } from "./tools.mjs";
 import { transcribe } from "./transcribe.mjs";
+import { alignScript } from "./align.mjs";
 import { cutTake } from "./cut.mjs";
 import { enhance, revoice } from "./voice.mjs";
 import { rhythm } from "./competitor.mjs";
@@ -12,7 +13,7 @@ import { mix } from "./mix.mjs";
 
 /**
  * job: { id, dir, video, competitor?, music?, opts: { style, format, voice, wavespeedKey, voiceRefUrl, webhook, cutout,
- *        musicChoice ("auto" = the style's own music), cta, tempo, cutSilences, brand, model } }
+ *        musicChoice ("auto" = the style's own music), cta, script (exact text, optional), tempo, cutSilences, brand, model } }
  */
 export async function runJob(job) {
   const st = { id: job.id, status: "running", step: "", progress: 0, log: [], result: null, error: null, started: Date.now() };
@@ -43,8 +44,12 @@ export async function runJob(job) {
 
     // 2. transcription
     step("Transcription (locale)", 10);
-    const words0 = await transcribe(job.video, work, { model: o.model || "small", language: "fr", log });
+    let words0 = await transcribe(job.video, work, { model: o.model || "small", language: "fr", log });
     if (!words0.length) throw new Error("aucune parole détectée dans la vidéo");
+    if ((o.script || "").trim()) {             // known text: Whisper keeps the timing, the script gives the words
+      words0 = alignScript(words0, o.script);
+      log("texte exact fourni : les sous-titres reprennent tes mots");
+    }
     log(`${words0.length} mots : « ${words0.slice(0, 14).map((w) => w.w).join(" ")}… »`);
     fs.writeFileSync(path.join(job.dir, "transcription.txt"), words0.map((w) => w.w).join(" "));
 
