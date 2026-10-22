@@ -1,0 +1,19 @@
+{"source": "https://www.instagram.com/reel/DesAAQoP0UY/ (@baptsimard.ia, « 10 outils GitHub gratuits pour Claude Code ») - script rewritten, no image from the original",
+ "lines": [
+  ["moi", "J'ai testé une centaine d'outils gratuits de GitHub sur Claude Code. J'en garde dix."],
+  ["ia", "Dont celui qui a monté cette vidéo. De rien."],
+  ["moi", "Un : Humanizer. Il repère les tics d'écriture IA dans tes textes, et les corrige."],
+  ["ia", "Je me sens visé."],
+  ["moi", "Deux : HyperFrames. Claude écrit ta vidéo comme une page web, et la sort en vrai fichier vidéo."],
+  ["moi", "Trois : 21st.dev. Plus de dix mille éléments de site que Claude va chercher pour ta page."],
+  ["moi", "Quatre : Watch. Tu donnes un lien de vidéo, Claude te dit ce qu'on y voit et ce qui s'y dit."],
+  ["moi", "Cinq : REA. Claude démonte une appli installée sur ton ordi, pour comprendre comment elle marche."],
+  ["ia", "Rassure-toi, je remonte tout après."],
+  ["moi", "Six : Apify. Des milliers de robots qui récupèrent posts Instagram, profils LinkedIn et fiches Google Maps."],
+  ["moi", "Sept : Google Workspace. Claude pilote ton Gmail, ton Drive, ton agenda et tes Sheets."],
+  ["moi", "Huit : Find Skills. Tu dis ce que tu veux faire, il trouve le bon skill et l'installe."],
+  ["moi", "Neuf : Orca. Claude Code et Codex côte à côte, chacun sur sa tâche."],
+  ["ia", "Enfin un collègue."],
+  ["moi", "Dix : Playwright. Claude ouvre un vrai navigateur, et teste ton site comme un client."],
+  ["moi", "Commente GITHUB, et je t'envoie les dix liens avec le prompt pour les installer."]
+ ]}
