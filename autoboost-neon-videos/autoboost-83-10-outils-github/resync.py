@@ -77,12 +77,19 @@ for s in spans:
 spans = merged
 
 used = np.zeros(TN)
+# frames that must never be used (e.g. the burned-in « commente MOT » end card of each split-preuve clip):
+# BAD=mask.npy (bool per take frame), widened by 1.5 s on each side for the fades
+bad = np.zeros(TN, bool)
+if os.environ.get("BAD"):
+    m = np.load(os.environ["BAD"])[:TN]
+    for i in np.where(m)[0]:
+        bad[max(0, i - 45):i + 46] = True
 
 
 def window_costs(a, b):
     L = b - a
     v, ov = fv[a:b], onv[a:b]
-    return np.array([np.abs(ft[s:s + L] - v).mean() + 0.8 * (ont[s:s + L] != ov).mean() + 0.35 * (used[s:s + L] > 0).mean()
+    return np.array([np.abs(ft[s:s + L] - v).mean() + 0.8 * (ont[s:s + L] != ov).mean() + 0.35 * (used[s:s + L] > 0).mean() + 50 * bad[s:s + L].any()
                      for s in range(0, TN - L)])
 
 
@@ -162,9 +169,9 @@ def fill_talk(a, b):
 # silent windows of the take (he listens): sound off for >= 0.6 s, 2 frames of margin
 sil_w, k = [], 0
 while k < TN:
-    if not ont[k]:
+    if not ont[k] and not bad[k]:
         e = k
-        while e < TN and not ont[e]:
+        while e < TN and not ont[e] and not bad[e]:
             e += 1
         if e - k >= 18:
             sil_w.append((k + 2, e - 2))
@@ -172,6 +179,13 @@ while k < TN:
     k += 1
 sil_w.sort(key=lambda w: -(w[1] - w[0]))
 sil_w = sil_w[:6]
+if len(sil_w) < 3:          # a take with almost no pauses (split-preuve): the quietest 0.6 s windows instead
+    cs = np.convolve(ft, np.ones(18) / 18, mode="valid")
+    for s0 in np.argsort(cs):
+        if not bad[s0:s0 + 18].any() and all(abs(s0 - w[0]) > 36 for w in sil_w):
+            sil_w.append((int(s0), int(s0) + 18))
+        if len(sil_w) == 6:
+            break
 
 frames = []                                                  # take frame index for every output frame
 report, rr = [], 0
@@ -216,7 +230,9 @@ print(f"{len(cuts)} cuts, {holds} held frames")
 
 
 # ------------------------------------------------------------------ write the take (plain and matted) with the same frame list
-W, H = 1080, 1440
+FP = FF.replace("ffmpeg", "ffprobe") if "ffmpeg" in os.path.basename(FF) else "ffprobe"
+W, H = map(int, subprocess.check_output([FP, "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
+                                          "-of", "csv=p=0", take]).decode().strip().split(","))   # 1080x1440 (80) or 1080x870 (83)
 
 
 def build(src, dst, alpha_):
