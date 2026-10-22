@@ -1,0 +1,5 @@
+motion/public/kit/
+motion/public/*.webm
+motion/public/*.mp4
+motion/public/snapshots/
+__pycache__/
