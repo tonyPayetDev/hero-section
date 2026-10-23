@@ -1,0 +1,98 @@
+{
+ "source": "VID_20261023_200555.mp4 (Tony's own take, 6 min 18 s, 1080x1920 @ 55 fps, shared from his Drive)",
+ "note": "raw times in seconds; each Tony segment is cut on its words (pauses > 0.45 s removed). An IA line plays after the segment it follows, over the next muted seconds of the take (Tony keeps eating).",
+ "items": [
+  {
+   "who": "moi",
+   "a": 0.1,
+   "b": 2.0,
+   "tag": "hook"
+  },
+  {
+   "who": "moi",
+   "a": 5.9,
+   "b": 8.8
+  },
+  {
+   "who": "ia",
+   "text": "Des knakis dans des nouilles au piment. On commence fort."
+  },
+  {
+   "who": "moi",
+   "a": 35.8,
+   "b": 39.9
+  },
+  {
+   "who": "moi",
+   "a": 46.9,
+   "b": 48.8
+  },
+  {
+   "who": "ia",
+   "text": "Logiquement. On en reparle dans deux minutes."
+  },
+  {
+   "who": "moi",
+   "a": 62.7,
+   "b": 68.3
+  },
+  {
+   "who": "moi",
+   "a": 102.9,
+   "b": 106.6
+  },
+  {
+   "who": "moi",
+   "a": 118.0,
+   "b": 124.7
+  },
+  {
+   "who": "ia",
+   "text": "Je confirme. Moi, je n'aurais jamais goûté ça."
+  },
+  {
+   "who": "moi",
+   "a": 125.5,
+   "b": 132.1
+  },
+  {
+   "who": "moi",
+   "a": 144.4,
+   "b": 152.0
+  },
+  {
+   "who": "ia",
+   "text": "Pas d'eau, pour un défi piment. Belle stratégie."
+  },
+  {
+   "who": "moi",
+   "a": 169.9,
+   "b": 178.3
+  },
+  {
+   "who": "moi",
+   "a": 249.1,
+   "b": 255.6
+  },
+  {
+   "who": "ia",
+   "text": "Ton nez a abandonné avant toi."
+  },
+  {
+   "who": "moi",
+   "a": 338.2,
+   "b": 341.0
+  },
+  {
+   "who": "moi",
+   "a": 344.4,
+   "b": 349.4,
+   "tag": "cta"
+  },
+  {
+   "who": "moi",
+   "a": 355.6,
+   "b": 358.5
+  }
+ ]
+}
