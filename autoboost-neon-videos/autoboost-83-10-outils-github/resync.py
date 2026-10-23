@@ -44,6 +44,11 @@ def env(p):
 
 
 ft, ont = env(take_audio)
+if os.environ.get("MOUTH"):      # lips measured on the picture (mouth_open.py): better than a take audio that carries music
+    g = np.load(os.environ["MOUTH"])[:len(ft)] if len(np.load(os.environ["MOUTH"])) >= len(ft) else np.load(os.environ["MOUTH"])
+    hi = np.percentile(g, 90)
+    ft = np.convolve(np.clip(g / hi, 0, 1), np.ones(3) / 3, "same")
+    ont = g > 0.25 * hi
 fv, onv = env(os.path.join(out, "voice.wav"))
 fv, onv = np.pad(fv, (0, max(0, NF - len(fv))))[:NF], np.pad(onv, (0, max(0, NF - len(onv))))[:NF]
 TN = len(ft)

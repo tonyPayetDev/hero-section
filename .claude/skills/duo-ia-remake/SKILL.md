@@ -53,6 +53,19 @@ python3 .claude/skills/duo-ia-remake/scripts/tts_wavespeed.py session/script.jso
    Il écrit `tony_src.mp4` (non détouré), `tony.webm` (détouré) et `tony_cuts.json` (les coupes → punch-ins).
 4. Vérifier : planches des lèvres autour de chaque réplique (bouche ouverte quand la voix parle, fermée dans les pauses).
 
+**Si le son de la prise ne correspond pas à la bouche** (prise découpée dans un rendu avec musique, autre voix…),
+mesurer la bouche sur l'image et synchroniser là-dessus :
+```bash
+# modèle : https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task
+# pip install mediapipe opencv-python-headless ; libEGL : lier celui de Chromium (/opt/pw-browsers/chromium-*/chrome-linux/)
+python3 .claude/skills/duo-ia-remake/scripts/mouth_open.py take30.mp4 face_landmarker.task mouth.npy
+MOUTH=mouth.npy python3 resync.py take30.mp4 take30.mkv take_alpha.webm build/
+```
+Contrôle indépendant : relancer `mouth_open.py` sur `build/tony_src.mp4` et corréler avec l'enveloppe de `voice.wav`
+par réplique de Tony : **viser ≥ 0,6** (vidéo 83 : 0,70 en moyenne ; le son de la prise donnait −0,1).
+Images à exclure (stickers, cercle IA, cartes CTA incrustées) : `BAD=mask.npy BAD_PAD=n`, ou mieux, recompacter la prise
+sur les seules images propres avant le détourage.
+
 **Sans prise de Tony** (avatar seul, cas de la 82) : `autoboost-82-robots-nvidia/avatar_take.py` construit une prise
 « face cam » avec la banque avatar VOITURE (`_shared/avatar-bank/clips-new`, fenêtres lèvres de `lips-map-d.json`)
 sous les répliques, puis on l'habille avec AutoBoost Studio (style Seedance néon) ou le motion de la 80.
