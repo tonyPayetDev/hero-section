@@ -93,6 +93,11 @@
    "who": "moi",
    "a": 355.6,
    "b": 358.5
+  },
+  {
+   "who": "ia",
+   "text": "Cette vidéo a été montée entièrement avec Claude. Tu veux savoir comment j'ai fait ? Commente MONTAGE, et je t'envoie ça.",
+   "tag": "outro"
   }
  ]
 }

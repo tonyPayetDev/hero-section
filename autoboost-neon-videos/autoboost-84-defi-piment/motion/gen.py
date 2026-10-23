@@ -81,7 +81,7 @@ for t, n in lv_steps:
     js.append(f'tl.set("#lv",{{textContent:"{n}/5"}},{q(t)});')
     R("#heat", t, {"opacity": 0.25 + 0.12 * n}, {"opacity": 0.12 * n}, 0.8, "power2.out")
     EV.append([t, "sfx-impact.mp3", -19])
-R("#meter", TOTAL - 0.6, {"opacity": 1}, {"opacity": 0}, 0.3)
+R("#meter", L[-1]["start"] - 0.2, {"opacity": 1}, {"opacity": 0}, 0.3)          # the outro card takes the top
 
 # ------------------------------------------------------------------ kit stickers on the reactions (black matte, screen blend)
 STICK = [("regarde-ca", wt(1, "knakis"), 2.0, 40, 1150, -6),
@@ -122,6 +122,22 @@ R("#cta", L[cta_i]["end"] + 0.4, {"opacity": 1}, {"opacity": 0}, 0.3)
 EV += [[t_like, "sfx-pop.mp3", -17], [t_sub, "sfx-confirm.mp3", -17]]
 S("#flash", TOTAL - 0.5, {"backgroundColor": "#050305"})
 R("#flash", TOTAL - 0.5, {"opacity": 0}, {"opacity": 1}, 0.45, "power2.in")
+
+# ------------------------------------------------------------------ outro: « montée entièrement avec Claude » + commente MONTAGE (last IA line)
+KW = "MONTAGE"
+oi = len(L) - 1
+assert L[oi]["who"] == "ia" and "MONTAGE" in L[oi]["text"], "the outro must be the last line"
+oa, ob = L[oi]["start"], L[oi]["end"]
+R("#outro", oa - 0.1, {"opacity": 0, "y": -60, "scale": 0.92}, {"opacity": 1, "y": 0, "scale": 1}, 0.4, "back.out(1.8)")
+EV.append([oa - 0.1, "sfx-whoosh-v2.mp3", -19])
+tk = wt(oi, "Commente")
+R("#outro .f", tk - 0.2, {"opacity": 0, "y": 30}, {"opacity": 1, "y": 0}, 0.3, "back.out(2)")
+for k, ch in enumerate(KW):
+    js.append(f'tl.set("#outro .kw span:nth-child({k + 1})",{{opacity:1}},{q(tk + 0.25 + k * 0.07)});')
+    EV.append([tk + 0.25 + k * 0.07, "sfx-click-soft.mp3", -24])
+js.append(f'tl.fromTo("#outro .f svg",{{opacity:0,scale:.4}},{{opacity:1,scale:1,duration:.3,ease:"back.out(3)",immediateRender:false}},{q(tk + 0.3 + len(KW) * 0.07)});')
+R("#outro .d", wt(oi, "envoie") - 0.1, {"opacity": 0, "y": 20}, {"opacity": 1, "y": 0}, 0.3)
+EV += [[tk, "sfx-impact-deep.mp3", -16], [wt(oi, "envoie"), "sfx-notify.mp3", -19]]
 
 # ------------------------------------------------------------------ captions: chunks of <= 3 words, active word yellow
 caps, ci = [], 0
@@ -165,7 +181,7 @@ for n, it in enumerate(L):
 
 # ------------------------------------------------------------------ write
 tpl = open(os.path.join(HERE, "template.html")).read()
-page = (tpl.replace("%%TOTAL%%", q(TOTAL)).replace("%%HOOK%%", spans).replace("%%OVERLAYS%%", "\n".join(OV))
+page = (tpl.replace("%%TOTAL%%", q(TOTAL)).replace("%%HOOK%%", spans).replace("%%KW%%", "".join(f"<span>{c}</span>" for c in KW)).replace("%%OVERLAYS%%", "\n".join(OV))
         .replace("%%CAPTIONS%%", "\n".join(caps)).replace("%%JS%%", "\n".join("    " + x for x in js)))
 open(os.path.join(PUB, "index.html"), "w").write(page)
 json.dump(sorted(EV), open(os.path.join(HERE, "events.json"), "w"))

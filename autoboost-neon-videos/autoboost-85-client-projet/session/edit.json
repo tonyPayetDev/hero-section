@@ -1,0 +1,129 @@
+{
+ "source": "2026-10-23-235513765.mp4 (Tony's own take: lip-sync of the « palais » scene, Astérix & Obélix : Mission Cléopâtre, 35 s)",
+ "note": "a lip-sync is never cut: Tony IA speaks on freeze frames. Caption text corrected by hand (Whisper small + medium), timings from Whisper small.",
+ "hook": [
+  "QUAND LE CLIENT",
+  "DÉCRIT SON PROJET"
+ ],
+ "items": [
+  {
+   "who": "moi",
+   "a": 0.0,
+   "b": 29.3,
+   "lines": [
+    [
+     0.59,
+     2.19,
+     "Convoque tous les ouvriers que tu pourras trouver,"
+    ],
+    [
+     2.57,
+     3.53,
+     "fais creuser les fondations là-bas."
+    ],
+    [
+     4.11,
+     6.61,
+     "Là, à côté du palmier, on va faire une grande allée avec plein de statues."
+    ],
+    [
+     6.85,
+     8.35,
+     "Qu'on appellera la grande allée avec plein de statues."
+    ],
+    [
+     8.57,
+     11.03,
+     "Et là-bas, les jardins, avec des oliviers, des orangers,"
+    ],
+    [
+     11.33,
+     12.61,
+     "des saules pleureurs…"
+    ],
+    [
+     13.39,
+     14.47,
+     "Et là-bas, le palais."
+    ],
+    [
+     15.09,
+     16.13,
+     "Luxuriant, magnifique, chamarré."
+    ],
+    [
+     16.39,
+     19.03,
+     "Avec une grande cour où il y aura plein de danseuses qui pourront danser."
+    ],
+    [
+     20.23,
+     21.85,
+     "Et juste là, un petit géranium."
+    ],
+    [
+     23.93,
+     24.47,
+     "Ça va être bien."
+    ],
+    [
+     25.31,
+     26.33,
+     "Ça va être très bien même."
+    ],
+    [
+     27.27,
+     28.35,
+     "Bon, bien sûr, il faut imaginer."
+    ],
+    [
+     28.65,
+     29.15,
+     "Ouais, bien sûr."
+    ]
+   ]
+  },
+  {
+   "who": "ia",
+   "text": "Moi, j'imagine surtout le devis."
+  },
+  {
+   "who": "moi",
+   "a": 29.3,
+   "b": 34.99,
+   "lines": [
+    [
+     30.59,
+     30.91,
+     "J'y vais."
+    ],
+    [
+     31.41,
+     32.69,
+     "À dans un mois."
+    ],
+    [
+     32.69,
+     34.03,
+     "Dans un mois ?"
+    ],
+    [
+     34.03,
+     34.71,
+     "Maximum !"
+    ]
+   ]
+  },
+  {
+   "who": "ia",
+   "text": "Un mois ? Avec Claude, c'est livré ce soir.",
+   "freeze": 31.5
+  },
+  {
+   "who": "ia",
+   "text": "Cette vidéo a été montée entièrement avec Claude. Tu veux savoir comment j'ai fait ? Commente MONTAGE, et je t'envoie ça.",
+   "tag": "outro",
+   "freeze": 31.5
+  }
+ ]
+}

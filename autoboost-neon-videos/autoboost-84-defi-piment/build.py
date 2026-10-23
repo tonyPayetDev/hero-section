@@ -74,7 +74,7 @@ for it in ITEMS:
         t += d + 0.5
         last_b = a0 + d + 0.5
         ia_k += 1
-TOTAL = round(t + 0.8, 3)                                  # + a short hold on the last frame
+TOTAL = round(t + 1.6, 3)                                  # + a hold on the last frame (outro card readable)
 NF = round(TOTAL * FPS)
 
 # IA words: spread on the line by syllable weight (the voice is regular; captions only need to land on the beat)

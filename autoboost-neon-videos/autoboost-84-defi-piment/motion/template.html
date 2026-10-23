@@ -57,6 +57,19 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
 #cta .like { background: #050305; border: 4px solid #FFD600; color: #FFD600; box-shadow: 0 0 30px rgba(255,214,0,.6); }
 #cta .sub { background: linear-gradient(180deg, #FF8A00, #FF2D00); color: #fff; box-shadow: 0 0 40px rgba(255,45,0,.8); }
 #cta svg { width: 54px; height: 54px; }
+/* outro: edited with Claude + comment MONTAGE */
+#outro { position: absolute; left: 60px; top: 170px; width: 960px; padding: 40px 44px 46px; border-radius: 40px; background: rgba(5,3,5,.9);
+  border: 4px solid #FF8A00; box-shadow: 0 0 0 8px rgba(168,85,255,.45), 0 0 60px rgba(255,138,0,.55); opacity: 0; text-align: center; }
+#outro .k { font-family: "AB Mono", monospace; font-size: 30px; letter-spacing: .2em; color: #d8b4fe; }
+#outro .t { margin-top: 16px; font-size: 86px; line-height: .98; letter-spacing: -0.04em; text-transform: uppercase; color: #fff; }
+#outro .t b { color: #FFD600; text-shadow: 0 0 26px rgba(255,138,0,.9); }
+#outro .f { display: flex; align-items: center; gap: 20px; margin-top: 30px; height: 112px; padding: 0 30px; border-radius: 56px; border: 4px solid #FFD600; background: #0d0709; text-align: left; opacity: 0; }
+#outro .f .pre { font-size: 34px; color: #a59a8c; font-weight: 400; }
+#outro .f .kw { flex: 1; font-family: "AB Mono", monospace; font-size: 62px; letter-spacing: .12em; color: #FFD600; }
+#outro .f .kw span { opacity: 0; }
+#outro .f svg { width: 52px; height: 52px; color: #FF8A00; opacity: 0; }
+#outro .d { margin-top: 22px; font-size: 40px; color: #fff; opacity: 0; }
+#outro .d b { color: #FF8A00; }
 #flash { position: absolute; inset: 0; background: #fff3d0; opacity: 0; }
 </style>
 </head>
@@ -72,6 +85,9 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
 %%OVERLAYS%%
   <div id="iaw"><div class="disc"><video id="iav" src="avatar.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="2"></video></div><img src="piment/cadre-06.png" alt="" /><div class="tag"><b>TONY</b><span>IA</span></div></div>
   <div id="cta"><div class="b like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11H3V10z"/><path d="M7 10l4-8a3 3 0 0 1 3 3v4h6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.6 21H7"/></svg>LIKE</div><div class="b sub">ABONNE-TOI</div></div>
+  <div id="outro"><div class="k">CETTE VIDÉO A ÉTÉ MONTÉE</div><div class="t">100 % avec <b>Claude</b></div>
+    <div class="f"><span class="pre">commente</span><span class="kw">%%KW%%</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></div>
+    <div class="d">→ je t'envoie <b>comment j'ai fait</b></div></div>
   <div id="cap">%%CAPTIONS%%</div>
   <div id="flash"></div>
   <script src="vendor/gsap.min.js"></script>

@@ -57,12 +57,25 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
 #cta .like { background: #050305; border: 4px solid #FFD600; color: #FFD600; box-shadow: 0 0 30px rgba(255,214,0,.6); }
 #cta .sub { background: linear-gradient(180deg, #FF8A00, #FF2D00); color: #fff; box-shadow: 0 0 40px rgba(255,45,0,.8); }
 #cta svg { width: 54px; height: 54px; }
+/* outro: edited with Claude + comment MONTAGE */
+#outro { position: absolute; left: 60px; top: 170px; width: 960px; padding: 40px 44px 46px; border-radius: 40px; background: rgba(5,3,5,.9);
+  border: 4px solid #FF8A00; box-shadow: 0 0 0 8px rgba(168,85,255,.45), 0 0 60px rgba(255,138,0,.55); opacity: 0; text-align: center; }
+#outro .k { font-family: "AB Mono", monospace; font-size: 30px; letter-spacing: .2em; color: #d8b4fe; }
+#outro .t { margin-top: 16px; font-size: 86px; line-height: .98; letter-spacing: -0.04em; text-transform: uppercase; color: #fff; }
+#outro .t b { color: #FFD600; text-shadow: 0 0 26px rgba(255,138,0,.9); }
+#outro .f { display: flex; align-items: center; gap: 20px; margin-top: 30px; height: 112px; padding: 0 30px; border-radius: 56px; border: 4px solid #FFD600; background: #0d0709; text-align: left; opacity: 0; }
+#outro .f .pre { font-size: 34px; color: #a59a8c; font-weight: 400; }
+#outro .f .kw { flex: 1; font-family: "AB Mono", monospace; font-size: 62px; letter-spacing: .12em; color: #FFD600; }
+#outro .f .kw span { opacity: 0; }
+#outro .f svg { width: 52px; height: 52px; color: #FF8A00; opacity: 0; }
+#outro .d { margin-top: 22px; font-size: 40px; color: #fff; opacity: 0; }
+#outro .d b { color: #FF8A00; }
 #flash { position: absolute; inset: 0; background: #fff3d0; opacity: 0; }
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="autoboost-84" data-start="0" data-width="1080" data-height="1920" data-duration="65.411" data-fps="30">
-  <div id="camw"><video id="cam" src="base.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="65.411" data-track-index="1"></video></div>
+<div id="root" data-composition-id="autoboost-84" data-start="0" data-width="1080" data-height="1920" data-duration="73.200" data-fps="30">
+  <div id="camw"><video id="cam" src="base.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="73.200" data-track-index="1"></video></div>
   <div id="grade"></div>
   <div id="heat"></div>
   <div class="topshade" id="tsh"></div>
@@ -74,8 +87,11 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
 <img class="st" id="st2" src="piment/trop-fort.png" alt="" style="left:40px;top:1150px" />
 <img class="st" id="st3" src="piment/hyper-fort-piment.png" alt="" style="left:480px;top:1140px" />
 <img class="st" id="st4" src="piment/ca-monte.png" alt="" style="left:40px;top:1150px" />
-  <div id="iaw"><div class="disc"><video id="iav" src="avatar.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="65.411" data-track-index="2"></video></div><img src="piment/cadre-06.png" alt="" /><div class="tag"><b>TONY</b><span>IA</span></div></div>
+  <div id="iaw"><div class="disc"><video id="iav" src="avatar.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="73.200" data-track-index="2"></video></div><img src="piment/cadre-06.png" alt="" /><div class="tag"><b>TONY</b><span>IA</span></div></div>
   <div id="cta"><div class="b like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11H3V10z"/><path d="M7 10l4-8a3 3 0 0 1 3 3v4h6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.6 21H7"/></svg>LIKE</div><div class="b sub">ABONNE-TOI</div></div>
+  <div id="outro"><div class="k">CETTE VIDÉO A ÉTÉ MONTÉE</div><div class="t">100 % avec <b>Claude</b></div>
+    <div class="f"><span class="pre">commente</span><span class="kw"><span>M</span><span>O</span><span>N</span><span>T</span><span>A</span><span>G</span><span>E</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></div>
+    <div class="d">→ je t'envoie <b>comment j'ai fait</b></div></div>
   <div id="cap"><div class="cap" id="c0"><span class="cw" id="c0w0">Bon</span> <span class="cw" id="c0w1">on</span> <span class="cw" id="c0w2">va</span></div>
 <div class="cap" id="c1"><span class="cw" id="c1w0">tester</span> <span class="cw" id="c1w1">ça,</span></div>
 <div class="cap" id="c2"><span class="cw" id="c2w0">j&#x27;ai</span> <span class="cw" id="c2w1">mis</span> <span class="cw" id="c2w2">des</span></div>
@@ -150,7 +166,16 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
 <div class="cap" id="c71"><span class="cw" id="c71w0">va,</span> <span class="cw" id="c71w1">j&#x27;ai</span> <span class="cw" id="c71w2">pu</span></div>
 <div class="cap" id="c72"><span class="cw" id="c72w0">manger,</span> <span class="cw" id="c72w1">mais</span> <span class="cw" id="c72w2">je</span></div>
 <div class="cap" id="c73"><span class="cw" id="c73w0">vais</span> <span class="cw" id="c73w1">pas</span> <span class="cw" id="c73w2">finir</span></div>
-<div class="cap" id="c74"><span class="cw" id="c74w0">comme</span> <span class="cw" id="c74w1">ça,</span></div></div>
+<div class="cap" id="c74"><span class="cw" id="c74w0">comme</span> <span class="cw" id="c74w1">ça,</span></div>
+<div class="cap ia" id="c75"><span class="who">IA</span><span class="cw" id="c75w0">Cette</span> <span class="cw" id="c75w1">vidéo</span> <span class="cw" id="c75w2">a</span></div>
+<div class="cap ia" id="c76"><span class="who">IA</span><span class="cw" id="c76w0">été</span> <span class="cw" id="c76w1">montée</span></div>
+<div class="cap ia" id="c77"><span class="who">IA</span><span class="cw" id="c77w0">entièrement</span> <span class="cw" id="c77w1">avec</span></div>
+<div class="cap ia" id="c78"><span class="who">IA</span><span class="cw" id="c78w0">Claude.</span> <span class="cw" id="c78w1">Tu</span> <span class="cw" id="c78w2">veux</span></div>
+<div class="cap ia" id="c79"><span class="who">IA</span><span class="cw" id="c79w0">savoir</span> <span class="cw" id="c79w1">comment</span></div>
+<div class="cap ia" id="c80"><span class="who">IA</span><span class="cw" id="c80w0">j&#x27;ai</span> <span class="cw" id="c80w1">fait</span> <span class="cw" id="c80w2">?</span></div>
+<div class="cap ia" id="c81"><span class="who">IA</span><span class="cw" id="c81w0">Commente</span> <span class="cw" id="c81w1">MONTAGE,</span></div>
+<div class="cap ia" id="c82"><span class="who">IA</span><span class="cw" id="c82w0">et</span> <span class="cw" id="c82w1">je</span> <span class="cw" id="c82w2">t&#x27;envoie</span></div>
+<div class="cap ia" id="c83"><span class="who">IA</span><span class="cw" id="c83w0">ça.</span></div></div>
   <div id="flash"></div>
   <script src="vendor/gsap.min.js"></script>
   <script>
@@ -186,6 +211,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
     tl.set("#camw",{"scale": 1.07},53.533);
     tl.set("#camw",{"scale": 1.0},56.500);
     tl.set("#camw",{"scale": 1.07},61.433);
+    tl.set("#camw",{"scale": 1.0},64.567);
     tl.set("#tsh",{"opacity": 1},0.000);
     tl.fromTo("#hook .k",{"opacity": 0, "y": -30},{...{"opacity": 1, "y": 0},duration:0.3,ease:"back.out(2)",immediateRender:false},0.050);
     tl.fromTo("#hook .t span",{opacity:0,y:60,scale:1.6},{opacity:1,y:0,scale:1,duration:.32,ease:"back.out(2.2)",stagger:.035,immediateRender:false},0.15);
@@ -218,7 +244,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
     tl.fromTo("#p5",{scale:1.8},{scale:1,duration:.35,ease:"back.out(3)",immediateRender:false},54.121);
     tl.set("#lv",{textContent:"5/5"},54.121);
     tl.to("#heat",{...{"opacity": 0.6},duration:0.8,ease:"power2.out"},54.121);
-    tl.to("#meter",{...{"opacity": 0},duration:0.3,ease:"power3.out"},64.811);
+    tl.to("#meter",{...{"opacity": 0},duration:0.3,ease:"power3.out"},64.611);
     tl.fromTo("#st0",{opacity:0,scale:2.2,rotation:-18},{opacity:1,scale:1,rotation:-6,duration:.28,ease:"back.out(2.4)",immediateRender:false},2.840);
     tl.to("#st0",{opacity:0,scale:.85,duration:.2,ease:"power2.in"},4.840);
     tl.fromTo("#st1",{opacity:0,scale:2.2,rotation:15},{opacity:1,scale:1,rotation:5,duration:.28,ease:"back.out(2.4)",immediateRender:false},17.137);
@@ -254,13 +280,28 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
     tl.to("#iaw",{...{"opacity": 0, "x": 1100},duration:0.24,ease:"power2.in"},53.431);
     tl.fromTo("#camw",{"filter": "brightness(1) saturate(1)"},{...{"filter": "brightness(.7) saturate(.8)"},duration:0.25,ease:"power3.out",immediateRender:false},51.468);
     tl.fromTo("#camw",{"filter": "brightness(.7) saturate(.8)"},{...{"filter": "brightness(1) saturate(1)"},duration:0.25,ease:"power3.out",immediateRender:false},53.381);
+    tl.fromTo("#iaw",{"opacity": 0, "x": 1100, "scale": 1},{...{"opacity": 1, "x": 650, "scale": 1},duration:0.28,ease:"back.out(1.6)",immediateRender:false},64.591);
+    tl.to("#iaw",{...{"opacity": 0, "x": 1100},duration:0.24,ease:"power2.in"},71.450);
+    tl.fromTo("#camw",{"filter": "brightness(1) saturate(1)"},{...{"filter": "brightness(.7) saturate(.8)"},duration:0.25,ease:"power3.out",immediateRender:false},64.661);
+    tl.fromTo("#camw",{"filter": "brightness(.7) saturate(.8)"},{...{"filter": "brightness(1) saturate(1)"},duration:0.25,ease:"power3.out",immediateRender:false},71.400);
     tl.fromTo("#cta",{"opacity": 0, "y": 40},{...{"opacity": 1, "y": 0},duration:0.3,ease:"back.out(2)",immediateRender:false},56.711);
     tl.fromTo("#cta .like",{scale:1.5},{scale:1,duration:.3,ease:"back.out(3)",immediateRender:false},56.761);
     tl.fromTo("#cta .sub",{scale:1.6,opacity:.3},{scale:1,opacity:1,duration:.3,ease:"back.out(3)",immediateRender:false},57.981);
     tl.to("#cta .sub",{scale:1.06,duration:.35,yoyo:true,repeat:5,ease:"sine.inOut"},58.381);
     tl.to("#cta",{...{"opacity": 0},duration:0.3,ease:"power3.out"},61.781);
-    tl.set("#flash",{"backgroundColor": "#050305"},64.911);
-    tl.fromTo("#flash",{"opacity": 0},{...{"opacity": 1},duration:0.45,ease:"power2.in",immediateRender:false},64.911);
+    tl.set("#flash",{"backgroundColor": "#050305"},72.700);
+    tl.fromTo("#flash",{"opacity": 0},{...{"opacity": 1},duration:0.45,ease:"power2.in",immediateRender:false},72.700);
+    tl.fromTo("#outro",{"opacity": 0, "y": -60, "scale": 0.92},{...{"opacity": 1, "y": 0, "scale": 1},duration:0.4,ease:"back.out(1.8)",immediateRender:false},64.711);
+    tl.fromTo("#outro .f",{"opacity": 0, "y": 30},{...{"opacity": 1, "y": 0},duration:0.3,ease:"back.out(2)",immediateRender:false},69.305);
+    tl.set("#outro .kw span:nth-child(1)",{opacity:1},69.755);
+    tl.set("#outro .kw span:nth-child(2)",{opacity:1},69.825);
+    tl.set("#outro .kw span:nth-child(3)",{opacity:1},69.895);
+    tl.set("#outro .kw span:nth-child(4)",{opacity:1},69.965);
+    tl.set("#outro .kw span:nth-child(5)",{opacity:1},70.035);
+    tl.set("#outro .kw span:nth-child(6)",{opacity:1},70.105);
+    tl.set("#outro .kw span:nth-child(7)",{opacity:1},70.175);
+    tl.fromTo("#outro .f svg",{opacity:0,scale:.4},{opacity:1,scale:1,duration:.3,ease:"back.out(3)",immediateRender:false},70.295);
+    tl.fromTo("#outro .d",{"opacity": 0, "y": 20},{...{"opacity": 1, "y": 0},duration:0.3,ease:"power3.out",immediateRender:false},70.510);
     tl.fromTo("#c0",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},0.070);
     tl.set("#c0",{opacity:0},0.730);
     tl.set("#c0w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},0.100);
@@ -799,6 +840,66 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
     tl.set("#c74w0",{color:"#ffffff",textShadow:"0 0 0px rgba(0,0,0,0)"},64.031);
     tl.set("#c74w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},64.031);
     tl.set("#c74w1",{color:"#ffffff",textShadow:"0 0 0px rgba(0,0,0,0)"},64.761);
+    tl.fromTo("#c75",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},64.781);
+    tl.set("#c75",{opacity:0},65.609);
+    tl.set("#c75w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},64.811);
+    tl.set("#c75w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},65.087);
+    tl.set("#c75w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},65.087);
+    tl.set("#c75w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},65.501);
+    tl.set("#c75w2",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},65.501);
+    tl.set("#c75w2",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},65.609);
+    tl.fromTo("#c76",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},65.609);
+    tl.set("#c76",{opacity:0},66.300);
+    tl.set("#c76w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},65.639);
+    tl.set("#c76w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},65.916);
+    tl.set("#c76w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},65.916);
+    tl.set("#c76w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},66.300);
+    tl.fromTo("#c77",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},66.300);
+    tl.set("#c77",{opacity:0},67.266);
+    tl.set("#c77w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},66.330);
+    tl.set("#c77w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},67.020);
+    tl.set("#c77w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},67.020);
+    tl.set("#c77w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},67.266);
+    tl.fromTo("#c78",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},67.266);
+    tl.set("#c78",{opacity:0},68.095);
+    tl.set("#c78w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},67.296);
+    tl.set("#c78w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},67.710);
+    tl.set("#c78w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},67.710);
+    tl.set("#c78w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},67.848);
+    tl.set("#c78w2",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},67.848);
+    tl.set("#c78w2",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},68.095);
+    tl.fromTo("#c79",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},68.095);
+    tl.set("#c79",{opacity:0},68.785);
+    tl.set("#c79w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},68.125);
+    tl.set("#c79w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},68.539);
+    tl.set("#c79w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},68.539);
+    tl.set("#c79w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},68.785);
+    tl.fromTo("#c80",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},68.785);
+    tl.set("#c80",{opacity:0},69.475);
+    tl.set("#c80w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},68.815);
+    tl.set("#c80w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},69.091);
+    tl.set("#c80w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},69.091);
+    tl.set("#c80w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},69.367);
+    tl.set("#c80w2",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},69.367);
+    tl.set("#c80w2",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},69.475);
+    tl.fromTo("#c81",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},69.475);
+    tl.set("#c81",{opacity:0},70.304);
+    tl.set("#c81w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},69.505);
+    tl.set("#c81w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},69.919);
+    tl.set("#c81w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},69.919);
+    tl.set("#c81w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},70.304);
+    tl.fromTo("#c82",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},70.304);
+    tl.set("#c82",{opacity:0},71.132);
+    tl.set("#c82w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},70.334);
+    tl.set("#c82w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},70.472);
+    tl.set("#c82w1",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},70.472);
+    tl.set("#c82w1",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},70.610);
+    tl.set("#c82w2",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},70.610);
+    tl.set("#c82w2",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},71.132);
+    tl.fromTo("#c83",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.08,ease:"power2.out",immediateRender:false},71.132);
+    tl.set("#c83",{opacity:0},71.550);
+    tl.set("#c83w0",{color:"#FFD600",textShadow:"0 0 18px rgba(255,138,0,.9)"},71.162);
+    tl.set("#c83w0",{color:"#d8b4fe",textShadow:"0 0 0px rgba(0,0,0,0)"},71.550);
     window.__timelines = window.__timelines || {};
     window.__timelines["autoboost-84"] = tl;
   })();
