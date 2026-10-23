@@ -131,10 +131,10 @@ for n, it in enumerate(L):
         words.append(dict(w))
     txt_all = " ".join(w["w"] for w in words)
     for bad, good in FIX.items():                       # simple word-level fixes, keep the timings
-        if bad in txt_all:
+        if bad.strip(",") in txt_all.lower():
             bt = bad.split()
             for j in range(len(words) - len(bt) + 1):
-                if [w["w"] for w in words[j:j + len(bt)]] == bt:
+                if [w["w"].strip(",.!?").lower() for w in words[j:j + len(bt)]] == [x.strip(",.!?").lower() for x in bt]:
                     gt = good.split() if good else []
                     for k2 in range(len(bt)):
                         words[j + k2]["w"] = gt[k2] if k2 < len(gt) else ""
