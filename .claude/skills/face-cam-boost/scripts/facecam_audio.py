@@ -84,6 +84,7 @@ elif a.bed == "drums":
     sfx_idx = 2
 else:
     inputs, bed, duck, sfx_idx = [], "", "", 1
+    voice = voice.replace("asplit=2[v][key]", "anull[v]")       # no bed to duck: the sidechain key would dangle
 
 mix = (f"[v][duck][{sfx_idx}:a]amix=inputs=3:normalize=0:duration=first,alimiter=limit=0.95[a]" if a.bed != "none" or a.bed_file
        else f"[v][{sfx_idx}:a]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]")
