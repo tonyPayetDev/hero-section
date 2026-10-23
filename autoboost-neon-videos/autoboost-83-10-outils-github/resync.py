@@ -78,12 +78,12 @@ spans = merged
 
 used = np.zeros(TN)
 # frames that must never be used (e.g. the burned-in « commente MOT » end card of each split-preuve clip):
-# BAD=mask.npy (bool per take frame), widened by 1.5 s on each side for the fades
+# BAD=mask.npy (bool per take frame), widened by BAD_PAD frames on each side (default 45 = 1.5 s, for the fades)
 bad = np.zeros(TN, bool)
 if os.environ.get("BAD"):
-    m = np.load(os.environ["BAD"])[:TN]
+    m, pad = np.load(os.environ["BAD"])[:TN], int(os.environ.get("BAD_PAD", 45))
     for i in np.where(m)[0]:
-        bad[max(0, i - 45):i + 46] = True
+        bad[max(0, i - pad):i + pad + 1] = True
 
 
 def window_costs(a, b):
