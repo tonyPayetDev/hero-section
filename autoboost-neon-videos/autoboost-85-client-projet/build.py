@@ -70,7 +70,7 @@ for it in ITEMS:
         lines[-1]["words"] = spread(it["text"], 0.2, 0.2 + d, t)
         cuts.append(round(t, 3)); t += n / FPS; ia_k += 1
     parts.append(p)
-TOTAL = round(t + 1.6, 3)                                    # + a hold on the last frame (outro card readable)
+TOTAL = round(t + 0.5, 3)                                    # end card ~3 s: the IA line + a short hold
 NF = round(TOTAL * FPS)
 lst = os.path.join(out, "parts.txt")
 open(lst, "w").write("".join(f"file '{p}'\n" for p in parts))

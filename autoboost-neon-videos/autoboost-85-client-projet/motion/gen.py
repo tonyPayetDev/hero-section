@@ -125,7 +125,7 @@ for k, (name, t, d, x, y, rot) in enumerate(STICK):
 # ------------------------------------------------------------------ Tony IA: chili ring top-right, pops in on each line, Tony's take dims
 IAX, IAY = 650, 880            # visual ring ~(720-1060, 900-1300): beside his shoulder, above the captions
 S("#iaw", 0, {"x": IAX, "y": IAY, "opacity": 0, "scale": 0.9})
-for n, it in enumerate(x for x in L if x["who"] == "ia"):
+for n, it in enumerate(x for x in L if x["who"] == "ia" and "MONTAGE" not in x["text"]):     # not over the end card
     a, b = it["start"], it["end"]
     if n == 0:
         for k, (dx, op) in enumerate([(40, 1), (-60, .4), (24, 1), (-10, .7), (0, 1)]):
