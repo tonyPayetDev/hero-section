@@ -70,10 +70,38 @@ R("#tsh", hook_end + 0.1, {"opacity": 1}, {"opacity": 0.6}, 0.4)
 R("#flash", 0.08, {"opacity": 0.5}, {"opacity": 0}, 0.25, "power2.out")
 EV += [[0.0, "sfx-impact-deep.mp3", -15], [0.15, "sfx-whoosh-v2.mp3", -20]]
 
+# ------------------------------------------------------------------ Sahara set: Tony cut out, the decor follows his words
+T_IN = 0.45                                          # the real room for a blink, then a flash « teleports » him to the desert
+R("#roomw", T_IN, {"opacity": 1}, {"opacity": 0}, 0.12)
+R("#flash", T_IN - 0.02, {"opacity": 0.9}, {"opacity": 0}, 0.35, "power2.out")
+EV.append([T_IN - 0.05, "sfx-whoosh-v2.mp3", -17])
+DEC = [("#dc1", T_IN), ("#dc2", wt(2, "palmier") - 0.15), ("#dc3", wt(6, "palais") - 0.15), ("#dc4", wt(8, "danseuses") - 0.25)]
+for k, (sel, t0) in enumerate(DEC):
+    t1 = DEC[k + 1][1] if k + 1 < len(DEC) else TOTAL
+    R(sel, t0, {"opacity": 0, "scale": 1.0}, {"opacity": 1, "scale": 1.0}, 0.35 if k else 0.01, "power2.out")
+    js.append(f'tl.fromTo("{sel}",{{scale:1}},{{scale:1.08,duration:{t1 - t0:.3f},ease:"none",immediateRender:false}},{q(t0)});')
+    if k + 1 < len(DEC):
+        R(sel, t1 + 0.3, {"opacity": 1}, {"opacity": 0}, 0.05)
+    if k:
+        EV.append([t0, "sfx-whoosh-lat.mp3", -20])
+# « Et là-bas, le palais » : the fortress rises behind him, leaves when the camp comes
+tp = wt(6, "palais")
+R("#palace", tp, {"opacity": 0, "y": 420, "scale": 0.8}, {"opacity": 1, "y": 0, "scale": 1}, 0.7, "back.out(1.4)")
+R("#palace", DEC[3][1], {"opacity": 1}, {"opacity": 0}, 0.4)
+EV += [[tp, "sfx-landing-thud.mp3", -15], [tp + 0.1, "sfx-debris.mp3", -22]]
+# « plein de danseuses qui pourront danser » : three dancers, a slow sway each
+td = wt(8, "danseuses")
+for k, (sel, dt, rot) in enumerate([("#dz1", 0.0, -6), ("#dz2", 0.18, 6), ("#dz3", 0.36, -4)]):
+    R(sel, td + dt, {"opacity": 0, "y": 160, "scale": 0.7}, {"opacity": 1, "y": 0, "scale": 1}, 0.45, "back.out(1.8)")
+    js.append(f'tl.fromTo("{sel}",{{rotation:{-rot}}},{{rotation:{rot},duration:.55,ease:"sine.inOut",yoyo:true,repeat:{int((TOTAL - td) / 0.55)},immediateRender:false}},{q(td + dt + 0.45)});')
+    EV.append([td + dt, "sfx-pop.mp3", -20])
+# « Et juste là, un petit géranium » : tiny, in front, bounce
+tg = wt(9, "géranium")
+R("#geranium", tg, {"opacity": 0, "scale": 0, "rotation": -20}, {"opacity": 1, "scale": 1, "rotation": 0}, 0.5, "back.out(3)")
+EV += [[tg, "sfx-pop.mp3", -16], [tg + 0.15, "sfx-chime-v2.mp3", -21]]
+
 # ------------------------------------------------------------------ kit stickers on the reactions (black matte, screen blend)
 STICK = [("ca-monte", wt(3, "appellera"), 2.0, 40, 1150, -6),          # the scope creeps already
-         ("regarde-ca", wt(6, "palais"), 2.0, 480, 1150, 5),
-         ("trop-fort", wt(9, "géranium"), 2.0, 40, 1150, -5),
          ("ca-choque", wt(18, "Maximum"), 1.1, 480, 1150, 4)]
 for k, (name, t, d, x, y, rot) in enumerate(STICK):
     OV.append(f'<img class="st" id="st{k}" src="piment/{name}.png" alt="" style="left:{x}px;top:{y}px" />')
@@ -162,6 +190,6 @@ page = (tpl.replace("%%TOTAL%%", q(TOTAL)).replace("%%HOOK%%", spans).replace("%
         .replace("%%CAPTIONS%%", "\n".join(caps)).replace("%%JS%%", "\n".join("    " + x for x in js)))
 open(os.path.join(PUB, "index.html"), "w").write(page)
 json.dump(sorted(EV), open(os.path.join(HERE, "events.json"), "w"))
-for f in ("base.mp4", "avatar.mp4"):
+for f in ("base.mp4", "avatar.mp4", "tony.webm"):
     shutil.copy(os.path.join(BUILD, f), os.path.join(PUB, f))
 print(f"index.html: {ci} captions, {len(js)} animations, {TOTAL} s, {len(EV)} SFX")

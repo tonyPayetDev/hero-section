@@ -70,12 +70,34 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
 #outro .f svg { width: 52px; height: 52px; color: #FF8A00; opacity: 0; }
 #outro .d { margin-top: 22px; font-size: 40px; color: #fff; opacity: 0; }
 #outro .d b { color: #FF8A00; }
+/* Sahara set (Tony cut out): decors under him, palace + dancers behind, geranium in front */
+#decor { position: absolute; inset: 0; overflow: hidden; background: #e8b26a; }
+#decor img { position: absolute; left: -30px; top: -54px; width: 1140px; height: 2028px; object-fit: cover; opacity: 0; transform-origin: 540px 1100px; }
+#roomw { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+#roomw video { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+#cam { filter: sepia(.12) saturate(1.08) brightness(1.04) contrast(1.04); }
+.prop { position: absolute; opacity: 0; filter: drop-shadow(0 18px 24px rgba(60,25,0,.45)); }
+#palace { left: -150px; top: 430px; width: 1380px; transform-origin: 690px 900px; }
+.dancer { width: 520px; transform-origin: 260px 900px; }
+#dz1 { left: -150px; top: 760px; }
+#dz2 { left: 700px; top: 760px; }
+#dz2 img { transform: scaleX(-1); }
+#dz3 { left: 300px; top: 640px; width: 380px; }
+.dancer img { width: 100%; }
+#geranium { left: 760px; top: 1180px; width: 300px; transform-origin: 150px 380px; }
 #flash { position: absolute; inset: 0; background: #fff3d0; opacity: 0; }
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="autoboost-85" data-start="0" data-width="1080" data-height="1920" data-duration="%%TOTAL%%" data-fps="30">
-  <div id="camw"><video id="cam" src="base.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="1"></video></div>
+  <div id="decor"><img id="dc1" src="sahara/01_dunes_sahara.png" alt="" /><img id="dc2" src="sahara/02_oasis_palmiers_ruines.png" alt="" /><img id="dc3" src="sahara/03_ruines_coucher_soleil.png" alt="" /><img id="dc4" src="sahara/04_campement_desert.png" alt="" /></div>
+  <img class="prop" id="palace" src="sahara/03_batiments_forteresse.png" alt="" />
+  <div class="prop dancer" id="dz3"><img src="sahara/01_danseuse.png" alt="" /></div>
+  <div class="prop dancer" id="dz1"><img src="sahara/01_danseuse.png" alt="" /></div>
+  <div class="prop dancer" id="dz2"><img src="sahara/01_danseuse.png" alt="" /></div>
+  <div id="roomw"><video id="room" src="base.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="3"></video></div>
+  <div id="camw"><video id="cam" src="tony.webm" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="1"></video></div>
+  <img class="prop" id="geranium" src="sahara/02_geranium_rouge.png" alt="" />
   <div id="grade"></div>
   <div id="heat"></div>
   <div class="topshade" id="tsh"></div>
