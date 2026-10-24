@@ -85,17 +85,37 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
 #dz3 { left: 300px; top: 640px; width: 380px; }
 .dancer img { width: 100%; }
 #geranium { left: 20px; top: 1120px; width: 300px; transform-origin: 150px 380px; }
+/* v2: who is who, the quote, Tony's own frames */
+.full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; opacity: 0; }
+#intro { opacity: 1; }
+.lbl { position: absolute; left: 90px; top: 600px; padding: 14px 26px; border-radius: 16px; background: #050305; border: 4px solid #FFD600; color: #FFD600;
+  font-family: "AB Mono", monospace; font-size: 44px; letter-spacing: .1em; box-shadow: 0 0 30px rgba(255,214,0,.6); opacity: 0; transform: rotate(-4deg); }
+#iaw .tag::before { content: "LE FREELANCE · "; color: #FFD600; }
+#devis { position: absolute; left: 140px; top: 260px; width: 800px; padding: 28px 36px; border-radius: 30px; background: rgba(5,3,5,.9); border: 4px solid #FFD600;
+  box-shadow: 0 0 50px rgba(255,138,0,.6); text-align: center; opacity: 0; }
+#devis .k { font-family: "AB Mono", monospace; font-size: 34px; letter-spacing: .3em; color: #d8b4fe; }
+#devis .v { font-size: 120px; letter-spacing: -0.04em; color: #FFD600; text-shadow: 0 0 30px rgba(255,138,0,.8); }
+#stat1 { left: -170px; top: 560px; width: 620px; }
+#stat2 { left: 630px; top: 560px; width: 620px; transform: scaleX(-1); }
+#olive { left: -260px; top: 520px; width: 820px; }
+#orange { left: 560px; top: 560px; width: 760px; }
+#willow { left: 120px; top: 300px; width: 860px; }
+#cam { filter: sepia(.18) saturate(1.1) brightness(1.05) contrast(1.05) drop-shadow(0 0 16px rgba(255,150,60,.55)); }
 #flash { position: absolute; inset: 0; background: #fff3d0; opacity: 0; }
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="autoboost-85" data-start="0" data-width="1080" data-height="1920" data-duration="%%TOTAL%%" data-fps="30">
   <div id="decor"><img id="dc1" src="sahara/01_dunes_sahara.png" alt="" /><img id="dc2" src="sahara/02_oasis_palmiers_ruines.png" alt="" /><img id="dc3" src="sahara/03_ruines_coucher_soleil.png" alt="" /><img id="dc4" src="sahara/04_campement_desert.png" alt="" /></div>
+  <img class="prop" id="willow" src="sahara/saule.png" alt="" />
+  <img class="prop" id="olive" src="sahara/olivier.png" alt="" />
+  <img class="prop" id="orange" src="sahara/oranger.png" alt="" />
+  <img class="prop" id="stat1" src="sahara/statue.png" alt="" />
+  <img class="prop" id="stat2" src="sahara/statue.png" alt="" />
   <img class="prop" id="palace" src="sahara/03_batiments_forteresse.png" alt="" />
   <div class="prop dancer" id="dz3"><img src="sahara/01_danseuse.png" alt="" /></div>
   <div class="prop dancer" id="dz1"><img src="sahara/01_danseuse.png" alt="" /></div>
-  <div class="prop dancer" id="dz2"><img src="sahara/01_danseuse.png" alt="" /></div>
-  <div id="roomw"><video id="room" src="base.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="3"></video></div>
+  <div class="prop dancer" id="dz2"><img src="sahara/danseuse2.png" alt="" /></div>
   <div id="camw"><video id="cam" src="tony.webm" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="1"></video></div>
   <img class="prop" id="geranium" src="sahara/02_geranium_rouge.png" alt="" />
   <div id="grade"></div>
@@ -105,11 +125,13 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05030
   <div id="hook"><div class="k">POV FREELANCE</div><div class="t">%%HOOK%%</div><div class="s">et il le veut pour hier</div></div>
   <div id="meter"><span class="lab">PIMENT</span><i class="p" id="p1"></i><i class="p" id="p2"></i><i class="p" id="p3"></i><i class="p" id="p4"></i><i class="p" id="p5"></i><span class="lv" id="lv">0/5</span></div>
 %%OVERLAYS%%
+  <img class="full" id="payoff" src="sahara/payoff_deadline_hier.png" alt="" />
+  <img class="full" id="endcard" src="sahara/endcard_montage.png" alt="" />
   <div id="iaw"><div class="disc"><video id="iav" src="avatar.mp4" muted playsinline data-start="0" data-media-start="0" data-duration="%%TOTAL%%" data-track-index="2"></video></div><img src="piment/cadre-06.png" alt="" /><div class="tag"><b>TONY</b><span>IA</span></div></div>
   <div id="cta"><div class="b like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11H3V10z"/><path d="M7 10l4-8a3 3 0 0 1 3 3v4h6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.6 21H7"/></svg>LIKE</div><div class="b sub">ABONNE-TOI</div></div>
-  <div id="outro"><div class="k">CETTE VIDÉO A ÉTÉ MONTÉE</div><div class="t">100 % avec <b>Claude</b></div>
-    <div class="f"><span class="pre">commente</span><span class="kw">%%KW%%</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></div>
-    <div class="d">→ je t'envoie <b>comment j'ai fait</b></div></div>
+  <div id="lbl-client" class="lbl">LE CLIENT</div>
+  <div id="devis"><div class="k">DEVIS</div><div class="v"><span class="n">0</span> €</div></div>
+  <img class="full" id="intro" src="sahara/intro_client_freelance.png" alt="" />
   <div id="cap">%%CAPTIONS%%</div>
   <div id="flash"></div>
   <script src="vendor/gsap.min.js"></script>

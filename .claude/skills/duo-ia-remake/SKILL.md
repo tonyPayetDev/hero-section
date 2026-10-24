@@ -63,6 +63,10 @@ MOUTH=mouth.npy python3 resync.py take30.mp4 take30.mkv take_alpha.webm build/
 ```
 Contrôle indépendant : relancer `mouth_open.py` sur `build/tony_src.mp4` et corréler avec l'enveloppe de `voice.wav`
 par réplique de Tony : **viser ≥ 0,6** (vidéo 83 : 0,70 en moyenne ; le son de la prise donnait −0,1).
+**Morceau de la pièce collé au détourage** (un panneau sombre derrière la tête, des îlots flottants) :
+`LD_LIBRARY_PATH=<chromium egl> python3 .claude/skills/duo-ia-remake/scripts/clean_matte.py base.mp4 tony.webm selfie_multiclass_256x256.tflite tony_clean.webm --below 1000`
+(masque « personne » MediaPipe sur le haut de l'image ; `--below` laisse les jambes sombres/floues intactes). Ne pas utiliser
+de « clean plate » de la pièce : le téléphone bouge un peu et le t-shirt noir ressemble au panneau, ça troue Tony.
 Images à exclure (stickers, cercle IA, cartes CTA incrustées) : `BAD=mask.npy BAD_PAD=n`, ou mieux, recompacter la prise
 sur les seules images propres avant le détourage.
 
